@@ -1,0 +1,2419 @@
+{
+  "verification_id": "ver-dog-0017-03",
+  "dog_id_hashed": "47b9637c52fc7e56",
+  "trick": "sit",
+  "final_label": "failed",
+  "is_hard_negative": true,
+  "frame_count": 42,
+  "recording_duration_seconds": 1.4,
+  "avg_keypoint_confidence": 0.873,
+  "quality_flags": {
+    "low_average_confidence": false,
+    "excessive_missing_frames": false,
+    "dog_partially_out_of_frame": false,
+    "insufficient_recording_duration": false,
+    "inconsistent_frame_rate": false,
+    "unsupported_pose_schema": false
+  },
+  "pose_model_version": "superanimal_quadruped_hrnet_w32_fasterrcnn_v1",
+  "classifier_version": "0.2.0",
+  "model_name": "superanimal_quadruped_hrnet_w32_fasterrcnn_v1",
+  "video_path": null,
+  "created_at": "2026-06-01T12:00:00Z",
+  "pose_sequence": [
+    {
+      "frame_index": 0,
+      "timestamp_ms": 0,
+      "keypoints": {
+        "nose": {
+          "x": 316.419,
+          "y": 152.888,
+          "confidence": 0.867
+        },
+        "left_shoulder": {
+          "x": 292.073,
+          "y": 189.305,
+          "confidence": 0.9
+        },
+        "right_shoulder": {
+          "x": 352.176,
+          "y": 193.739,
+          "confidence": 0.913
+        },
+        "left_hip": {
+          "x": 293.469,
+          "y": 240.469,
+          "confidence": 0.879
+        },
+        "right_hip": {
+          "x": 344.593,
+          "y": 241.175,
+          "confidence": 0.941
+        },
+        "tail_base": {
+          "x": 322.172,
+          "y": 260.847,
+          "confidence": 0.88
+        },
+        "left_front_paw": {
+          "x": 286.653,
+          "y": 296.35,
+          "confidence": 0.833
+        },
+        "right_front_paw": {
+          "x": 352.984,
+          "y": 299.475,
+          "confidence": 0.805
+        },
+        "left_hind_paw": {
+          "x": 289.37,
+          "y": 308.19,
+          "confidence": 0.865
+        },
+        "right_hind_paw": {
+          "x": 353.207,
+          "y": 309.458,
+          "confidence": 0.875
+        }
+      },
+      "confidence": 0.876
+    },
+    {
+      "frame_index": 1,
+      "timestamp_ms": 33,
+      "keypoints": {
+        "nose": {
+          "x": 318.398,
+          "y": 150.742,
+          "confidence": 0.858
+        },
+        "left_shoulder": {
+          "x": 289.382,
+          "y": 191.034,
+          "confidence": 0.796
+        },
+        "right_shoulder": {
+          "x": 347.873,
+          "y": 186.416,
+          "confidence": 0.844
+        },
+        "left_hip": {
+          "x": 290.368,
+          "y": 240.308,
+          "confidence": 0.873
+        },
+        "right_hip": {
+          "x": 344.827,
+          "y": 242.614,
+          "confidence": 0.884
+        },
+        "tail_base": {
+          "x": 322.456,
+          "y": 257.835,
+          "confidence": 0.875
+        },
+        "left_front_paw": {
+          "x": 287.501,
+          "y": 301.949,
+          "confidence": 0.864
+        },
+        "right_front_paw": {
+          "x": 352.238,
+          "y": 298.112,
+          "confidence": 0.91
+        },
+        "left_hind_paw": {
+          "x": 288.112,
+          "y": 313.312,
+          "confidence": 0.818
+        },
+        "right_hind_paw": {
+          "x": 350.666,
+          "y": 308.455,
+          "confidence": 0.914
+        }
+      },
+      "confidence": 0.864
+    },
+    {
+      "frame_index": 2,
+      "timestamp_ms": 66,
+      "keypoints": {
+        "nose": {
+          "x": 321.443,
+          "y": 149.624,
+          "confidence": 0.839
+        },
+        "left_shoulder": {
+          "x": 290.976,
+          "y": 187.664,
+          "confidence": 0.853
+        },
+        "right_shoulder": {
+          "x": 347.169,
+          "y": 190.656,
+          "confidence": 0.88
+        },
+        "left_hip": {
+          "x": 294.926,
+          "y": 245.382,
+          "confidence": 0.894
+        },
+        "right_hip": {
+          "x": 345.912,
+          "y": 244.305,
+          "confidence": 0.842
+        },
+        "tail_base": {
+          "x": 321.764,
+          "y": 267.238,
+          "confidence": 0.852
+        },
+        "left_front_paw": {
+          "x": 289.143,
+          "y": 298.417,
+          "confidence": 0.822
+        },
+        "right_front_paw": {
+          "x": 356.371,
+          "y": 301.489,
+          "confidence": 0.886
+        },
+        "left_hind_paw": {
+          "x": 286.696,
+          "y": 304.45,
+          "confidence": 0.931
+        },
+        "right_hind_paw": {
+          "x": 348.793,
+          "y": 308.009,
+          "confidence": 0.914
+        }
+      },
+      "confidence": 0.871
+    },
+    {
+      "frame_index": 3,
+      "timestamp_ms": 100,
+      "keypoints": {
+        "nose": {
+          "x": 322.361,
+          "y": 150.331,
+          "confidence": 0.925
+        },
+        "left_shoulder": {
+          "x": 287.428,
+          "y": 186.787,
+          "confidence": 0.831
+        },
+        "right_shoulder": {
+          "x": 350.065,
+          "y": 192.831,
+          "confidence": 0.882
+        },
+        "left_hip": {
+          "x": 293.431,
+          "y": 242.531,
+          "confidence": 0.931
+        },
+        "right_hip": {
+          "x": 344.589,
+          "y": 240.67,
+          "confidence": 0.966
+        },
+        "tail_base": {
+          "x": 318.014,
+          "y": 263.413,
+          "confidence": 0.952
+        },
+        "left_front_paw": {
+          "x": 282.582,
+          "y": 300.532,
+          "confidence": 0.914
+        },
+        "right_front_paw": {
+          "x": 357.221,
+          "y": 302.061,
+          "confidence": 0.836
+        },
+        "left_hind_paw": {
+          "x": 293.857,
+          "y": 309.593,
+          "confidence": 0.825
+        },
+        "right_hind_paw": {
+          "x": 349.766,
+          "y": 310.961,
+          "confidence": 0.837
+        }
+      },
+      "confidence": 0.89
+    },
+    {
+      "frame_index": 4,
+      "timestamp_ms": 133,
+      "keypoints": {
+        "nose": {
+          "x": 319.012,
+          "y": 149.293,
+          "confidence": 0.942
+        },
+        "left_shoulder": {
+          "x": 290.539,
+          "y": 184.244,
+          "confidence": 0.85
+        },
+        "right_shoulder": {
+          "x": 350.312,
+          "y": 190.836,
+          "confidence": 0.855
+        },
+        "left_hip": {
+          "x": 297.279,
+          "y": 237.923,
+          "confidence": 0.886
+        },
+        "right_hip": {
+          "x": 344.388,
+          "y": 237.389,
+          "confidence": 0.939
+        },
+        "tail_base": {
+          "x": 322.859,
+          "y": 260.831,
+          "confidence": 0.876
+        },
+        "left_front_paw": {
+          "x": 282.709,
+          "y": 305.325,
+          "confidence": 0.84
+        },
+        "right_front_paw": {
+          "x": 356.351,
+          "y": 300.308,
+          "confidence": 0.856
+        },
+        "left_hind_paw": {
+          "x": 289.985,
+          "y": 310.702,
+          "confidence": 0.882
+        },
+        "right_hind_paw": {
+          "x": 349.761,
+          "y": 305.92,
+          "confidence": 0.857
+        }
+      },
+      "confidence": 0.878
+    },
+    {
+      "frame_index": 5,
+      "timestamp_ms": 166,
+      "keypoints": {
+        "nose": {
+          "x": 320.67,
+          "y": 150.664,
+          "confidence": 0.92
+        },
+        "left_shoulder": {
+          "x": 288.882,
+          "y": 190.72,
+          "confidence": 0.821
+        },
+        "right_shoulder": {
+          "x": 349.071,
+          "y": 188.048,
+          "confidence": 0.847
+        },
+        "left_hip": {
+          "x": 297.271,
+          "y": 244.284,
+          "confidence": 0.857
+        },
+        "right_hip": {
+          "x": 342.97,
+          "y": 242.337,
+          "confidence": 0.861
+        },
+        "tail_base": {
+          "x": 319.311,
+          "y": 261.967,
+          "confidence": 0.905
+        },
+        "left_front_paw": {
+          "x": 284.289,
+          "y": 299.806,
+          "confidence": 0.917
+        },
+        "right_front_paw": {
+          "x": 358.654,
+          "y": 301.108,
+          "confidence": 0.977
+        },
+        "left_hind_paw": {
+          "x": 291.762,
+          "y": 309.177,
+          "confidence": 0.94
+        },
+        "right_hind_paw": {
+          "x": 347.472,
+          "y": 307.879,
+          "confidence": 0.871
+        }
+      },
+      "confidence": 0.892
+    },
+    {
+      "frame_index": 6,
+      "timestamp_ms": 200,
+      "keypoints": {
+        "nose": {
+          "x": 321.684,
+          "y": 150.459,
+          "confidence": 0.859
+        },
+        "left_shoulder": {
+          "x": 289.105,
+          "y": 189.269,
+          "confidence": 0.946
+        },
+        "right_shoulder": {
+          "x": 352.929,
+          "y": 190.416,
+          "confidence": 0.856
+        },
+        "left_hip": {
+          "x": 296.579,
+          "y": 239.747,
+          "confidence": 0.795
+        },
+        "right_hip": {
+          "x": 346.745,
+          "y": 242.082,
+          "confidence": 0.941
+        },
+        "tail_base": {
+          "x": 320.845,
+          "y": 262.538,
+          "confidence": 0.849
+        },
+        "left_front_paw": {
+          "x": 281.573,
+          "y": 297.795,
+          "confidence": 0.917
+        },
+        "right_front_paw": {
+          "x": 353.195,
+          "y": 301.628,
+          "confidence": 0.921
+        },
+        "left_hind_paw": {
+          "x": 292.023,
+          "y": 311.47,
+          "confidence": 0.885
+        },
+        "right_hind_paw": {
+          "x": 350.203,
+          "y": 310.003,
+          "confidence": 0.911
+        }
+      },
+      "confidence": 0.888
+    },
+    {
+      "frame_index": 7,
+      "timestamp_ms": 233,
+      "keypoints": {
+        "nose": {
+          "x": 321.16,
+          "y": 148.868,
+          "confidence": 0.879
+        },
+        "left_shoulder": {
+          "x": 286.904,
+          "y": 191.135,
+          "confidence": 0.861
+        },
+        "right_shoulder": {
+          "x": 347.578,
+          "y": 187.066,
+          "confidence": 0.814
+        },
+        "left_hip": {
+          "x": 291.327,
+          "y": 241.071,
+          "confidence": 0.851
+        },
+        "right_hip": {
+          "x": 345.079,
+          "y": 241.862,
+          "confidence": 0.787
+        },
+        "tail_base": {
+          "x": 320.602,
+          "y": 263.243,
+          "confidence": 0.911
+        },
+        "left_front_paw": {
+          "x": 288.084,
+          "y": 301.341,
+          "confidence": 0.887
+        },
+        "right_front_paw": {
+          "x": 353.878,
+          "y": 298.476,
+          "confidence": 0.821
+        },
+        "left_hind_paw": {
+          "x": 290.17,
+          "y": 306.675,
+          "confidence": 0.809
+        },
+        "right_hind_paw": {
+          "x": 349.049,
+          "y": 310.399,
+          "confidence": 0.876
+        }
+      },
+      "confidence": 0.85
+    },
+    {
+      "frame_index": 8,
+      "timestamp_ms": 266,
+      "keypoints": {
+        "nose": {
+          "x": 322.187,
+          "y": 146.681,
+          "confidence": 0.884
+        },
+        "left_shoulder": {
+          "x": 292.979,
+          "y": 191.814,
+          "confidence": 0.888
+        },
+        "right_shoulder": {
+          "x": 347.695,
+          "y": 192.319,
+          "confidence": 0.895
+        },
+        "left_hip": {
+          "x": 294.557,
+          "y": 248.056,
+          "confidence": 0.857
+        },
+        "right_hip": {
+          "x": 345.593,
+          "y": 244.158,
+          "confidence": 0.892
+        },
+        "tail_base": {
+          "x": 321.676,
+          "y": 268.786,
+          "confidence": 0.868
+        },
+        "left_front_paw": {
+          "x": 282.918,
+          "y": 301.53,
+          "confidence": 0.842
+        },
+        "right_front_paw": {
+          "x": 356.088,
+          "y": 299.922,
+          "confidence": 0.875
+        },
+        "left_hind_paw": {
+          "x": 290.866,
+          "y": 308.09,
+          "confidence": 0.907
+        },
+        "right_hind_paw": {
+          "x": 348.816,
+          "y": 306.469,
+          "confidence": 0.918
+        }
+      },
+      "confidence": 0.883
+    },
+    {
+      "frame_index": 9,
+      "timestamp_ms": 300,
+      "keypoints": {
+        "nose": {
+          "x": 322.144,
+          "y": 147.994,
+          "confidence": 0.869
+        },
+        "left_shoulder": {
+          "x": 293.041,
+          "y": 189.945,
+          "confidence": 0.918
+        },
+        "right_shoulder": {
+          "x": 352.613,
+          "y": 189.792,
+          "confidence": 0.875
+        },
+        "left_hip": {
+          "x": 294.129,
+          "y": 234.786,
+          "confidence": 0.898
+        },
+        "right_hip": {
+          "x": 343.144,
+          "y": 236.482,
+          "confidence": 0.856
+        },
+        "tail_base": {
+          "x": 321.285,
+          "y": 257.226,
+          "confidence": 0.864
+        },
+        "left_front_paw": {
+          "x": 287.621,
+          "y": 300.198,
+          "confidence": 0.894
+        },
+        "right_front_paw": {
+          "x": 357.845,
+          "y": 300.134,
+          "confidence": 0.83
+        },
+        "left_hind_paw": {
+          "x": 290.286,
+          "y": 306.549,
+          "confidence": 0.848
+        },
+        "right_hind_paw": {
+          "x": 350.176,
+          "y": 310.216,
+          "confidence": 0.863
+        }
+      },
+      "confidence": 0.871
+    },
+    {
+      "frame_index": 10,
+      "timestamp_ms": 333,
+      "keypoints": {
+        "nose": {
+          "x": 320.835,
+          "y": 151.282,
+          "confidence": 0.907
+        },
+        "left_shoulder": {
+          "x": 290.431,
+          "y": 187.407,
+          "confidence": 0.854
+        },
+        "right_shoulder": {
+          "x": 351.257,
+          "y": 192.103,
+          "confidence": 0.876
+        },
+        "left_hip": {
+          "x": 294.015,
+          "y": 241.618,
+          "confidence": 0.896
+        },
+        "right_hip": {
+          "x": 340.997,
+          "y": 245.216,
+          "confidence": 0.904
+        },
+        "tail_base": {
+          "x": 321.313,
+          "y": 263.006,
+          "confidence": 0.953
+        },
+        "left_front_paw": {
+          "x": 282.684,
+          "y": 299.709,
+          "confidence": 0.913
+        },
+        "right_front_paw": {
+          "x": 354.165,
+          "y": 301.46,
+          "confidence": 0.803
+        },
+        "left_hind_paw": {
+          "x": 288.088,
+          "y": 309.532,
+          "confidence": 0.884
+        },
+        "right_hind_paw": {
+          "x": 346.204,
+          "y": 308.913,
+          "confidence": 0.826
+        }
+      },
+      "confidence": 0.882
+    },
+    {
+      "frame_index": 11,
+      "timestamp_ms": 366,
+      "keypoints": {
+        "nose": {
+          "x": 317.746,
+          "y": 151.288,
+          "confidence": 0.855
+        },
+        "left_shoulder": {
+          "x": 290.088,
+          "y": 190.965,
+          "confidence": 0.905
+        },
+        "right_shoulder": {
+          "x": 351.244,
+          "y": 187.415,
+          "confidence": 0.893
+        },
+        "left_hip": {
+          "x": 295.1,
+          "y": 240.469,
+          "confidence": 0.909
+        },
+        "right_hip": {
+          "x": 348.27,
+          "y": 238.214,
+          "confidence": 0.862
+        },
+        "tail_base": {
+          "x": 319.616,
+          "y": 261.591,
+          "confidence": 0.807
+        },
+        "left_front_paw": {
+          "x": 283.133,
+          "y": 300.604,
+          "confidence": 0.928
+        },
+        "right_front_paw": {
+          "x": 358.472,
+          "y": 298.745,
+          "confidence": 0.958
+        },
+        "left_hind_paw": {
+          "x": 288.211,
+          "y": 310.608,
+          "confidence": 0.861
+        },
+        "right_hind_paw": {
+          "x": 347.103,
+          "y": 312.826,
+          "confidence": 0.863
+        }
+      },
+      "confidence": 0.884
+    },
+    {
+      "frame_index": 12,
+      "timestamp_ms": 400,
+      "keypoints": {
+        "nose": {
+          "x": 319.476,
+          "y": 150.088,
+          "confidence": 0.893
+        },
+        "left_shoulder": {
+          "x": 285.723,
+          "y": 188.99,
+          "confidence": 0.888
+        },
+        "right_shoulder": {
+          "x": 351.996,
+          "y": 191.558,
+          "confidence": 0.843
+        },
+        "left_hip": {
+          "x": 297.904,
+          "y": 243.091,
+          "confidence": 0.887
+        },
+        "right_hip": {
+          "x": 343.486,
+          "y": 238.71,
+          "confidence": 0.894
+        },
+        "tail_base": {
+          "x": 316.736,
+          "y": 262.136,
+          "confidence": 0.88
+        },
+        "left_front_paw": {
+          "x": 284.047,
+          "y": 301.002,
+          "confidence": 0.937
+        },
+        "right_front_paw": {
+          "x": 356.804,
+          "y": 296.488,
+          "confidence": 0.904
+        },
+        "left_hind_paw": {
+          "x": 290.675,
+          "y": 307.111,
+          "confidence": 0.867
+        },
+        "right_hind_paw": {
+          "x": 353.103,
+          "y": 306.692,
+          "confidence": 0.844
+        }
+      },
+      "confidence": 0.884
+    },
+    {
+      "frame_index": 13,
+      "timestamp_ms": 433,
+      "keypoints": {
+        "nose": {
+          "x": 321.432,
+          "y": 150.106,
+          "confidence": 0.807
+        },
+        "left_shoulder": {
+          "x": 289.537,
+          "y": 192.648,
+          "confidence": 0.844
+        },
+        "right_shoulder": {
+          "x": 348.717,
+          "y": 186.836,
+          "confidence": 0.883
+        },
+        "left_hip": {
+          "x": 297.596,
+          "y": 235.339,
+          "confidence": 0.874
+        },
+        "right_hip": {
+          "x": 346.22,
+          "y": 240.077,
+          "confidence": 0.834
+        },
+        "tail_base": {
+          "x": 321.44,
+          "y": 256.42,
+          "confidence": 0.915
+        },
+        "left_front_paw": {
+          "x": 282.303,
+          "y": 297.709,
+          "confidence": 0.815
+        },
+        "right_front_paw": {
+          "x": 356.107,
+          "y": 302.764,
+          "confidence": 0.889
+        },
+        "left_hind_paw": {
+          "x": 289.998,
+          "y": 310.807,
+          "confidence": 0.858
+        },
+        "right_hind_paw": {
+          "x": 348.925,
+          "y": 313.041,
+          "confidence": 0.828
+        }
+      },
+      "confidence": 0.855
+    },
+    {
+      "frame_index": 14,
+      "timestamp_ms": 466,
+      "keypoints": {
+        "nose": {
+          "x": 320.571,
+          "y": 149.696,
+          "confidence": 0.874
+        },
+        "left_shoulder": {
+          "x": 288.079,
+          "y": 190.796,
+          "confidence": 0.898
+        },
+        "right_shoulder": {
+          "x": 352.081,
+          "y": 190.23,
+          "confidence": 0.927
+        },
+        "left_hip": {
+          "x": 294.694,
+          "y": 231.304,
+          "confidence": 0.912
+        },
+        "right_hip": {
+          "x": 342.627,
+          "y": 230.555,
+          "confidence": 0.902
+        },
+        "tail_base": {
+          "x": 321.031,
+          "y": 251.486,
+          "confidence": 0.855
+        },
+        "left_front_paw": {
+          "x": 286.582,
+          "y": 301.253,
+          "confidence": 0.826
+        },
+        "right_front_paw": {
+          "x": 352.404,
+          "y": 301.925,
+          "confidence": 0.832
+        },
+        "left_hind_paw": {
+          "x": 291.882,
+          "y": 310.222,
+          "confidence": 0.87
+        },
+        "right_hind_paw": {
+          "x": 351.521,
+          "y": 306.462,
+          "confidence": 0.872
+        }
+      },
+      "confidence": 0.877
+    },
+    {
+      "frame_index": 15,
+      "timestamp_ms": 500,
+      "keypoints": {
+        "nose": {
+          "x": 321.605,
+          "y": 152.377,
+          "confidence": 0.904
+        },
+        "left_shoulder": {
+          "x": 290.688,
+          "y": 189.627,
+          "confidence": 0.845
+        },
+        "right_shoulder": {
+          "x": 349.235,
+          "y": 189.981,
+          "confidence": 0.918
+        },
+        "left_hip": {
+          "x": 296.409,
+          "y": 233.596,
+          "confidence": 0.973
+        },
+        "right_hip": {
+          "x": 348.132,
+          "y": 239.212,
+          "confidence": 0.881
+        },
+        "tail_base": {
+          "x": 319.615,
+          "y": 256.552,
+          "confidence": 0.861
+        },
+        "left_front_paw": {
+          "x": 280.431,
+          "y": 299.847,
+          "confidence": 0.831
+        },
+        "right_front_paw": {
+          "x": 356.93,
+          "y": 298.42,
+          "confidence": 0.932
+        },
+        "left_hind_paw": {
+          "x": 288.836,
+          "y": 308.671,
+          "confidence": 0.815
+        },
+        "right_hind_paw": {
+          "x": 345.851,
+          "y": 310.415,
+          "confidence": 0.879
+        }
+      },
+      "confidence": 0.884
+    },
+    {
+      "frame_index": 16,
+      "timestamp_ms": 533,
+      "keypoints": {
+        "nose": {
+          "x": 319.507,
+          "y": 145.298,
+          "confidence": 0.822
+        },
+        "left_shoulder": {
+          "x": 288.027,
+          "y": 190.368,
+          "confidence": 0.89
+        },
+        "right_shoulder": {
+          "x": 351.689,
+          "y": 188.677,
+          "confidence": 0.901
+        },
+        "left_hip": {
+          "x": 294.853,
+          "y": 233.354,
+          "confidence": 0.821
+        },
+        "right_hip": {
+          "x": 344.881,
+          "y": 235.045,
+          "confidence": 0.833
+        },
+        "tail_base": {
+          "x": 320.919,
+          "y": 257.358,
+          "confidence": 0.795
+        },
+        "left_front_paw": {
+          "x": 282.498,
+          "y": 297.911,
+          "confidence": 0.894
+        },
+        "right_front_paw": {
+          "x": 352.968,
+          "y": 301.385,
+          "confidence": 0.926
+        },
+        "left_hind_paw": {
+          "x": 289.594,
+          "y": 312.982,
+          "confidence": 0.863
+        },
+        "right_hind_paw": {
+          "x": 347.398,
+          "y": 304.109,
+          "confidence": 0.881
+        }
+      },
+      "confidence": 0.863
+    },
+    {
+      "frame_index": 17,
+      "timestamp_ms": 566,
+      "keypoints": {
+        "nose": {
+          "x": 321.462,
+          "y": 148.182,
+          "confidence": 0.906
+        },
+        "left_shoulder": {
+          "x": 288.429,
+          "y": 188.702,
+          "confidence": 0.865
+        },
+        "right_shoulder": {
+          "x": 350.543,
+          "y": 189.504,
+          "confidence": 0.899
+        },
+        "left_hip": {
+          "x": 297.655,
+          "y": 241.016,
+          "confidence": 0.824
+        },
+        "right_hip": {
+          "x": 345.752,
+          "y": 241.802,
+          "confidence": 0.883
+        },
+        "tail_base": {
+          "x": 323.783,
+          "y": 260.808,
+          "confidence": 0.872
+        },
+        "left_front_paw": {
+          "x": 283.895,
+          "y": 297.491,
+          "confidence": 0.891
+        },
+        "right_front_paw": {
+          "x": 357.153,
+          "y": 295.84,
+          "confidence": 0.889
+        },
+        "left_hind_paw": {
+          "x": 290.287,
+          "y": 313.416,
+          "confidence": 0.88
+        },
+        "right_hind_paw": {
+          "x": 347.316,
+          "y": 312.226,
+          "confidence": 0.807
+        }
+      },
+      "confidence": 0.872
+    },
+    {
+      "frame_index": 18,
+      "timestamp_ms": 600,
+      "keypoints": {
+        "nose": {
+          "x": 320.624,
+          "y": 149.579,
+          "confidence": 0.896
+        },
+        "left_shoulder": {
+          "x": 289.463,
+          "y": 188.741,
+          "confidence": 0.869
+        },
+        "right_shoulder": {
+          "x": 347.593,
+          "y": 192.649,
+          "confidence": 0.875
+        },
+        "left_hip": {
+          "x": 295.376,
+          "y": 240.773,
+          "confidence": 0.884
+        },
+        "right_hip": {
+          "x": 344.708,
+          "y": 244.259,
+          "confidence": 0.879
+        },
+        "tail_base": {
+          "x": 319.971,
+          "y": 266.656,
+          "confidence": 0.878
+        },
+        "left_front_paw": {
+          "x": 282.76,
+          "y": 300.955,
+          "confidence": 0.936
+        },
+        "right_front_paw": {
+          "x": 352.969,
+          "y": 298.714,
+          "confidence": 0.866
+        },
+        "left_hind_paw": {
+          "x": 290.071,
+          "y": 306.605,
+          "confidence": 0.889
+        },
+        "right_hind_paw": {
+          "x": 347.232,
+          "y": 313.148,
+          "confidence": 0.85
+        }
+      },
+      "confidence": 0.882
+    },
+    {
+      "frame_index": 19,
+      "timestamp_ms": 633,
+      "keypoints": {
+        "nose": {
+          "x": 319.751,
+          "y": 150.72,
+          "confidence": 0.955
+        },
+        "left_shoulder": {
+          "x": 291.024,
+          "y": 186.263,
+          "confidence": 0.828
+        },
+        "right_shoulder": {
+          "x": 352.748,
+          "y": 192.07,
+          "confidence": 0.848
+        },
+        "left_hip": {
+          "x": 294.889,
+          "y": 236.129,
+          "confidence": 0.869
+        },
+        "right_hip": {
+          "x": 344.689,
+          "y": 239.254,
+          "confidence": 0.911
+        },
+        "tail_base": {
+          "x": 319.771,
+          "y": 258.158,
+          "confidence": 0.922
+        },
+        "left_front_paw": {
+          "x": 292.46,
+          "y": 299.091,
+          "confidence": 0.854
+        },
+        "right_front_paw": {
+          "x": 354.836,
+          "y": 299.149,
+          "confidence": 0.833
+        },
+        "left_hind_paw": {
+          "x": 291.037,
+          "y": 311.274,
+          "confidence": 0.878
+        },
+        "right_hind_paw": {
+          "x": 351.668,
+          "y": 311.826,
+          "confidence": 0.878
+        }
+      },
+      "confidence": 0.878
+    },
+    {
+      "frame_index": 20,
+      "timestamp_ms": 666,
+      "keypoints": {
+        "nose": {
+          "x": 318.31,
+          "y": 149.243,
+          "confidence": 0.912
+        },
+        "left_shoulder": {
+          "x": 293.911,
+          "y": 193.119,
+          "confidence": 0.912
+        },
+        "right_shoulder": {
+          "x": 347.726,
+          "y": 187.641,
+          "confidence": 0.878
+        },
+        "left_hip": {
+          "x": 293.895,
+          "y": 242.005,
+          "confidence": 0.924
+        },
+        "right_hip": {
+          "x": 344.976,
+          "y": 240.8,
+          "confidence": 0.841
+        },
+        "tail_base": {
+          "x": 316.269,
+          "y": 258.256,
+          "confidence": 0.871
+        },
+        "left_front_paw": {
+          "x": 283.966,
+          "y": 304.912,
+          "confidence": 0.908
+        },
+        "right_front_paw": {
+          "x": 357.886,
+          "y": 302.068,
+          "confidence": 0.9
+        },
+        "left_hind_paw": {
+          "x": 290.1,
+          "y": 308.449,
+          "confidence": 0.957
+        },
+        "right_hind_paw": {
+          "x": 351.472,
+          "y": 308.572,
+          "confidence": 0.926
+        }
+      },
+      "confidence": 0.903
+    },
+    {
+      "frame_index": 21,
+      "timestamp_ms": 700,
+      "keypoints": {
+        "nose": {
+          "x": 321.024,
+          "y": 152.419,
+          "confidence": 0.909
+        },
+        "left_shoulder": {
+          "x": 290.076,
+          "y": 188.364,
+          "confidence": 0.915
+        },
+        "right_shoulder": {
+          "x": 350.201,
+          "y": 193.38,
+          "confidence": 0.868
+        },
+        "left_hip": {
+          "x": 298.167,
+          "y": 239.475,
+          "confidence": 0.929
+        },
+        "right_hip": {
+          "x": 345.947,
+          "y": 238.966,
+          "confidence": 0.83
+        },
+        "tail_base": {
+          "x": 322.444,
+          "y": 260.707,
+          "confidence": 0.831
+        },
+        "left_front_paw": {
+          "x": 283.25,
+          "y": 300.107,
+          "confidence": 0.935
+        },
+        "right_front_paw": {
+          "x": 355.591,
+          "y": 301.503,
+          "confidence": 0.879
+        },
+        "left_hind_paw": {
+          "x": 290.69,
+          "y": 313.088,
+          "confidence": 0.931
+        },
+        "right_hind_paw": {
+          "x": 350.296,
+          "y": 306.538,
+          "confidence": 0.819
+        }
+      },
+      "confidence": 0.885
+    },
+    {
+      "frame_index": 22,
+      "timestamp_ms": 733,
+      "keypoints": {
+        "nose": {
+          "x": 320.541,
+          "y": 152.865,
+          "confidence": 0.846
+        },
+        "left_shoulder": {
+          "x": 293.521,
+          "y": 190.288,
+          "confidence": 0.869
+        },
+        "right_shoulder": {
+          "x": 353.2,
+          "y": 185.42,
+          "confidence": 0.933
+        },
+        "left_hip": {
+          "x": 294.408,
+          "y": 231.532,
+          "confidence": 0.916
+        },
+        "right_hip": {
+          "x": 342.934,
+          "y": 237.472,
+          "confidence": 0.862
+        },
+        "tail_base": {
+          "x": 318.897,
+          "y": 256.369,
+          "confidence": 0.903
+        },
+        "left_front_paw": {
+          "x": 283.013,
+          "y": 297.001,
+          "confidence": 0.824
+        },
+        "right_front_paw": {
+          "x": 351.301,
+          "y": 301.974,
+          "confidence": 0.875
+        },
+        "left_hind_paw": {
+          "x": 289.777,
+          "y": 309.911,
+          "confidence": 0.896
+        },
+        "right_hind_paw": {
+          "x": 346.681,
+          "y": 314.639,
+          "confidence": 0.897
+        }
+      },
+      "confidence": 0.882
+    },
+    {
+      "frame_index": 23,
+      "timestamp_ms": 766,
+      "keypoints": {
+        "nose": {
+          "x": 322.099,
+          "y": 151.819,
+          "confidence": 0.924
+        },
+        "left_shoulder": {
+          "x": 287.454,
+          "y": 188.984,
+          "confidence": 0.844
+        },
+        "right_shoulder": {
+          "x": 349.072,
+          "y": 191.292,
+          "confidence": 0.875
+        },
+        "left_hip": {
+          "x": 297.571,
+          "y": 241.077,
+          "confidence": 0.884
+        },
+        "right_hip": {
+          "x": 345.802,
+          "y": 239.067,
+          "confidence": 0.874
+        },
+        "tail_base": {
+          "x": 322.419,
+          "y": 260.439,
+          "confidence": 0.873
+        },
+        "left_front_paw": {
+          "x": 287.668,
+          "y": 301.109,
+          "confidence": 0.861
+        },
+        "right_front_paw": {
+          "x": 359.216,
+          "y": 300.623,
+          "confidence": 0.875
+        },
+        "left_hind_paw": {
+          "x": 288.062,
+          "y": 312.276,
+          "confidence": 0.886
+        },
+        "right_hind_paw": {
+          "x": 351.279,
+          "y": 313.428,
+          "confidence": 0.878
+        }
+      },
+      "confidence": 0.877
+    },
+    {
+      "frame_index": 24,
+      "timestamp_ms": 800,
+      "keypoints": {
+        "nose": {
+          "x": 317.857,
+          "y": 151.324,
+          "confidence": 0.809
+        },
+        "left_shoulder": {
+          "x": 290.223,
+          "y": 191.229,
+          "confidence": 0.783
+        },
+        "right_shoulder": {
+          "x": 350.843,
+          "y": 190.154,
+          "confidence": 0.891
+        },
+        "left_hip": {
+          "x": 292.819,
+          "y": 240.045,
+          "confidence": 0.899
+        },
+        "right_hip": {
+          "x": 345.535,
+          "y": 237.924,
+          "confidence": 0.883
+        },
+        "tail_base": {
+          "x": 316.322,
+          "y": 259.14,
+          "confidence": 0.905
+        },
+        "left_front_paw": {
+          "x": 284.531,
+          "y": 297.184,
+          "confidence": 0.882
+        },
+        "right_front_paw": {
+          "x": 354.523,
+          "y": 300.785,
+          "confidence": 0.921
+        },
+        "left_hind_paw": {
+          "x": 290.784,
+          "y": 309.384,
+          "confidence": 0.843
+        },
+        "right_hind_paw": {
+          "x": 349.983,
+          "y": 308.15,
+          "confidence": 0.878
+        }
+      },
+      "confidence": 0.869
+    },
+    {
+      "frame_index": 25,
+      "timestamp_ms": 833,
+      "keypoints": {
+        "nose": {
+          "x": 319.449,
+          "y": 151.0,
+          "confidence": 0.867
+        },
+        "left_shoulder": {
+          "x": 293.922,
+          "y": 189.839,
+          "confidence": 0.856
+        },
+        "right_shoulder": {
+          "x": 348.289,
+          "y": 191.545,
+          "confidence": 0.849
+        },
+        "left_hip": {
+          "x": 298.69,
+          "y": 243.725,
+          "confidence": 0.932
+        },
+        "right_hip": {
+          "x": 346.275,
+          "y": 245.794,
+          "confidence": 0.875
+        },
+        "tail_base": {
+          "x": 319.275,
+          "y": 265.284,
+          "confidence": 0.889
+        },
+        "left_front_paw": {
+          "x": 285.074,
+          "y": 304.27,
+          "confidence": 0.863
+        },
+        "right_front_paw": {
+          "x": 355.227,
+          "y": 301.886,
+          "confidence": 0.897
+        },
+        "left_hind_paw": {
+          "x": 294.158,
+          "y": 314.137,
+          "confidence": 0.891
+        },
+        "right_hind_paw": {
+          "x": 350.285,
+          "y": 309.667,
+          "confidence": 0.846
+        }
+      },
+      "confidence": 0.877
+    },
+    {
+      "frame_index": 26,
+      "timestamp_ms": 866,
+      "keypoints": {
+        "nose": {
+          "x": 323.665,
+          "y": 151.678,
+          "confidence": 0.84
+        },
+        "left_shoulder": {
+          "x": 288.849,
+          "y": 190.047,
+          "confidence": 0.913
+        },
+        "right_shoulder": {
+          "x": 348.562,
+          "y": 193.137,
+          "confidence": 0.908
+        },
+        "left_hip": {
+          "x": 294.378,
+          "y": 240.033,
+          "confidence": 0.89
+        },
+        "right_hip": {
+          "x": 349.194,
+          "y": 242.279,
+          "confidence": 0.864
+        },
+        "tail_base": {
+          "x": 319.706,
+          "y": 260.227,
+          "confidence": 0.879
+        },
+        "left_front_paw": {
+          "x": 284.089,
+          "y": 300.159,
+          "confidence": 0.849
+        },
+        "right_front_paw": {
+          "x": 351.726,
+          "y": 298.806,
+          "confidence": 0.929
+        },
+        "left_hind_paw": {
+          "x": 292.161,
+          "y": 312.001,
+          "confidence": 0.896
+        },
+        "right_hind_paw": {
+          "x": 348.036,
+          "y": 311.046,
+          "confidence": 0.905
+        }
+      },
+      "confidence": 0.887
+    },
+    {
+      "frame_index": 27,
+      "timestamp_ms": 900,
+      "keypoints": {
+        "nose": {
+          "x": 317.404,
+          "y": 148.285,
+          "confidence": 0.838
+        },
+        "left_shoulder": {
+          "x": 294.335,
+          "y": 190.741,
+          "confidence": 0.799
+        },
+        "right_shoulder": {
+          "x": 349.289,
+          "y": 191.107,
+          "confidence": 0.761
+        },
+        "left_hip": {
+          "x": 295.257,
+          "y": 239.742,
+          "confidence": 0.889
+        },
+        "right_hip": {
+          "x": 344.748,
+          "y": 241.93,
+          "confidence": 0.863
+        },
+        "tail_base": {
+          "x": 322.491,
+          "y": 261.44,
+          "confidence": 0.893
+        },
+        "left_front_paw": {
+          "x": 284.131,
+          "y": 300.374,
+          "confidence": 0.932
+        },
+        "right_front_paw": {
+          "x": 354.653,
+          "y": 301.12,
+          "confidence": 0.966
+        },
+        "left_hind_paw": {
+          "x": 286.249,
+          "y": 309.07,
+          "confidence": 0.808
+        },
+        "right_hind_paw": {
+          "x": 348.806,
+          "y": 309.549,
+          "confidence": 0.852
+        }
+      },
+      "confidence": 0.86
+    },
+    {
+      "frame_index": 28,
+      "timestamp_ms": 933,
+      "keypoints": {
+        "nose": {
+          "x": 320.366,
+          "y": 154.547,
+          "confidence": 0.911
+        },
+        "left_shoulder": {
+          "x": 291.439,
+          "y": 190.901,
+          "confidence": 0.877
+        },
+        "right_shoulder": {
+          "x": 350.475,
+          "y": 192.039,
+          "confidence": 0.864
+        },
+        "left_hip": {
+          "x": 293.294,
+          "y": 239.838,
+          "confidence": 0.905
+        },
+        "right_hip": {
+          "x": 346.423,
+          "y": 244.679,
+          "confidence": 0.893
+        },
+        "tail_base": {
+          "x": 320.089,
+          "y": 261.321,
+          "confidence": 0.851
+        },
+        "left_front_paw": {
+          "x": 284.12,
+          "y": 299.305,
+          "confidence": 0.9
+        },
+        "right_front_paw": {
+          "x": 353.837,
+          "y": 299.051,
+          "confidence": 0.903
+        },
+        "left_hind_paw": {
+          "x": 289.234,
+          "y": 308.136,
+          "confidence": 0.81
+        },
+        "right_hind_paw": {
+          "x": 347.202,
+          "y": 312.949,
+          "confidence": 0.89
+        }
+      },
+      "confidence": 0.88
+    },
+    {
+      "frame_index": 29,
+      "timestamp_ms": 966,
+      "keypoints": {
+        "nose": {
+          "x": 319.022,
+          "y": 150.156,
+          "confidence": 0.918
+        },
+        "left_shoulder": {
+          "x": 290.047,
+          "y": 193.216,
+          "confidence": 0.929
+        },
+        "right_shoulder": {
+          "x": 352.115,
+          "y": 190.414,
+          "confidence": 0.942
+        },
+        "left_hip": {
+          "x": 295.774,
+          "y": 246.921,
+          "confidence": 0.893
+        },
+        "right_hip": {
+          "x": 344.157,
+          "y": 244.894,
+          "confidence": 0.922
+        },
+        "tail_base": {
+          "x": 318.716,
+          "y": 265.439,
+          "confidence": 0.936
+        },
+        "left_front_paw": {
+          "x": 286.985,
+          "y": 300.181,
+          "confidence": 0.783
+        },
+        "right_front_paw": {
+          "x": 355.752,
+          "y": 300.949,
+          "confidence": 0.889
+        },
+        "left_hind_paw": {
+          "x": 290.73,
+          "y": 308.59,
+          "confidence": 0.865
+        },
+        "right_hind_paw": {
+          "x": 347.902,
+          "y": 311.486,
+          "confidence": 0.878
+        }
+      },
+      "confidence": 0.895
+    },
+    {
+      "frame_index": 30,
+      "timestamp_ms": 1000,
+      "keypoints": {
+        "nose": {
+          "x": 321.802,
+          "y": 148.605,
+          "confidence": 0.878
+        },
+        "left_shoulder": {
+          "x": 292.123,
+          "y": 190.744,
+          "confidence": 0.886
+        },
+        "right_shoulder": {
+          "x": 351.737,
+          "y": 189.398,
+          "confidence": 0.897
+        },
+        "left_hip": {
+          "x": 288.264,
+          "y": 237.877,
+          "confidence": 0.915
+        },
+        "right_hip": {
+          "x": 347.205,
+          "y": 237.957,
+          "confidence": 0.878
+        },
+        "tail_base": {
+          "x": 321.793,
+          "y": 260.284,
+          "confidence": 0.83
+        },
+        "left_front_paw": {
+          "x": 286.189,
+          "y": 298.229,
+          "confidence": 0.893
+        },
+        "right_front_paw": {
+          "x": 355.696,
+          "y": 299.193,
+          "confidence": 0.823
+        },
+        "left_hind_paw": {
+          "x": 287.032,
+          "y": 305.992,
+          "confidence": 0.817
+        },
+        "right_hind_paw": {
+          "x": 345.912,
+          "y": 313.056,
+          "confidence": 0.838
+        }
+      },
+      "confidence": 0.865
+    },
+    {
+      "frame_index": 31,
+      "timestamp_ms": 1033,
+      "keypoints": {
+        "nose": {
+          "x": 318.827,
+          "y": 151.115,
+          "confidence": 0.836
+        },
+        "left_shoulder": {
+          "x": 292.204,
+          "y": 190.523,
+          "confidence": 0.802
+        },
+        "right_shoulder": {
+          "x": 353.55,
+          "y": 192.029,
+          "confidence": 0.923
+        },
+        "left_hip": {
+          "x": 294.0,
+          "y": 238.001,
+          "confidence": 0.868
+        },
+        "right_hip": {
+          "x": 342.578,
+          "y": 235.682,
+          "confidence": 0.868
+        },
+        "tail_base": {
+          "x": 319.975,
+          "y": 258.875,
+          "confidence": 0.936
+        },
+        "left_front_paw": {
+          "x": 280.733,
+          "y": 299.346,
+          "confidence": 0.756
+        },
+        "right_front_paw": {
+          "x": 355.97,
+          "y": 302.028,
+          "confidence": 0.911
+        },
+        "left_hind_paw": {
+          "x": 295.686,
+          "y": 308.185,
+          "confidence": 0.831
+        },
+        "right_hind_paw": {
+          "x": 348.175,
+          "y": 312.787,
+          "confidence": 0.907
+        }
+      },
+      "confidence": 0.864
+    },
+    {
+      "frame_index": 32,
+      "timestamp_ms": 1066,
+      "keypoints": {
+        "nose": {
+          "x": 319.488,
+          "y": 149.9,
+          "confidence": 0.861
+        },
+        "left_shoulder": {
+          "x": 290.468,
+          "y": 191.975,
+          "confidence": 0.895
+        },
+        "right_shoulder": {
+          "x": 347.298,
+          "y": 189.468,
+          "confidence": 0.829
+        },
+        "left_hip": {
+          "x": 294.555,
+          "y": 244.337,
+          "confidence": 0.853
+        },
+        "right_hip": {
+          "x": 342.517,
+          "y": 244.41,
+          "confidence": 0.925
+        },
+        "tail_base": {
+          "x": 319.885,
+          "y": 268.333,
+          "confidence": 0.893
+        },
+        "left_front_paw": {
+          "x": 284.842,
+          "y": 303.313,
+          "confidence": 0.912
+        },
+        "right_front_paw": {
+          "x": 358.015,
+          "y": 300.016,
+          "confidence": 0.888
+        },
+        "left_hind_paw": {
+          "x": 290.617,
+          "y": 310.636,
+          "confidence": 0.869
+        },
+        "right_hind_paw": {
+          "x": 350.495,
+          "y": 311.568,
+          "confidence": 0.87
+        }
+      },
+      "confidence": 0.879
+    },
+    {
+      "frame_index": 33,
+      "timestamp_ms": 1100,
+      "keypoints": {
+        "nose": {
+          "x": 318.803,
+          "y": 146.622,
+          "confidence": 0.88
+        },
+        "left_shoulder": {
+          "x": 288.883,
+          "y": 193.038,
+          "confidence": 0.912
+        },
+        "right_shoulder": {
+          "x": 352.347,
+          "y": 186.884,
+          "confidence": 0.848
+        },
+        "left_hip": {
+          "x": 295.652,
+          "y": 241.363,
+          "confidence": 0.835
+        },
+        "right_hip": {
+          "x": 342.869,
+          "y": 236.136,
+          "confidence": 0.919
+        },
+        "tail_base": {
+          "x": 321.22,
+          "y": 258.056,
+          "confidence": 0.877
+        },
+        "left_front_paw": {
+          "x": 285.082,
+          "y": 300.238,
+          "confidence": 0.796
+        },
+        "right_front_paw": {
+          "x": 356.414,
+          "y": 300.479,
+          "confidence": 0.934
+        },
+        "left_hind_paw": {
+          "x": 289.754,
+          "y": 311.196,
+          "confidence": 0.882
+        },
+        "right_hind_paw": {
+          "x": 350.835,
+          "y": 308.919,
+          "confidence": 0.931
+        }
+      },
+      "confidence": 0.881
+    },
+    {
+      "frame_index": 34,
+      "timestamp_ms": 1133,
+      "keypoints": {
+        "nose": {
+          "x": 317.772,
+          "y": 149.61,
+          "confidence": 0.903
+        },
+        "left_shoulder": {
+          "x": 290.319,
+          "y": 188.319,
+          "confidence": 0.921
+        },
+        "right_shoulder": {
+          "x": 350.701,
+          "y": 186.391,
+          "confidence": 0.858
+        },
+        "left_hip": {
+          "x": 292.166,
+          "y": 241.244,
+          "confidence": 0.893
+        },
+        "right_hip": {
+          "x": 346.771,
+          "y": 245.093,
+          "confidence": 0.867
+        },
+        "tail_base": {
+          "x": 321.664,
+          "y": 261.965,
+          "confidence": 0.869
+        },
+        "left_front_paw": {
+          "x": 284.573,
+          "y": 301.286,
+          "confidence": 0.859
+        },
+        "right_front_paw": {
+          "x": 352.625,
+          "y": 302.762,
+          "confidence": 0.813
+        },
+        "left_hind_paw": {
+          "x": 292.029,
+          "y": 308.905,
+          "confidence": 0.863
+        },
+        "right_hind_paw": {
+          "x": 351.839,
+          "y": 308.497,
+          "confidence": 0.923
+        }
+      },
+      "confidence": 0.877
+    },
+    {
+      "frame_index": 35,
+      "timestamp_ms": 1166,
+      "keypoints": {
+        "nose": {
+          "x": 316.052,
+          "y": 151.115,
+          "confidence": 0.881
+        },
+        "left_shoulder": {
+          "x": 292.036,
+          "y": 191.302,
+          "confidence": 0.967
+        },
+        "right_shoulder": {
+          "x": 349.453,
+          "y": 188.485,
+          "confidence": 0.922
+        },
+        "left_hip": {
+          "x": 299.375,
+          "y": 237.554,
+          "confidence": 0.889
+        },
+        "right_hip": {
+          "x": 347.085,
+          "y": 234.961,
+          "confidence": 0.943
+        },
+        "tail_base": {
+          "x": 320.17,
+          "y": 255.239,
+          "confidence": 0.87
+        },
+        "left_front_paw": {
+          "x": 283.915,
+          "y": 297.223,
+          "confidence": 0.9
+        },
+        "right_front_paw": {
+          "x": 350.544,
+          "y": 299.934,
+          "confidence": 0.803
+        },
+        "left_hind_paw": {
+          "x": 290.352,
+          "y": 311.358,
+          "confidence": 0.849
+        },
+        "right_hind_paw": {
+          "x": 351.439,
+          "y": 304.956,
+          "confidence": 0.896
+        }
+      },
+      "confidence": 0.892
+    },
+    {
+      "frame_index": 36,
+      "timestamp_ms": 1200,
+      "keypoints": {
+        "nose": {
+          "x": 317.376,
+          "y": 147.718,
+          "confidence": 0.769
+        },
+        "left_shoulder": {
+          "x": 289.714,
+          "y": 191.137,
+          "confidence": 0.831
+        },
+        "right_shoulder": {
+          "x": 349.431,
+          "y": 190.737,
+          "confidence": 0.889
+        },
+        "left_hip": {
+          "x": 295.817,
+          "y": 239.021,
+          "confidence": 0.935
+        },
+        "right_hip": {
+          "x": 343.2,
+          "y": 238.042,
+          "confidence": 0.893
+        },
+        "tail_base": {
+          "x": 318.359,
+          "y": 259.55,
+          "confidence": 0.841
+        },
+        "left_front_paw": {
+          "x": 288.88,
+          "y": 296.365,
+          "confidence": 0.848
+        },
+        "right_front_paw": {
+          "x": 355.66,
+          "y": 299.076,
+          "confidence": 0.919
+        },
+        "left_hind_paw": {
+          "x": 287.05,
+          "y": 309.609,
+          "confidence": 0.901
+        },
+        "right_hind_paw": {
+          "x": 351.13,
+          "y": 309.425,
+          "confidence": 0.956
+        }
+      },
+      "confidence": 0.878
+    },
+    {
+      "frame_index": 37,
+      "timestamp_ms": 1233,
+      "keypoints": {
+        "nose": {
+          "x": 321.15,
+          "y": 150.29,
+          "confidence": 0.847
+        },
+        "left_shoulder": {
+          "x": 291.592,
+          "y": 190.475,
+          "confidence": 0.789
+        },
+        "right_shoulder": {
+          "x": 351.189,
+          "y": 190.674,
+          "confidence": 0.93
+        },
+        "left_hip": {
+          "x": 297.04,
+          "y": 242.167,
+          "confidence": 0.89
+        },
+        "right_hip": {
+          "x": 342.681,
+          "y": 243.864,
+          "confidence": 0.924
+        },
+        "tail_base": {
+          "x": 317.984,
+          "y": 262.4,
+          "confidence": 0.88
+        },
+        "left_front_paw": {
+          "x": 284.942,
+          "y": 299.897,
+          "confidence": 0.827
+        },
+        "right_front_paw": {
+          "x": 354.893,
+          "y": 300.708,
+          "confidence": 0.835
+        },
+        "left_hind_paw": {
+          "x": 292.433,
+          "y": 311.157,
+          "confidence": 0.909
+        },
+        "right_hind_paw": {
+          "x": 351.78,
+          "y": 312.478,
+          "confidence": 0.917
+        }
+      },
+      "confidence": 0.875
+    },
+    {
+      "frame_index": 38,
+      "timestamp_ms": 1266,
+      "keypoints": {
+        "nose": {
+          "x": 317.985,
+          "y": 150.846,
+          "confidence": 0.869
+        },
+        "left_shoulder": {
+          "x": 290.228,
+          "y": 189.537,
+          "confidence": 0.944
+        },
+        "right_shoulder": {
+          "x": 349.861,
+          "y": 189.797,
+          "confidence": 0.837
+        },
+        "left_hip": {
+          "x": 294.749,
+          "y": 244.545,
+          "confidence": 0.914
+        },
+        "right_hip": {
+          "x": 346.192,
+          "y": 245.613,
+          "confidence": 0.868
+        },
+        "tail_base": {
+          "x": 321.723,
+          "y": 263.102,
+          "confidence": 0.788
+        },
+        "left_front_paw": {
+          "x": 283.517,
+          "y": 295.82,
+          "confidence": 0.851
+        },
+        "right_front_paw": {
+          "x": 357.225,
+          "y": 297.415,
+          "confidence": 0.918
+        },
+        "left_hind_paw": {
+          "x": 287.97,
+          "y": 311.733,
+          "confidence": 0.83
+        },
+        "right_hind_paw": {
+          "x": 347.835,
+          "y": 310.417,
+          "confidence": 0.854
+        }
+      },
+      "confidence": 0.867
+    },
+    {
+      "frame_index": 39,
+      "timestamp_ms": 1300,
+      "keypoints": {
+        "nose": {
+          "x": 314.184,
+          "y": 147.554,
+          "confidence": 0.862
+        },
+        "left_shoulder": {
+          "x": 288.924,
+          "y": 186.661,
+          "confidence": 0.884
+        },
+        "right_shoulder": {
+          "x": 351.171,
+          "y": 192.883,
+          "confidence": 0.893
+        },
+        "left_hip": {
+          "x": 294.397,
+          "y": 236.224,
+          "confidence": 0.824
+        },
+        "right_hip": {
+          "x": 343.834,
+          "y": 241.029,
+          "confidence": 0.844
+        },
+        "tail_base": {
+          "x": 316.735,
+          "y": 258.813,
+          "confidence": 0.867
+        },
+        "left_front_paw": {
+          "x": 284.543,
+          "y": 299.377,
+          "confidence": 0.871
+        },
+        "right_front_paw": {
+          "x": 352.317,
+          "y": 302.428,
+          "confidence": 0.86
+        },
+        "left_hind_paw": {
+          "x": 294.852,
+          "y": 308.229,
+          "confidence": 0.869
+        },
+        "right_hind_paw": {
+          "x": 348.288,
+          "y": 308.059,
+          "confidence": 0.87
+        }
+      },
+      "confidence": 0.864
+    },
+    {
+      "frame_index": 40,
+      "timestamp_ms": 1333,
+      "keypoints": {
+        "nose": {
+          "x": 318.974,
+          "y": 150.37,
+          "confidence": 0.908
+        },
+        "left_shoulder": {
+          "x": 291.551,
+          "y": 190.129,
+          "confidence": 0.886
+        },
+        "right_shoulder": {
+          "x": 351.094,
+          "y": 191.487,
+          "confidence": 0.855
+        },
+        "left_hip": {
+          "x": 296.505,
+          "y": 243.274,
+          "confidence": 0.813
+        },
+        "right_hip": {
+          "x": 342.896,
+          "y": 241.388,
+          "confidence": 0.896
+        },
+        "tail_base": {
+          "x": 321.291,
+          "y": 258.694,
+          "confidence": 0.832
+        },
+        "left_front_paw": {
+          "x": 283.52,
+          "y": 303.2,
+          "confidence": 0.822
+        },
+        "right_front_paw": {
+          "x": 354.973,
+          "y": 297.182,
+          "confidence": 0.857
+        },
+        "left_hind_paw": {
+          "x": 288.936,
+          "y": 309.685,
+          "confidence": 0.898
+        },
+        "right_hind_paw": {
+          "x": 350.917,
+          "y": 307.471,
+          "confidence": 0.869
+        }
+      },
+      "confidence": 0.864
+    },
+    {
+      "frame_index": 41,
+      "timestamp_ms": 1366,
+      "keypoints": {
+        "nose": {
+          "x": 318.194,
+          "y": 148.539,
+          "confidence": 0.877
+        },
+        "left_shoulder": {
+          "x": 293.265,
+          "y": 195.572,
+          "confidence": 0.885
+        },
+        "right_shoulder": {
+          "x": 348.588,
+          "y": 187.968,
+          "confidence": 0.867
+        },
+        "left_hip": {
+          "x": 294.021,
+          "y": 243.655,
+          "confidence": 0.839
+        },
+        "right_hip": {
+          "x": 342.136,
+          "y": 239.005,
+          "confidence": 0.9
+        },
+        "tail_base": {
+          "x": 319.633,
+          "y": 260.445,
+          "confidence": 0.926
+        },
+        "left_front_paw": {
+          "x": 290.316,
+          "y": 299.546,
+          "confidence": 0.913
+        },
+        "right_front_paw": {
+          "x": 353.425,
+          "y": 303.701,
+          "confidence": 0.91
+        },
+        "left_hind_paw": {
+          "x": 289.084,
+          "y": 311.844,
+          "confidence": 0.869
+        },
+        "right_hind_paw": {
+          "x": 350.426,
+          "y": 310.904,
+          "confidence": 0.922
+        }
+      },
+      "confidence": 0.891
+    }
+  ]
+}

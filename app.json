@@ -1,15 +1,29 @@
 {
   "expo": {
-    "name": "paws",
+    "name": "PAWS",
     "slug": "paws",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "paws",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF8EC"
+    },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.example.paws",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "PAWS needs camera access to record your dog's training videos for AI verification.",
+        "NSMicrophoneUsageDescription": "PAWS needs microphone access to record audio during training video capture.",
+        "NSPhotoLibraryUsageDescription": "PAWS needs access to your photo library to upload training videos and reference photos.",
+        "NSPhotoLibraryAddUsageDescription": "PAWS saves training reference photos to your photo library."
+      }
     },
     "android": {
+      "package": "com.example.paws",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -20,6 +34,47 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#FFF8EC"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "PAWS needs camera access to record your dog's training videos.",
+          "microphonePermission": "PAWS needs microphone access to record audio with training videos.",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#2F6443",
+          "sounds": []
+        }
+      ],
+      "expo-image",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "PAWS needs access to your photo library to upload training videos and reference photos.",
+          "cameraPermission": "PAWS needs camera access to record your dog's training videos."
+        }
+      ]
+    ],
+    "extra": {
+      "pawsPoseModuleComment": "On-device pose extraction prototype. Requires a development build (expo prebuild). No effect in Expo Go. See modules/paws-pose/."
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

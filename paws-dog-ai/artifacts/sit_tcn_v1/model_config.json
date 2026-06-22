@@ -1,0 +1,20 @@
+{
+  "artifact_version": "1",
+  "model_version": "0.2.0",
+  "model_config": {
+    "model_type": "tcn",
+    "input_dim": 40,
+    "hidden_dim": 64,
+    "dilations": [
+      1,
+      2,
+      4
+    ]
+  },
+  "preprocess_config": {
+    "seq_len": 60,
+    "confidence_threshold": 0.55,
+    "interpolate_gaps": true,
+    "max_interpolation_gap": 3
+  }
+}

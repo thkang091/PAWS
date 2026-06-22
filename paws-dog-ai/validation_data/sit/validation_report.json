@@ -1,0 +1,11 @@
+{
+  "total_videos": 0,
+  "correct_results": 0,
+  "incorrect_results": 0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "retry_state_accuracy": null,
+  "average_confidence": null,
+  "per_video": [],
+  "note": "Connect this script to PoseInferenceService after DeepLabCut output parsing is mapped."
+}
