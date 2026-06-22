@@ -1,0 +1,67 @@
+import type { ActivityGameDefinition } from "@/types/activityVerification";
+
+export const activityGameDefinitions: ActivityGameDefinition[] = [
+  {
+    id: "fastest_sit",
+    displayName: "Fastest Sit",
+    baseActivityId: "sit",
+    scoringMethod: "LOWEST_TIME_MS",
+    rankedEligible: true,
+    requiresServerCountdown: true,
+    requiresInAppRecording: true,
+    requiresManualReviewForTopScores: true,
+    minimumConfidence: 0.93,
+    antiCheatEnabled: true,
+  },
+  {
+    id: "longest_stay",
+    displayName: "Longest Stay",
+    baseActivityId: "stay",
+    scoringMethod: "HIGHEST_DURATION_SECONDS",
+    rankedEligible: true,
+    requiresServerCountdown: true,
+    requiresInAppRecording: true,
+    requiresManualReviewForTopScores: true,
+    minimumConfidence: 0.93,
+    antiCheatEnabled: true,
+  },
+  {
+    id: "recall_race",
+    displayName: "Recall Race",
+    baseActivityId: "recall",
+    scoringMethod: "LOWEST_TIME_MS",
+    rankedEligible: true,
+    requiresServerCountdown: true,
+    requiresInAppRecording: true,
+    requiresManualReviewForTopScores: true,
+    minimumConfidence: 0.93,
+    antiCheatEnabled: true,
+  },
+  {
+    id: "sit_repetition_challenge",
+    displayName: "Sit Repetition Challenge",
+    baseActivityId: "sit",
+    scoringMethod: "HIGHEST_REPETITIONS",
+    rankedEligible: false,
+    requiresServerCountdown: true,
+    requiresInAppRecording: true,
+    requiresManualReviewForTopScores: false,
+    minimumConfidence: 0.9,
+    antiCheatEnabled: true,
+  },
+  {
+    id: "trick_combo",
+    displayName: "Trick Combo",
+    baseActivityId: "trick_combo",
+    scoringMethod: "COMPLETION_TIME_AND_ACCURACY",
+    rankedEligible: false,
+    requiresServerCountdown: true,
+    requiresInAppRecording: true,
+    requiresManualReviewForTopScores: false,
+    minimumConfidence: 0.9,
+    antiCheatEnabled: true,
+  },
+];
+
+export const getActivityGameDefinition = (gameId: string): ActivityGameDefinition | undefined =>
+  activityGameDefinitions.find((game) => game.id === gameId);

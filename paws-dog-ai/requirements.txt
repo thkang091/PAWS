@@ -1,0 +1,8 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.1
+python-dotenv==1.0.1
+supabase==2.11.0
+opencv-python>=4.9,<4.11
+numpy>=1.26,<2.0

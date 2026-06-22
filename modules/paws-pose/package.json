@@ -1,0 +1,10 @@
+{
+  "name": "paws-pose",
+  "version": "0.1.0",
+  "description": "Expo native module for on-device dog pose extraction using Apple Vision framework and Core ML.",
+  "private": true,
+  "main": "index.ts",
+  "peerDependencies": {
+    "expo": "*"
+  }
+}
