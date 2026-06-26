@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { DogProgressMiniCard } from "@/components/dog/DogProgressMiniCard";
 import {
   ActivityIndicator,
   Modal,
@@ -421,7 +422,7 @@ export default function TrainTabScreen() {
   } = useDogRoadmap(dogId);
   const { data: streak } = useDogStreak(dogId);
   const wallet = useWallet(dogId ?? "");
-  useProfileDashboard(dogId);
+  const dashboard = useProfileDashboard(dogId);
 
   const [generating, setGenerating] = useState(false);
   const [generateError, setGenerateError] = useState<string | null>(null);
@@ -432,6 +433,7 @@ export default function TrainTabScreen() {
   const currentStreak = streak?.currentStreak ?? 0;
   const completedCount = days.filter((d) => d.completedAt).length;
   const mapWidth = Math.max(280, Math.min(width - H_PAD * 2, 560));
+  const todayXpAvailable = todayDay?.primaryActivity?.xpReward ?? 0;
 
   const handleGenerate = async (force = false) => {
     if (!dogId) return;
@@ -505,6 +507,18 @@ export default function TrainTabScreen() {
       </View>
 
       <SaveProgressBanner />
+
+      {dashboard.data ? (
+  <View style={styles.dogProgressWrap}>
+    <DogProgressMiniCard
+      dogName={dog.data.name}
+      breed={dog.data.breed}
+      level={dashboard.data.level}
+      bondXp={dashboard.data.bondXp}
+      todayXpAvailable={todayXpAvailable}
+    />
+  </View>
+) : null}
 
       {/* Progress strip */}
       {roadmap && days.length > 0 && (
@@ -622,6 +636,11 @@ const styles = StyleSheet.create({
     color: theme.colors.primaryDark,
   },
 
+  dogProgressWrap: {
+  paddingHorizontal: H_PAD,
+  paddingTop: 12,
+  paddingBottom: 4,
+  },
   // Progress strip
   progressStrip: {
     flexDirection: "row",
