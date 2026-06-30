@@ -7,11 +7,6 @@
     "scheme": "paws",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FFF8EC"
-    },
     "ios": {
       "bundleIdentifier": "com.example.paws",
       "supportsTablet": true,
@@ -24,6 +19,10 @@
     },
     "android": {
       "package": "com.example.paws",
+      "permissions": [
+    "android.permission.CAMERA",
+    "android.permission.RECORD_AUDIO"
+  ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -68,7 +67,8 @@
           "photosPermission": "PAWS needs access to your photo library to upload training videos and reference photos.",
           "cameraPermission": "PAWS needs camera access to record your dog's training videos."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "extra": {
       "pawsPoseModuleComment": "On-device pose extraction prototype. Requires a development build (expo prebuild). No effect in Expo Go. See modules/paws-pose/."
