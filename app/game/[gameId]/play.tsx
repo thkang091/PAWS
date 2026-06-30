@@ -1,5 +1,3 @@
-// 카메라, instruction으로 들어가는 route
-
 import { Stack, router, useLocalSearchParams } from "expo-router";
 
 import {
@@ -18,14 +16,10 @@ export default function ChallengePlayScreen() {
   const script = getChallengeScriptByGameId(gameId);
 
   const handleComplete = (result: ChallengeCaptureResult) => {
-    if (challengeMode !== "challenge") {
-      const videoUri = result.videoUri
-        ? encodeURIComponent(result.videoUri)
-        : "";
+    console.log("Challenge capture result:", result);
 
-      router.replace(
-        `/game/${gameId}/result?mode=practice&scriptId=${result.scriptId}&durationMs=${result.durationMs}&videoUri=${videoUri}`,
-      );
+    if (challengeMode !== "challenge") {
+      router.replace(`/game/${gameId}`);
       return;
     }
 
@@ -40,6 +34,8 @@ export default function ChallengePlayScreen() {
       params: {
         gameId,
         videoUri: result.videoUri,
+        scriptId: result.scriptId,
+        durationMs: String(result.durationMs),
       },
     });
   };

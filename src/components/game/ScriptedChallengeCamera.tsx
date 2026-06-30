@@ -49,6 +49,9 @@ const formatSeconds = (ms: number) => {
 
 const AUTO_RESULT_DELAY_MS = 5000;
 
+const SETUP_MOCK_DETECT_DELAY_MS = 1600;
+const SETUP_HOLD_TO_START_MS = 1400;
+
 export const ScriptedChallengeCamera = ({
   script,
   gameTitle,
@@ -64,9 +67,19 @@ export const ScriptedChallengeCamera = ({
   const startedAtRef = useRef<number | null>(null);
   const finishedRef = useRef(false);
 
+  const setupStartedAtRef = useRef<number | null>(null);
+const setupHoldStartedAtRef = useRef<number | null>(null);
+
   const [started, setStarted] = useState(false);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [finished, setFinished] = useState(false);
+
+  const [setupActive, setSetupActive] = useState(true);
+  const [setupStatus, setSetupStatus] = useState<
+  "searching" | "ready" | "starting"
+>("searching");
+const [setupProgress, setSetupProgress] = useState(0);
+
   const [isRecording, setIsRecording] = useState(false);
   const [videoUri, setVideoUri] = useState<string | undefined>();
   const [recordingError, setRecordingError] = useState<string | null>(null);
@@ -79,6 +92,9 @@ export const ScriptedChallengeCamera = ({
   const remainingMs = Math.max(script.totalDurationMs - elapsedMs, 0);
   const progress = Math.min(elapsedMs / script.totalDurationMs, 1);
 
+const hasCameraPermission = Boolean(cameraPermission?.granted);
+const hasMicrophonePermission = Boolean(microphonePermission?.granted);
+
   const stopRecordingSafely = () => {
     try {
       cameraRef.current?.stopRecording();
@@ -86,6 +102,15 @@ export const ScriptedChallengeCamera = ({
       // stopRecording can throw if recording has already stopped.
     }
   };
+
+  const resetSetup = () => {
+  setupStartedAtRef.current = null;
+  setupHoldStartedAtRef.current = null;
+
+  setSetupActive(false);
+  setSetupStatus("searching");
+  setSetupProgress(0);
+};
 
   const finishChallenge = () => {
     if (finishedRef.current) return;
@@ -99,9 +124,10 @@ export const ScriptedChallengeCamera = ({
 
   useEffect(() => {
   const requestPermissions = async () => {
-    if (!cameraPermission?.granted) {
-      await requestCameraPermission();
-    }
+    if (!hasCameraPermission || !hasMicrophonePermission) {
+  setRecordingError("Camera and microphone permissions are required.");
+  return;
+}
 
     if (!microphonePermission?.granted) {
       await requestMicrophonePermission();
@@ -172,36 +198,139 @@ export const ScriptedChallengeCamera = ({
   };
 
   const handleStart = () => {
-    finishedRef.current = false;
-    startedAtRef.current = Date.now();
+  resetSetup();
 
-    setElapsedMs(0);
-    setFinished(false);
-    setStarted(true);
-    setVideoUri(undefined);
-    setRecordingError(null);
+  finishedRef.current = false;
+  startedAtRef.current = Date.now();
 
-    void startRecording();
-  };
+  setElapsedMs(0);
+  setFinished(false);
+  setStarted(true);
+  setVideoUri(undefined);
+  setRecordingError(null);
+
+  void startRecording();
+};
+
+const handleBeginSetup = () => {
+  stopRecordingSafely();
+
+  finishedRef.current = false;
+  startedAtRef.current = null;
+  setupStartedAtRef.current = Date.now();
+  setupHoldStartedAtRef.current = null;
+
+  setElapsedMs(0);
+  setFinished(false);
+  setStarted(false);
+  setIsRecording(false);
+  setVideoUri(undefined);
+  setRecordingError(null);
+
+  setSetupStatus("searching");
+  setSetupProgress(0);
+  setSetupActive(true);
+};
+
+useEffect(() => {
+  if (!setupActive) return;
+  if (started || finished) return;
+  if (!cameraPermission?.granted || !microphonePermission?.granted) return;
+  if (setupStartedAtRef.current) return;
+
+  setupStartedAtRef.current = Date.now();
+}, [
+  setupActive,
+  started,
+  finished,
+  cameraPermission?.granted,
+  microphonePermission?.granted,
+]);
+
+
+//ML detection placeholder for dog detection logic
+// ML detection placeholder for dog detection logic
+useEffect(() => {
+  if (!setupActive || started || finished) return;
+
+  // Do not start the framing countdown until both runtime permissions are ready.
+  if (!hasCameraPermission || !hasMicrophonePermission) return;
+
+  const timer = setInterval(() => {
+    if (!setupStartedAtRef.current) {
+      setupStartedAtRef.current = Date.now();
+    }
+
+    const setupElapsed = Date.now() - setupStartedAtRef.current;
+
+    /**
+     * Temporary detection placeholder.
+     * Later, replace this boolean with on-device dog detection:
+     *
+     * const isDogFramed =
+     *   dogDetection.visible &&
+     *   dogDetection.centered &&
+     *   dogDetection.goodDistance;
+     */
+    const isDogFramed = setupElapsed >= SETUP_MOCK_DETECT_DELAY_MS;
+
+    if (!isDogFramed) {
+      setupHoldStartedAtRef.current = null;
+      setSetupStatus("searching");
+      setSetupProgress(0);
+      return;
+    }
+
+    if (!setupHoldStartedAtRef.current) {
+      setupHoldStartedAtRef.current = Date.now();
+    }
+
+    const holdElapsed = Date.now() - setupHoldStartedAtRef.current;
+    const nextProgress = Math.min(holdElapsed / SETUP_HOLD_TO_START_MS, 1);
+
+    setSetupProgress(nextProgress);
+    setSetupStatus(nextProgress >= 1 ? "starting" : "ready");
+
+    if (holdElapsed >= SETUP_HOLD_TO_START_MS) {
+      clearInterval(timer);
+      handleStart();
+    }
+  }, 100);
+
+  return () => clearInterval(timer);
+}, [
+  setupActive,
+  started,
+  finished,
+  hasCameraPermission,
+  hasMicrophonePermission,
+]);
 
   const handleRestart = () => {
-    stopRecordingSafely();
+  stopRecordingSafely();
 
-    finishedRef.current = false;
-    startedAtRef.current = null;
+  finishedRef.current = false;
+  startedAtRef.current = null;
+  setupStartedAtRef.current = Date.now();
+  setupHoldStartedAtRef.current = null;
 
-    setElapsedMs(0);
-    setFinished(false);
-    setStarted(false);
-    setIsRecording(false);
-    setVideoUri(undefined);
-    setRecordingError(null);
-  };
+  setElapsedMs(0);
+  setFinished(false);
+  setStarted(false);
+  setIsRecording(false);
+  setVideoUri(undefined);
+  setRecordingError(null);
+
+  setSetupStatus("searching");
+  setSetupProgress(0);
+  setSetupActive(true);
+};
 
   const handleExit = () => {
-    stopRecordingSafely();
-    onExit();
-  };
+  stopRecordingSafely();
+  resetSetup();
+  onExit();
+};
 
   const handleComplete = () => {
     onComplete({
@@ -249,7 +378,7 @@ useEffect(() => {
   );
 }
 
-if (!cameraPermission.granted || !microphonePermission.granted) {
+if (!hasCameraPermission || !hasMicrophonePermission) {
   return (
     <SafeAreaView style={styles.permissionScreen}>
       <View style={styles.permissionCard}>
@@ -389,68 +518,106 @@ if (!cameraPermission.granted || !microphonePermission.granted) {
         </View>
 
         <View style={styles.centerContent}>
+
+
           {!started ? (
-            <View style={styles.startCard}>
-              <Text style={styles.startEyebrow}>Ready?</Text>
-              <Text style={styles.startTitle}>{script.title}</Text>
-              <Text style={styles.startBody}>
-                Keep your dog visible. PAWS will record the clip while
-                instructions appear on screen.
-              </Text>
+  <View style={styles.setupCard}>
+    <Text style={styles.startEyebrow}>Frame your dog</Text>
 
-              <Pressable
-                style={styles.startBtn}
-                onPress={handleStart}
-                accessibilityRole="button"
-              >
-                <Ionicons
-                  name="play"
-                  size={18}
-                  color={theme.colors.primaryDark}
-                />
-                <Text style={styles.startBtnText}>
-                  {mode === "practice" ? "Start Practice" : "Start Challenge"}
-                </Text>
-              </Pressable>
-            </View>
-          ) : (
-            <View
-              style={[
-                styles.instructionCard,
-                finished && styles.instructionCardDone,
-              ]}
-            >
-              <Text style={styles.stepLabel}>
-  {finished ? "Complete" : currentStep.label}
-</Text>
+    <View
+      style={[
+        styles.framingGuide,
+        setupStatus !== "searching" && styles.framingGuideReady,
+      ]}
+    >
+      <View style={styles.framingCircle}>
+        <Ionicons
+          name={
+            setupStatus === "searching"
+              ? "scan-outline"
+              : setupStatus === "ready"
+                ? "checkmark-circle-outline"
+                : "play-circle-outline"
+          }
+          size={42}
+          color={
+            setupStatus === "searching"
+              ? theme.colors.textMuted
+              : theme.colors.primaryDark
+          }
+        />
+      </View>
+    </View>
 
-<Text style={styles.stepHelper}>
-  {finished
-    ? mode === "challenge"
-      ? videoUri
-        ? "Video captured. Opening result soon..."
-        : recordingError
-          ? "Recording had an issue. Opening result soon..."
-          : "Finishing recording..."
-      : "Practice complete. Return to the challenge page when ready."
-    : currentStep.helperText}
-</Text>
+    <Text style={styles.setupTitle}>
+      {setupStatus === "searching"
+        ? "Place your dog inside the frame"
+        : setupStatus === "ready"
+          ? "Hold still..."
+          : "Starting!"}
+    </Text>
 
-              {finished ? (
-                <View style={styles.completeIcon}>
-                  <Ionicons
-                    name="checkmark"
-                    size={34}
-                    color={theme.colors.primaryDark}
-                  />
-                </View>
-              ) : null}
+    <Text style={styles.setupBody}>
+      {setupStatus === "searching"
+        ? "Keep your dog centered and fully visible before the challenge starts."
+        : setupStatus === "ready"
+          ? "Great. Keep your dog in the frame for a moment."
+          : "Recording will begin automatically."}
+    </Text>
 
-              {recordingError ? (
-                <Text style={styles.errorText}>{recordingError}</Text>
-              ) : null}
-            </View>
-          )}
+    <View style={styles.setupProgressTrack}>
+      <View
+        style={[
+          styles.setupProgressFill,
+          { width: `${setupProgress * 100}%` },
+        ]}
+      />
+    </View>
+
+    <Text style={styles.setupHint}>
+      No button needed. PAWS starts when your dog is ready.
+    </Text>
+  </View>
+) : (
+  <View
+    style={[
+      styles.instructionCard,
+      finished && styles.instructionCardDone,
+    ]}
+  >
+    <Text style={styles.stepLabel}>
+      {finished ? "Complete" : currentStep.label}
+    </Text>
+
+    <Text style={styles.stepHelper}>
+      {finished
+        ? mode === "challenge"
+          ? videoUri
+            ? "Video captured. Preparing submit..."
+            : recordingError
+              ? "Recording had an issue. Please try again."
+              : "Saving video..."
+          : "Practice complete. Return to the challenge page when ready."
+        : currentStep.helperText}
+    </Text>
+
+    {finished ? (
+      <View style={styles.completeIcon}>
+        <Ionicons
+          name="checkmark"
+          size={34}
+          color={theme.colors.primaryDark}
+        />
+      </View>
+    ) : null}
+
+    {recordingError ? (
+      <Text style={styles.errorText}>{recordingError}</Text>
+    ) : null}
+  </View>
+)}
+
+
         </View>
 
         {started ? (
@@ -476,7 +643,7 @@ if (!cameraPermission.granted || !microphonePermission.granted) {
   accessibilityRole="button"
 >
   <Text style={styles.primaryBtnText}>
-    {mode === "practice" ? "Return to Challenge" : "See Result"}
+    {mode === "practice" ? "Return to Challenge" : "Submit Video"}
   </Text>
   <Ionicons
     name={mode === "practice" ? "arrow-back" : "arrow-forward"}
@@ -670,6 +837,69 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  setupCard: {
+  backgroundColor: "rgba(255,252,246,0.94)",
+  borderRadius: theme.radii.xl,
+  padding: theme.spacing.xl,
+  alignItems: "center",
+  gap: theme.spacing.md,
+},
+framingGuide: {
+  width: 230,
+  height: 230,
+  borderRadius: 38,
+  borderWidth: 3,
+  borderStyle: "dashed",
+  borderColor: "rgba(47,100,67,0.45)",
+  backgroundColor: "rgba(255,255,255,0.22)",
+  alignItems: "center",
+  justifyContent: "center",
+},
+framingGuideReady: {
+  borderColor: theme.colors.primaryDark,
+  backgroundColor: "rgba(220,235,219,0.45)",
+},
+framingCircle: {
+  width: 150,
+  height: 150,
+  borderRadius: 75,
+  borderWidth: 2,
+  borderColor: "rgba(47,100,67,0.28)",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "rgba(255,255,255,0.38)",
+},
+setupTitle: {
+  fontSize: 24,
+  fontWeight: "900",
+  color: theme.colors.text,
+  textAlign: "center",
+  letterSpacing: -0.5,
+},
+setupBody: {
+  fontSize: theme.typography.sm,
+  color: theme.colors.textMuted,
+  textAlign: "center",
+  lineHeight: 21,
+},
+setupProgressTrack: {
+  width: "100%",
+  height: 8,
+  borderRadius: 99,
+  backgroundColor: theme.colors.cardMuted,
+  overflow: "hidden",
+},
+setupProgressFill: {
+  height: "100%",
+  borderRadius: 99,
+  backgroundColor: theme.colors.primaryDark,
+},
+setupHint: {
+  fontSize: theme.typography.xs,
+  fontWeight: "800",
+  color: theme.colors.textMuted,
+  textAlign: "center",
+},
   recordingPill: {
     flexDirection: "row",
     alignItems: "center",
