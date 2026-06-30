@@ -1,4 +1,4 @@
-//카메라, 녹화, instruction overlay 엔진
+// 카메라, 녹화, instruction overlay 엔진
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -9,11 +9,17 @@ import {
 } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 import { theme } from "@/constants/theme";
 import type {
   ChallengeInstructionStep,
   ChallengeScript,
 } from "@/data/challengeGames/scripts/overlayinstruction";
+import {
+  createMockDogDetection,
+  evaluateDogFraming,
+  type DogFramingStatus,
+} from "@/game/detection/dogFraming";
 
 export type ChallengeMode = "practice" | "challenge";
 
@@ -32,6 +38,9 @@ type ScriptedChallengeCameraProps = {
   onComplete: (result: ChallengeCaptureResult) => void;
 };
 
+const AUTO_RESULT_DELAY_MS = 5000;
+const SETUP_HOLD_TO_START_MS = 1400;
+
 const getCurrentStep = (
   steps: ChallengeInstructionStep[],
   elapsedMs: number,
@@ -47,11 +56,6 @@ const formatSeconds = (ms: number) => {
   return seconds.toString().padStart(2, "0");
 };
 
-const AUTO_RESULT_DELAY_MS = 5000;
-
-const SETUP_MOCK_DETECT_DELAY_MS = 1600;
-const SETUP_HOLD_TO_START_MS = 1400;
-
 export const ScriptedChallengeCamera = ({
   script,
   gameTitle,
@@ -61,14 +65,16 @@ export const ScriptedChallengeCamera = ({
 }: ScriptedChallengeCameraProps) => {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [microphonePermission, requestMicrophonePermission] =
-  useMicrophonePermissions();
+    useMicrophonePermissions();
 
   const cameraRef = useRef<CameraView | null>(null);
   const startedAtRef = useRef<number | null>(null);
   const finishedRef = useRef(false);
+  const recordingStartedRef = useRef(false);
+  const completionSentRef = useRef(false);
 
   const setupStartedAtRef = useRef<number | null>(null);
-const setupHoldStartedAtRef = useRef<number | null>(null);
+  const setupHoldStartedAtRef = useRef<number | null>(null);
 
   const [started, setStarted] = useState(false);
   const [elapsedMs, setElapsedMs] = useState(0);
@@ -76,9 +82,17 @@ const setupHoldStartedAtRef = useRef<number | null>(null);
 
   const [setupActive, setSetupActive] = useState(true);
   const [setupStatus, setSetupStatus] = useState<
-  "searching" | "ready" | "starting"
->("searching");
-const [setupProgress, setSetupProgress] = useState(0);
+    "searching" | "ready" | "starting"
+  >("searching");
+  const [setupProgress, setSetupProgress] = useState(0);
+
+  const [dogFramingStatus, setDogFramingStatus] =
+    useState<DogFramingStatus>(() =>
+      evaluateDogFraming({
+        visible: false,
+        confidence: 0,
+      }),
+    );
 
   const [isRecording, setIsRecording] = useState(false);
   const [videoUri, setVideoUri] = useState<string | undefined>();
@@ -92,8 +106,27 @@ const [setupProgress, setSetupProgress] = useState(0);
   const remainingMs = Math.max(script.totalDurationMs - elapsedMs, 0);
   const progress = Math.min(elapsedMs / script.totalDurationMs, 1);
 
-const hasCameraPermission = Boolean(cameraPermission?.granted);
-const hasMicrophonePermission = Boolean(microphonePermission?.granted);
+  const hasCameraPermission = Boolean(cameraPermission?.granted);
+  const hasMicrophonePermission = Boolean(microphonePermission?.granted);
+
+  useEffect(() => {
+    const requestPermissions = async () => {
+      if (!cameraPermission?.granted) {
+        await requestCameraPermission();
+      }
+
+      if (!microphonePermission?.granted) {
+        await requestMicrophonePermission();
+      }
+    };
+
+    void requestPermissions();
+  }, [
+    cameraPermission?.granted,
+    microphonePermission?.granted,
+    requestCameraPermission,
+    requestMicrophonePermission,
+  ]);
 
   const stopRecordingSafely = () => {
     try {
@@ -104,13 +137,13 @@ const hasMicrophonePermission = Boolean(microphonePermission?.granted);
   };
 
   const resetSetup = () => {
-  setupStartedAtRef.current = null;
-  setupHoldStartedAtRef.current = null;
+    setupStartedAtRef.current = null;
+    setupHoldStartedAtRef.current = null;
 
-  setSetupActive(false);
-  setSetupStatus("searching");
-  setSetupProgress(0);
-};
+    setSetupActive(false);
+    setSetupStatus("searching");
+    setSetupProgress(0);
+  };
 
   const finishChallenge = () => {
     if (finishedRef.current) return;
@@ -121,26 +154,6 @@ const hasMicrophonePermission = Boolean(microphonePermission?.granted);
     setIsRecording(false);
     stopRecordingSafely();
   };
-
-  useEffect(() => {
-  const requestPermissions = async () => {
-    if (!hasCameraPermission || !hasMicrophonePermission) {
-  setRecordingError("Camera and microphone permissions are required.");
-  return;
-}
-
-    if (!microphonePermission?.granted) {
-      await requestMicrophonePermission();
-    }
-  };
-
-  void requestPermissions();
-}, [
-  cameraPermission?.granted,
-  microphonePermission?.granted,
-  requestCameraPermission,
-  requestMicrophonePermission,
-]);
 
   useEffect(() => {
     if (!started || finished) return;
@@ -169,10 +182,10 @@ const hasMicrophonePermission = Boolean(microphonePermission?.granted);
         return;
       }
 
-      if (!cameraPermission?.granted || !microphonePermission?.granted) {
-  setRecordingError("Camera and microphone permissions are required.");
-  return;
-}
+      if (!hasCameraPermission || !hasMicrophonePermission) {
+        setRecordingError("Camera and microphone permissions are required.");
+        return;
+      }
 
       setIsRecording(true);
       setRecordingError(null);
@@ -183,6 +196,8 @@ const hasMicrophonePermission = Boolean(microphonePermission?.granted);
 
       if (video?.uri) {
         setVideoUri(video.uri);
+      } else {
+        setRecordingError("Recording finished, but no video file was saved.");
       }
     } catch (error) {
       if (!finishedRef.current) {
@@ -190,6 +205,7 @@ const hasMicrophonePermission = Boolean(microphonePermission?.granted);
           error instanceof Error
             ? error.message
             : "Recording failed. Please try again.";
+
         setRecordingError(message);
       }
     } finally {
@@ -198,141 +214,117 @@ const hasMicrophonePermission = Boolean(microphonePermission?.granted);
   };
 
   const handleStart = () => {
-  resetSetup();
+    if (recordingStartedRef.current) return;
 
-  finishedRef.current = false;
-  startedAtRef.current = Date.now();
+    recordingStartedRef.current = true;
+    completionSentRef.current = false;
 
-  setElapsedMs(0);
-  setFinished(false);
-  setStarted(true);
-  setVideoUri(undefined);
-  setRecordingError(null);
+    resetSetup();
 
-  void startRecording();
-};
+    finishedRef.current = false;
+    startedAtRef.current = Date.now();
 
-const handleBeginSetup = () => {
-  stopRecordingSafely();
+    setElapsedMs(0);
+    setFinished(false);
+    setStarted(true);
+    setVideoUri(undefined);
+    setRecordingError(null);
 
-  finishedRef.current = false;
-  startedAtRef.current = null;
-  setupStartedAtRef.current = Date.now();
-  setupHoldStartedAtRef.current = null;
+    void startRecording();
+  };
 
-  setElapsedMs(0);
-  setFinished(false);
-  setStarted(false);
-  setIsRecording(false);
-  setVideoUri(undefined);
-  setRecordingError(null);
+  useEffect(() => {
+    if (!setupActive || started || finished) return;
+    if (!hasCameraPermission || !hasMicrophonePermission) return;
 
-  setSetupStatus("searching");
-  setSetupProgress(0);
-  setSetupActive(true);
-};
+    const timer = setInterval(() => {
+      if (!setupStartedAtRef.current) {
+        setupStartedAtRef.current = Date.now();
+      }
 
-useEffect(() => {
-  if (!setupActive) return;
-  if (started || finished) return;
-  if (!cameraPermission?.granted || !microphonePermission?.granted) return;
-  if (setupStartedAtRef.current) return;
+      const setupElapsed = Date.now() - setupStartedAtRef.current;
 
-  setupStartedAtRef.current = Date.now();
-}, [
-  setupActive,
-  started,
-  finished,
-  cameraPermission?.granted,
-  microphonePermission?.granted,
-]);
+      const detection = createMockDogDetection(setupElapsed);
+      const nextFramingStatus = evaluateDogFraming(detection);
 
+      setDogFramingStatus(nextFramingStatus);
 
-//ML detection placeholder for dog detection logic
-// ML detection placeholder for dog detection logic
-useEffect(() => {
-  if (!setupActive || started || finished) return;
+      const isDogFramed = nextFramingStatus.readyToStart;
 
-  // Do not start the framing countdown until both runtime permissions are ready.
-  if (!hasCameraPermission || !hasMicrophonePermission) return;
+      if (!isDogFramed) {
+        setupHoldStartedAtRef.current = null;
+        setSetupStatus("searching");
+        setSetupProgress(0);
+        return;
+      }
 
-  const timer = setInterval(() => {
-    if (!setupStartedAtRef.current) {
-      setupStartedAtRef.current = Date.now();
-    }
+      if (!setupHoldStartedAtRef.current) {
+        setupHoldStartedAtRef.current = Date.now();
+      }
 
-    const setupElapsed = Date.now() - setupStartedAtRef.current;
+      const holdElapsed = Date.now() - setupHoldStartedAtRef.current;
+      const nextProgress = Math.min(holdElapsed / SETUP_HOLD_TO_START_MS, 1);
 
-    /**
-     * Temporary detection placeholder.
-     * Later, replace this boolean with on-device dog detection:
-     *
-     * const isDogFramed =
-     *   dogDetection.visible &&
-     *   dogDetection.centered &&
-     *   dogDetection.goodDistance;
-     */
-    const isDogFramed = setupElapsed >= SETUP_MOCK_DETECT_DELAY_MS;
+      setSetupProgress(nextProgress);
+      setSetupStatus(nextProgress >= 1 ? "starting" : "ready");
 
-    if (!isDogFramed) {
-      setupHoldStartedAtRef.current = null;
-      setSetupStatus("searching");
-      setSetupProgress(0);
+      if (holdElapsed >= SETUP_HOLD_TO_START_MS) {
+        clearInterval(timer);
+        handleStart();
+      }
+    }, 100);
+
+    return () => clearInterval(timer);
+  }, [
+    setupActive,
+    started,
+    finished,
+    hasCameraPermission,
+    hasMicrophonePermission,
+  ]);
+
+  const handleRestart = () => {
+    stopRecordingSafely();
+
+    recordingStartedRef.current = false;
+    completionSentRef.current = false;
+    finishedRef.current = false;
+    startedAtRef.current = null;
+    setupStartedAtRef.current = Date.now();
+    setupHoldStartedAtRef.current = null;
+
+    setElapsedMs(0);
+    setFinished(false);
+    setStarted(false);
+    setIsRecording(false);
+    setVideoUri(undefined);
+    setRecordingError(null);
+
+    setSetupStatus("searching");
+    setSetupProgress(0);
+    setSetupActive(true);
+  };
+
+  const handleExit = () => {
+    stopRecordingSafely();
+
+    recordingStartedRef.current = false;
+    completionSentRef.current = false;
+
+    resetSetup();
+    onExit();
+  };
+
+  const handleComplete = () => {
+    if (completionSentRef.current) return;
+
+    if (mode === "challenge" && !videoUri) {
+      setRecordingError("Video is still saving. Please wait or try again.");
       return;
     }
 
-    if (!setupHoldStartedAtRef.current) {
-      setupHoldStartedAtRef.current = Date.now();
-    }
+    completionSentRef.current = true;
 
-    const holdElapsed = Date.now() - setupHoldStartedAtRef.current;
-    const nextProgress = Math.min(holdElapsed / SETUP_HOLD_TO_START_MS, 1);
-
-    setSetupProgress(nextProgress);
-    setSetupStatus(nextProgress >= 1 ? "starting" : "ready");
-
-    if (holdElapsed >= SETUP_HOLD_TO_START_MS) {
-      clearInterval(timer);
-      handleStart();
-    }
-  }, 100);
-
-  return () => clearInterval(timer);
-}, [
-  setupActive,
-  started,
-  finished,
-  hasCameraPermission,
-  hasMicrophonePermission,
-]);
-
-  const handleRestart = () => {
-  stopRecordingSafely();
-
-  finishedRef.current = false;
-  startedAtRef.current = null;
-  setupStartedAtRef.current = Date.now();
-  setupHoldStartedAtRef.current = null;
-
-  setElapsedMs(0);
-  setFinished(false);
-  setStarted(false);
-  setIsRecording(false);
-  setVideoUri(undefined);
-  setRecordingError(null);
-
-  setSetupStatus("searching");
-  setSetupProgress(0);
-  setSetupActive(true);
-};
-
-  const handleExit = () => {
-  stopRecordingSafely();
-  resetSetup();
-  onExit();
-};
-
-  const handleComplete = () => {
     onComplete({
       mode,
       scriptId: script.id,
@@ -340,141 +332,81 @@ useEffect(() => {
       durationMs: script.totalDurationMs,
     });
   };
-useEffect(() => {
-  if (!finished || mode !== "challenge" || !videoUri) return;
 
-  const timeout = setTimeout(() => {
-    onComplete({
-      mode,
-      scriptId: script.id,
-      videoUri,
-      durationMs: script.totalDurationMs,
-    });
-  }, AUTO_RESULT_DELAY_MS);
+  useEffect(() => {
+    if (!finished) return;
+    if (mode !== "challenge") return;
+    if (!videoUri) return;
+    if (completionSentRef.current) return;
 
-  return () => clearTimeout(timeout);
-}, [
-  finished,
-  mode,
-  onComplete,
-  script.id,
-  script.totalDurationMs,
-  videoUri,
-]);
+    const timeout = setTimeout(() => {
+      handleComplete();
+    }, AUTO_RESULT_DELAY_MS);
+
+    return () => clearTimeout(timeout);
+  }, [finished, mode, videoUri]);
+
   const handlePrimaryCompleteAction = () => {
-  if (mode === "practice") {
-    onExit();
-    return;
+    if (mode === "practice") {
+      onExit();
+      return;
+    }
+
+    handleComplete();
+  };
+
+  if (!cameraPermission || !microphonePermission) {
+    return (
+      <SafeAreaView style={styles.permissionScreen}>
+        <Text style={styles.permissionTitle}>Preparing camera...</Text>
+      </SafeAreaView>
+    );
   }
 
-  handleComplete();
-};
+  if (!hasCameraPermission || !hasMicrophonePermission) {
+    return (
+      <SafeAreaView style={styles.permissionScreen}>
+        <View style={styles.permissionCard}>
+          <Ionicons
+            name="camera-outline"
+            size={42}
+            color={theme.colors.primaryDark}
+          />
 
-  if (!cameraPermission || !microphonePermission) {
-  return (
-    <SafeAreaView style={styles.permissionScreen}>
-      <Text style={styles.permissionTitle}>Preparing camera...</Text>
-    </SafeAreaView>
-  );
-}
+          <Text style={styles.permissionTitle}>Camera access needed</Text>
 
-if (!hasCameraPermission || !hasMicrophonePermission) {
-  return (
-    <SafeAreaView style={styles.permissionScreen}>
-      <View style={styles.permissionCard}>
-        <Ionicons
-          name="camera-outline"
-          size={42}
-          color={theme.colors.primaryDark}
-        />
+          <Text style={styles.permissionBody}>
+            PAWS needs camera and microphone access to record challenge videos
+            with live instructions.
+          </Text>
 
-        <Text style={styles.permissionTitle}>Camera access needed</Text>
+          <Pressable
+            style={styles.permissionBtn}
+            onPress={async () => {
+              if (!cameraPermission?.granted) {
+                await requestCameraPermission();
+              }
 
-        <Text style={styles.permissionBody}>
-          PAWS needs camera and microphone access to record challenge videos
-          with live instructions.
-        </Text>
+              if (!microphonePermission?.granted) {
+                await requestMicrophonePermission();
+              }
+            }}
+            accessibilityRole="button"
+          >
+            <Text style={styles.permissionBtnText}>Allow Camera & Mic</Text>
+          </Pressable>
 
-        <Pressable
-          style={styles.permissionBtn}
-          onPress={async () => {
-            if (!cameraPermission?.granted) {
-              await requestCameraPermission();
-            }
-
-            if (!microphonePermission?.granted) {
-              await requestMicrophonePermission();
-            }
-          }}
-          accessibilityRole="button"
-        >
-          <Text style={styles.permissionBtnText}>Allow Camera & Mic</Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.permissionBackBtn}
-          onPress={onExit}
-          accessibilityRole="button"
-        >
-          <Text style={styles.permissionBackText}>Back</Text>
-        </Pressable>
-      </View>
-    </SafeAreaView>
-  );
-}
-
-  if (!cameraPermission || !microphonePermission) {
-  return (
-    <SafeAreaView style={styles.permissionScreen}>
-      <Text style={styles.permissionTitle}>Preparing camera...</Text>
-    </SafeAreaView>
-  );
-}
-
-if (!cameraPermission.granted || !microphonePermission.granted) {
-  return (
-    <SafeAreaView style={styles.permissionScreen}>
-      <View style={styles.permissionCard}>
-        <Ionicons
-          name="camera-outline"
-          size={42}
-          color={theme.colors.primaryDark}
-        />
-
-        <Text style={styles.permissionTitle}>Camera access needed</Text>
-
-        <Text style={styles.permissionBody}>
-          PAWS needs camera and microphone access to record challenge videos
-          with live instructions.
-        </Text>
-
-        <Pressable
-          style={styles.permissionBtn}
-          onPress={async () => {
-            if (!cameraPermission?.granted) {
-              await requestCameraPermission();
-            }
-
-            if (!microphonePermission?.granted) {
-              await requestMicrophonePermission();
-            }
-          }}
-          accessibilityRole="button"
-        >
-          <Text style={styles.permissionBtnText}>Allow Camera & Mic</Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.permissionBackBtn}
-          onPress={onExit}
-          accessibilityRole="button"
-        >
-          <Text style={styles.permissionBackText}>Back</Text>
-        </Pressable>
-      </View>
-    </SafeAreaView>
-  );
-}
+          <Pressable
+            style={styles.permissionBackBtn}
+            onPress={onExit}
+            accessibilityRole="button"
+          >
+            <Text style={styles.permissionBackText}>Back</Text>
+          </Pressable>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <View style={styles.root}>
@@ -518,106 +450,117 @@ if (!cameraPermission.granted || !microphonePermission.granted) {
         </View>
 
         <View style={styles.centerContent}>
-
-
           {!started ? (
-  <View style={styles.setupCard}>
-    <Text style={styles.startEyebrow}>Frame your dog</Text>
+            <View style={styles.scannerWrap}>
+              <Text style={styles.scannerTitle}>Frame your dog</Text>
 
-    <View
-      style={[
-        styles.framingGuide,
-        setupStatus !== "searching" && styles.framingGuideReady,
-      ]}
-    >
-      <View style={styles.framingCircle}>
-        <Ionicons
-          name={
-            setupStatus === "searching"
-              ? "scan-outline"
-              : setupStatus === "ready"
-                ? "checkmark-circle-outline"
-                : "play-circle-outline"
-          }
-          size={42}
-          color={
-            setupStatus === "searching"
-              ? theme.colors.textMuted
-              : theme.colors.primaryDark
-          }
-        />
-      </View>
-    </View>
+              <View
+                style={[
+                  styles.scannerFrame,
+                  setupStatus !== "searching" && styles.scannerFrameReady,
+                ]}
+              >
+                <View style={[styles.corner, styles.cornerTopLeft]} />
+                <View style={[styles.corner, styles.cornerTopRight]} />
+                <View style={[styles.corner, styles.cornerBottomLeft]} />
+                <View style={[styles.corner, styles.cornerBottomRight]} />
 
-    <Text style={styles.setupTitle}>
-      {setupStatus === "searching"
-        ? "Place your dog inside the frame"
-        : setupStatus === "ready"
-          ? "Hold still..."
-          : "Starting!"}
-    </Text>
+                <View
+                  style={[
+                    styles.scannerCenterDot,
+                    setupStatus !== "searching" &&
+                      styles.scannerCenterDotReady,
+                  ]}
+                >
+                  <Ionicons
+                    name={
+                      setupStatus === "searching"
+                        ? "scan-outline"
+                        : setupStatus === "ready"
+                          ? "checkmark"
+                          : "play"
+                    }
+                    size={28}
+                    color={
+                      setupStatus === "searching"
+                        ? "rgba(255,255,255,0.82)"
+                        : theme.colors.primaryDark
+                    }
+                  />
+                </View>
+              </View>
 
-    <Text style={styles.setupBody}>
-      {setupStatus === "searching"
-        ? "Keep your dog centered and fully visible before the challenge starts."
-        : setupStatus === "ready"
-          ? "Great. Keep your dog in the frame for a moment."
-          : "Recording will begin automatically."}
-    </Text>
+              <View style={styles.scannerInstructionPanel}>
+                <Text style={styles.scannerInstructionTitle}>
+                  {setupStatus === "starting"
+                    ? "Starting!"
+                    : setupStatus === "ready"
+                      ? "Hold still..."
+                      : dogFramingStatus.message}
+                </Text>
 
-    <View style={styles.setupProgressTrack}>
-      <View
-        style={[
-          styles.setupProgressFill,
-          { width: `${setupProgress * 100}%` },
-        ]}
-      />
-    </View>
+                <Text style={styles.scannerInstructionText}>
+                  {setupStatus === "searching"
+                    ? `Confidence ${Math.round(
+                        dogFramingStatus.confidence * 100,
+                      )}%`
+                    : setupStatus === "ready"
+                      ? "Great. Keep your dog inside the guide frame."
+                      : "Recording will begin automatically."}
+                </Text>
 
-    <Text style={styles.setupHint}>
-      No button needed. PAWS starts when your dog is ready.
-    </Text>
-  </View>
-) : (
-  <View
-    style={[
-      styles.instructionCard,
-      finished && styles.instructionCardDone,
-    ]}
-  >
-    <Text style={styles.stepLabel}>
-      {finished ? "Complete" : currentStep.label}
-    </Text>
+                <View style={styles.scannerProgressTrack}>
+                  <View
+                    style={[
+                      styles.scannerProgressFill,
+                      { width: `${setupProgress * 100}%` },
+                    ]}
+                  />
+                </View>
 
-    <Text style={styles.stepHelper}>
-      {finished
-        ? mode === "challenge"
-          ? videoUri
-            ? "Video captured. Preparing submit..."
-            : recordingError
-              ? "Recording had an issue. Please try again."
-              : "Saving video..."
-          : "Practice complete. Return to the challenge page when ready."
-        : currentStep.helperText}
-    </Text>
+                <Text style={styles.scannerHint}>
+                  No button needed. PAWS starts when your dog is ready.
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <View
+              style={[
+                styles.instructionCard,
+                finished && styles.instructionCardDone,
+              ]}
+            >
+              <Text style={styles.stepLabel}>
+                {finished ? "Complete" : currentStep.label}
+              </Text>
 
-    {finished ? (
-      <View style={styles.completeIcon}>
-        <Ionicons
-          name="checkmark"
-          size={34}
-          color={theme.colors.primaryDark}
-        />
-      </View>
-    ) : null}
+              <Text style={styles.stepHelper}>
+                {finished
+                  ? mode === "challenge"
+                    ? videoUri
+                      ? "Video captured. Preparing submit..."
+                      : recordingError
+                        ? "Recording had an issue. Please try again."
+                        : "Saving video..."
+                    : "Practice complete. Return to the challenge page when ready."
+                  : currentStep.helperText}
+              </Text>
 
-    {recordingError ? (
-      <Text style={styles.errorText}>{recordingError}</Text>
-    ) : null}
-  </View>
-)}
+              {finished ? (
+                <View style={styles.completeIcon}>
+                  <Ionicons
+                    name="checkmark"
+                    size={34}
+                    color={theme.colors.primaryDark}
+                  />
+                </View>
+              ) : null}
 
-
+              {recordingError ? (
+                <Text style={styles.errorText}>{recordingError}</Text>
+              ) : null}
+            </View>
+          )}
         </View>
 
         {started ? (
@@ -638,19 +581,19 @@ if (!cameraPermission.granted || !microphonePermission.granted) {
                 </Pressable>
 
                 <Pressable
-  style={styles.primaryBtn}
-  onPress={handlePrimaryCompleteAction}
-  accessibilityRole="button"
->
-  <Text style={styles.primaryBtnText}>
-    {mode === "practice" ? "Return to Challenge" : "Submit Video"}
-  </Text>
-  <Ionicons
-    name={mode === "practice" ? "arrow-back" : "arrow-forward"}
-    size={17}
-    color={theme.colors.primaryDark}
-  />
-</Pressable>
+                  style={styles.primaryBtn}
+                  onPress={handlePrimaryCompleteAction}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.primaryBtnText}>
+                    {mode === "practice" ? "Return to Challenge" : "Submit Video"}
+                  </Text>
+                  <Ionicons
+                    name={mode === "practice" ? "arrow-back" : "arrow-forward"}
+                    size={17}
+                    color={theme.colors.primaryDark}
+                  />
+                </Pressable>
               </>
             ) : (
               <View style={styles.recordingPill}>
@@ -678,7 +621,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.18)",
   },
   overlay: {
     flex: 1,
@@ -745,48 +688,122 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: 72,
   },
-  startCard: {
-    backgroundColor: "rgba(255,252,246,0.94)",
-    borderRadius: theme.radii.xl,
-    padding: theme.spacing.xl,
-    alignItems: "center",
-    gap: theme.spacing.md,
-  },
-  startEyebrow: {
-    fontSize: theme.typography.xs,
-    fontWeight: "900",
-    color: theme.colors.primaryDark,
-    textTransform: "uppercase",
-    letterSpacing: 0.6,
-  },
-  startTitle: {
-    fontSize: 28,
-    fontWeight: "900",
-    color: theme.colors.text,
-    textAlign: "center",
-    letterSpacing: -0.8,
-  },
-  startBody: {
-    fontSize: theme.typography.sm,
-    color: theme.colors.textMuted,
-    textAlign: "center",
-    lineHeight: 20,
-  },
-  startBtn: {
-    marginTop: theme.spacing.sm,
-    minHeight: 52,
-    borderRadius: theme.radii.pill,
-    backgroundColor: theme.colors.accent,
-    paddingHorizontal: theme.spacing.xl,
-    flexDirection: "row",
+  scannerWrap: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: theme.spacing.sm,
+    paddingBottom: 64,
+    gap: theme.spacing.md,
   },
-  startBtnText: {
+  scannerTitle: {
     fontSize: theme.typography.sm,
     fontWeight: "900",
-    color: theme.colors.primaryDark,
+    color: theme.colors.white,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.45)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  scannerFrame: {
+    width: 250,
+    height: 250,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+  scannerFrameReady: {
+    transform: [{ scale: 1.02 }],
+  },
+  corner: {
+    position: "absolute",
+    width: 42,
+    height: 42,
+    borderColor: "#76B7FF",
+  },
+  cornerTopLeft: {
+    top: 0,
+    left: 0,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderTopLeftRadius: 12,
+  },
+  cornerTopRight: {
+    top: 0,
+    right: 0,
+    borderTopWidth: 4,
+    borderRightWidth: 4,
+    borderTopRightRadius: 12,
+  },
+  cornerBottomLeft: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: 4,
+    borderLeftWidth: 4,
+    borderBottomLeftRadius: 12,
+  },
+  cornerBottomRight: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: 4,
+    borderRightWidth: 4,
+    borderBottomRightRadius: 12,
+  },
+  scannerCenterDot: {
+    width: 74,
+    height: 74,
+    borderRadius: 37,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.7)",
+    backgroundColor: "rgba(0,0,0,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  scannerCenterDotReady: {
+    backgroundColor: "rgba(220,235,219,0.92)",
+    borderColor: "rgba(220,235,219,1)",
+  },
+  scannerInstructionPanel: {
+    width: "88%",
+    maxWidth: 360,
+    borderRadius: theme.radii.xl,
+    backgroundColor: "rgba(0,0,0,0.38)",
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    alignItems: "center",
+    gap: 7,
+  },
+  scannerInstructionTitle: {
+    fontSize: theme.typography.md,
+    fontWeight: "900",
+    color: theme.colors.white,
+    textAlign: "center",
+  },
+  scannerInstructionText: {
+    fontSize: theme.typography.xs,
+    color: "rgba(255,255,255,0.82)",
+    textAlign: "center",
+    lineHeight: 18,
+  },
+  scannerProgressTrack: {
+    width: "100%",
+    height: 6,
+    borderRadius: 99,
+    backgroundColor: "rgba(255,255,255,0.24)",
+    overflow: "hidden",
+    marginTop: 2,
+  },
+  scannerProgressFill: {
+    height: "100%",
+    borderRadius: 99,
+    backgroundColor: theme.colors.accent,
+  },
+  scannerHint: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "rgba(255,255,255,0.62)",
+    textAlign: "center",
   },
   instructionCard: {
     backgroundColor: "rgba(255,252,246,0.94)",
@@ -837,69 +854,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  setupCard: {
-  backgroundColor: "rgba(255,252,246,0.94)",
-  borderRadius: theme.radii.xl,
-  padding: theme.spacing.xl,
-  alignItems: "center",
-  gap: theme.spacing.md,
-},
-framingGuide: {
-  width: 230,
-  height: 230,
-  borderRadius: 38,
-  borderWidth: 3,
-  borderStyle: "dashed",
-  borderColor: "rgba(47,100,67,0.45)",
-  backgroundColor: "rgba(255,255,255,0.22)",
-  alignItems: "center",
-  justifyContent: "center",
-},
-framingGuideReady: {
-  borderColor: theme.colors.primaryDark,
-  backgroundColor: "rgba(220,235,219,0.45)",
-},
-framingCircle: {
-  width: 150,
-  height: 150,
-  borderRadius: 75,
-  borderWidth: 2,
-  borderColor: "rgba(47,100,67,0.28)",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "rgba(255,255,255,0.38)",
-},
-setupTitle: {
-  fontSize: 24,
-  fontWeight: "900",
-  color: theme.colors.text,
-  textAlign: "center",
-  letterSpacing: -0.5,
-},
-setupBody: {
-  fontSize: theme.typography.sm,
-  color: theme.colors.textMuted,
-  textAlign: "center",
-  lineHeight: 21,
-},
-setupProgressTrack: {
-  width: "100%",
-  height: 8,
-  borderRadius: 99,
-  backgroundColor: theme.colors.cardMuted,
-  overflow: "hidden",
-},
-setupProgressFill: {
-  height: "100%",
-  borderRadius: 99,
-  backgroundColor: theme.colors.primaryDark,
-},
-setupHint: {
-  fontSize: theme.typography.xs,
-  fontWeight: "800",
-  color: theme.colors.textMuted,
-  textAlign: "center",
-},
   recordingPill: {
     flexDirection: "row",
     alignItems: "center",
