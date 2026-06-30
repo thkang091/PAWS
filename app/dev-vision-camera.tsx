@@ -13,6 +13,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { theme } from "@/constants/theme";
+import {
+  createMockDogDetection,
+  evaluateDogFraming,
+  type DogFramingStatus,
+} from "@/game/detection/dogFraming";
 
 type FrameDebugInfo = {
   framesSeen: number;
@@ -22,12 +27,22 @@ type FrameDebugInfo = {
   updatedAt: number;
 };
 
+const HOLD_TO_READY_MS = 1400;
+
+const createInitialDogFramingStatus = (): DogFramingStatus =>
+  evaluateDogFraming({
+    visible: false,
+    confidence: 0,
+  });
+
 export default function DevVisionCameraScreen() {
   const device = useCameraDevice("back");
   const { hasPermission, requestPermission } = useCameraPermission();
 
   const lastUiUpdateAtRef = useRef(0);
   const frameCountRef = useRef(0);
+  const framingStartedAtRef = useRef<number | null>(null);
+  const holdStartedAtRef = useRef<number | null>(null);
 
   const [frameDebugInfo, setFrameDebugInfo] = useState<FrameDebugInfo>({
     framesSeen: 0,
@@ -36,6 +51,11 @@ export default function DevVisionCameraScreen() {
     pixelFormat: "-",
     updatedAt: 0,
   });
+
+  const [dogFramingStatus, setDogFramingStatus] =
+    useState<DogFramingStatus>(createInitialDogFramingStatus);
+
+  const [holdProgress, setHoldProgress] = useState(0);
 
   useEffect(() => {
     if (!hasPermission) {
@@ -49,7 +69,29 @@ export default function DevVisionCameraScreen() {
 
       const now = Date.now();
 
-      // Avoid re-rendering the React UI on every single camera frame.
+      if (!framingStartedAtRef.current) {
+        framingStartedAtRef.current = now;
+      }
+
+      const elapsedMs = now - framingStartedAtRef.current;
+      const detection = createMockDogDetection(elapsedMs);
+      const nextFramingStatus = evaluateDogFraming(detection);
+
+      setDogFramingStatus(nextFramingStatus);
+
+      if (nextFramingStatus.readyToStart) {
+        if (!holdStartedAtRef.current) {
+          holdStartedAtRef.current = now;
+        }
+
+        const holdElapsed = now - holdStartedAtRef.current;
+        setHoldProgress(Math.min(holdElapsed / HOLD_TO_READY_MS, 1));
+      } else {
+        holdStartedAtRef.current = null;
+        setHoldProgress(0);
+      }
+
+      // Avoid re-rendering the debug UI on every single camera frame.
       if (now - lastUiUpdateAtRef.current < 250) {
         return;
       }
@@ -143,8 +185,8 @@ export default function DevVisionCameraScreen() {
           </Pressable>
 
           <View style={styles.titleWrap}>
-            <Text style={styles.eyebrow}>FRAME CANARY</Text>
-            <Text style={styles.headerTitle}>VisionCamera Frame Stream</Text>
+            <Text style={styles.eyebrow}>FRAMING CANARY</Text>
+            <Text style={styles.headerTitle}>VisionCamera Dog Framing</Text>
           </View>
         </View>
 
@@ -156,13 +198,42 @@ export default function DevVisionCameraScreen() {
         </View>
 
         <View style={styles.bottomPanel}>
-          <Text style={styles.statusTitle}>Frame stream is running</Text>
-
-          <Text style={styles.statusBody}>
-            Frames seen: {frameDebugInfo.framesSeen}
+          <Text style={styles.statusTitle}>
+            {holdProgress >= 1
+              ? "Ready to start"
+              : dogFramingStatus.readyToStart
+                ? "Hold still..."
+                : dogFramingStatus.message}
           </Text>
 
+          <Text style={styles.statusBody}>
+            Dog confidence {Math.round(dogFramingStatus.confidence * 100)}%
+          </Text>
+
+          <View style={styles.statusGrid}>
+            <StatusPill label="Visible" passed={dogFramingStatus.visible} />
+            <StatusPill label="Clear" passed={dogFramingStatus.clear} />
+            <StatusPill label="Centered" passed={dogFramingStatus.centered} />
+            <StatusPill
+              label="Distance"
+              passed={dogFramingStatus.goodDistance}
+            />
+          </View>
+
+          <View style={styles.progressTrack}>
+            <View
+              style={[
+                styles.progressFill,
+                { width: `${Math.round(holdProgress * 100)}%` },
+              ]}
+            />
+          </View>
+
           <View style={styles.debugBox}>
+            <Text style={styles.debugText}>
+              Frames seen: {frameDebugInfo.framesSeen}
+            </Text>
+
             <Text style={styles.debugText}>
               Size: {frameDebugInfo.width} × {frameDebugInfo.height}
             </Text>
@@ -180,14 +251,36 @@ export default function DevVisionCameraScreen() {
           </View>
 
           <Text style={styles.noteText}>
-            This screen only verifies that VisionCamera frames are reaching a
-            JS worklet. No AI model is running yet.
+            VisionCamera frames are now driving the dog framing readiness logic.
+            No AI model is running yet.
           </Text>
         </View>
       </SafeAreaView>
     </View>
   );
 }
+
+type StatusPillProps = {
+  label: string;
+  passed: boolean;
+};
+
+const StatusPill = ({ label, passed }: StatusPillProps) => {
+  return (
+    <View style={[styles.statusPill, passed && styles.statusPillPassed]}>
+      <Ionicons
+        name={passed ? "checkmark-circle" : "ellipse-outline"}
+        size={14}
+        color={passed ? theme.colors.primaryDark : "rgba(255,255,255,0.7)"}
+      />
+      <Text
+        style={[styles.statusPillText, passed && styles.statusPillTextPassed]}
+      >
+        {label}
+      </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   root: {
@@ -315,6 +408,44 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.md,
     fontWeight: "900",
     textAlign: "center",
+  },
+  statusGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    justifyContent: "center",
+  },
+  statusPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    borderRadius: theme.radii.pill,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  statusPillPassed: {
+    backgroundColor: "rgba(220,235,219,0.92)",
+  },
+  statusPillText: {
+    color: "rgba(255,255,255,0.78)",
+    fontSize: 11,
+    fontWeight: "900",
+  },
+  statusPillTextPassed: {
+    color: theme.colors.primaryDark,
+  },
+  progressTrack: {
+    width: "100%",
+    height: 6,
+    borderRadius: 99,
+    backgroundColor: "rgba(255,255,255,0.24)",
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    borderRadius: 99,
+    backgroundColor: theme.colors.accent,
   },
   debugBox: {
     borderRadius: theme.radii.lg,
