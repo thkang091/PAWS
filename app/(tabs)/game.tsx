@@ -460,9 +460,12 @@ const GameCard = ({
   muted?: boolean;
 }) => {
   const requiredLevel = getUnlockLevel(game);
-  const isLevelLocked = bondLevel < requiredLevel;
-  const canAfford = silver >= game.economy.silverCoinEntryCost;
-  const isPlayable = !isLevelLocked && canAfford;
+const isLevelLocked = bondLevel < requiredLevel;
+const canAfford = silver >= game.economy.silverCoinEntryCost;
+
+// For the new camera-first flow, silver is not charged on card tap.
+// Backend submission will handle the real entry fee later.
+const isPlayable = !isLevelLocked;
 
   const tone = UNLOCK_TONE_BY_DIFFICULTY[game.difficulty];
 
@@ -470,26 +473,18 @@ const GameCard = ({
   const unlockProgress =
     requiredLevel <= 1 ? 1 : Math.min(bondLevel / requiredLevel, 1);
 
-  const actionLabel = isLevelLocked
-    ? `Lv. ${requiredLevel} needed`
-    : canAfford
-      ? "Start"
-      : "Earn Silver";
+  const actionLabel = isLevelLocked ? `Lv. ${requiredLevel} needed` : "Start";
 
-  const actionIcon = isLevelLocked
-    ? "lock-closed-outline"
-    : canAfford
-      ? "play"
-      : "arrow-forward-outline";
+const actionIcon = isLevelLocked ? "lock-closed-outline" : "play";
 
   const handlePress = () => {
-    if (isPlayable) {
-      onStart();
-      return;
-    }
-
+  if (isLevelLocked) {
     onEarnSilver();
-  };
+    return;
+  }
+
+  onStart();
+};
 
   return (
     <Pressable

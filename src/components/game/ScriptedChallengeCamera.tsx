@@ -2,10 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { CameraView, useCameraPermissions } from "expo-camera";
+import {
+  CameraView,
+  useCameraPermissions,
+  useMicrophonePermissions,
+} from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { theme } from "@/constants/theme";
 import type {
   ChallengeInstructionStep,
@@ -53,7 +56,9 @@ export const ScriptedChallengeCamera = ({
   onExit,
   onComplete,
 }: ScriptedChallengeCameraProps) => {
-  const [permission, requestPermission] = useCameraPermissions();
+  const [cameraPermission, requestCameraPermission] = useCameraPermissions();
+  const [microphonePermission, requestMicrophonePermission] =
+  useMicrophonePermissions();
 
   const cameraRef = useRef<CameraView | null>(null);
   const startedAtRef = useRef<number | null>(null);
@@ -93,6 +98,25 @@ export const ScriptedChallengeCamera = ({
   };
 
   useEffect(() => {
+  const requestPermissions = async () => {
+    if (!cameraPermission?.granted) {
+      await requestCameraPermission();
+    }
+
+    if (!microphonePermission?.granted) {
+      await requestMicrophonePermission();
+    }
+  };
+
+  void requestPermissions();
+}, [
+  cameraPermission?.granted,
+  microphonePermission?.granted,
+  requestCameraPermission,
+  requestMicrophonePermission,
+]);
+
+  useEffect(() => {
     if (!started || finished) return;
 
     const timer = setInterval(() => {
@@ -118,6 +142,11 @@ export const ScriptedChallengeCamera = ({
         setRecordingError("Camera is not ready yet.");
         return;
       }
+
+      if (!cameraPermission?.granted || !microphonePermission?.granted) {
+  setRecordingError("Camera and microphone permissions are required.");
+  return;
+}
 
       setIsRecording(true);
       setRecordingError(null);
@@ -183,7 +212,7 @@ export const ScriptedChallengeCamera = ({
     });
   };
 useEffect(() => {
-  if (!finished || mode !== "challenge") return;
+  if (!finished || mode !== "challenge" || !videoUri) return;
 
   const timeout = setTimeout(() => {
     onComplete({
@@ -212,48 +241,111 @@ useEffect(() => {
   handleComplete();
 };
 
-  if (!permission) {
-    return (
-      <SafeAreaView style={styles.permissionScreen}>
-        <Text style={styles.permissionTitle}>Preparing camera...</Text>
-      </SafeAreaView>
-    );
-  }
+  if (!cameraPermission || !microphonePermission) {
+  return (
+    <SafeAreaView style={styles.permissionScreen}>
+      <Text style={styles.permissionTitle}>Preparing camera...</Text>
+    </SafeAreaView>
+  );
+}
 
-  if (!permission.granted) {
-    return (
-      <SafeAreaView style={styles.permissionScreen}>
-        <View style={styles.permissionCard}>
-          <Ionicons
-            name="camera-outline"
-            size={42}
-            color={theme.colors.primaryDark}
-          />
-          <Text style={styles.permissionTitle}>Camera access needed</Text>
-          <Text style={styles.permissionBody}>
-            PAWS needs camera access to run challenge games with live
-            instructions.
-          </Text>
+if (!cameraPermission.granted || !microphonePermission.granted) {
+  return (
+    <SafeAreaView style={styles.permissionScreen}>
+      <View style={styles.permissionCard}>
+        <Ionicons
+          name="camera-outline"
+          size={42}
+          color={theme.colors.primaryDark}
+        />
 
-          <Pressable
-            style={styles.permissionBtn}
-            onPress={() => void requestPermission()}
-            accessibilityRole="button"
-          >
-            <Text style={styles.permissionBtnText}>Allow Camera</Text>
-          </Pressable>
+        <Text style={styles.permissionTitle}>Camera access needed</Text>
 
-          <Pressable
-            style={styles.permissionBackBtn}
-            onPress={onExit}
-            accessibilityRole="button"
-          >
-            <Text style={styles.permissionBackText}>Back</Text>
-          </Pressable>
-        </View>
-      </SafeAreaView>
-    );
-  }
+        <Text style={styles.permissionBody}>
+          PAWS needs camera and microphone access to record challenge videos
+          with live instructions.
+        </Text>
+
+        <Pressable
+          style={styles.permissionBtn}
+          onPress={async () => {
+            if (!cameraPermission?.granted) {
+              await requestCameraPermission();
+            }
+
+            if (!microphonePermission?.granted) {
+              await requestMicrophonePermission();
+            }
+          }}
+          accessibilityRole="button"
+        >
+          <Text style={styles.permissionBtnText}>Allow Camera & Mic</Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.permissionBackBtn}
+          onPress={onExit}
+          accessibilityRole="button"
+        >
+          <Text style={styles.permissionBackText}>Back</Text>
+        </Pressable>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+  if (!cameraPermission || !microphonePermission) {
+  return (
+    <SafeAreaView style={styles.permissionScreen}>
+      <Text style={styles.permissionTitle}>Preparing camera...</Text>
+    </SafeAreaView>
+  );
+}
+
+if (!cameraPermission.granted || !microphonePermission.granted) {
+  return (
+    <SafeAreaView style={styles.permissionScreen}>
+      <View style={styles.permissionCard}>
+        <Ionicons
+          name="camera-outline"
+          size={42}
+          color={theme.colors.primaryDark}
+        />
+
+        <Text style={styles.permissionTitle}>Camera access needed</Text>
+
+        <Text style={styles.permissionBody}>
+          PAWS needs camera and microphone access to record challenge videos
+          with live instructions.
+        </Text>
+
+        <Pressable
+          style={styles.permissionBtn}
+          onPress={async () => {
+            if (!cameraPermission?.granted) {
+              await requestCameraPermission();
+            }
+
+            if (!microphonePermission?.granted) {
+              await requestMicrophonePermission();
+            }
+          }}
+          accessibilityRole="button"
+        >
+          <Text style={styles.permissionBtnText}>Allow Camera & Mic</Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.permissionBackBtn}
+          onPress={onExit}
+          accessibilityRole="button"
+        >
+          <Text style={styles.permissionBackText}>Back</Text>
+        </Pressable>
+      </View>
+    </SafeAreaView>
+  );
+}
 
   return (
     <View style={styles.root}>

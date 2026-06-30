@@ -12,10 +12,8 @@ import { theme } from "@/constants/theme";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { useChallengeGamesForDog } from "@/hooks/useGameCatalog";
 import { useWallet } from "@/hooks/useWallet";
-import { useQueryClient } from "@tanstack/react-query";
+
 import { SilverNoticeModal } from "@/components/game/SilverNoticeModal";
-import { queryKeys } from "@/constants/queryKeys";
-import { startChallengeGameAttempt } from "@/services/gameService";
 
 const DIFF_COLORS: Record<string, { bg: string; text: string }> = {
   easy: { bg: theme.colors.primarySoft, text: theme.colors.primaryDark },
@@ -36,10 +34,7 @@ export default function ChallengeGameScreen() {
   const wallet = useWallet(dogId);
   const games = useChallengeGamesForDog(dogId);
 
-  const queryClient = useQueryClient();
-
-const [chargingEntry, setChargingEntry] = useState(false);
-const [silverNoticeVisible, setSilverNoticeVisible] = useState(false);
+  const [silverNoticeVisible, setSilverNoticeVisible] = useState(false);
 
   const game = (games.data ?? []).find((g) => g.id === gameId);
 
@@ -79,36 +74,8 @@ const [silverNoticeVisible, setSilverNoticeVisible] = useState(false);
     router.push(`/game/${game.id}/play?mode=practice`);
   };
 
-  const handleStartChallenge = async () => {
-  if (chargingEntry) return;
-
-  if (!canAfford) {
-    setSilverNoticeVisible(true);
-    return;
-  }
-
-  try {
-    setChargingEntry(true);
-
-    await startChallengeGameAttempt(dogId, game.id);
-
-    await queryClient.invalidateQueries({
-      queryKey: queryKeys.wallet(dogId),
-    });
-
-    router.push(`/game/${game.id}/play?mode=challenge`);
-  } catch (error) {
-  const message =
-    error instanceof Error && error.message.trim().length > 0
-      ? error.message
-      : "Could not start this challenge.";
-
-  console.warn("Failed to start challenge attempt:", message);
-
-  setSilverNoticeVisible(true);
-} finally {
-  setChargingEntry(false);
-}
+  const handleStartChallenge = () => {
+  router.push(`/game/${game.id}/play?mode=challenge`);
 };
 
   return (
@@ -223,7 +190,7 @@ const [silverNoticeVisible, setSilverNoticeVisible] = useState(false);
         </View>
 
         <Text style={styles.entryBody}>
-          Practice mode is free. Challenge mode uses silver immediately and entry fees are non-refundable.
+          Practice mode is free. Challenge mode charges silver only after your video uploads successfully.
         </Text>
       </View>
 
@@ -261,23 +228,18 @@ const [silverNoticeVisible, setSilverNoticeVisible] = useState(false);
         </Pressable>
 
         <Pressable
-          style={[styles.startBtn, !canAfford && styles.startBtnDisabled]}
-          onPress={handleStartChallenge}
-          accessibilityRole="button"
-        >
+  style={styles.startBtn}
+  onPress={handleStartChallenge}
+  accessibilityRole="button"
+>
           <Text
             style={[
               styles.startBtnText,
               !canAfford && styles.startBtnTextDisabled,
             ]}
           >
-            {chargingEntry ? "Starting..." : canAfford ? "Start Challenge" : "Need Silver"}
+            Start Challenge
           </Text>
-          <Ionicons
-            name={canAfford ? "arrow-forward" : "cash-outline"}
-            size={18}
-            color={canAfford ? theme.colors.white : theme.colors.textMuted}
-          />
         </Pressable>
       </View>
 
