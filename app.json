@@ -19,10 +19,11 @@
     },
     "android": {
       "package": "com.example.paws",
+      "minSdkVersion": 26,
       "permissions": [
-    "android.permission.CAMERA",
-    "android.permission.RECORD_AUDIO"
-  ],
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -68,7 +69,8 @@
           "cameraPermission": "PAWS needs camera access to record your dog's training videos."
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-asset"
     ],
     "extra": {
       "pawsPoseModuleComment": "On-device pose extraction prototype. Requires a development build (expo prebuild). No effect in Expo Go. See modules/paws-pose/."
