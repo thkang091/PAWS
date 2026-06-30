@@ -34,6 +34,7 @@ type ScriptedChallengeCameraProps = {
   script: ChallengeScript;
   gameTitle?: string;
   mode: ChallengeMode;
+  autoStart?: boolean;
   onExit: () => void;
   onComplete: (result: ChallengeCaptureResult) => void;
 };
@@ -60,6 +61,7 @@ export const ScriptedChallengeCamera = ({
   script,
   gameTitle,
   mode,
+  autoStart = false,
   onExit,
   onComplete,
 }: ScriptedChallengeCameraProps) => {
@@ -72,6 +74,7 @@ export const ScriptedChallengeCamera = ({
   const finishedRef = useRef(false);
   const recordingStartedRef = useRef(false);
   const completionSentRef = useRef(false);
+  const autoStartTriggeredRef = useRef(false);
 
   const setupStartedAtRef = useRef<number | null>(null);
   const setupHoldStartedAtRef = useRef<number | null>(null);
@@ -80,7 +83,7 @@ export const ScriptedChallengeCamera = ({
   const [elapsedMs, setElapsedMs] = useState(0);
   const [finished, setFinished] = useState(false);
 
-  const [setupActive, setSetupActive] = useState(true);
+  const [setupActive, setSetupActive] = useState(!autoStart);
   const [setupStatus, setSetupStatus] = useState<
     "searching" | "ready" | "starting"
   >("searching");
@@ -234,6 +237,22 @@ export const ScriptedChallengeCamera = ({
   };
 
   useEffect(() => {
+  if (!autoStart) return;
+  if (autoStartTriggeredRef.current) return;
+  if (started || finished) return;
+  if (!hasCameraPermission || !hasMicrophonePermission) return;
+
+  autoStartTriggeredRef.current = true;
+  handleStart();
+}, [
+  autoStart,
+  started,
+  finished,
+  hasCameraPermission,
+  hasMicrophonePermission,
+]);
+
+  useEffect(() => {
     if (!setupActive || started || finished) return;
     if (!hasCameraPermission || !hasMicrophonePermission) return;
 
@@ -288,6 +307,7 @@ export const ScriptedChallengeCamera = ({
 
     recordingStartedRef.current = false;
     completionSentRef.current = false;
+    autoStartTriggeredRef.current = false;
     finishedRef.current = false;
     startedAtRef.current = null;
     setupStartedAtRef.current = Date.now();
@@ -302,7 +322,7 @@ export const ScriptedChallengeCamera = ({
 
     setSetupStatus("searching");
     setSetupProgress(0);
-    setSetupActive(true);
+    setSetupActive(!autoStart);
   };
 
   const handleExit = () => {
@@ -450,7 +470,11 @@ export const ScriptedChallengeCamera = ({
         </View>
 
         <View style={styles.centerContent}>
+
+
           {!started ? (
+
+
             <View style={styles.scannerWrap}>
               <Text style={styles.scannerTitle}>Frame your dog</Text>
 
@@ -955,4 +979,28 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.xs,
     fontWeight: "800",
   },
+  autoStartCard: {
+  width: "88%",
+  maxWidth: 360,
+  alignSelf: "center",
+  borderRadius: theme.radii.xl,
+  backgroundColor: "rgba(0,0,0,0.48)",
+  paddingVertical: theme.spacing.xl,
+  paddingHorizontal: theme.spacing.lg,
+  alignItems: "center",
+  gap: theme.spacing.sm,
+},
+autoStartTitle: {
+  color: theme.colors.white,
+  fontSize: theme.typography.lg,
+  fontWeight: "900",
+  textAlign: "center",
+},
+autoStartBody: {
+  color: "rgba(255,255,255,0.78)",
+  fontSize: theme.typography.sm,
+  fontWeight: "700",
+  textAlign: "center",
+  lineHeight: 20,
+},
 });
