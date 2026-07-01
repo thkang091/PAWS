@@ -613,7 +613,7 @@ const autoStartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
                 {finished
                   ? mode === "challenge"
                     ? videoUri
-                      ? "Video captured. Preparing submit..."
+                      ? "Video captured. submitting result..."
                       : recordingError
                         ? "Recording had an issue. Please try again."
                         : "Saving video..."

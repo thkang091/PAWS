@@ -41,9 +41,9 @@ type DetectorFrameInfo = {
   updatedAt: number;
 };
 
-const DETECTION_THRESHOLD = 0.25;
+const DETECTION_THRESHOLD = 0.03;
 const HOLD_TO_READY_MS = 3000;
-const READY_GRACE_MS = 700;
+const READY_PROGRESS_DECAY_RATE = 0.25;
 
 let didInitExecutorch = false;
 
@@ -75,9 +75,9 @@ export default function VisionDogFramingGate({
 
   const frameCountRef = useRef(0);
   const lastUiUpdateAtRef = useRef(0);
-  const holdStartedAtRef = useRef<number | null>(null);
+  const lastFrameAtRef = useRef<number | null>(null);
+  const readyAccumulatedMsRef = useRef(0);
   const readySentRef = useRef(false);
-  const lastReadyAtRef = useRef<number | null>(null);
 
   const [detections, setDetections] = useState<ExecuTorchDetectionLike[]>([]);
   const [frameInfo, setFrameInfo] = useState<DetectorFrameInfo>({
@@ -109,6 +109,7 @@ export default function VisionDogFramingGate({
       frameCountRef.current += 1;
 
       const now = Date.now();
+
       const bestDogDetection = pickBestDogDetection(nextDetections);
       const rawDogDetection = convertDetectionToRawDogDetection(
         bestDogDetection,
@@ -117,36 +118,34 @@ export default function VisionDogFramingGate({
       );
       const nextFramingStatus = evaluateDogFraming(rawDogDetection);
 
+      const deltaMs =
+        lastFrameAtRef.current === null
+          ? 0
+          : Math.min(now - lastFrameAtRef.current, 500);
 
+      lastFrameAtRef.current = now;
 
-      let nextHoldProgress = 0;
+      if (nextFramingStatus.readyToStart) {
+        readyAccumulatedMsRef.current = Math.min(
+          HOLD_TO_READY_MS,
+          readyAccumulatedMsRef.current + deltaMs,
+        );
+      } else {
+        readyAccumulatedMsRef.current = Math.max(
+          0,
+          readyAccumulatedMsRef.current - deltaMs * READY_PROGRESS_DECAY_RATE,
+        );
+      }
 
-if (nextFramingStatus.readyToStart) {
-  lastReadyAtRef.current = now;
-}
+      const nextHoldProgress = Math.min(
+        readyAccumulatedMsRef.current / HOLD_TO_READY_MS,
+        1,
+      );
 
-const isWithinGrace =
-  lastReadyAtRef.current !== null &&
-  now - lastReadyAtRef.current <= READY_GRACE_MS;
-
-const effectivelyReady = nextFramingStatus.readyToStart || isWithinGrace;
-
-if (effectivelyReady) {
-  if (!holdStartedAtRef.current) {
-    holdStartedAtRef.current = now;
-  }
-
-  const holdElapsed = now - holdStartedAtRef.current;
-  nextHoldProgress = Math.min(holdElapsed / HOLD_TO_READY_MS, 1);
-
-  if (holdElapsed >= HOLD_TO_READY_MS && !readySentRef.current) {
-    readySentRef.current = true;
-    onReady();
-  }
-} else {
-  holdStartedAtRef.current = null;
-  lastReadyAtRef.current = null;
-}
+      if (nextHoldProgress >= 1 && !readySentRef.current) {
+        readySentRef.current = true;
+        onReady();
+      }
 
       if (now - lastUiUpdateAtRef.current < 180 && !readySentRef.current) {
         return;
@@ -183,7 +182,6 @@ if (effectivelyReady) {
 
           const result = runOnFrame(frame, isFrontCamera, {
             detectionThreshold: DETECTION_THRESHOLD,
-            classesOfInterest: ["DOG"],
           });
 
           if (result) {
@@ -206,20 +204,33 @@ if (effectivelyReady) {
     ? "Model ready"
     : `Loading model ${Math.round((detector.downloadProgress ?? 0) * 100)}%`;
 
+  const topDetectionText =
+    detections
+      .slice(0, 4)
+      .map((detection) => {
+        const label = String(detection.label ?? "-");
+        const score = Math.round(
+          ((detection.score ?? detection.confidence ?? 0) as number) * 100,
+        );
+
+        return `${label} ${score}%`;
+      })
+      .join(" · ") || "No labels";
+
   const statusTitle = useMemo(() => {
     if (readySentRef.current) return "Starting challenge...";
     if (holdProgress >= 1) return "Starting challenge...";
-    if (dogFramingStatus.readyToStart) return "Hold still...";
+    if (dogFramingStatus.readyToStart) return "Great. Hold still...";
     return dogFramingStatus.message;
   }, [dogFramingStatus.message, dogFramingStatus.readyToStart, holdProgress]);
 
   const handleDevBypass = () => {
-  if (!__DEV__) return;
-  if (readySentRef.current) return;
+    if (!__DEV__) return;
+    if (readySentRef.current) return;
 
-  readySentRef.current = true;
-  onReady();
-};
+    readySentRef.current = true;
+    onReady();
+  };
 
   if (!hasPermission) {
     return (
@@ -324,6 +335,25 @@ if (effectivelyReady) {
               <View style={[styles.corner, styles.cornerBottomLeft]} />
               <View style={[styles.corner, styles.cornerBottomRight]} />
 
+              <View
+                style={[
+                  styles.scannerCenterDot,
+                  dogFramingStatus.readyToStart &&
+                    styles.scannerCenterDotReady,
+                ]}
+              >
+                <Ionicons
+                  name={
+                    dogFramingStatus.readyToStart ? "checkmark" : "scan-outline"
+                  }
+                  size={28}
+                  color={
+                    dogFramingStatus.readyToStart
+                      ? theme.colors.primaryDark
+                      : "rgba(255,255,255,0.82)"
+                  }
+                />
+              </View>
             </View>
 
             <View style={styles.instructionPanel}>
@@ -331,12 +361,19 @@ if (effectivelyReady) {
 
               <Text style={styles.statusBody}>
                 Dog confidence {Math.round(dogFramingStatus.confidence * 100)}%
+                {" · "}Hold {Math.round(holdProgress * 100)}%
               </Text>
 
               <View style={styles.statusGrid}>
                 <StatusPill label="Visible" passed={dogFramingStatus.visible} />
-                <StatusPill label="Centered" passed={dogFramingStatus.centered} />
-                <StatusPill label="Distance" passed={dogFramingStatus.goodDistance} />
+                <StatusPill
+                  label="Centered"
+                  passed={dogFramingStatus.centered}
+                />
+                <StatusPill
+                  label="Distance"
+                  passed={dogFramingStatus.goodDistance}
+                />
               </View>
 
               <View style={styles.progressTrack}>
@@ -349,24 +386,30 @@ if (effectivelyReady) {
               </View>
 
               <Text style={styles.debugText}>
-  {modelStatusText} · Frames {frameInfo.framesSeen} · Detections{" "}
-  {detections.length}
-</Text>
+                {modelStatusText} · Frames {frameInfo.framesSeen} · Detections{" "}
+                {detections.length}
+              </Text>
 
-{__DEV__ ? (
-  <Pressable
-    style={styles.devBypassBtn}
-    onPress={handleDevBypass}
-    accessibilityRole="button"
-  >
-    <Ionicons name="flask-outline" size={14} color={theme.colors.primaryDark} />
-    <Text style={styles.devBypassText}>DEV: Dog detected</Text>
-  </Pressable>
-) : null}
+              <Text style={styles.debugText}>{topDetectionText}</Text>
 
-{detector.error ? (
-  <Text style={styles.errorText}>{String(detector.error)}</Text>
-) : null}
+              {__DEV__ ? (
+                <Pressable
+                  style={styles.devBypassBtn}
+                  onPress={handleDevBypass}
+                  accessibilityRole="button"
+                >
+                  <Ionicons
+                    name="flask-outline"
+                    size={14}
+                    color={theme.colors.primaryDark}
+                  />
+                  <Text style={styles.devBypassText}>DEV: Dog detected</Text>
+                </Pressable>
+              ) : null}
+
+              {detector.error ? (
+                <Text style={styles.errorText}>{String(detector.error)}</Text>
+              ) : null}
             </View>
           </View>
         </View>
@@ -404,7 +447,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   scrim: {
-    ...StyleSheet.absoluteFill,
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     backgroundColor: "rgba(0,0,0,0.16)",
   },
   overlay: {
@@ -522,7 +569,20 @@ const styles = StyleSheet.create({
     borderRightWidth: 4,
     borderBottomRightRadius: 12,
   },
-
+  scannerCenterDot: {
+    width: 74,
+    height: 74,
+    borderRadius: 37,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.7)",
+    backgroundColor: "rgba(0,0,0,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  scannerCenterDotReady: {
+    backgroundColor: "rgba(220,235,219,0.92)",
+    borderColor: "rgba(220,235,219,1)",
+  },
   instructionPanel: {
     width: "88%",
     maxWidth: 380,
@@ -595,6 +655,22 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     textAlign: "center",
   },
+  devBypassBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    borderRadius: theme.radii.pill,
+    backgroundColor: "rgba(220,235,219,0.95)",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginTop: 2,
+  },
+  devBypassText: {
+    color: theme.colors.primaryDark,
+    fontSize: 11,
+    fontWeight: "900",
+  },
   permissionScreen: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -636,20 +712,4 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.xs,
     fontWeight: "800",
   },
-  devBypassBtn: {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 6,
-  borderRadius: theme.radii.pill,
-  backgroundColor: "rgba(220,235,219,0.95)",
-  paddingHorizontal: 12,
-  paddingVertical: 8,
-  marginTop: 2,
-},
-devBypassText: {
-  color: theme.colors.primaryDark,
-  fontSize: 11,
-  fontWeight: "900",
-},
 });
