@@ -41,6 +41,7 @@ type ScriptedChallengeCameraProps = {
 
 const AUTO_RESULT_DELAY_MS = 5000;
 const SETUP_HOLD_TO_START_MS = 1400;
+const AUTO_START_CAMERA_DELAY_MS = 800;
 
 const getCurrentStep = (
   steps: ChallengeInstructionStep[],
@@ -73,8 +74,9 @@ export const ScriptedChallengeCamera = ({
   const startedAtRef = useRef<number | null>(null);
   const finishedRef = useRef(false);
   const recordingStartedRef = useRef(false);
-  const completionSentRef = useRef(false);
-  const autoStartTriggeredRef = useRef(false);
+const completionSentRef = useRef(false);
+const autoStartTriggeredRef = useRef(false);
+const autoStartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const setupStartedAtRef = useRef<number | null>(null);
   const setupHoldStartedAtRef = useRef<number | null>(null);
@@ -82,6 +84,7 @@ export const ScriptedChallengeCamera = ({
   const [started, setStarted] = useState(false);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
 
   const [setupActive, setSetupActive] = useState(!autoStart);
   const [setupStatus, setSetupStatus] = useState<
@@ -130,6 +133,15 @@ export const ScriptedChallengeCamera = ({
     requestCameraPermission,
     requestMicrophonePermission,
   ]);
+
+  useEffect(() => {
+  return () => {
+    if (autoStartTimerRef.current) {
+      clearTimeout(autoStartTimerRef.current);
+      autoStartTimerRef.current = null;
+    }
+  };
+}, []);
 
   const stopRecordingSafely = () => {
     try {
@@ -180,10 +192,10 @@ export const ScriptedChallengeCamera = ({
 
   const startRecording = async () => {
     try {
-      if (!cameraRef.current) {
-        setRecordingError("Camera is not ready yet.");
-        return;
-      }
+      if (!cameraRef.current || !cameraReady) {
+  setRecordingError("Camera is warming up. Please try again.");
+  return;
+}
 
       if (!hasCameraPermission || !hasMicrophonePermission) {
         setRecordingError("Camera and microphone permissions are required.");
@@ -241,13 +253,25 @@ export const ScriptedChallengeCamera = ({
   if (autoStartTriggeredRef.current) return;
   if (started || finished) return;
   if (!hasCameraPermission || !hasMicrophonePermission) return;
+  if (!cameraReady) return;
 
   autoStartTriggeredRef.current = true;
-  handleStart();
+
+  autoStartTimerRef.current = setTimeout(() => {
+    handleStart();
+  }, AUTO_START_CAMERA_DELAY_MS);
+
+  return () => {
+    if (autoStartTimerRef.current) {
+      clearTimeout(autoStartTimerRef.current);
+      autoStartTimerRef.current = null;
+    }
+  };
 }, [
   autoStart,
   started,
   finished,
+  cameraReady,
   hasCameraPermission,
   hasMicrophonePermission,
 ]);
@@ -317,23 +341,35 @@ export const ScriptedChallengeCamera = ({
     setFinished(false);
     setStarted(false);
     setIsRecording(false);
+    setCameraReady(false);
     setVideoUri(undefined);
     setRecordingError(null);
 
     setSetupStatus("searching");
     setSetupProgress(0);
     setSetupActive(!autoStart);
+
+    if (autoStartTimerRef.current) {
+  clearTimeout(autoStartTimerRef.current);
+  autoStartTimerRef.current = null;
+}
   };
 
   const handleExit = () => {
-    stopRecordingSafely();
+  stopRecordingSafely();
 
-    recordingStartedRef.current = false;
-    completionSentRef.current = false;
+  if (autoStartTimerRef.current) {
+    clearTimeout(autoStartTimerRef.current);
+    autoStartTimerRef.current = null;
+  }
 
-    resetSetup();
-    onExit();
-  };
+  recordingStartedRef.current = false;
+  completionSentRef.current = false;
+  autoStartTriggeredRef.current = false;
+
+  resetSetup();
+  onExit();
+};
 
   const handleComplete = () => {
     if (completionSentRef.current) return;
@@ -431,11 +467,14 @@ export const ScriptedChallengeCamera = ({
   return (
     <View style={styles.root}>
       <CameraView
-        ref={cameraRef}
-        style={StyleSheet.absoluteFill}
-        facing="back"
-        mode="video"
-      />
+  ref={cameraRef}
+  style={StyleSheet.absoluteFill}
+  facing="back"
+  mode="video"
+  onCameraReady={() => {
+    setCameraReady(true);
+  }}
+/>
 
       <View style={styles.scrim} />
 
@@ -473,6 +512,16 @@ export const ScriptedChallengeCamera = ({
 
 
           {!started ? (
+            autoStart ? (
+    <View style={styles.autoStartCard}>
+      <Text style={styles.autoStartTitle}>
+  {cameraReady ? "Starting recording..." : "Preparing camera..."}
+</Text>
+      <Text style={styles.autoStartBody}>
+  Keep your dog in frame. Recording will begin in a moment.
+</Text>
+    </View>
+  ):(
 
 
             <View style={styles.scannerWrap}>
@@ -547,6 +596,8 @@ export const ScriptedChallengeCamera = ({
                 </Text>
               </View>
             </View>
+
+                  )
           ) : (
             <View
               style={[

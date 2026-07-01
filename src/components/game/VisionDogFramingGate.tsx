@@ -41,8 +41,9 @@ type DetectorFrameInfo = {
   updatedAt: number;
 };
 
-const DETECTION_THRESHOLD = 0.45;
-const HOLD_TO_READY_MS = 1400;
+const DETECTION_THRESHOLD = 0.25;
+const HOLD_TO_READY_MS = 3000;
+const READY_GRACE_MS = 700;
 
 let didInitExecutorch = false;
 
@@ -76,6 +77,7 @@ export default function VisionDogFramingGate({
   const lastUiUpdateAtRef = useRef(0);
   const holdStartedAtRef = useRef<number | null>(null);
   const readySentRef = useRef(false);
+  const lastReadyAtRef = useRef<number | null>(null);
 
   const [detections, setDetections] = useState<ExecuTorchDetectionLike[]>([]);
   const [frameInfo, setFrameInfo] = useState<DetectorFrameInfo>({
@@ -115,23 +117,36 @@ export default function VisionDogFramingGate({
       );
       const nextFramingStatus = evaluateDogFraming(rawDogDetection);
 
+
+
       let nextHoldProgress = 0;
 
-      if (nextFramingStatus.readyToStart) {
-        if (!holdStartedAtRef.current) {
-          holdStartedAtRef.current = now;
-        }
+if (nextFramingStatus.readyToStart) {
+  lastReadyAtRef.current = now;
+}
 
-        const holdElapsed = now - holdStartedAtRef.current;
-        nextHoldProgress = Math.min(holdElapsed / HOLD_TO_READY_MS, 1);
+const isWithinGrace =
+  lastReadyAtRef.current !== null &&
+  now - lastReadyAtRef.current <= READY_GRACE_MS;
 
-        if (holdElapsed >= HOLD_TO_READY_MS && !readySentRef.current) {
-          readySentRef.current = true;
-          onReady();
-        }
-      } else {
-        holdStartedAtRef.current = null;
-      }
+const effectivelyReady = nextFramingStatus.readyToStart || isWithinGrace;
+
+if (effectivelyReady) {
+  if (!holdStartedAtRef.current) {
+    holdStartedAtRef.current = now;
+  }
+
+  const holdElapsed = now - holdStartedAtRef.current;
+  nextHoldProgress = Math.min(holdElapsed / HOLD_TO_READY_MS, 1);
+
+  if (holdElapsed >= HOLD_TO_READY_MS && !readySentRef.current) {
+    readySentRef.current = true;
+    onReady();
+  }
+} else {
+  holdStartedAtRef.current = null;
+  lastReadyAtRef.current = null;
+}
 
       if (now - lastUiUpdateAtRef.current < 180 && !readySentRef.current) {
         return;
@@ -197,6 +212,14 @@ export default function VisionDogFramingGate({
     if (dogFramingStatus.readyToStart) return "Hold still...";
     return dogFramingStatus.message;
   }, [dogFramingStatus.message, dogFramingStatus.readyToStart, holdProgress]);
+
+  const handleDevBypass = () => {
+  if (!__DEV__) return;
+  if (readySentRef.current) return;
+
+  readySentRef.current = true;
+  onReady();
+};
 
   if (!hasPermission) {
     return (
@@ -312,15 +335,8 @@ export default function VisionDogFramingGate({
 
               <View style={styles.statusGrid}>
                 <StatusPill label="Visible" passed={dogFramingStatus.visible} />
-                <StatusPill label="Clear" passed={dogFramingStatus.clear} />
-                <StatusPill
-                  label="Centered"
-                  passed={dogFramingStatus.centered}
-                />
-                <StatusPill
-                  label="Distance"
-                  passed={dogFramingStatus.goodDistance}
-                />
+                <StatusPill label="Centered" passed={dogFramingStatus.centered} />
+                <StatusPill label="Distance" passed={dogFramingStatus.goodDistance} />
               </View>
 
               <View style={styles.progressTrack}>
@@ -333,13 +349,24 @@ export default function VisionDogFramingGate({
               </View>
 
               <Text style={styles.debugText}>
-                {modelStatusText} · Frames {frameInfo.framesSeen} · Detections{" "}
-                {detections.length}
-              </Text>
+  {modelStatusText} · Frames {frameInfo.framesSeen} · Detections{" "}
+  {detections.length}
+</Text>
 
-              {detector.error ? (
-                <Text style={styles.errorText}>{String(detector.error)}</Text>
-              ) : null}
+{__DEV__ ? (
+  <Pressable
+    style={styles.devBypassBtn}
+    onPress={handleDevBypass}
+    accessibilityRole="button"
+  >
+    <Ionicons name="flask-outline" size={14} color={theme.colors.primaryDark} />
+    <Text style={styles.devBypassText}>DEV: Dog detected</Text>
+  </Pressable>
+) : null}
+
+{detector.error ? (
+  <Text style={styles.errorText}>{String(detector.error)}</Text>
+) : null}
             </View>
           </View>
         </View>
@@ -609,4 +636,20 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.xs,
     fontWeight: "800",
   },
+  devBypassBtn: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 6,
+  borderRadius: theme.radii.pill,
+  backgroundColor: "rgba(220,235,219,0.95)",
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  marginTop: 2,
+},
+devBypassText: {
+  color: theme.colors.primaryDark,
+  fontSize: 11,
+  fontWeight: "900",
+},
 });

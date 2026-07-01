@@ -26,7 +26,7 @@ import {
   pickBestDogDetection,
 } from "@/game/detection/executorchDetection";
 
-const DETECTION_THRESHOLD = 0.45;
+const DETECTION_THRESHOLD = 0.25;
 
 let didInitExecutorch = false;
 
