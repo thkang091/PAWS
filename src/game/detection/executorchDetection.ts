@@ -33,7 +33,8 @@ const readScore = (detection: ExecuTorchDetectionLike) => {
 
 export const isDogDetection = (detection: ExecuTorchDetectionLike) => {
   const label = String(detection.label ?? "").toLowerCase().trim();
-  return label === "dog";
+
+  return label === "dog" || label.includes("dog");
 };
 
 export const pickBestDogDetection = <T extends ExecuTorchDetectionLike>(
@@ -107,14 +108,25 @@ export const convertDetectionToRawDogDetection = (
           y2: y2 / frameHeight,
         };
 
+  const normalizedBox = {
+  x: clamp01(normalized.x1),
+  y: clamp01(normalized.y1),
+  width: clamp01(normalized.x2 - normalized.x1),
+  height: clamp01(normalized.y2 - normalized.y1),
+};
+
+const hasUsableBox = normalizedBox.width > 0.002 && normalizedBox.height > 0.002;
+
+if (!hasUsableBox) {
   return {
-    visible: true,
+    visible: false,
     confidence,
-    box: {
-      x: clamp01(normalized.x1),
-      y: clamp01(normalized.y1),
-      width: clamp01(normalized.x2 - normalized.x1),
-      height: clamp01(normalized.y2 - normalized.y1),
-    },
   };
+}
+
+return {
+  visible: true,
+  confidence,
+  box: normalizedBox,
+};
 };

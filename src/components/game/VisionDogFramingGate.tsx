@@ -41,9 +41,10 @@ type DetectorFrameInfo = {
   updatedAt: number;
 };
 
-const DETECTION_THRESHOLD = 0.03;
+const DETECTION_THRESHOLD = 0.04;
 const HOLD_TO_READY_MS = 3000;
-const READY_PROGRESS_DECAY_RATE = 0.25;
+const READY_PROGRESS_DECAY_RATE = 0.18;
+const SHOW_DEV_DOG_DEBUG = __DEV__;
 
 let didInitExecutorch = false;
 
@@ -218,11 +219,18 @@ export default function VisionDogFramingGate({
       .join(" · ") || "No labels";
 
   const statusTitle = useMemo(() => {
-    if (readySentRef.current) return "Starting challenge...";
-    if (holdProgress >= 1) return "Starting challenge...";
-    if (dogFramingStatus.readyToStart) return "Great. Hold still...";
-    return dogFramingStatus.message;
-  }, [dogFramingStatus.message, dogFramingStatus.readyToStart, holdProgress]);
+  if (!detector.isReady) return "Preparing camera AI...";
+  if (readySentRef.current) return "Starting recording...";
+  if (holdProgress >= 1) return "Starting recording...";
+  if (dogFramingStatus.readyToStart) return "Great. Hold still...";
+
+  return dogFramingStatus.message;
+}, [
+  detector.isReady,
+  dogFramingStatus.message,
+  dogFramingStatus.readyToStart,
+  holdProgress,
+]);
 
   const handleDevBypass = () => {
     if (!__DEV__) return;
@@ -356,61 +364,75 @@ export default function VisionDogFramingGate({
               </View>
             </View>
 
+
+
+
             <View style={styles.instructionPanel}>
-              <Text style={styles.statusTitle}>{statusTitle}</Text>
+  <Text style={styles.statusTitle}>{statusTitle}</Text>
 
-              <Text style={styles.statusBody}>
-                Dog confidence {Math.round(dogFramingStatus.confidence * 100)}%
-                {" · "}Hold {Math.round(holdProgress * 100)}%
-              </Text>
+  <Text style={styles.statusBody}>
+    {dogFramingStatus.readyToStart
+      ? "Recording will begin automatically."
+      : "PAWS checks that your dog is in view before recording."}
+  </Text>
 
-              <View style={styles.statusGrid}>
-                <StatusPill label="Visible" passed={dogFramingStatus.visible} />
-                <StatusPill
-                  label="Centered"
-                  passed={dogFramingStatus.centered}
-                />
-                <StatusPill
-                  label="Distance"
-                  passed={dogFramingStatus.goodDistance}
-                />
-              </View>
+  <View style={styles.progressTrack}>
+    <View
+      style={[
+        styles.progressFill,
+        { width: `${Math.round(holdProgress * 100)}%` },
+      ]}
+    />
+  </View>
 
-              <View style={styles.progressTrack}>
-                <View
-                  style={[
-                    styles.progressFill,
-                    { width: `${Math.round(holdProgress * 100)}%` },
-                  ]}
-                />
-              </View>
+  <Text style={styles.progressHint}>
+    {holdProgress > 0
+      ? `${Math.round(holdProgress * 100)}% ready`
+      : "Point the camera at your dog."}
+  </Text>
 
-              <Text style={styles.debugText}>
-                {modelStatusText} · Frames {frameInfo.framesSeen} · Detections{" "}
-                {detections.length}
-              </Text>
+  {detector.error ? (
+    <Text style={styles.errorText}>
+      Camera AI could not start. Please try again.
+    </Text>
+  ) : null}
 
-              <Text style={styles.debugText}>{topDetectionText}</Text>
+  {SHOW_DEV_DOG_DEBUG ? (
+    <View style={styles.devDebugArea}>
+      <View style={styles.statusGrid}>
+        <StatusPill label="Visible" passed={dogFramingStatus.visible} />
+        <StatusPill
+          label="Centered"
+          passed={dogFramingStatus.centered}
+        />
+        <StatusPill
+          label="Distance"
+          passed={dogFramingStatus.goodDistance}
+        />
+      </View>
 
-              {__DEV__ ? (
-                <Pressable
-                  style={styles.devBypassBtn}
-                  onPress={handleDevBypass}
-                  accessibilityRole="button"
-                >
-                  <Ionicons
-                    name="flask-outline"
-                    size={14}
-                    color={theme.colors.primaryDark}
-                  />
-                  <Text style={styles.devBypassText}>DEV: Dog detected</Text>
-                </Pressable>
-              ) : null}
+      <Text style={styles.debugText}>
+        {modelStatusText} · Frames {frameInfo.framesSeen} · Detections{" "}
+        {detections.length}
+      </Text>
 
-              {detector.error ? (
-                <Text style={styles.errorText}>{String(detector.error)}</Text>
-              ) : null}
-            </View>
+      <Text style={styles.debugText}>{topDetectionText}</Text>
+
+      <Pressable
+        style={styles.devBypassBtn}
+        onPress={handleDevBypass}
+        accessibilityRole="button"
+      >
+        <Ionicons
+          name="flask-outline"
+          size={14}
+          color={theme.colors.primaryDark}
+        />
+        <Text style={styles.devBypassText}>DEV: Dog detected</Text>
+      </Pressable>
+    </View>
+  ) : null}
+</View>
           </View>
         </View>
       </SafeAreaView>
@@ -712,4 +734,16 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.xs,
     fontWeight: "800",
   },
+  progressHint: {
+  color: "rgba(255,255,255,0.68)",
+  fontSize: 11,
+  fontWeight: "800",
+  textAlign: "center",
+},
+devDebugArea: {
+  width: "100%",
+  alignItems: "center",
+  gap: 7,
+  marginTop: 4,
+},
 });

@@ -35,18 +35,21 @@ export type DogFramingStatus = {
 };
 
 export const DOG_FRAMING_THRESHOLDS = {
-  // Easy mode: confidence is only informational now.
-  minConfidence: 0.05,
+  // Local AI is only a pre-filter before Gemini.
+  // Confidence is informational, not a hard gate.
+  minConfidence: 0.04,
 
-  // Easy centered range. Wider than before.
-  minCenterX: 0.18,
-  maxCenterX: 0.82,
-  minCenterY: 0.12,
-  maxCenterY: 0.9,
+  // Easy mode: allow a wide center zone.
+  // The goal is not perfect framing, only "dog is reasonably in view."
+  minCenterX: 0.1,
+  maxCenterX: 0.9,
+  minCenterY: 0.08,
+  maxCenterY: 0.94,
 
-  // Easy distance range. Allow smaller and larger dog boxes.
-  minBoxArea: 0.015,
-  maxBoxArea: 0.82,
+  // Easy mode: allow both small and large dogs.
+  // Only block extreme cases: dog is tiny or fills almost the whole screen.
+  minBoxArea: 0.008,
+  maxBoxArea: 0.9,
 };
 
 const getBoxCenter = (box?: DogDetectionBox) => {
@@ -70,8 +73,8 @@ const getFramingIssue = (
 ): DogFramingIssue => {
   if (!visible) return "notVisible";
 
-  // Distance first, because if the dog is too small/large,
-  // center guidance is often less useful.
+  // Distance guidance first. If the dog is too small or too large,
+  // center guidance is less useful.
   if (area < DOG_FRAMING_THRESHOLDS.minBoxArea) return "tooFar";
   if (area > DOG_FRAMING_THRESHOLDS.maxBoxArea) return "tooClose";
 
@@ -92,7 +95,6 @@ const getMessageForIssue = (issue: DogFramingIssue) => {
     case "tooClose":
       return "Move back a little.";
     case "offCenterLeft":
-      return "Move your dog toward the center.";
     case "offCenterRight":
       return "Move your dog toward the center.";
     case "offCenterTop":
@@ -110,7 +112,13 @@ export const evaluateDogFraming = (
 ): DogFramingStatus => {
   const box = detection.box;
   const confidence = detection.confidence;
-  const visible = detection.visible && Boolean(box);
+
+  const hasValidBox =
+    Boolean(box) &&
+    (box?.width ?? 0) > 0.002 &&
+    (box?.height ?? 0) > 0.002;
+
+  const visible = detection.visible && hasValidBox;
 
   const center = getBoxCenter(box);
   const area = getBoxArea(box);
@@ -130,11 +138,13 @@ export const evaluateDogFraming = (
     area >= DOG_FRAMING_THRESHOLDS.minBoxArea &&
     area <= DOG_FRAMING_THRESHOLDS.maxBoxArea;
 
-  // Clear is no longer a hard gate in easy mode.
+  // Clear is only informational now.
+  // The local gate is not judging training quality.
   const clear = visible;
 
-  // Easy mode ready condition:
-  // visible + centered + goodDistance only.
+  // Local pre-filter condition:
+  // Start recording only when the dog is visible, roughly centered,
+  // and not extremely too far/too close.
   const readyToStart = visible && centered && goodDistance;
 
   const issue = getFramingIssue(visible, center, area);
@@ -180,9 +190,9 @@ export const createMockDogDetection = (elapsedMs: number): RawDogDetection => {
       visible: true,
       confidence: 0.72,
       box: {
-        x: 0.08,
+        x: 0.02,
         y: 0.32,
-        width: 0.28,
+        width: 0.22,
         height: 0.34,
       },
     };
@@ -195,8 +205,8 @@ export const createMockDogDetection = (elapsedMs: number): RawDogDetection => {
       box: {
         x: 0.42,
         y: 0.38,
-        width: 0.16,
-        height: 0.18,
+        width: 0.08,
+        height: 0.1,
       },
     };
   }
