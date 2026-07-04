@@ -471,6 +471,8 @@ const autoStartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   style={StyleSheet.absoluteFill}
   facing="back"
   mode="video"
+  ratio="16:9"
+  videoQuality="1080p"
   onCameraReady={() => {
     setCameraReady(true);
   }}

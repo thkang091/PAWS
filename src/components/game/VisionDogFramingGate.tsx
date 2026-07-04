@@ -46,6 +46,8 @@ const HOLD_TO_READY_MS = 3000;
 const READY_PROGRESS_DECAY_RATE = 0.18;
 const SHOW_DEV_DOG_DEBUG = __DEV__;
 
+// 게임 녹화 화면 카메라 배율값, 현재는 인식 화면과 같도록 설정되어 있음
+const PRECHECK_PREVIEW_SCALE = 1.5;
 let didInitExecutorch = false;
 
 const initExecutorchForGate = () => {
@@ -71,7 +73,9 @@ export default function VisionDogFramingGate({
 }: VisionDogFramingGateProps) {
   initExecutorchForGate();
 
-  const device = useCameraDevice("back");
+  const device = useCameraDevice("back", {
+  physicalDevices: ["wide-angle"],
+});
   const { hasPermission, requestPermission } = useCameraPermission();
 
   const frameCountRef = useRef(0);
@@ -293,13 +297,20 @@ export default function VisionDogFramingGate({
 
   return (
     <View style={styles.root}>
-      <Camera
-        style={StyleSheet.absoluteFill}
-        device={device}
-        isActive={!readySentRef.current}
-        outputs={[frameOutput]}
-        orientationSource="device"
-      />
+      <View style={styles.cameraPreviewClip}>
+  <Camera
+    style={[
+      StyleSheet.absoluteFill,
+      {
+        transform: [{ scale: PRECHECK_PREVIEW_SCALE }],
+      },
+    ]}
+    device={device}
+    isActive={!readySentRef.current}
+    outputs={[frameOutput]}
+    orientationSource="device"
+  />
+</View>
 
       <View style={styles.scrim} />
 
@@ -468,6 +479,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
+  cameraPreviewClip: {
+  ...StyleSheet.absoluteFill,
+  overflow: "hidden",
+  backgroundColor: "#000",
+},
   scrim: {
     position: "absolute",
     top: 0,
@@ -746,4 +762,5 @@ devDebugArea: {
   gap: 7,
   marginTop: 4,
 },
+
 });
