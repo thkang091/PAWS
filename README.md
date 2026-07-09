@@ -163,6 +163,8 @@ Challenge game catalog, entry flows, two-currency economy structures, and activi
 
 Challenge recording includes an on-device dog precheck gate. The gate uses VisionCamera and ExecuTorch object detection to confirm that a dog is visible before recording begins. This local check is only a lightweight pre-filter to reduce empty or irrelevant videos before backend/Gemini verification. It does not judge challenge success, award rewards, or replace backend/admin-reviewed verification.
 
+The Game tab has a top-level Game / Tournament toggle. The Game section shows existing casual challenge games. The Tournament section shows operator-opened competitive events with registration windows, leaderboards, and backend-administered prize settlement. Tournament data currently uses mock fallback until backend tables are deployed. See `docs/tournament-system-design.md`.
+
 ### Gold Shop And Rewards
 
 The Gold Shop displays real reward catalog rows and creates pending redemption requests through secure RPCs. Automatic delivery, coupons, gift cards, and fulfillment require an external provider or manual operations dashboard.

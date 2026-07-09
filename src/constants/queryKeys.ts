@@ -35,4 +35,8 @@ export const queryKeys = {
   dogStreak: (dogId: string) => ["dogStreak", dogId] as const,
   savedTrainingItems: (dogId: string) => ["savedTrainingItems", dogId] as const,
   challengePrereqs: (dogId: string, gameId: string) => ["challengePrereqs", dogId, gameId] as const,
+  tournaments: ["tournaments"] as const,
+  tournamentEvent: (id: string) => ["tournamentEvent", id] as const,
+  tournamentEntry: (tournamentId: string, dogId: string) => ["tournamentEntry", tournamentId, dogId] as const,
+  tournamentLeaderboard: (tournamentId: string) => ["tournamentLeaderboard", tournamentId] as const,
 };

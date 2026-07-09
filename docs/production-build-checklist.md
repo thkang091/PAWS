@@ -57,7 +57,7 @@ Never commit real secrets. Expo public variables are visible to the app bundle, 
 eas build --profile development --platform ios
 ```
 
-4. Test camera, DogMoment upload, AI video upload, anonymous auth, account linking, and notifications UI.
+4. Test camera, DogMoment upload, AI video upload, anonymous auth, account linking, notifications UI, and tournament tab navigation (Game/Tournament toggle, tournament detail, mock leaderboard).
 5. Build preview for TestFlight/internal testing.
 6. Run live Supabase validation against the preview project.
 7. Build production only after migrations, RLS, backend, and admin workflows are verified.

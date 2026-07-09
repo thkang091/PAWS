@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
+import { TournamentCard } from "@/components/game/tournament";
 import { ProfileIconButton } from "@/components/navigation/ProfileIconButton";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { GoldBar } from "@/components/ui/GoldBar";
@@ -10,15 +11,18 @@ import { LoadingState } from "@/components/ui/LoadingState";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { trainingGoalCategoryMap } from "@/constants/onboardingOptions";
 import { theme } from "@/constants/theme";
-import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { useChallengeGamesForDog } from "@/hooks/useGameCatalog";
+import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { useProfileDashboard } from "@/hooks/useProfileDashboard";
+import { useVisibleTournaments } from "@/hooks/useTournaments";
 import { useWallet } from "@/hooks/useWallet";
 import type {
   ChallengeGame,
   ChallengeGameDifficulty,
   OwnerTrainingGoal,
 } from "@/types/domain";
+
+type TabSelection = "game" | "tournament";
 
 type GameBucket = "available" | "soon" | "future";
 
@@ -131,7 +135,9 @@ export default function GameTabScreen() {
   const wallet = useWallet(dogId);
   const dashboard = useProfileDashboard(dogId);
   const challengeGames = useChallengeGamesForDog(dogId);
+  const tournaments = useVisibleTournaments();
 
+  const [selectedTab, setSelectedTab] = useState<TabSelection>("game");
   const [selectedBucket, setSelectedBucket] =
     useState<GameBucket>("available");
 
@@ -275,7 +281,59 @@ export default function GameTabScreen() {
         </View>
       </View>
 
-      {games.length === 0 ? (
+      {/* Game / Tournament toggle */}
+      <View style={styles.tabSwitcher}>
+        <Pressable
+          style={[styles.tabSwitcherBtn, selectedTab === "game" && styles.tabSwitcherBtnActive]}
+          onPress={() => setSelectedTab("game")}
+          accessibilityRole="button"
+          accessibilityLabel="Games"
+        >
+          <Ionicons
+            name="game-controller-outline"
+            size={15}
+            color={selectedTab === "game" ? theme.colors.white : theme.colors.textMuted}
+          />
+          <Text
+            style={[
+              styles.tabSwitcherText,
+              selectedTab === "game" && styles.tabSwitcherTextActive,
+            ]}
+          >
+            Game
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={[
+            styles.tabSwitcherBtn,
+            selectedTab === "tournament" && styles.tabSwitcherBtnActive,
+          ]}
+          onPress={() => setSelectedTab("tournament")}
+          accessibilityRole="button"
+          accessibilityLabel="Tournaments"
+        >
+          <Ionicons
+            name="trophy-outline"
+            size={15}
+            color={selectedTab === "tournament" ? theme.colors.white : theme.colors.textMuted}
+          />
+          <Text
+            style={[
+              styles.tabSwitcherText,
+              selectedTab === "tournament" && styles.tabSwitcherTextActive,
+            ]}
+          >
+            Tournament
+          </Text>
+        </Pressable>
+      </View>
+
+      {selectedTab === "tournament" ? (
+        <TournamentTabContent />
+      ) : null}
+
+      {selectedTab === "game" && games.length === 0 ? (
         <View style={styles.emptyCard}>
           <View style={styles.emptyIcon}>
             <Ionicons
@@ -292,7 +350,7 @@ export default function GameTabScreen() {
         </View>
       ) : null}
 
-      {games.length > 0 ? (
+      {selectedTab === "game" && games.length > 0 ? (
         <>
           <View style={styles.bucketTabs}>
             {GAME_BUCKETS.map((bucket) => {
@@ -370,6 +428,7 @@ export default function GameTabScreen() {
         </>
       ) : null}
 
+      {selectedTab === "game" ? (
       <View style={styles.howCard}>
         <Text style={styles.howTitle}>How It Works</Text>
 
@@ -411,9 +470,59 @@ export default function GameTabScreen() {
           <Text style={styles.howBody}>Pass the challenge to win Gold</Text>
         </View>
       </View>
+      ) : null}
     </ScreenContainer>
   );
 }
+
+const TournamentTabContent = () => {
+  const tournaments = useVisibleTournaments();
+
+  if (tournaments.isLoading) {
+    return <LoadingState message="Loading tournaments..." />;
+  }
+
+  if (tournaments.error) {
+    return (
+      <ErrorState
+        message={
+          tournaments.error instanceof Error
+            ? tournaments.error.message
+            : "Tournaments could not load."
+        }
+        onRetry={() => void tournaments.refetch()}
+      />
+    );
+  }
+
+  const events = tournaments.data ?? [];
+
+  if (events.length === 0) {
+    return (
+      <View style={styles.emptyCard}>
+        <View style={styles.emptyIcon}>
+          <Ionicons
+            name="trophy-outline"
+            size={32}
+            color={theme.colors.textMuted}
+          />
+        </View>
+        <Text style={styles.emptyTitle}>No open tournaments</Text>
+        <Text style={styles.emptyBody}>
+          Check back when an admin opens a new tournament for registration.
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.tournamentList}>
+      {events.map((t) => (
+        <TournamentCard key={t.id} tournament={t} />
+      ))}
+    </View>
+  );
+};
 
 const GameSection = ({
   icon,
@@ -998,6 +1107,40 @@ title: {
   },
   startBtnTextSecondary: {
     color: theme.colors.primaryDark,
+  },
+
+  tabSwitcher: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.sm,
+  },
+  tabSwitcherBtn: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    borderRadius: theme.radii.pill,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.card,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  tabSwitcherBtnActive: {
+    backgroundColor: theme.colors.primaryDark,
+    borderColor: theme.colors.primaryDark,
+  },
+  tabSwitcherText: {
+    color: theme.colors.textMuted,
+    fontSize: theme.typography.xs,
+    fontWeight: "900",
+  },
+  tabSwitcherTextActive: {
+    color: theme.colors.white,
+  },
+  tournamentList: {
+    gap: theme.spacing.md,
   },
 
   howCard: {
