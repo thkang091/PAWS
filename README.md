@@ -27,6 +27,7 @@ Not production-complete until external setup is done:
 - Expo Camera, Image, Image Picker, Vector Icons, Reanimated
 - Zod validation
 - FastAPI Python backend for activity verification
+- React Native VisionCamera + ExecuTorch for on-device dog presence precheck before challenge recording
 
 ## Environment
 
@@ -159,6 +160,8 @@ Care supports scheduled events, custom daily routines, routine completions, care
 ### Game
 
 Challenge game catalog, entry flows, two-currency economy structures, and activity verification routes exist. Large public leaderboards, matchmaking, ranked score settlement, and gold awards require trusted backend/admin review before production.
+
+Challenge recording includes an on-device dog precheck gate. The gate uses VisionCamera and ExecuTorch object detection to confirm that a dog is visible before recording begins. This local check is only a lightweight pre-filter to reduce empty or irrelevant videos before backend/Gemini verification. It does not judge challenge success, award rewards, or replace backend/admin-reviewed verification.
 
 ### Gold Shop And Rewards
 

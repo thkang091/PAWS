@@ -14,6 +14,24 @@ This is the production loop for ranked/game or AI-verified training activities. 
 8. Backend calls `award_verification_reward` only for trusted passed results.
 9. Uncertain, high-risk, or ranked attempts stay in manual review until an admin action finalizes them.
 
+## Optional Mobile Precheck
+
+Before a challenge or AI-verified activity starts recording, the mobile app may run an on-device dog presence precheck.
+
+Current implementation:
+- `VisionDogFramingGate` uses VisionCamera frame processing.
+- ExecuTorch object detection checks whether a dog is visible.
+- `dogFraming.ts` evaluates basic framing conditions such as visible dog, guide-box overlap, and distance.
+- When the precheck passes, the app transitions into the actual recording screen.
+
+This precheck is not a verification result. It must never:
+- award rewards
+- mark an attempt as passed or failed
+- replace Gemini/backend review
+- block backend review of an already submitted valid video
+
+Its purpose is only to reduce empty or irrelevant recordings and unnecessary API cost.
+
 ## Backend Environment
 
 Store this only in `paws-dog-ai/.env` or a secure hosting secret store:

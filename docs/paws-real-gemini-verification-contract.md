@@ -17,6 +17,23 @@ Owner confirmation must never override a `FAIL`, `NEEDS_REVIEW`, or `UNSUPPORTED
 
 The mobile client never sends API keys. The edge function is the only caller of the Gemini API.
 
+## Mobile Pre-Recording Gate
+
+The mobile app may use a local dog presence gate before recording starts. This gate is allowed only as a pre-recording UX and cost-control step.
+
+Allowed:
+- detect whether a dog appears in frame
+- guide the owner to move closer, move back, or place the dog inside the guide area
+- prevent recording from starting when no dog is visible
+
+Not allowed:
+- produce PASS, FAIL, NEEDS_REVIEW, or UNSUPPORTED verdicts
+- override Gemini results
+- award rewards
+- replace backend/manual review
+
+Every submitted pass-gated training activity and dog-game attempt still follows the real Gemini verification contract below.
+
 ---
 
 ## Verification Flow

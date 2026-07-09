@@ -28,6 +28,15 @@ Confirm user-facing permission text for:
 
 Camera and photo access are required for DogMoment and activity verification. Notifications require a development build or production build; do not promise push notifications in Expo Go.
 
+## On-Device Dog Precheck
+
+Test on real devices before enabling for users:
+
+- Challenge recording: dog visible → precheck passes → recording screen opens within 3 seconds.
+- Challenge recording: no dog in frame → precheck does not time out and recording does not start.
+- Challenge recording: precheck passes, recording completes, video uploads and reaches backend/Gemini for final verification. The precheck verdict is never stored as a verification result and never triggers a reward.
+- Camera transition: precheck camera frames → recording camera starts without a visible flash, freeze, or crash when the guide box appears.
+
 ## Environment Files
 
 Use separate values for each build profile:
