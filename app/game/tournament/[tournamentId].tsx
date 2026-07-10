@@ -45,6 +45,7 @@ export default function TournamentDetailScreen() {
 
   const handleJoin = async () => {
     if (!t || !dogId) return;
+    setJoinFeedback(null);
     const result = await joinMutation.mutateAsync({ tournamentId: t.id, dogId });
     if ("error" in result) {
       setJoinFeedback(result.error);

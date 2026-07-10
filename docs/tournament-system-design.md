@@ -95,20 +95,37 @@ Tournaments are operator/admin-opened competitive events where owners submit cha
 | Settle rankings | Admin / service_role |
 | Award prizes | Admin / service_role |
 
-## Current Limitations (Phase 2A)
+## Current State (Phase 2B)
 
 - **Reads are live.** Visible events, the owner's entry, and the field-limited leaderboard projection are read from Supabase. There is no mobile mock fallback.
-- **Join remains write-disabled.** `joinTournament` returns a read-only-mode message and does not call `join_tournament` or mutate a wallet.
+- **Join is live through one RPC.** `joinTournament` calls the authenticated `join_tournament` RPC with an idempotency key. Entry creation, the ledger-backed entry fee, and `participant_count` update are atomic. The mobile app still has no direct table-write access.
 - **Submit Attempt is a placeholder.** The tournament detail screen does not route into the challenge recording flow yet.
 - **Leaderboard rows are backend-controlled.** Mobile reads ranked rows from `list_tournament_leaderboard` and never writes scores or ranks.
 - **No prize payout from mobile.** All prize settlement remains backend/admin/service-role-only.
 
-## Phase 2 Plans
+## Opening a Tournament Before the Admin Dashboard Exists
 
-1. Harden and enable `join_tournament`, then wire `joinTournament` with an idempotency key.
-2. Wire `Submit Attempt` to the existing challenge game recording flow with an explicit tournament context.
-3. Create tournament attempts only through a secure backend/RPC boundary.
-4. Connect Gemini/admin review for tournament attempts.
-5. Implement `admin_settle_tournament` with idempotent prize payout.
-6. Build admin tournament management UI.
-7. Add push notification for tournament status changes.
+A developer/operator creates or updates `public.tournament_events` from the
+Supabase SQL Editor, or preferably from a trusted server using the service-role
+key. Never put that key in the Expo app and never grant event writes to
+`authenticated` users.
+
+1. Choose an existing `challenge_games.id`.
+2. Insert a `draft` event with valid registration and active-period timestamps,
+   entry cost, capacity, attempt limit, and all three prize descriptions.
+3. Review the row, then change `status` to `registration_open` only when
+   `registration_opens_at <= now() < registration_closes_at`.
+4. Move status through `registration_closed`, `active`, `reviewing`, and
+   `settled` from trusted admin tooling as operations complete.
+
+`participant_count`, entries, wallet fees, scores, ranks, and payouts must not
+be edited manually as part of opening an event.
+
+## Remaining Phase 2 Plans
+
+1. Wire `Submit Attempt` to the existing challenge game recording flow with an explicit tournament context.
+2. Create tournament attempts only through a secure backend/RPC boundary.
+3. Connect Gemini/admin review for tournament attempts.
+4. Implement `admin_settle_tournament` with idempotent prize payout.
+5. Build admin tournament management UI.
+6. Add push notification for tournament status changes.

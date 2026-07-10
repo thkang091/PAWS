@@ -7,6 +7,7 @@
     "scheme": "paws",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "ios": {
       "bundleIdentifier": "com.example.paws",
       "supportsTablet": true,
@@ -19,7 +20,6 @@
     },
     "android": {
       "package": "com.example.paws",
-      "minSdkVersion": 26,
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
@@ -51,6 +51,14 @@
           "cameraPermission": "PAWS needs camera access to record your dog's training videos.",
           "microphonePermission": "PAWS needs microphone access to record audio with training videos.",
           "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 26
+          }
         }
       ],
       [

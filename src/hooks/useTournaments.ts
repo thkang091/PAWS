@@ -49,11 +49,8 @@ export const useTournamentLeaderboard = (tournamentId?: string) =>
 /**
  * Tournament join mutation wrapper.
  *
- * Phase 2A deliberately returns the service's write-disabled result. It does
- * not call join_tournament, mutate a wallet, or create a local mock entry.
- *
- * TODO (Phase 2B): Keep this cache invalidation when joinTournament is wired
- * to the secure join_tournament RPC.
+ * The service calls the secure, atomic join_tournament RPC. Cache refreshes
+ * below make the entry, capacity, tournament list, and wallet reflect it.
  */
 export const useJoinTournamentMutation = () => {
   const queryClient = useQueryClient();
@@ -75,6 +72,12 @@ export const useJoinTournamentMutation = () => {
         void queryClient.invalidateQueries({
           queryKey: queryKeys.tournamentEvent(tournamentId),
         });
+        void queryClient.invalidateQueries({
+          queryKey: queryKeys.tournaments,
+        });
+        void queryClient.invalidateQueries({
+          queryKey: queryKeys.wallet(dogId),
+        });
       }
     },
   });
@@ -83,7 +86,6 @@ export const useJoinTournamentMutation = () => {
 /**
  * Join tournament hook (legacy).
  *
- * Currently returns a "not available" result.
  * Use useJoinTournamentMutation for a mutation that also invalidates caches.
  *
  * @deprecated Use useJoinTournamentMutation instead.
@@ -92,6 +94,6 @@ export const useJoinTournament = () => ({
   joinTournament: async (
     tournamentId: string,
     dogId: string,
-  ): Promise<{ entry: TournamentEntry } | { error: string }> =>
+  ) =>
     joinTournament(tournamentId, dogId),
 });

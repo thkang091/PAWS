@@ -1,4 +1,9 @@
-import { getClientOrThrow, throwIfError } from "@/services/serviceUtils";
+import {
+  createIdempotencyKey,
+  getClientOrThrow,
+  throwIfError,
+} from "@/services/serviceUtils";
+import type { WalletSummary } from "@/types/domain";
 import type {
   TournamentCurrency,
   TournamentEntry,
@@ -8,7 +13,7 @@ import type {
   TournamentStatus,
 } from "@/types/tournament";
 
-// Tournament Service - Phase 2A (read-only backend)
+// Tournament Service - Phase 2B (secure join RPC)
 //
 // SAFETY - Mobile must NEVER:
 //   - Award gold or any prize payout.
@@ -16,8 +21,6 @@ import type {
 //   - Directly mutate wallet balances or XP.
 //   - Finalize rank or score.
 // Prize payout is backend/admin/service-role only.
-
-const TOURNAMENT_BACKEND_WRITE_ENABLED = false;
 
 const VISIBLE_TOURNAMENT_STATUSES: TournamentStatus[] = [
   "registration_open",
@@ -173,23 +176,31 @@ export const getMyTournamentEntry = async (
 };
 
 /**
- * Write-disabled in Phase 2A. This never calls join_tournament and never
- * mutates AsyncStorage, tournament_entries, participant counts, or wallets.
+ * Join through the atomic join_tournament RPC. The client never writes a
+ * tournament entry, participant count, or wallet transaction directly.
  */
 export const joinTournament = async (
-  _tournamentId: string,
-  _dogId: string,
-): Promise<{ entry: TournamentEntry } | { error: string }> => {
-  if (!TOURNAMENT_BACKEND_WRITE_ENABLED) {
-    return {
-      error:
-        "Tournament joining is not configured in read-only backend mode. No entry fee was charged.",
-    };
-  }
+  tournamentId: string,
+  dogId: string,
+): Promise<{ entry: TournamentEntry; wallet: WalletSummary } | { error: string }> => {
+  const client = getClientOrThrow();
+  const { data, error } = await client.rpc("join_tournament", {
+    target_tournament_id: tournamentId,
+    target_dog_id: dogId,
+    request_key: createIdempotencyKey("tournament-entry"),
+  });
 
-  // TODO (Phase 2B): Call join_tournament only through its secure RPC with
-  // an idempotency key. Mobile must never deduct wallet funds directly.
-  return { error: "Tournament joining is not configured." };
+  if (error) return { error: error.message };
+
+  const result = data as unknown as {
+    entry: TournamentEntryRow;
+    wallet: WalletSummary;
+  };
+
+  return {
+    entry: mapTournamentEntry(result.entry),
+    wallet: result.wallet,
+  };
 };
 
 /** Read the field-limited leaderboard projection from its authenticated RPC. */
