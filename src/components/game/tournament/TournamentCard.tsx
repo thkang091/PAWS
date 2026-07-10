@@ -11,21 +11,43 @@ type Props = {
   tournament: TournamentEvent;
 };
 
-const formatDate = (iso: string): string => {
-  const d = new Date(iso);
-  const month = d.toLocaleString("en-US", { month: "short" });
-  const day = d.getDate();
-  return `${month} ${day}`;
+const daysUntil = (iso: string): string | null => {
+  const now = new Date();
+  const target = new Date(iso);
+  const diff = Math.ceil(
+    (target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+  );
+  if (diff < 0) return null;
+  if (diff === 0) return "Ends today";
+  if (diff === 1) return "Ends tomorrow";
+  return `Ends in ${diff} days`;
 };
 
 export const TournamentCard = ({ tournament }: Props) => {
   const isOpen = tournament.status === "registration_open";
   const isActive = tournament.status === "active";
   const isSettled = tournament.status === "settled";
+  const isReviewing = tournament.status === "reviewing";
 
   const handlePress = () => {
     router.push(`/game/tournament/${tournament.id}`);
   };
+
+  const timeHint = isOpen
+    ? daysUntil(tournament.registrationClosesAt)
+    : isActive
+      ? daysUntil(tournament.endsAt)
+      : isSettled
+        ? "Results published"
+        : isReviewing
+          ? "Under review"
+          : null;
+
+  const timeIcon = isSettled
+    ? ("checkmark-circle-outline" as const)
+    : isReviewing
+      ? ("search-outline" as const)
+      : ("timer-outline" as const);
 
   return (
     <Pressable
@@ -39,12 +61,17 @@ export const TournamentCard = ({ tournament }: Props) => {
 
         <View style={styles.entryCostBadge}>
           <Ionicons
-            name={tournament.entryCurrency === "gold" ? "trophy-outline" : "cash-outline"}
+            name={
+              tournament.entryCurrency === "gold"
+                ? "trophy-outline"
+                : "cash-outline"
+            }
             size={12}
             color={theme.colors.silver}
           />
           <Text style={styles.entryCostText}>
-            {tournament.entryCost} {tournament.entryCurrency === "gold" ? "Gold" : "Silver"}
+            {tournament.entryCost}{" "}
+            {tournament.entryCurrency === "gold" ? "Gold" : "Silver"}
           </Text>
         </View>
       </View>
@@ -69,51 +96,26 @@ export const TournamentCard = ({ tournament }: Props) => {
           </Text>
         </View>
 
-        <View style={styles.stat}>
+        <View style={[styles.stat, { flexShrink: 1, minWidth: 0 }]}>
           <Ionicons
             name="trophy-outline"
             size={13}
             color={theme.colors.gold}
           />
-          <Text style={[styles.statText, { color: theme.colors.gold }]}>
-            Prizes
+          <Text
+            style={[styles.statText, { color: theme.colors.gold }]}
+            numberOfLines={1}
+          >
+            {tournament.prizeFirst}
           </Text>
         </View>
       </View>
 
       <View style={styles.dateRow}>
-        {isOpen ? (
+        {timeHint ? (
           <View style={styles.stat}>
-            <Ionicons
-              name="timer-outline"
-              size={12}
-              color={theme.colors.primaryDark}
-            />
-            <Text style={[styles.statText, styles.dateText]}>
-              Close {formatDate(tournament.registrationClosesAt)}
-            </Text>
-          </View>
-        ) : isActive ? (
-          <View style={styles.stat}>
-            <Ionicons
-              name="timer-outline"
-              size={12}
-              color={theme.colors.accent}
-            />
-            <Text style={[styles.statText, styles.dateText]}>
-              Ends {formatDate(tournament.endsAt)}
-            </Text>
-          </View>
-        ) : isSettled ? (
-          <View style={styles.stat}>
-            <Ionicons
-              name="checkmark-circle-outline"
-              size={12}
-              color={theme.colors.success}
-            />
-            <Text style={[styles.statText, styles.dateText]}>
-              Completed {formatDate(tournament.endsAt)}
-            </Text>
+            <Ionicons name={timeIcon} size={12} color={theme.colors.textMuted} />
+            <Text style={[styles.statText, styles.dateText]}>{timeHint}</Text>
           </View>
         ) : null}
 

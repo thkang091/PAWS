@@ -21,6 +21,7 @@ import type {
   ChallengeGameDifficulty,
   OwnerTrainingGoal,
 } from "@/types/domain";
+import type { TournamentEvent } from "@/types/tournament";
 
 type TabSelection = "game" | "tournament";
 
@@ -117,6 +118,27 @@ const sortGames = (a: ChallengeGame, b: ChallengeGame) => {
   if (costDiff !== 0) return costDiff;
 
   return a.title.localeCompare(b.title);
+};
+
+const STATUS_SORT_ORDER: Record<string, number> = {
+  registration_open: 0,
+  active: 1,
+  reviewing: 2,
+  settled: 3,
+};
+
+const sortTournaments = (a: TournamentEvent, b: TournamentEvent) => {
+  const aOrder = STATUS_SORT_ORDER[a.status] ?? 99;
+  const bOrder = STATUS_SORT_ORDER[b.status] ?? 99;
+  if (aOrder !== bOrder) return aOrder - bOrder;
+  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+};
+
+const daysUntil = (iso: string): number | null => {
+  const now = new Date();
+  const target = new Date(iso);
+  const diff = Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  return diff >= 0 ? diff : null;
 };
 
 const getNextUnlockLevel = (games: ChallengeGame[], bondLevel: number) => {
@@ -495,7 +517,7 @@ const TournamentTabContent = () => {
     );
   }
 
-  const events = tournaments.data ?? [];
+  const events = (tournaments.data ?? []).sort(sortTournaments);
 
   if (events.length === 0) {
     return (
@@ -516,10 +538,21 @@ const TournamentTabContent = () => {
   }
 
   return (
-    <View style={styles.tournamentList}>
-      {events.map((t) => (
-        <TournamentCard key={t.id} tournament={t} />
-      ))}
+    <View>
+      <View style={styles.tournamentHeader}>
+        <View style={styles.tournamentHeaderCopy}>
+          <Text style={styles.sectionTitle}>Weekly Tournaments</Text>
+          <Text style={styles.tournamentSubtitle}>
+            Join during registration, compete during the active week.
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.tournamentList}>
+        {events.map((t) => (
+          <TournamentCard key={t.id} tournament={t} />
+        ))}
+      </View>
     </View>
   );
 };
@@ -1141,6 +1174,17 @@ title: {
   },
   tournamentList: {
     gap: theme.spacing.md,
+  },
+  tournamentHeader: {
+    marginBottom: theme.spacing.md,
+  },
+  tournamentHeaderCopy: {
+    gap: 2,
+  },
+  tournamentSubtitle: {
+    fontSize: theme.typography.xs,
+    color: theme.colors.textMuted,
+    lineHeight: 16,
   },
 
   howCard: {

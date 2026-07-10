@@ -16,12 +16,12 @@ import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { theme } from "@/constants/theme";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import {
+  useMockJoinTournament,
   useMyTournamentEntry,
   useTournamentEvent,
   useTournamentLeaderboard,
 } from "@/hooks/useTournaments";
 import { useWallet } from "@/hooks/useWallet";
-import { useJoinTournament } from "@/hooks/useTournaments";
 
 export default function TournamentDetailScreen() {
   const { tournamentId } = useLocalSearchParams<{ tournamentId: string }>();
@@ -33,7 +33,7 @@ export default function TournamentDetailScreen() {
   const wallet = useWallet(dogId);
   const entry = useMyTournamentEntry(tournamentId, dogId);
   const leaderboard = useTournamentLeaderboard(tournamentId);
-  const { joinTournament: join } = useJoinTournament();
+  const joinMutation = useMockJoinTournament();
 
   const [joinFeedback, setJoinFeedback] = useState<string | null>(null);
 
@@ -45,11 +45,9 @@ export default function TournamentDetailScreen() {
 
   const handleJoin = async () => {
     if (!t || !dogId) return;
-    const result = await join(t.id, dogId);
+    const result = await joinMutation.mutateAsync({ tournamentId: t.id, dogId });
     if ("error" in result) {
       setJoinFeedback(result.error);
-    } else {
-      await entry.refetch();
     }
   };
 
@@ -99,7 +97,12 @@ export default function TournamentDetailScreen() {
           <Text style={styles.headerTitle}>Tournament</Text>
         </View>
 
-        {/* Hero */}
+        {/* ── Overview ── */}
+        <View style={styles.sectionLabel}>
+          <Ionicons name="information-circle-outline" size={14} color={theme.colors.primaryDark} />
+          <Text style={styles.sectionLabelText}>Overview</Text>
+        </View>
+
         <View style={styles.heroCard}>
           <TournamentStatusPill status={t.status} />
 
@@ -126,7 +129,12 @@ export default function TournamentDetailScreen() {
           </View>
         </View>
 
-        {/* Timing */}
+        {/* ── Schedule ── */}
+        <View style={styles.sectionLabel}>
+          <Ionicons name="calendar-outline" size={14} color={theme.colors.primaryDark} />
+          <Text style={styles.sectionLabelText}>Schedule</Text>
+        </View>
+
         <View style={styles.timingCard}>
           <View style={styles.timingRow}>
             <Ionicons name="calendar-outline" size={15} color={theme.colors.primaryDark} />
@@ -140,7 +148,7 @@ export default function TournamentDetailScreen() {
           <View style={styles.timingRow}>
             <Ionicons name="timer-outline" size={15} color={theme.colors.accent} />
             <View style={styles.timingCopy}>
-              <Text style={styles.timingLabel}>Tournament Active</Text>
+              <Text style={styles.timingLabel}>Competition Active</Text>
               <Text style={styles.timingValue}>
                 {formatDateFull(t.startsAt)} – {formatDateFull(t.endsAt)}
               </Text>
@@ -157,17 +165,10 @@ export default function TournamentDetailScreen() {
           </View>
         </View>
 
-        {/* Prizes */}
-        <View style={styles.sectionCard}>
-          <View style={styles.sectionTitleRow}>
-            <GoldBar size={14} />
-            <Text style={styles.sectionTitle}>Prizes</Text>
-          </View>
-          <TournamentPrizeRow
-            prizeFirst={t.prizeFirst}
-            prizeSecond={t.prizeSecond}
-            prizeThird={t.prizeThird}
-          />
+        {/* ── Entry ── */}
+        <View style={styles.sectionLabel}>
+          <Ionicons name="enter-outline" size={14} color={theme.colors.primaryDark} />
+          <Text style={styles.sectionLabelText}>Entry</Text>
         </View>
 
         {/* Entry CTA */}
@@ -190,11 +191,13 @@ export default function TournamentDetailScreen() {
           <Pressable
             style={styles.submitBtn}
             onPress={() => {
-              // TODO: Route to challenge recording flow.
-              // Reuse the existing game/[gameId]/play flow
-              // once the tournament attempt submission RPC is ready.
+              // TODO: Route to challenge recording flow (Phase 2).
+              //   Reuse the existing game/[gameId]/play flow, creating a
+              //   tournament_attempts row on submission.
+              //   Do NOT route into recording unless the app has a safe
+              //   tournament context mechanism.
               setJoinFeedback(
-                "Submit Attempt will connect to the challenge recording flow once the tournament backend is deployed.",
+                "Tournament submissions will connect to the existing challenge recording flow in Phase 2.",
               );
             }}
             accessibilityRole="button"
@@ -204,13 +207,108 @@ export default function TournamentDetailScreen() {
           </Pressable>
         ) : null}
 
-        {/* Leaderboard */}
+        {/* ── Prizes ── */}
+        <View style={styles.sectionLabel}>
+          <GoldBar size={12} />
+          <Text style={styles.sectionLabelText}>Prizes</Text>
+        </View>
+
         <View style={styles.sectionCard}>
-          <View style={styles.sectionTitleRow}>
-            <Ionicons name="trophy-outline" size={16} color={theme.colors.gold} />
-            <Text style={styles.sectionTitle}>Leaderboard</Text>
-          </View>
+          <TournamentPrizeRow
+            prizeFirst={t.prizeFirst}
+            prizeSecond={t.prizeSecond}
+            prizeThird={t.prizeThird}
+          />
+        </View>
+
+        {/* ── Leaderboard Preview ── */}
+        <View style={styles.sectionLabel}>
+          <Ionicons name="trophy-outline" size={14} color={theme.colors.gold} />
+          <Text style={styles.sectionLabelText}>Leaderboard</Text>
+        </View>
+
+        <View style={styles.sectionCard}>
           <TournamentLeaderboardPreview rows={leaderboard.data ?? []} />
+
+          <Pressable
+            style={styles.fullLeaderboardBtn}
+            onPress={() =>
+              router.push(
+                `/game/tournament/${t.id}/leaderboard`,
+              )
+            }
+            accessibilityRole="button"
+            accessibilityLabel="View full leaderboard"
+          >
+            <Text style={styles.fullLeaderboardBtnText}>
+              View Full Leaderboard
+            </Text>
+            <Ionicons
+              name="chevron-forward"
+              size={16}
+              color={theme.colors.primaryDark}
+            />
+          </Pressable>
+        </View>
+
+        {/* ── How It Works / Rules ── */}
+        <View style={styles.sectionLabel}>
+          <Ionicons name="information-circle-outline" size={14} color={theme.colors.primaryDark} />
+          <Text style={styles.sectionLabelText}>How It Works</Text>
+        </View>
+
+        <View style={styles.rulesCard}>
+          <View style={styles.ruleStep}>
+            <View style={[styles.ruleNum, { backgroundColor: theme.colors.primarySoft }]}>
+              <Text style={[styles.ruleNumText, { color: theme.colors.primaryDark }]}>1</Text>
+            </View>
+            <Text style={styles.ruleBody}>
+              <Text style={styles.ruleBold}>Join during registration.</Text>{' '}
+              Pay the entry fee and secure your spot before registration closes.
+            </Text>
+          </View>
+
+          <View style={styles.ruleStep}>
+            <View style={[styles.ruleNum, { backgroundColor: theme.colors.accentSoft }]}>
+              <Text style={[styles.ruleNumText, { color: "#6B6B00" }]}>2</Text>
+            </View>
+            <Text style={styles.ruleBody}>
+              <Text style={styles.ruleBold}>Submit your best attempt</Text>{' '}
+              during the active competition period. You can submit up to{' '}
+              {t.maxAttemptsPerEntry} times.
+            </Text>
+          </View>
+
+          <View style={styles.ruleStep}>
+            <View style={[styles.ruleNum, { backgroundColor: theme.colors.goldSoft }]}>
+              <Text style={[styles.ruleNumText, { color: theme.colors.gold }]}>3</Text>
+            </View>
+            <Text style={styles.ruleBody}>
+              <Text style={styles.ruleBold}>Best verified score counts.</Text>{' '}
+              Only your highest-scoring attempt is used for ranking.
+            </Text>
+          </View>
+
+          <View style={styles.ruleStep}>
+            <View style={[styles.ruleNum, { backgroundColor: theme.colors.successSoft }]}>
+              <Text style={[styles.ruleNumText, { color: theme.colors.success }]}>4</Text>
+            </View>
+            <Text style={styles.ruleBody}>
+              <Text style={styles.ruleBold}>Top 3 win prizes.</Text>{' '}
+              Gold and badges are awarded to the highest-ranked participants.
+            </Text>
+          </View>
+
+          <View style={styles.ruleStep}>
+            <View style={[styles.ruleNum, { backgroundColor: theme.colors.warningSoft }]}>
+              <Text style={[styles.ruleNumText, { color: theme.colors.warning }]}>5</Text>
+            </View>
+            <Text style={styles.ruleBody}>
+              <Text style={styles.ruleBold}>Scores are reviewed.</Text>{' '}
+              PAWS admin reviews results before prizes are settled. Results are
+              final once published.
+            </Text>
+          </View>
         </View>
 
         {/* Footer note */}
@@ -317,13 +415,50 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
     ...theme.shadows.soft,
   },
-  sectionTitleRow: {
+  sectionLabel: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 7,
+    gap: 6,
   },
-  sectionTitle: {
-    fontSize: theme.typography.md,
+  sectionLabelText: {
+    fontSize: theme.typography.sm,
+    fontWeight: "900",
+    color: theme.colors.primaryDark,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  rulesCard: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.radii.lg,
+    padding: theme.spacing.lg,
+    gap: theme.spacing.md,
+    ...theme.shadows.soft,
+  },
+  ruleStep: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+  },
+  ruleNum: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  ruleNumText: {
+    fontSize: theme.typography.xs,
+    fontWeight: "900",
+  },
+  ruleBody: {
+    flex: 1,
+    fontSize: theme.typography.xs,
+    color: theme.colors.textMuted,
+    lineHeight: 18,
+    paddingTop: 4,
+  },
+  ruleBold: {
     fontWeight: "900",
     color: theme.colors.text,
   },
@@ -359,6 +494,23 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.sm,
     fontWeight: "900",
     color: theme.colors.white,
+  },
+  fullLeaderboardBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: theme.spacing.xs,
+    borderRadius: theme.radii.pill,
+    borderWidth: 1,
+    borderColor: theme.colors.primaryDark,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: 10,
+    marginTop: theme.spacing.xs,
+  },
+  fullLeaderboardBtnText: {
+    fontSize: theme.typography.sm,
+    fontWeight: "900",
+    color: theme.colors.primaryDark,
   },
   footerNote: {
     fontSize: theme.typography.xs,
