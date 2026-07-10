@@ -114,6 +114,18 @@ export type Database = {
       get_wallet_summary: { Args: { target_dog_id: string }; Returns: { silver_balance: number; gold_balance: number }[] };
       get_profile_dashboard: { Args: { target_dog_id: string }; Returns: Json };
       complete_dog_care_routine: { Args: { target_routine_id: string; completion_date_value: string; request_key: string }; Returns: Json };
+      list_tournament_leaderboard: {
+        Args: { target_tournament_id: string };
+        Returns: {
+          rank: number;
+          entry_id: string;
+          dog_id: string;
+          dog_name: string;
+          score: number;
+          submitted_at: string;
+          is_current_user: boolean;
+        }[];
+      };
       submit_user_confirmed_routine: { Args: { target_dog_id: string; routine_activity_id: string; routine_notes: string | null; routine_metadata?: Json }; Returns: ActivityVerificationRow };
       submit_photo_confirmed_routine: { Args: { target_dog_id: string; routine_activity_id: string; storage_path_value: string; routine_notes: string | null; routine_metadata?: Json }; Returns: ActivityVerificationRow };
     };

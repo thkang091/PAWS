@@ -1,10 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import {
-  getMockLeaderboard,
-  getMockTournamentById,
-  getMockTournaments,
-} from "@/data/tournaments/mockTournaments";
 import { getClientOrThrow, throwIfError } from "@/services/serviceUtils";
 import type {
   TournamentCurrency,
@@ -24,7 +17,6 @@ import type {
 //   - Finalize rank or score.
 // Prize payout is backend/admin/service-role only.
 
-const TOURNAMENT_BACKEND_READ_ENABLED = true;
 const TOURNAMENT_BACKEND_WRITE_ENABLED = false;
 
 const VISIBLE_TOURNAMENT_STATUSES: TournamentStatus[] = [
@@ -34,10 +26,6 @@ const VISIBLE_TOURNAMENT_STATUSES: TournamentStatus[] = [
   "reviewing",
   "settled",
 ];
-
-const MOCK_ENTRY_STORAGE_PREFIX = "@paws/mock_tournament_entry";
-const mockEntryStorageKey = (tournamentId: string, dogId: string) =>
-  `${MOCK_ENTRY_STORAGE_PREFIX}/${tournamentId}/${dogId}`;
 
 type TournamentEventRow = {
   id: string;
@@ -72,53 +60,14 @@ type TournamentEntryRow = {
   current_rank: number | null;
 };
 
-type TournamentLeaderboardRowData = Pick<
-  TournamentEntryRow,
-  | "id"
-  | "dog_id"
-  | "owner_id"
-  | "joined_at"
-  | "best_score"
-  | "current_rank"
->;
-
-const readErrorMessage = (error: unknown): string => {
-  if (error instanceof Error) return error.message;
-  if (error && typeof error === "object" && "message" in error) {
-    return String(error.message);
-  }
-  return String(error);
-};
-
-const devFallback = <T>(
-  operation: string,
-  error: unknown,
-  fallback: () => T,
-): T => {
-  if (__DEV__) {
-    console.warn(
-      `[Tournament] ${operation} failed; using development mock fallback: ${readErrorMessage(error)}`,
-    );
-    return fallback();
-  }
-
-  throwIfError(error);
-  throw new Error(`Tournament ${operation} failed.`);
-};
-
-const readMockEntry = async (
-  tournamentId: string,
-  dogId: string,
-): Promise<TournamentEntry | null> => {
-  try {
-    const stored = await AsyncStorage.getItem(
-      mockEntryStorageKey(tournamentId, dogId),
-    );
-    return stored ? (JSON.parse(stored) as TournamentEntry) : null;
-  } catch (error) {
-    console.warn("[Tournament] Could not read the local mock entry.", error);
-    return null;
-  }
+type TournamentLeaderboardRpcRow = {
+  rank: number;
+  entry_id: string;
+  dog_id: string;
+  dog_name: string;
+  score: number | string;
+  submitted_at: string;
+  is_current_user: boolean;
 };
 
 const mapTournamentCurrency = (currency: string): TournamentCurrency =>
@@ -158,82 +107,50 @@ const mapTournamentEntry = (row: TournamentEntryRow): TournamentEntry => ({
 });
 
 const mapTournamentLeaderboardRow = (
-  row: TournamentLeaderboardRowData,
-  currentUserId: string | null,
+  row: TournamentLeaderboardRpcRow,
 ): TournamentLeaderboardRow => ({
-  rank: row.current_rank ?? 0,
-  entryId: row.id,
+  rank: row.rank,
+  entryId: row.entry_id,
   dogId: row.dog_id,
-  // Other users' dogs remain private under the existing dogs RLS policy.
-  dogName:
-    row.owner_id === currentUserId
-      ? "Your dog"
-      : `Competitor ${row.current_rank ?? "-"}`,
+  dogName: row.dog_name,
   avatarUrl: null,
-  score: Number(row.best_score ?? 0),
-  // tournament_entries has no public attempt timestamp in the current schema.
-  submittedAt: row.joined_at,
-  isCurrentUser: row.owner_id === currentUserId,
+  score: Number(row.score),
+  submittedAt: row.submitted_at,
+  isCurrentUser: row.is_current_user,
 });
 
 /** Read visible tournament_events rows. */
 export const listVisibleTournamentEvents = async (): Promise<
   TournamentEvent[]
 > => {
-  if (!TOURNAMENT_BACKEND_READ_ENABLED) return getMockTournaments();
+  const client = getClientOrThrow();
+  const { data, error } = await client
+    .from("tournament_events")
+    .select(
+      "id,title,description,status,challenge_game_id,registration_opens_at,registration_closes_at,starts_at,ends_at,entry_currency,entry_cost,max_participants,participant_count,max_attempts_per_entry,prize_first,prize_second,prize_third,created_at",
+    )
+    .in("status", VISIBLE_TOURNAMENT_STATUSES)
+    .order("created_at", { ascending: false });
 
-  try {
-    const client = getClientOrThrow();
-    const { data, error } = await client
-      .from("tournament_events")
-      .select(
-        "id,title,description,status,challenge_game_id,registration_opens_at,registration_closes_at,starts_at,ends_at,entry_currency,entry_cost,max_participants,participant_count,max_attempts_per_entry,prize_first,prize_second,prize_third,created_at",
-      )
-      .in("status", VISIBLE_TOURNAMENT_STATUSES)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      return devFallback("visible event read", error, getMockTournaments);
-    }
-    return ((data ?? []) as TournamentEventRow[]).map(mapTournamentEvent);
-  } catch (error) {
-    return devFallback("visible event read", error, getMockTournaments);
-  }
+  throwIfError(error);
+  return ((data ?? []) as TournamentEventRow[]).map(mapTournamentEvent);
 };
 
 /** Read one visible tournament_events row. */
 export const getTournamentEvent = async (
   tournamentId: string,
 ): Promise<TournamentEvent | null> => {
-  if (!TOURNAMENT_BACKEND_READ_ENABLED) {
-    return getMockTournamentById(tournamentId) ?? null;
-  }
+  const client = getClientOrThrow();
+  const { data, error } = await client
+    .from("tournament_events")
+    .select(
+      "id,title,description,status,challenge_game_id,registration_opens_at,registration_closes_at,starts_at,ends_at,entry_currency,entry_cost,max_participants,participant_count,max_attempts_per_entry,prize_first,prize_second,prize_third,created_at",
+    )
+    .eq("id", tournamentId)
+    .maybeSingle();
 
-  try {
-    const client = getClientOrThrow();
-    const { data, error } = await client
-      .from("tournament_events")
-      .select(
-        "id,title,description,status,challenge_game_id,registration_opens_at,registration_closes_at,starts_at,ends_at,entry_currency,entry_cost,max_participants,participant_count,max_attempts_per_entry,prize_first,prize_second,prize_third,created_at",
-      )
-      .eq("id", tournamentId)
-      .maybeSingle();
-
-    if (error) {
-      return devFallback(
-        "event detail read",
-        error,
-        () => getMockTournamentById(tournamentId) ?? null,
-      );
-    }
-    return data ? mapTournamentEvent(data as TournamentEventRow) : null;
-  } catch (error) {
-    return devFallback(
-      "event detail read",
-      error,
-      () => getMockTournamentById(tournamentId) ?? null,
-    );
-  }
+  throwIfError(error);
+  return data ? mapTournamentEvent(data as TournamentEventRow) : null;
 };
 
 /** Read the signed-in owner's tournament_entries row for one dog. */
@@ -241,41 +158,18 @@ export const getMyTournamentEntry = async (
   tournamentId: string,
   dogId: string,
 ): Promise<TournamentEntry | null> => {
-  if (!TOURNAMENT_BACKEND_READ_ENABLED) {
-    return __DEV__ ? readMockEntry(tournamentId, dogId) : null;
-  }
+  const client = getClientOrThrow();
+  const { data, error } = await client
+    .from("tournament_entries")
+    .select(
+      "id,tournament_id,dog_id,owner_id,status,joined_at,attempts_used,best_score,current_rank",
+    )
+    .eq("tournament_id", tournamentId)
+    .eq("dog_id", dogId)
+    .maybeSingle();
 
-  try {
-    const client = getClientOrThrow();
-    const { data, error } = await client
-      .from("tournament_entries")
-      .select(
-        "id,tournament_id,dog_id,owner_id,status,joined_at,attempts_used,best_score,current_rank",
-      )
-      .eq("tournament_id", tournamentId)
-      .eq("dog_id", dogId)
-      .maybeSingle();
-
-    if (error) {
-      if (__DEV__) {
-        console.warn(
-          `[Tournament] entry read failed; checking local mock fallback: ${readErrorMessage(error)}`,
-        );
-        return readMockEntry(tournamentId, dogId);
-      }
-      throwIfError(error);
-      throw new Error("Tournament entry read failed.");
-    }
-    return data ? mapTournamentEntry(data as TournamentEntryRow) : null;
-  } catch (error) {
-    if (__DEV__) {
-      console.warn(
-        `[Tournament] entry read failed; checking local mock fallback: ${readErrorMessage(error)}`,
-      );
-      return readMockEntry(tournamentId, dogId);
-    }
-    throw error;
-  }
+  throwIfError(error);
+  return data ? mapTournamentEntry(data as TournamentEntryRow) : null;
 };
 
 /**
@@ -298,49 +192,17 @@ export const joinTournament = async (
   return { error: "Tournament joining is not configured." };
 };
 
-/** Read ranked tournament_entries rows allowed by leaderboard RLS. */
+/** Read the field-limited leaderboard projection from its authenticated RPC. */
 export const listTournamentLeaderboard = async (
   tournamentId: string,
 ): Promise<TournamentLeaderboardRow[]> => {
-  if (!TOURNAMENT_BACKEND_READ_ENABLED) {
-    return getMockLeaderboard(tournamentId);
-  }
+  const client = getClientOrThrow();
+  const { data, error } = await client.rpc("list_tournament_leaderboard", {
+    target_tournament_id: tournamentId,
+  });
 
-  try {
-    const client = getClientOrThrow();
-    const [{ data, error }, authResult] = await Promise.all([
-      client
-        .from("tournament_entries")
-        .select("id,dog_id,owner_id,joined_at,best_score,current_rank")
-        .eq("tournament_id", tournamentId)
-        .not("current_rank", "is", null)
-        .not("best_score", "is", null)
-        .order("current_rank", { ascending: true }),
-      client.auth.getUser(),
-    ]);
-
-    if (error) {
-      return devFallback(
-        "leaderboard read",
-        error,
-        () => getMockLeaderboard(tournamentId),
-      );
-    }
-
-    if (authResult.error) {
-      console.warn(
-        `[Tournament] Could not identify the current leaderboard user: ${authResult.error.message}`,
-      );
-    }
-    const currentUserId = authResult.data.user?.id ?? null;
-    return ((data ?? []) as TournamentLeaderboardRowData[]).map((row) =>
-      mapTournamentLeaderboardRow(row, currentUserId),
-    );
-  } catch (error) {
-    return devFallback(
-      "leaderboard read",
-      error,
-      () => getMockLeaderboard(tournamentId),
-    );
-  }
+  throwIfError(error);
+  return ((data ?? []) as TournamentLeaderboardRpcRow[]).map(
+    mapTournamentLeaderboardRow,
+  );
 };

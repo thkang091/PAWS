@@ -80,9 +80,6 @@ export const useJoinTournamentMutation = () => {
   });
 };
 
-/** @deprecated Use useJoinTournamentMutation. */
-export const useMockJoinTournament = useJoinTournamentMutation;
-
 /**
  * Join tournament hook (legacy).
  *

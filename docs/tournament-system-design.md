@@ -95,20 +95,20 @@ Tournaments are operator/admin-opened competitive events where owners submit cha
 | Settle rankings | Admin / service_role |
 | Award prizes | Admin / service_role |
 
-## MVP Limitations (Phase 1)
+## Current Limitations (Phase 2A)
 
-- **No backend tables deployed.** The mobile app uses mock data (see `src/data/tournaments/mockTournaments.ts`) when the table is missing.
-- **Join is not wired.** `joinTournament` in `tournamentService.ts` returns a "backend not configured" message. The SQL migration `0041_tournaments.sql` contains the RPC but it has not been applied.
-- **Submit Attempt is a placeholder.** The tournament detail screen shows a disabled `Submit Attempt` button that explains the backend is not ready.
-- **No real leaderboard.** Uses static mock data.
-- **No prize payout from mobile.** All prize settlement is backend/admin-only.
+- **Reads are live.** Visible events, the owner's entry, and the field-limited leaderboard projection are read from Supabase. There is no mobile mock fallback.
+- **Join remains write-disabled.** `joinTournament` returns a read-only-mode message and does not call `join_tournament` or mutate a wallet.
+- **Submit Attempt is a placeholder.** The tournament detail screen does not route into the challenge recording flow yet.
+- **Leaderboard rows are backend-controlled.** Mobile reads ranked rows from `list_tournament_leaderboard` and never writes scores or ranks.
+- **No prize payout from mobile.** All prize settlement remains backend/admin/service-role-only.
 
 ## Phase 2 Plans
 
-1. Apply migration `0041_tournaments.sql` to the Supabase project.
-2. Wire `joinTournament` service method to the `join_tournament` RPC.
-3. Wire `Submit Attempt` to the existing challenge game recording flow (`/game/[gameId]/play`), creating a `tournament_attempts` row on submission.
+1. Harden and enable `join_tournament`, then wire `joinTournament` with an idempotency key.
+2. Wire `Submit Attempt` to the existing challenge game recording flow with an explicit tournament context.
+3. Create tournament attempts only through a secure backend/RPC boundary.
 4. Connect Gemini/admin review for tournament attempts.
-5. Implement `admin_settle_tournament` with prize payout.
+5. Implement `admin_settle_tournament` with idempotent prize payout.
 6. Build admin tournament management UI.
 7. Add push notification for tournament status changes.
