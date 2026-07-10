@@ -16,7 +16,7 @@ import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { theme } from "@/constants/theme";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import {
-  useMockJoinTournament,
+  useJoinTournamentMutation,
   useMyTournamentEntry,
   useTournamentEvent,
   useTournamentLeaderboard,
@@ -33,7 +33,7 @@ export default function TournamentDetailScreen() {
   const wallet = useWallet(dogId);
   const entry = useMyTournamentEntry(tournamentId, dogId);
   const leaderboard = useTournamentLeaderboard(tournamentId);
-  const joinMutation = useMockJoinTournament();
+  const joinMutation = useJoinTournamentMutation();
 
   const [joinFeedback, setJoinFeedback] = useState<string | null>(null);
 

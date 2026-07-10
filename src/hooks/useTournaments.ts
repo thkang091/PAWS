@@ -47,15 +47,15 @@ export const useTournamentLeaderboard = (tournamentId?: string) =>
   });
 
 /**
- * Join tournament hook — mock/dev phase.
+ * Tournament join mutation wrapper.
  *
- * Mutates AsyncStorage (mock entry), then invalidates the
- * entry and event query caches so the UI reflects the joined state.
+ * Phase 2A deliberately returns the service's write-disabled result. It does
+ * not call join_tournament, mutate a wallet, or create a local mock entry.
  *
- * TODO (Phase 2): Replace with a mutation that calls the
- *   join_tournament RPC once migration 0043 is applied.
+ * TODO (Phase 2B): Keep this cache invalidation when joinTournament is wired
+ * to the secure join_tournament RPC.
  */
-export const useMockJoinTournament = () => {
+export const useJoinTournamentMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -80,13 +80,16 @@ export const useMockJoinTournament = () => {
   });
 };
 
+/** @deprecated Use useJoinTournamentMutation. */
+export const useMockJoinTournament = useJoinTournamentMutation;
+
 /**
  * Join tournament hook (legacy).
  *
  * Currently returns a "not available" result.
- * Use useMockJoinTournament for a mutation that also invalidates caches.
+ * Use useJoinTournamentMutation for a mutation that also invalidates caches.
  *
- * @deprecated Use useMockJoinTournament instead.
+ * @deprecated Use useJoinTournamentMutation instead.
  */
 export const useJoinTournament = () => ({
   joinTournament: async (

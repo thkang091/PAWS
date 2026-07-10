@@ -78,9 +78,6 @@ export const TournamentEntryCTA = ({ tournament, entry, onJoin }: Props) => {
                 ? "Waiting for the tournament to start."
                 : "Entry confirmed."}
           </Text>
-          <Text style={styles.devNote}>
-            [Dev Mode] Join is simulated locally. No wallet charge applied.
-          </Text>
         </View>
       </View>
     );
@@ -165,13 +162,6 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.xs,
     color: theme.colors.textMuted,
     lineHeight: 17,
-  },
-  devNote: {
-    fontSize: 10,
-    color: theme.colors.textSubtle,
-    fontWeight: "600",
-    marginTop: 4,
-    fontStyle: "italic",
   },
   // Settled
   ctaSettled: {
