@@ -70,6 +70,7 @@ interface VerifyRequest {
   activity_id: string;
   roadmap_day_id?: string | null;
   challenge_attempt_id?: string | null;
+  tournament_attempt_id?: string | null;
 }
 
 type MinimalGeminiVerdict = {
@@ -274,36 +275,41 @@ async function storeVerdict({
       ? "failed"
       : "needs_review";
   const lowerVerdict = result.verdict.toLowerCase();
-  const { error: resultError } = await serviceClient
-    .from("dog_training_verification_results")
-    .upsert({
-      submission_id: submission.id,
-      dog_id: submission.dog_id,
-      activity_id: activity.id,
-      verdict: result.verdict,
-      confidence: result.confidence,
-      scorable: result.verdict !== "NEEDS_REVIEW",
-      clip_quality: {
-        missingEvidence: result.missingEvidence,
-      },
-      observed_events: result.observations.map((observation) => ({ observation })),
-      satisfied_criteria: result.verdict === "PASS" ? activity.pass_criteria ?? [] : [],
-      failed_criteria: result.verdict === "FAIL" ? activity.fail_criteria ?? [] : [],
-      missing_evidence: result.missingEvidence,
-      matched_reference_assets: [],
-      pass_reason: result.verdict === "PASS" ? result.observations.join(" ") : null,
-      fail_reason: result.verdict === "FAIL" ? result.observations.join(" ") : null,
-      needs_human_review: result.verdict === "NEEDS_REVIEW",
-      suggested_retry_instruction: result.retryInstruction,
-      model_used: GEMINI_MODEL,
-      vlm_latency_ms: result.latencyMs,
-      prompt_version: promptVersion,
-      model_identifier: GEMINI_MODEL,
-      reference_asset_storage_paths: referenceAssetPaths,
-      raw_gemini_response: result.rawGeminiResponse,
-      reward_granted: false,
-    }, { onConflict: "submission_id" });
-  if (resultError) throw resultError;
+  // Training result/progress tables have training_catalog_activities foreign
+  // keys. Challenge game IDs intentionally do not belong there; challenge and
+  // tournament results are stored in their dedicated attempt tables instead.
+  if (!isChallengeGame) {
+    const { error: resultError } = await serviceClient
+      .from("dog_training_verification_results")
+      .upsert({
+        submission_id: submission.id,
+        dog_id: submission.dog_id,
+        activity_id: activity.id,
+        verdict: result.verdict,
+        confidence: result.confidence,
+        scorable: result.verdict !== "NEEDS_REVIEW",
+        clip_quality: {
+          missingEvidence: result.missingEvidence,
+        },
+        observed_events: result.observations.map((observation) => ({ observation })),
+        satisfied_criteria: result.verdict === "PASS" ? activity.pass_criteria ?? [] : [],
+        failed_criteria: result.verdict === "FAIL" ? activity.fail_criteria ?? [] : [],
+        missing_evidence: result.missingEvidence,
+        matched_reference_assets: [],
+        pass_reason: result.verdict === "PASS" ? result.observations.join(" ") : null,
+        fail_reason: result.verdict === "FAIL" ? result.observations.join(" ") : null,
+        needs_human_review: result.verdict === "NEEDS_REVIEW",
+        suggested_retry_instruction: result.retryInstruction,
+        model_used: GEMINI_MODEL,
+        vlm_latency_ms: result.latencyMs,
+        prompt_version: promptVersion,
+        model_identifier: GEMINI_MODEL,
+        reference_asset_storage_paths: referenceAssetPaths,
+        raw_gemini_response: result.rawGeminiResponse,
+        reward_granted: false,
+      }, { onConflict: "submission_id" });
+    if (resultError) throw resultError;
+  }
 
   const { error: submissionError } = await serviceClient
     .from("dog_training_video_submissions")
@@ -320,6 +326,8 @@ async function storeVerdict({
     })
     .eq("id", submission.id);
   if (submissionError) throw submissionError;
+
+  if (isChallengeGame) return;
 
   const { data: currentProgress } = await serviceClient
     .from("dog_training_skill_progress")
@@ -402,9 +410,19 @@ Deno.serve(async (req: Request): Promise<Response> => {
   } catch {
     return json({ error: "Invalid JSON body." }, 400);
   }
-  const { submission_id, dog_id, activity_id, roadmap_day_id = null, challenge_attempt_id = null } = body;
+  const {
+    submission_id,
+    dog_id,
+    activity_id,
+    roadmap_day_id = null,
+    challenge_attempt_id = null,
+    tournament_attempt_id = null,
+  } = body;
   if (!submission_id || !dog_id || !activity_id) {
     return json({ error: "submission_id, dog_id, and activity_id are required." }, 400);
+  }
+  if (challenge_attempt_id && tournament_attempt_id) {
+    return json({ error: "A submission cannot be both a challenge and tournament attempt." }, 400);
   }
 
   // ── Service-role client (bypasses RLS for writes) ────────────────────────
@@ -431,6 +449,41 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return json({ error: `Submission is already in status: ${submission.status}` }, 409);
   }
   if (!submission.storage_path) return json({ error: "Submission has no uploaded video." }, 400);
+
+  // Tournament context is accepted only when the secure mobile RPC has already
+  // linked this exact owned submission to this exact active tournament entry.
+  if (tournament_attempt_id) {
+    const { data: tournamentAttempt, error: tournamentAttemptError } = await serviceClient
+      .from("tournament_attempts")
+      .select("id,tournament_id,dog_id,owner_id,submission_id,status")
+      .eq("id", tournament_attempt_id)
+      .eq("dog_id", dog_id)
+      .eq("owner_id", user.id)
+      .eq("submission_id", submission_id)
+      .single();
+    if (tournamentAttemptError || !tournamentAttempt) {
+      return json({ error: "Tournament attempt context is invalid." }, 403);
+    }
+    if (tournamentAttempt.status !== "submitted") {
+      return json({ error: `Tournament attempt is already in status: ${tournamentAttempt.status}` }, 409);
+    }
+
+    const { data: tournamentEvent } = await serviceClient
+      .from("tournament_events")
+      .select("challenge_game_id,status,starts_at,ends_at")
+      .eq("id", tournamentAttempt.tournament_id)
+      .single();
+    const currentTime = new Date().toISOString();
+    if (
+      !tournamentEvent ||
+      tournamentEvent.challenge_game_id !== activity_id ||
+      tournamentEvent.status !== "active" ||
+      currentTime < tournamentEvent.starts_at ||
+      currentTime >= tournamentEvent.ends_at
+    ) {
+      return json({ error: "Tournament is not accepting this submission." }, 409);
+    }
+  }
 
   // ── Load activity (VLM prompt + recording requirements) ──────────────────
   // Try training catalog first; fall back to challenge_games for game submissions.
@@ -541,6 +594,20 @@ Deno.serve(async (req: Request): Promise<Response> => {
       latencyMs: 0,
     };
     await storeVerdict({ serviceClient, submission, activity, promptVersion, referenceAssetPaths, result, isChallengeGame });
+    if (tournament_attempt_id) {
+      const { error: tournamentRecordError } = await serviceClient.rpc("record_tournament_verification", {
+        target_attempt_id: tournament_attempt_id,
+        target_submission_id: submission.id,
+        verification_result_value: {
+          verdict: result.verdict,
+          confidence: result.confidence,
+          observations: result.observations,
+          missingEvidence: result.missingEvidence,
+        },
+        request_key: `verify:${tournament_attempt_id}:${submission.id}`,
+      });
+      if (tournamentRecordError) throw tournamentRecordError;
+    }
     return json({ verdict: result.verdict, confidence: result.confidence, retryInstruction: result.retryInstruction });
   }
 
@@ -581,6 +648,21 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
     }
 
+    if (isChallengeGame && tournament_attempt_id) {
+      const { error: tournamentRecordError } = await serviceClient.rpc("record_tournament_verification", {
+        target_attempt_id: tournament_attempt_id,
+        target_submission_id: submission.id,
+        verification_result_value: {
+          verdict: result.verdict,
+          confidence: result.confidence,
+          observations: result.observations,
+          missingEvidence: result.missingEvidence,
+        },
+        request_key: `verify:${tournament_attempt_id}:${submission.id}`,
+      });
+      if (tournamentRecordError) throw tournamentRecordError;
+    }
+
     return json({
       activityId: result.activityId,
       verdict: result.verdict,
@@ -598,6 +680,18 @@ Deno.serve(async (req: Request): Promise<Response> => {
         vlm_reasoning: error instanceof Error ? error.message : "Gemini verification failed.",
       })
       .eq("id", submission_id);
+    if (tournament_attempt_id) {
+      await serviceClient
+        .from("tournament_attempts")
+        .update({
+          status: "pending_review",
+          verdict: "NEEDS_REVIEW",
+          review_notes: "Automated verification encountered a technical error.",
+        })
+        .eq("id", tournament_attempt_id)
+        .eq("submission_id", submission_id)
+        .eq("status", "submitted");
+    }
     return json({ error: error instanceof Error ? error.message : "Gemini verification failed." }, 500);
   }
 });

@@ -134,6 +134,34 @@ export type Database = {
         };
         Returns: Json;
       };
+      submit_tournament_attempt: {
+        Args: {
+          target_tournament_id: string;
+          target_dog_id: string;
+          target_submission_id: string;
+          storage_path_value: string;
+          request_key: string;
+        };
+        Returns: Json;
+      };
+      prepare_tournament_video_submission: {
+        Args: {
+          target_tournament_id: string;
+          target_dog_id: string;
+          target_challenge_game_id: string;
+          request_key: string;
+        };
+        Returns: Json;
+      };
+      complete_tournament_video_upload: {
+        Args: {
+          target_tournament_id: string;
+          target_dog_id: string;
+          target_submission_id: string;
+          storage_path_value: string;
+        };
+        Returns: Json;
+      };
       submit_user_confirmed_routine: { Args: { target_dog_id: string; routine_activity_id: string; routine_notes: string | null; routine_metadata?: Json }; Returns: ActivityVerificationRow };
       submit_photo_confirmed_routine: { Args: { target_dog_id: string; routine_activity_id: string; storage_path_value: string; routine_notes: string | null; routine_metadata?: Json }; Returns: ActivityVerificationRow };
     };

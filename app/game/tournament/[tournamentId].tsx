@@ -188,19 +188,21 @@ export default function TournamentDetailScreen() {
         ) : null}
 
         {/* Actions when active and entered */}
-        {t.status === "active" && entry.data ? (
+        {t.status === "active" &&
+        entry.data &&
+        entry.data.attemptsUsed < t.maxAttemptsPerEntry ? (
           <Pressable
             style={styles.submitBtn}
-            onPress={() => {
-              // TODO: Route to challenge recording flow (Phase 2).
-              //   Reuse the existing game/[gameId]/play flow, creating a
-              //   tournament_attempts row on submission.
-              //   Do NOT route into recording unless the app has a safe
-              //   tournament context mechanism.
-              setJoinFeedback(
-                "Tournament submissions will connect to the existing challenge recording flow in Phase 2.",
-              );
-            }}
+            onPress={() =>
+              router.push({
+                pathname: "/game/[gameId]/play",
+                params: {
+                  gameId: t.challengeGameId,
+                  mode: "challenge",
+                  tournamentId: t.id,
+                },
+              })
+            }
             accessibilityRole="button"
           >
             <Ionicons name="videocam-outline" size={18} color={theme.colors.white} />

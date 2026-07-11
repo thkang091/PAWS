@@ -1,20 +1,35 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, router, useLocalSearchParams } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { theme } from "@/constants/theme";
+import { queryKeys } from "@/constants/queryKeys";
+import { useCurrentDog } from "@/hooks/useCurrentDog";
+import { submitTournamentVideo } from "@/services/tournamentService";
+
+type SubmitPhase = "ready" | "uploading" | "verifying" | "complete" | "error";
 
 export default function ChallengeSubmitScreen() {
-  const { gameId, videoUri, scriptId, durationMs } = useLocalSearchParams<{
+  const { gameId, videoUri, scriptId, durationMs, tournamentId } = useLocalSearchParams<{
     gameId: string;
     videoUri?: string | string[];
     scriptId?: string;
     durationMs?: string;
+    tournamentId?: string | string[];
   }>();
 
   const resolvedVideoUri = Array.isArray(videoUri) ? videoUri[0] : videoUri;
+  const resolvedTournamentId = Array.isArray(tournamentId)
+    ? tournamentId[0]
+    : tournamentId;
+  const dog = useCurrentDog();
+  const dogId = dog.data?.id ?? "";
+  const queryClient = useQueryClient();
+  const [phase, setPhase] = useState<SubmitPhase>("ready");
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   const fileName = useMemo(() => {
     if (!resolvedVideoUri) return "No video file";
@@ -22,12 +37,80 @@ export default function ChallengeSubmitScreen() {
   }, [resolvedVideoUri]);
 
   const handleBackToChallenge = () => {
+    if (resolvedTournamentId) {
+      router.replace(`/game/tournament/${resolvedTournamentId}`);
+      return;
+    }
     router.replace(`/game/${gameId}`);
   };
 
   const handleRetake = () => {
-    router.replace(`/game/${gameId}/play?mode=challenge`);
+    router.replace({
+      pathname: "/game/[gameId]/play",
+      params: {
+        gameId,
+        mode: "challenge",
+        ...(resolvedTournamentId
+          ? { tournamentId: resolvedTournamentId }
+          : {}),
+      },
+    });
   };
+
+  const handleTournamentSubmit = async () => {
+    if (
+      !resolvedTournamentId ||
+      !resolvedVideoUri ||
+      !dogId ||
+      (phase !== "ready" && phase !== "error")
+    ) {
+      return;
+    }
+
+    try {
+      setFeedback(null);
+      setPhase("uploading");
+      const result = await submitTournamentVideo(
+        resolvedTournamentId,
+        dogId,
+        gameId,
+        resolvedVideoUri,
+        {
+          onUploaded: () => setPhase("verifying"),
+          onVerifying: () => setPhase("verifying"),
+        },
+      );
+      setPhase("complete");
+      setFeedback(
+        result.verdict === "PASS"
+          ? `Verified provisional score: ${result.attempt.provisionalScore ?? 0}. PAWS admin review is still required.`
+          : result.verdict === "NEEDS_REVIEW"
+            ? "Verification needs human review. Your attempt is now in the PAWS admin queue."
+            : "The verifier did not confirm a pass. PAWS admin will review the attempt before rankings are final.",
+      );
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.tournamentEntry(resolvedTournamentId, dogId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.tournamentLeaderboard(resolvedTournamentId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.tournamentEvent(resolvedTournamentId),
+        }),
+      ]);
+    } catch (error) {
+      setPhase("error");
+      setFeedback(
+        error instanceof Error
+          ? error.message
+          : "Tournament submission failed. Please try again.",
+      );
+    }
+  };
+
+  const isTournament = Boolean(resolvedTournamentId);
+  const busy = phase === "uploading" || phase === "verifying";
 
   return (
     <>
@@ -43,7 +126,9 @@ export default function ChallengeSubmitScreen() {
             />
           </View>
 
-          <Text style={styles.eyebrow}>Challenge Submit</Text>
+          <Text style={styles.eyebrow}>
+            {isTournament ? "Tournament Attempt" : "Challenge Submit"}
+          </Text>
 
           <Text style={styles.title}>
             {resolvedVideoUri ? "Video captured" : "No video found"}
@@ -51,7 +136,9 @@ export default function ChallengeSubmitScreen() {
 
           <Text style={styles.body}>
             {resolvedVideoUri
-              ? "Your recording is ready. The next step will upload this video, then charge silver after the upload succeeds."
+              ? isTournament
+                ? "Your recording is ready. Upload it for trusted verification and PAWS admin review. No additional entry fee will be charged."
+                : "Your recording is ready. The next step will upload this video, then charge silver after the upload succeeds."
               : "The challenge finished, but PAWS could not find the recorded video file."}
           </Text>
 
@@ -76,7 +163,14 @@ export default function ChallengeSubmitScreen() {
               color={theme.colors.primaryDark}
             />
             <Text style={styles.statusText}>
-              Backend submit connection will be added here next.
+              {feedback ??
+                (isTournament
+                  ? phase === "uploading"
+                    ? "Uploading tournament video..."
+                    : phase === "verifying"
+                      ? "Running trusted verification..."
+                      : "Best verified attempt counts provisionally. Final scores require PAWS admin review."
+                  : "Backend submit connection will be added here next.")}
             </Text>
           </View>
 
@@ -84,6 +178,7 @@ export default function ChallengeSubmitScreen() {
             <Pressable
               style={styles.secondaryBtn}
               onPress={handleRetake}
+              disabled={busy || phase === "complete"}
               accessibilityRole="button"
             >
               <Ionicons
@@ -94,13 +189,34 @@ export default function ChallengeSubmitScreen() {
               <Text style={styles.secondaryBtnText}>Retake</Text>
             </Pressable>
 
-            <Pressable
-              style={styles.primaryBtn}
-              onPress={handleBackToChallenge}
-              accessibilityRole="button"
-            >
-              <Text style={styles.primaryBtnText}>Back to Challenge</Text>
-            </Pressable>
+            {isTournament && phase !== "complete" ? (
+              <Pressable
+                style={[styles.primaryBtn, busy && styles.disabledBtn]}
+                onPress={handleTournamentSubmit}
+                disabled={busy || !resolvedVideoUri || !dogId}
+                accessibilityRole="button"
+              >
+                <Text style={styles.primaryBtnText}>
+                  {phase === "uploading"
+                    ? "Uploading..."
+                    : phase === "verifying"
+                      ? "Verifying..."
+                      : phase === "error"
+                        ? "Try Again"
+                        : "Submit for Review"}
+                </Text>
+              </Pressable>
+            ) : (
+              <Pressable
+                style={styles.primaryBtn}
+                onPress={handleBackToChallenge}
+                accessibilityRole="button"
+              >
+                <Text style={styles.primaryBtnText}>
+                  {isTournament ? "Back to Tournament" : "Back to Challenge"}
+                </Text>
+              </Pressable>
+            )}
           </View>
         </View>
       </ScreenContainer>
@@ -215,5 +331,8 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
     fontSize: theme.typography.sm,
     fontWeight: "900",
+  },
+  disabledBtn: {
+    opacity: 0.6,
   },
 });

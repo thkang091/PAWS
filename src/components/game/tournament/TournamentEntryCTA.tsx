@@ -66,6 +66,10 @@ export const TournamentEntryCTA = ({ tournament, entry, onJoin }: Props) => {
 
   // ── User has an entry ──
   if (entry) {
+    const attemptsRemaining = Math.max(
+      0,
+      tournament.maxAttemptsPerEntry - entry.attemptsUsed,
+    );
     return (
       <View style={[styles.ctaCard, styles.ctaEntered]}>
         <Ionicons name="checkmark-circle" size={20} color={theme.colors.success} />
@@ -73,7 +77,9 @@ export const TournamentEntryCTA = ({ tournament, entry, onJoin }: Props) => {
           <Text style={styles.ctaEnteredTitle}>You're entered!</Text>
           <Text style={styles.ctaEnteredSub}>
             {tournament.status === "active"
-              ? `Submit your best attempt. ${tournament.maxAttemptsPerEntry} max.`
+              ? attemptsRemaining > 0
+                ? `${attemptsRemaining} attempt${attemptsRemaining === 1 ? "" : "s"} remaining.`
+                : "All tournament attempts have been used."
               : tournament.status === "registration_open"
                 ? "Waiting for the tournament to start."
                 : "Entry confirmed."}

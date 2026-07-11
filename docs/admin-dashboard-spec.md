@@ -61,6 +61,17 @@ Required UI:
 - Settle attempts through server-side RPCs only
 - Award gold only from trusted review/settlement actions
 
+### Tournaments
+
+- Create events and move them through controlled status transitions
+- Read `admin_list_tournament_review_queue(tournament_id)`
+- Review every attempt through `admin_review_tournament_attempt`
+- Require an explicit reviewed score for approval
+- Block final ranking while any attempt remains unreviewed
+- Finalize ranks through `admin_finalize_tournament_ranks`
+- Keep prize payout and `settled` transition separate until the payout RPC is implemented
+- Display the immutable `audit_logs` records for review and rank-finalization actions
+
 ### Rewards And Fulfillment
 
 - Activate/deactivate reward catalog items

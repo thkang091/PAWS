@@ -95,13 +95,82 @@ Tournaments are operator/admin-opened competitive events where owners submit cha
 | Settle rankings | Admin / service_role |
 | Award prizes | Admin / service_role |
 
-## Current State (Phase 2B)
+## Current State (Phase 2C)
 
 - **Reads are live.** Visible events, the owner's entry, and the field-limited leaderboard projection are read from Supabase. There is no mobile mock fallback.
 - **Join is live through one RPC.** `joinTournament` calls the authenticated `join_tournament` RPC with an idempotency key. Entry creation, the ledger-backed entry fee, and `participant_count` update are atomic. The mobile app still has no direct table-write access.
-- **Submit Attempt is a placeholder.** The tournament detail screen does not route into the challenge recording flow yet.
-- **Leaderboard rows are backend-controlled.** Mobile reads ranked rows from `list_tournament_leaderboard` and never writes scores or ranks.
+- **Submit Attempt uses the existing recorder.** A signed Tournament context is not trusted by itself: dedicated RPCs re-check the authenticated owner, entry, challenge game, active window, upload, and attempt limit before linking a submission.
+- **Every attempt uses real verification.** `verify-training-video` validates the Tournament attempt context, runs Gemini, and calls the service-role-only verification ingestion RPC.
+- **Every result requires admin review.** Even an automated PASS remains `pending_review`. During the active period, PASS confidence multiplied by 100 is shown only as a provisional technical score; it is not represented as a final performance score.
+- **Ranks are backend-controlled.** The backend recomputes each entry's best eligible score and deterministic provisional rank. Final ranks use only admin-approved `final_score` values.
+- **Finalization is guarded.** `admin_finalize_tournament_ranks` requires `reviewing` status and refuses to run while any submitted or pending-review attempt remains.
 - **No prize payout from mobile.** All prize settlement remains backend/admin/service-role-only.
+
+## Attempt And Review Flow
+
+1. Mobile records through the existing challenge camera with `tournamentId` context.
+2. `prepare_tournament_video_submission` creates a clean pending submission after validating the owner, entry, event, challenge, window, and attempt allowance.
+3. Mobile uploads to the private `dog-activity-videos` bucket.
+4. `complete_tournament_video_upload` records the owned Storage path.
+5. `submit_tournament_attempt` links that submission and atomically increments `attempts_used`.
+6. `verify-training-video` runs the trusted Gemini verification.
+7. `record_tournament_verification` stores the result as `pending_review` and recomputes provisional ranks.
+8. A trusted admin server calls `admin_review_tournament_attempt` for every item.
+9. After the event moves to `reviewing`, the admin server calls `admin_finalize_tournament_ranks`.
+
+Technical verification failures also enter `pending_review`; they cannot silently
+disappear from the finalization gate.
+
+## Admin Review SQL (Development Only)
+
+List the queue from SQL Editor:
+
+```sql
+select *
+from public.admin_list_tournament_review_queue('TOURNAMENT_ID');
+```
+
+The queue includes both verified `pending_review` attempts and unverified
+`submitted` attempts that were interrupted by a technical failure. A
+`submitted` attempt can only be rejected; it cannot receive an approved score.
+
+Approve with an explicitly reviewed score:
+
+```sql
+select public.admin_review_tournament_attempt(
+  'ATTEMPT_ID',
+  'approve',
+  88.50,
+  'Reviewed complete attempt and framing.',
+  null
+);
+```
+
+Reject an invalid attempt:
+
+```sql
+select public.admin_review_tournament_attempt(
+  'ATTEMPT_ID',
+  'reject',
+  null,
+  'Required action was not completed.',
+  null
+);
+```
+
+When submissions are closed, move the event to `reviewing`, confirm the queue is
+empty, and finalize ranks:
+
+```sql
+update public.tournament_events
+set status = 'reviewing'
+where id = 'TOURNAMENT_ID' and status = 'active';
+
+select public.admin_finalize_tournament_ranks('TOURNAMENT_ID', null);
+```
+
+These calls belong in a service-role admin backend in production. The consumer
+app cannot execute them.
 
 ## Opening a Tournament Before the Admin Dashboard Exists
 
@@ -123,9 +192,7 @@ be edited manually as part of opening an event.
 
 ## Remaining Phase 2 Plans
 
-1. Wire `Submit Attempt` to the existing challenge game recording flow with an explicit tournament context.
-2. Create tournament attempts only through a secure backend/RPC boundary.
-3. Connect Gemini/admin review for tournament attempts.
-4. Implement `admin_settle_tournament` with idempotent prize payout.
-5. Build admin tournament management UI.
-6. Add push notification for tournament status changes.
+1. Implement `admin_settle_tournament` with idempotent prize payout.
+2. Build admin tournament management UI around the existing review RPCs.
+3. Replace the confidence-based provisional technical score with a calibrated, challenge-specific performance rubric before competitive production launch.
+4. Add push notification for tournament status changes.

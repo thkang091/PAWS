@@ -163,7 +163,7 @@ Challenge game catalog, entry flows, two-currency economy structures, and activi
 
 Challenge recording includes an on-device dog precheck gate. The gate uses VisionCamera and ExecuTorch object detection to confirm that a dog is visible before recording begins. This local check is only a lightweight pre-filter to reduce empty or irrelevant videos before backend/Gemini verification. It does not judge challenge success, award rewards, or replace backend/admin-reviewed verification.
 
-The Game tab has a top-level Game / Tournament toggle. The Game section shows existing casual challenge games. The Tournament section reads operator-opened competitive events and leaderboards from Supabase. Authenticated users join through an idempotent, ledger-backed RPC; attempt submission and prize settlement remain disabled until their secure backend phases are completed. See `docs/tournament-system-design.md`.
+The Game tab has a top-level Game / Tournament toggle. The Game section shows existing casual challenge games. The Tournament section reads operator-opened competitive events and leaderboards from Supabase. Authenticated users join through an idempotent, ledger-backed RPC and submit through the existing recorder plus ownership-checked Tournament RPCs. Verified attempts remain pending until trusted admin review; prize settlement is still disabled. See `docs/tournament-system-design.md`.
 
 ### Gold Shop And Rewards
 

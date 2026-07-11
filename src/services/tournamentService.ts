@@ -6,6 +6,9 @@ import {
 import type { WalletSummary } from "@/types/domain";
 import type {
   TournamentCurrency,
+  TournamentAttempt,
+  TournamentAttemptStatus,
+  TournamentAttemptVerdict,
   TournamentEntry,
   TournamentEntryStatus,
   TournamentEvent,
@@ -73,6 +76,21 @@ type TournamentLeaderboardRpcRow = {
   is_current_user: boolean;
 };
 
+type TournamentAttemptRow = {
+  id: string;
+  entry_id: string;
+  tournament_id: string;
+  dog_id: string;
+  owner_id: string;
+  submission_id: string;
+  status: string;
+  verdict: "PASS" | "FAIL" | "NEEDS_REVIEW" | null;
+  confidence: number | string | null;
+  provisional_score: number | string | null;
+  final_score: number | string | null;
+  created_at: string;
+};
+
 const mapTournamentCurrency = (currency: string): TournamentCurrency =>
   currency === "gold_coin" || currency === "gold" ? "gold" : "silver";
 
@@ -120,6 +138,22 @@ const mapTournamentLeaderboardRow = (
   score: Number(row.score),
   submittedAt: row.submitted_at,
   isCurrentUser: row.is_current_user,
+});
+
+const mapTournamentAttempt = (row: TournamentAttemptRow): TournamentAttempt => ({
+  id: row.id,
+  entryId: row.entry_id,
+  tournamentId: row.tournament_id,
+  dogId: row.dog_id,
+  userId: row.owner_id,
+  submissionId: row.submission_id,
+  status: row.status as TournamentAttemptStatus,
+  verdict: row.verdict,
+  confidence: row.confidence === null ? null : Number(row.confidence),
+  provisionalScore:
+    row.provisional_score === null ? null : Number(row.provisional_score),
+  finalScore: row.final_score === null ? null : Number(row.final_score),
+  createdAt: row.created_at,
 });
 
 /** Read visible tournament_events rows. */
@@ -216,4 +250,129 @@ export const listTournamentLeaderboard = async (
   return ((data ?? []) as TournamentLeaderboardRpcRow[]).map(
     mapTournamentLeaderboardRow,
   );
+};
+
+type TournamentSubmitProgressCallbacks = {
+  onUploaded?: () => void;
+  onVerifying?: () => void;
+};
+
+/**
+ * Upload an actual tournament video, atomically consume one entry attempt,
+ * then ask the trusted verification function to record a reviewable result.
+ * The mobile client never writes scores, ranks, or review decisions.
+ */
+export const submitTournamentVideo = async (
+  tournamentId: string,
+  dogId: string,
+  challengeGameId: string,
+  uri: string,
+  callbacks?: TournamentSubmitProgressCallbacks,
+): Promise<TournamentAttemptVerdict> => {
+  const client = getClientOrThrow();
+  const { data: userData, error: userError } = await client.auth.getUser();
+  throwIfError(userError);
+  const userId = userData.user?.id;
+  if (!userId) throw new Error("Authentication required.");
+
+  const videoResponse = await fetch(uri);
+  const videoBytes = await videoResponse.arrayBuffer();
+
+  const { data: submission, error: submissionError } = await client.rpc(
+    "prepare_tournament_video_submission",
+    {
+      target_tournament_id: tournamentId,
+      target_dog_id: dogId,
+      target_challenge_game_id: challengeGameId,
+      request_key: createIdempotencyKey("tournament-upload"),
+    },
+  );
+  throwIfError(submissionError);
+  const submissionId = (
+    submission as unknown as { submission: { id: string } }
+  ).submission.id;
+
+  const extension = uri.toLowerCase().endsWith(".mov") ? "mov" : "mp4";
+  const storagePath = `${userId}/${dogId}/${challengeGameId}/${submissionId}/tournament.${extension}`;
+  const uploadResult = await client.storage
+    .from("dog-activity-videos")
+    .upload(storagePath, videoBytes, {
+      contentType: extension === "mov" ? "video/quicktime" : "video/mp4",
+      upsert: false,
+    });
+  throwIfError(uploadResult.error);
+
+  const { error: uploadStateError } = await client.rpc(
+    "complete_tournament_video_upload",
+    {
+      target_tournament_id: tournamentId,
+      target_dog_id: dogId,
+      target_submission_id: submissionId,
+      storage_path_value: storagePath,
+    },
+  );
+  throwIfError(uploadStateError);
+  callbacks?.onUploaded?.();
+
+  const { data: attemptData, error: attemptError } = await client.rpc(
+    "submit_tournament_attempt",
+    {
+      target_tournament_id: tournamentId,
+      target_dog_id: dogId,
+      target_submission_id: submissionId,
+      storage_path_value: storagePath,
+      request_key: createIdempotencyKey("tournament-attempt"),
+    },
+  );
+  throwIfError(attemptError);
+  const attemptResult = attemptData as unknown as { attempt: TournamentAttemptRow };
+  const submittedAttempt = mapTournamentAttempt(attemptResult.attempt);
+
+  callbacks?.onVerifying?.();
+  const { data: verificationData, error: verificationError } =
+    await client.functions.invoke("verify-training-video", {
+      body: {
+        submission_id: submissionId,
+        dog_id: dogId,
+        activity_id: challengeGameId,
+        tournament_attempt_id: submittedAttempt.id,
+      },
+    });
+  if (verificationError) {
+    let serverMessage = "";
+    const response = (verificationError as { context?: Response }).context;
+    if (response && typeof response.clone === "function") {
+      try {
+        const body = (await response.clone().json()) as { error?: unknown };
+        if (typeof body.error === "string") serverMessage = body.error;
+      } catch {
+        // Keep the SDK message when the function did not return JSON.
+      }
+    }
+    throw new Error(serverMessage || verificationError.message);
+  }
+
+  const result = verificationData as {
+    verdict: "PASS" | "FAIL" | "NEEDS_REVIEW";
+    confidence: number;
+    observations?: string[];
+    retryInstruction?: string | null;
+  };
+
+  return {
+    attempt: {
+      ...submittedAttempt,
+      status: "pending_review",
+      verdict: result.verdict,
+      confidence: result.confidence,
+      provisionalScore:
+        result.verdict === "PASS"
+          ? Math.round(result.confidence * 10000) / 100
+          : null,
+    },
+    verdict: result.verdict,
+    confidence: result.confidence,
+    observations: result.observations ?? [],
+    retryInstruction: result.retryInstruction ?? null,
+  };
 };

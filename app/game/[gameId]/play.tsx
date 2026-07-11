@@ -17,6 +17,7 @@ export default function ChallengePlayScreen() {
   const params = useLocalSearchParams<{
     gameId?: string | string[];
     mode?: string | string[];
+    tournamentId?: string | string[];
   }>();
 
   const gameId = useMemo(() => {
@@ -30,6 +31,12 @@ export default function ChallengePlayScreen() {
   }, [params.mode]);
 
   const challengeMode = mode === "challenge" ? "challenge" : "practice";
+  const tournamentId = useMemo(() => {
+    const rawTournamentId = params.tournamentId;
+    return Array.isArray(rawTournamentId)
+      ? rawTournamentId[0]
+      : rawTournamentId;
+  }, [params.tournamentId]);
   const script = getChallengeScriptByGameId(gameId);
 
   const [phase, setPhase] = useState<PlayPhase>("framing");
@@ -67,6 +74,7 @@ export default function ChallengePlayScreen() {
         videoUri: result.videoUri,
         scriptId: result.scriptId,
         durationMs: String(result.durationMs),
+        ...(tournamentId ? { tournamentId } : {}),
       },
     });
   };

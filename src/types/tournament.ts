@@ -59,3 +59,33 @@ export type TournamentLeaderboardRow = {
   submittedAt: string;
   isCurrentUser: boolean;
 };
+
+export type TournamentAttemptStatus =
+  | "submitted"
+  | "pending_review"
+  | "approved"
+  | "rejected"
+  | "error";
+
+export type TournamentAttempt = {
+  id: string;
+  entryId: string;
+  tournamentId: string;
+  dogId: string;
+  userId: string;
+  submissionId: string;
+  status: TournamentAttemptStatus;
+  verdict: "PASS" | "FAIL" | "NEEDS_REVIEW" | null;
+  confidence: number | null;
+  provisionalScore: number | null;
+  finalScore: number | null;
+  createdAt: string;
+};
+
+export type TournamentAttemptVerdict = {
+  attempt: TournamentAttempt;
+  verdict: "PASS" | "FAIL" | "NEEDS_REVIEW";
+  confidence: number;
+  observations: string[];
+  retryInstruction: string | null;
+};
