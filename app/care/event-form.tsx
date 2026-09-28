@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
-import { RecurrencePicker, type RecurrenceFrequency } from "@/components/care/RecurrencePicker";
+import { RecurrencePicker, type RecurrenceFrequency } from "@/features/care/components/RecurrencePicker";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { theme } from "@/constants/theme";

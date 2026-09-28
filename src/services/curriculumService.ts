@@ -16,8 +16,6 @@ import type {
 } from "@/types/domain";
 import type { Json } from "@/types/database";
 
-// ─── Mappers ────────────────────────────────────────────────────────────────
-
 type ActivityRow = Record<string, unknown>;
 type RoadmapRow = Record<string, unknown>;
 type RoadmapDayRow = Record<string, unknown>;
@@ -92,7 +90,6 @@ const getFunctionErrorMessage = async (error: unknown): Promise<string | null> =
   return null;
 };
 
-/** Default recording requirements used when the column is absent / empty. */
 const DEFAULT_RECORDING_REQUIREMENTS: RecordingRequirements = {
   cameraAngle: "SIDE_FULL_BODY",
   fullDogBodyRequired: true,
@@ -108,9 +105,6 @@ const DEFAULT_RECORDING_REQUIREMENTS: RecordingRequirements = {
 };
 
 const mapActivity = (row: ActivityRow): TrainingCatalogActivity => {
-  // Build ReferenceAssetRequirement[] from the simple asset-type array stored
-  // in the activities table.  Full per-asset configs (min/max photos, etc.) live
-  // in training_reference_asset_requirements and are loaded separately when needed.
   const requiredReferenceAssets: ReferenceAssetRequirement[] = jsonArrayToStrings(
     row.required_reference_assets,
   ).map((assetType) => ({
@@ -122,8 +116,6 @@ const mapActivity = (row: ActivityRow): TrainingCatalogActivity => {
     instructions: [],
   }));
 
-  // recording_requirements is stored as JSONB (added in migration 0023).
-  // Fall back to sensible defaults for rows that pre-date the column.
   const recordingRequirements: RecordingRequirements =
     (row.recording_requirements as RecordingRequirements | null) ??
     DEFAULT_RECORDING_REQUIREMENTS;
@@ -210,7 +202,6 @@ const inferVideoContentType = (uri: string): string => {
   return "video/mp4";
 };
 
-
 const mapReferenceAsset = (row: ReferenceAssetRow): TrainingReferenceAsset => ({
   id: row.id as string,
   dogId: row.dog_id as string,
@@ -259,8 +250,6 @@ const mapStreak = (row: StreakRow): DogTrainingStreak => ({
   lastActivityDate: (row.last_activity_date as string | null) ?? null,
 });
 
-// ─── Service Functions ───────────────────────────────────────────────────────
-
 export const getCatalogActivity = async (id: string): Promise<TrainingCatalogActivity> => {
   const client = getClientOrThrow();
   const { data, error } = await client
@@ -296,9 +285,12 @@ export const getCatalogByCategory = async (
   return (data ?? []).map((row) => mapActivity(row as ActivityRow));
 };
 
+import { DEMO_MODE, demoGetRoadmap } from "@/services/demoData";
+
 export const getDogRoadmap = async (
   dogId: string,
 ): Promise<(PersonalizedRoadmap & { days: PersonalizedRoadmapDay[] }) | null> => {
+  if (DEMO_MODE) return demoGetRoadmap();
   const client = getClientOrThrow();
   const { data: roadmapData, error: roadmapError } = await client
     .from("dog_personalized_roadmaps")
@@ -559,7 +551,6 @@ export const saveTrainingGoals = async (
 ): Promise<void> => {
   const client = getClientOrThrow();
 
-  // Delete existing goals and pain points for the dog, then insert fresh ones.
   const { error: deleteGoalsError } = await client
     .from("dog_selected_training_goals")
     .delete()

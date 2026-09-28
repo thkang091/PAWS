@@ -1,6 +1,6 @@
 # PAWS
 
-PAWS is an iOS-first Expo app for gamified dog training, daily care, private DogMoment memories, challenge games, and a restricted two-currency reward economy. The mobile app keeps exactly five bottom tabs: Train, Game, DogMoment, Care, and Profile. Expanded surfaces open through nested routes such as weekly plan, rewards, avatar shop, account linking, training history, DogMoment calendar, and care forms.
+PAWS is an iOS-first Expo app for gamified dog training, daily care, private DogMoment memories, challenge games, and a restricted two-currency reward economy. The mobile app has four bottom tabs: Train, Care, Game, and Profile. Expanded surfaces open through nested routes such as weekly plan, rewards, avatar shop, account linking, training history, DogMoment calendar, and care forms.
 
 ## Current State
 
@@ -27,6 +27,29 @@ Not production-complete until external setup is done:
 - Expo Camera, Image, Image Picker, Vector Icons, Reanimated
 - Zod validation
 - FastAPI Python backend for activity verification
+
+## Project Structure
+
+Routes live in `app/` (Expo Router). Everything a route renders lives with its feature in `src/features/`:
+
+```
+src/
+  features/
+    welcome/      welcome and intro scenes
+    onboarding/   dog profile questions, plan selection
+    home/         tab bar shell, DogMoment
+    train/        chapters, lessons, coach, sessions, weekly plan
+    care/         care setup, today's care, health, activity, feeding, vet
+    game/         challenge games and shop art
+    profile/      dog tag, progress, settings sections
+  components/     shared UI (buttons, cards, mascot, avatar, account)
+  constants/      design tokens, catalogs, options
+  hooks/          TanStack Query hooks
+  services/       Supabase and device services
+  data/ lib/ types/ validation/
+```
+
+Each feature folder holds `components/` and, where it owns local state, `state/`.
 
 ## Environment
 
@@ -167,6 +190,29 @@ The Gold Shop displays real reward catalog rows and creates pending redemption r
 ### Avatar Shop
 
 Avatar items cost silver only. Purchase and equip flows use secure RPCs.
+
+## Walks and Maps
+
+The walk screen (`app/care/walk.tsx`) uses a real Google map and real GPS. Both live in `src/features/care/walk/`:
+
+| File | Status |
+| --- | --- |
+| `GoogleWalkMap.tsx` | Done. `react-native-maps` with `PROVIDER_GOOGLE`: a marigold `Polyline` for the planned route, a charcoal one for the walked portion (from the live GPS trail once one exists), `Marker`s for home and the dog. The old SVG-only `SketchMap.tsx` is retired; see `~/Desktop/paws-dev-notes/`. |
+| `useWalkTracker.ts` | Done. Requests foreground location permission, `watchPositionAsync` (`accuracy: BestForNavigation`, `distanceInterval: 5`), sums distance between fixes, drops fixes worse than 25 m accuracy or more than 120 m from the last one (GPS jumps), and stops the watch while paused. Surfaces `permission` so the UI can show a "location is off" notice. |
+| `walkRoutes.ts` → `suggestRoutes(origin)` | Still `MOCK_ROUTES` (paths near Telok Ayer Park). Swapping this for real routes needs the Routes API + a Supabase edge function, below. |
+
+### What's wired up
+
+- `GOOGLE_MAPS_API_KEY` in `.env` is read by `app.config.js` and passed to both `ios.googleMapsApiKey` (via `Info.plist`'s `GMSApiKey`) and the Android `com.google.android.geo.API_KEY` meta-data, through `react-native-maps`'s own config plugin.
+- The `expo-location` plugin is registered with a when-in-use permission sentence.
+- `react-native-maps` and `expo-location` are installed.
+
+This only runs in a **development build**, not Expo Go — `npx expo prebuild` + `npx expo run:ios` (or `eas build --profile development`). Rerun `npx expo prebuild` (or a full `run:ios`) after changing `GOOGLE_MAPS_API_KEY`, since the key is baked into native config at prebuild time, not read at runtime.
+
+### Still open
+
+1. **Real routes.** Add `supabase/functions/walk-routes`, calling `routes.googleapis.com/directions/v2:computeRoutes` with `travelMode: WALK`, using a **server** Maps key (Routes API enabled, never shipped in the app — separate from `GOOGLE_MAPS_API_KEY`, which is a client SDK key restricted to the bundle id / package + SHA-1). Return `{ id, name, note, distanceKm, minutes, path }` and point `suggestRoutes` at it.
+2. **Background tracking.** Currently foreground-only — the walk stops updating distance if the app is backgrounded or the screen locks. Enabling that needs `UIBackgroundModes: location` on iOS and the `ACCESS_BACKGROUND_LOCATION` permission on Android, both of which invite extra app-store review scrutiny, so it's deliberately left out for now.
 
 ## Dog AI Backend
 

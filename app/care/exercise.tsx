@@ -1,219 +1,275 @@
-import { useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { useMemo, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Animated, { FadeIn, LinearTransition, useReducedMotion } from "react-native-reanimated";
+import { router } from "expo-router";
+import {
+  BarbellIcon,
+  ConfettiIcon,
+  DropIcon,
+  PersonSimpleRunIcon,
+  PersonSimpleWalkIcon,
+  PlusIcon,
+  SoccerBallIcon,
+} from "phosphor-react-native";
 
-import { ScreenContainer } from "@/components/ui/ScreenContainer";
-import { theme } from "@/constants/theme";
+import { DetailEmpty, DetailShell } from "@/features/care/components/DetailShell";
+import { ChipRow, DetailSheet, Field } from "@/features/care/components/DetailSheet";
+import { Band, PanelHead, Spotlight } from "@/components/ui/panels";
+import { PressScale } from "@/components/ui/PressScale";
 import { ACTIVITY_TYPES } from "@/constants/careHealth";
 import { useCareProfile, useLogExercise, useTodayExerciseLogs } from "@/hooks/useCareHealth";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
+import {
+  accent,
+  bg,
+  border,
+  icon as iconSize,
+  motion,
+  radius,
+  space,
+  text,
+  type,
+} from "@/constants/design";
+
+type PhosphorIcon = typeof PersonSimpleWalkIcon;
+
+const GLYPH: Record<string, PhosphorIcon> = {
+  walk: PersonSimpleWalkIcon,
+  run: PersonSimpleRunIcon,
+  play: SoccerBallIcon,
+  swim: DropIcon,
+  training: BarbellIcon,
+};
+
+const labelOf = (key: string) =>
+  ACTIVITY_TYPES.find((item) => item.key === key)?.label ?? key;
 
 export default function ExerciseScreen() {
+  const reduceMotion = useReducedMotion();
   const dog = useCurrentDog();
   const dogId = dog.data?.id ?? "";
   const profile = useCareProfile(dogId);
   const logs = useTodayExerciseLogs(dogId);
-  const logEx = useLogExercise(dogId);
+  const logExercise = useLogExercise(dogId);
 
-  const [addOpen, setAddOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [activityType, setActivityType] = useState("walk");
   const [duration, setDuration] = useState("");
   const [distance, setDistance] = useState("");
-  const [walkCount, setWalkCount] = useState(1);
   const [notes, setNotes] = useState("");
 
-  const goalMinutes = profile.data?.dailyExerciseGoalMinutes ?? 60;
-  const totalToday = (logs.data ?? []).reduce((sum, l) => sum + l.durationMinutes, 0);
-  const progress = Math.min(totalToday / goalMinutes, 1);
-  const progressDeg = progress * 283;
+  const chosenGoal = profile.data?.dailyExerciseGoalMinutes ?? null;
+  const goal = chosenGoal ?? 60;
 
-  const handleLog = () => {
-    const mins = parseInt(duration, 10);
-    if (!mins || mins <= 0) return;
-    logEx.mutate({
-      activityType,
-      durationMinutes: mins,
-      distanceMiles: distance ? parseFloat(distance) : null,
-      walkCount: activityType === "walk" ? walkCount : null,
-      notes: notes.trim() || null,
-    }, {
-      onSuccess: () => {
-        setAddOpen(false);
-        setDuration("");
-        setDistance("");
-        setWalkCount(1);
-        setNotes("");
+  const today = useMemo(() => logs.data ?? [], [logs.data]);
+  const minutes = today.reduce((total, entry) => total + entry.durationMinutes, 0);
+  const left = Math.max(0, goal - minutes);
+  const met = minutes >= goal;
+
+  const settle = reduceMotion ? undefined : LinearTransition.duration(motion.duration.select);
+
+  const commit = () => {
+    const mins = Number.parseInt(duration, 10);
+    if (!Number.isFinite(mins) || mins <= 0) return;
+    logExercise.mutate(
+      {
+        activityType,
+        durationMinutes: mins,
+        distanceMiles: distance ? Number.parseFloat(distance) : null,
+        walkCount: activityType === "walk" ? 1 : null,
+        notes: notes.trim() || null,
       },
-    });
+      {
+        onSuccess: () => {
+          setOpen(false);
+          setDuration("");
+          setDistance("");
+          setNotes("");
+        },
+      },
+    );
   };
 
-  const activityIcon = (type: string) =>
-    ACTIVITY_TYPES.find((a) => a.key === type)?.icon ?? "walk-outline";
-  const activityLabel = (type: string) =>
-    ACTIVITY_TYPES.find((a) => a.key === type)?.label ?? type;
-
   return (
-    <ScreenContainer scroll>
-      {/* Ring */}
-      <View style={s.ringCard}>
-        <View style={s.ringWrap}>
-          <View style={s.ringOuter}>
-            <View style={s.ringInner}>
-              <Text style={s.ringMinutes}>{totalToday}</Text>
-              <Text style={s.ringLabel}>of {goalMinutes} min</Text>
-            </View>
-          </View>
-          {/* SVG-less progress arc using border trick */}
-          <View style={[s.arcFill, { transform: [{ rotate: `${progressDeg * 1.27}deg` }] }]} />
-        </View>
-        <View style={s.ringStats}>
-          <Text style={s.ringDog}>{dog.data?.name ?? "Your dog"}'s exercise</Text>
-          <Text style={s.ringBreed}>Goal: {goalMinutes} min/day</Text>
-          {totalToday >= goalMinutes ? (
-            <View style={s.goalBadge}>
-              <Ionicons name="checkmark-circle" size={14} color={theme.colors.success} />
-              <Text style={s.goalBadgeText}>Goal reached!</Text>
-            </View>
-          ) : (
-            <Text style={s.ringRemaining}>{goalMinutes - totalToday} min to go</Text>
-          )}
-        </View>
-      </View>
+    <DetailShell
+      title="Exercise"
+      glyph={<PersonSimpleWalkIcon size={iconSize.standard} color={accent.deep} weight="fill" />}
+      action={{
+        label: "Log an activity",
+        icon: <PlusIcon size={iconSize.button} color={text.primary} weight="bold" />,
+        onPress: () => setOpen(true),
+      }}
+    >
+      <Spotlight
+        data={{
+          chip: met ? "Goal met" : "Today",
+          glyph: met ? "confetti" : "walk",
+          title: met ? `${minutes} minutes` : `${left} minutes to go`,
+          meta: met
+            ? `${dog.data?.name ?? "Your dog"} is past the ${goal} minute goal for today.`
+            : today.length === 0
+              ? `Nothing logged yet. The goal is ${goal} minutes.`
+              : `${minutes} of ${goal} minutes so far, across ${today.length} ${today.length === 1 ? "session" : "sessions"}.`,
+          progress: Math.min(1, minutes / goal),
+          progressNote: `${minutes} of ${goal} minutes`,
+        }}
+        onPress={() => setOpen(true)}
+      />
 
-      <View style={s.sectionRow}>
-        <Text style={s.sectionTitle}>Today's activity</Text>
-        <Pressable style={s.addBtn} onPress={() => setAddOpen(true)} accessibilityRole="button">
-          <Ionicons name="add" size={18} color="#fff" />
-          <Text style={s.addBtnText}>Log activity</Text>
-        </Pressable>
-      </View>
+      <Band
+        figures={[
+          { key: "mins", glyph: "walk", value: String(minutes), label: "Minutes" },
+          {
+            key: "sessions",
+            glyph: "calendar",
+            value: String(today.length),
+            label: today.length === 1 ? "Session" : "Sessions",
+          },
+          { key: "goal", glyph: "target", value: String(goal), label: "Goal" },
+        ]}
+      />
 
-      {(logs.data ?? []).length === 0 ? (
-        <View style={s.empty}>
-          <Ionicons name="walk-outline" size={40} color={theme.colors.textMuted} />
-          <Text style={s.emptyText}>No activity logged yet today</Text>
-        </View>
+      {chosenGoal === null ? (
+        <PressScale
+          accessibilityRole="button"
+          accessibilityLabel="Set a goal for this breed in care setup"
+          scaleTo={0.98}
+          style={styles.goalNote}
+          onPress={() => router.push("/care/setup")}
+        >
+          <Text style={styles.goalNoteText}>
+            <Text style={styles.goalNoteStrong}>60 minutes is a general default.</Text> Set up care
+            and PAWS will pick a goal from {dog.data?.name ?? "your dog"}&rsquo;s breed.
+          </Text>
+        </PressScale>
+      ) : null}
+
+      <PanelHead title="Today" />
+
+      {today.length === 0 ? (
+        <DetailEmpty
+          glyph={<PersonSimpleWalkIcon size={32} color={text.primary} weight="regular" />}
+          title="Nothing logged yet"
+          body="A walk, a run, a swim, a training session. Log it and it counts toward today."
+        />
       ) : (
-        (logs.data ?? []).map((log) => (
-          <View key={log.id} style={s.logCard}>
-            <View style={s.logIcon}>
-              <Ionicons name={activityIcon(log.activityType) as never} size={20} color={theme.colors.primaryDark} />
-            </View>
-            <View style={s.logBody}>
-              <Text style={s.logType}>{activityLabel(log.activityType)}</Text>
-              <Text style={s.logMeta}>
-                {log.durationMinutes} min
-                {log.walkCount ? ` · ${log.walkCount} ${log.walkCount === 1 ? "walk" : "walks"}` : ""}
-                {log.distanceMiles ? ` · ${log.distanceMiles.toFixed(1)} mi` : ""}
-              </Text>
-            </View>
-            <View style={s.logBadge}>
-              <Text style={s.logBadgeText}>+{log.durationMinutes} min</Text>
-            </View>
-          </View>
-        ))
+        <Animated.View layout={settle} style={styles.stack}>
+          {today.map((entry, index) => {
+            const Glyph = GLYPH[entry.activityType] ?? PersonSimpleWalkIcon;
+            return (
+              <Animated.View
+                key={entry.id}
+                entering={
+                  reduceMotion
+                    ? undefined
+                    : FadeIn.duration(motion.duration.enter).delay(index * 40)
+                }
+                style={styles.card}
+              >
+                <View style={styles.disc}>
+                  <Glyph size={iconSize.standard} color={text.primary} weight="regular" />
+                </View>
+
+                <View style={styles.copy}>
+                  <Text style={styles.name}>{labelOf(entry.activityType)}</Text>
+                  <Text style={styles.meta} numberOfLines={1}>
+                    {[
+                      entry.distanceMiles ? `${entry.distanceMiles} mi` : null,
+                      entry.notes,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ") || "Logged today"}
+                  </Text>
+                </View>
+
+                <View style={styles.durationWrap}>
+                  <Text style={styles.duration}>{entry.durationMinutes}</Text>
+                  <Text style={styles.durationUnit}>min</Text>
+                </View>
+              </Animated.View>
+            );
+          })}
+        </Animated.View>
       )}
 
-      <Modal visible={addOpen} transparent animationType="slide" onRequestClose={() => setAddOpen(false)}>
-        <Pressable style={s.overlay} onPress={() => setAddOpen(false)}>
-          <Pressable style={s.sheet} onPress={(e) => e.stopPropagation()}>
-            <View style={s.handle} />
-            <Text style={s.sheetTitle}>Log activity</Text>
-
-            <Text style={s.label}>Activity type</Text>
-            <View style={s.activityGrid}>
-              {ACTIVITY_TYPES.map((a) => (
-                <Pressable
-                  key={a.key}
-                  style={[s.activityChip, activityType === a.key && s.activityChipActive]}
-                  onPress={() => setActivityType(a.key)}
-                >
-                  <Ionicons name={a.icon as never} size={16} color={activityType === a.key ? "#fff" : theme.colors.textMuted} />
-                  <Text style={[s.activityChipText, activityType === a.key && s.activityChipTextActive]}>{a.label}</Text>
-                </Pressable>
-              ))}
-            </View>
-
-            {activityType === "walk" && (
-              <>
-                <Text style={s.label}>Number of walks</Text>
-                <View style={s.stepperRow}>
-                  <Pressable style={s.stepperBtn} onPress={() => setWalkCount((n) => Math.max(1, n - 1))} hitSlop={8}>
-                    <Ionicons name="remove" size={20} color={theme.colors.primaryDark} />
-                  </Pressable>
-                  <View style={s.stepperValue}>
-                    <Text style={s.stepperNum}>{walkCount}</Text>
-                    <Text style={s.stepperUnit}>{walkCount === 1 ? "walk" : "walks"}</Text>
-                  </View>
-                  <Pressable style={s.stepperBtn} onPress={() => setWalkCount((n) => Math.min(10, n + 1))} hitSlop={8}>
-                    <Ionicons name="add" size={20} color={theme.colors.primaryDark} />
-                  </Pressable>
-                </View>
-              </>
-            )}
-
-            <Text style={s.label}>Duration (minutes)</Text>
-            <TextInput style={s.input} value={duration} onChangeText={setDuration} keyboardType="numeric" placeholder="e.g. 30" placeholderTextColor={theme.colors.textMuted} />
-
-            <Text style={s.label}>Distance in miles (optional)</Text>
-            <TextInput style={s.input} value={distance} onChangeText={setDistance} keyboardType="decimal-pad" placeholder="e.g. 1.5" placeholderTextColor={theme.colors.textMuted} />
-
-            <Text style={s.label}>Notes (optional)</Text>
-            <TextInput style={[s.input, { height: 60, textAlignVertical: "top" }]} value={notes} onChangeText={setNotes} multiline placeholder="Park, trail, off-leash…" placeholderTextColor={theme.colors.textMuted} />
-
-            <Pressable style={[s.saveBtn, (!duration || logEx.isPending) && { opacity: 0.5 }]} onPress={handleLog} disabled={!duration || logEx.isPending}>
-              <Text style={s.saveBtnText}>{logEx.isPending ? "Saving…" : "Log activity"}</Text>
-            </Pressable>
-          </Pressable>
-        </Pressable>
-      </Modal>
-    </ScreenContainer>
+      <DetailSheet
+        open={open}
+        title="Log an activity"
+        saveLabel="Save activity"
+        saving={logExercise.isPending}
+        canSave={Number.parseInt(duration, 10) > 0}
+        onClose={() => setOpen(false)}
+        onSave={commit}
+      >
+        <ChipRow
+          label="What did you do"
+          options={ACTIVITY_TYPES.map((item) => ({ key: item.key, label: item.label }))}
+          value={activityType}
+          onChange={setActivityType}
+        />
+        <Field
+          label="How long"
+          value={duration}
+          onChangeText={setDuration}
+          placeholder="Minutes"
+          keyboardType="number-pad"
+        />
+        <Field
+          label="How far"
+          value={distance}
+          onChangeText={setDistance}
+          placeholder="Miles (optional)"
+          keyboardType="decimal-pad"
+        />
+        <Field
+          label="Notes"
+          value={notes}
+          onChangeText={setNotes}
+          placeholder="Where you went, how it went…"
+          multiline
+        />
+      </DetailSheet>
+    </DetailShell>
   );
 }
 
-const s = StyleSheet.create({
-  ringCard: { flexDirection: "row", alignItems: "center", gap: 20, backgroundColor: theme.colors.card, borderRadius: theme.radii.lg, padding: 20, marginBottom: 20, ...theme.shadows.soft },
-  ringWrap: { width: 90, height: 90, alignItems: "center", justifyContent: "center" },
-  ringOuter: { width: 90, height: 90, borderRadius: 45, borderWidth: 8, borderColor: theme.colors.primarySoft, alignItems: "center", justifyContent: "center" },
-  ringInner: { alignItems: "center" },
-  ringMinutes: { fontSize: 22, fontWeight: "900", color: theme.colors.primaryDark },
-  ringLabel: { fontSize: 10, color: theme.colors.textMuted, fontWeight: "600" },
-  arcFill: { position: "absolute", width: 90, height: 90, borderRadius: 45, borderWidth: 8, borderColor: "transparent", borderTopColor: theme.colors.primaryDark },
-  ringStats: { flex: 1 },
-  ringDog: { fontSize: 15, fontWeight: "800", color: theme.colors.text, marginBottom: 2 },
-  ringBreed: { fontSize: 12, color: theme.colors.textMuted, marginBottom: 6 },
-  goalBadge: { flexDirection: "row", alignItems: "center", gap: 4 },
-  goalBadgeText: { fontSize: 12, fontWeight: "700", color: theme.colors.success },
-  ringRemaining: { fontSize: 12, color: theme.colors.textMuted },
-  sectionRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 },
-  sectionTitle: { fontSize: 16, fontWeight: "900", color: theme.colors.text },
-  addBtn: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: theme.colors.primaryDark, paddingHorizontal: 12, paddingVertical: 8, borderRadius: theme.radii.pill },
-  addBtnText: { fontSize: 13, fontWeight: "700", color: "#fff" },
-  empty: { alignItems: "center", paddingVertical: 40, gap: 8 },
-  emptyText: { fontSize: 14, color: theme.colors.textMuted, fontWeight: "600" },
-  logCard: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: theme.colors.card, borderRadius: theme.radii.lg, padding: 14, marginBottom: 8, ...theme.shadows.soft },
-  logIcon: { width: 36, height: 36, borderRadius: 10, backgroundColor: theme.colors.primarySoft, alignItems: "center", justifyContent: "center" },
-  logBody: { flex: 1 },
-  logType: { fontSize: 14, fontWeight: "800", color: theme.colors.text },
-  logMeta: { fontSize: 12, color: theme.colors.textMuted },
-  logBadge: { backgroundColor: theme.colors.primarySoft, borderRadius: theme.radii.pill, paddingHorizontal: 8, paddingVertical: 4 },
-  logBadgeText: { fontSize: 12, fontWeight: "700", color: theme.colors.primaryDark },
-  overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "flex-end" },
-  sheet: { backgroundColor: theme.colors.background, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },
-  handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: theme.colors.border, alignSelf: "center", marginBottom: 20 },
-  sheetTitle: { fontSize: 18, fontWeight: "900", color: theme.colors.text, marginBottom: 16 },
-  label: { fontSize: 12, fontWeight: "700", color: theme.colors.textMuted, marginBottom: 6, marginTop: 12, textTransform: "uppercase", letterSpacing: 0.5 },
-  activityGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 },
-  stepperRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.cardMuted, borderRadius: 16, paddingVertical: 8, marginBottom: 4 },
-  stepperBtn: { width: 48, height: 48, alignItems: "center", justifyContent: "center" },
-  stepperValue: { flex: 1, alignItems: "center" },
-  stepperNum: { fontSize: 28, fontWeight: "900", color: theme.colors.primaryDark },
-  stepperUnit: { fontSize: 11, fontWeight: "600", color: theme.colors.textMuted, marginTop: -2 },
-  activityChip: { flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 8, borderRadius: theme.radii.pill, borderWidth: 1, borderColor: theme.colors.border },
-  activityChipActive: { backgroundColor: theme.colors.primaryDark, borderColor: theme.colors.primaryDark },
-  activityChipText: { fontSize: 13, color: theme.colors.textMuted, fontWeight: "600" },
-  activityChipTextActive: { color: "#fff" },
-  input: { borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radii.md, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14, color: theme.colors.text, backgroundColor: theme.colors.card },
-  saveBtn: { backgroundColor: theme.colors.primaryDark, borderRadius: theme.radii.pill, paddingVertical: 14, alignItems: "center", marginTop: 20 },
-  saveBtnText: { fontSize: 15, fontWeight: "800", color: "#fff" },
+const styles = StyleSheet.create({
+  goalNote: {
+    marginTop: space.xl,
+    padding: space.lg,
+    borderRadius: radius.card,
+    backgroundColor: accent.soft,
+  },
+  goalNoteText: { ...type.caption, color: text.secondary, lineHeight: 18 },
+  goalNoteStrong: { color: text.primary, fontWeight: "600" },
+
+  stack: { gap: space.md },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.md,
+    padding: space.lg,
+    borderRadius: radius.card,
+    backgroundColor: bg.subtle,
+  },
+  disc: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.pill,
+    backgroundColor: bg.canvas,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  copy: { flex: 1 },
+  name: { ...type.cardTitle, fontWeight: "600", color: text.primary },
+  meta: { ...type.caption, color: text.tertiary, marginTop: 3 },
+
+  durationWrap: { flexDirection: "row", alignItems: "flex-end", gap: 3 },
+  duration: {
+    ...type.sectionTitle,
+    fontWeight: "600",
+    color: text.primary,
+    fontVariant: ["tabular-nums"],
+  },
+  durationUnit: { ...type.caption, color: text.tertiary, paddingBottom: 3 },
 });

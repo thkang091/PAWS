@@ -1,32 +1,5 @@
-/**
- * Compression utilities for PoseSequencePayload.
- *
- * Strategy
- * --------
- * 1. JSON-stringify the payload.
- * 2. Encode to UTF-8 bytes.
- * 3. Attempt gzip via the Web Streams CompressionStream API
- *    (available in React Native 0.74+ via the Hermes engine).
- * 4. If CompressionStream is unavailable, fall back to uncompressed base64.
- * 5. Return a CompressedPosePayload envelope with encoding metadata.
- *
- * The server checks the `encoding` field and decompresses if necessary.
- *
- * Typical compression ratio for pose JSON is 8-12x (keypoint coordinates
- * and timestamps are highly repetitive), so gzip saves significant bandwidth.
- */
-
 import type { CompressedPosePayload, PoseSequencePayload } from "@/types/onDevicePose";
 
-// ---------------------------------------------------------------------------
-// Byte / base64 helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Convert a Uint8Array to a base64 string without relying on `btoa` (which
- * chokes on bytes > 127). Uses a chunked approach to avoid stack overflow on
- * large arrays.
- */
 export function uint8ArrayToBase64(bytes: Uint8Array): string {
   const CHUNK = 8192;
   let binary = "";
@@ -36,9 +9,6 @@ export function uint8ArrayToBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-/**
- * Convert a base64 string back to a Uint8Array.
- */
 export function base64ToUint8Array(b64: string): Uint8Array {
   const binary = atob(b64);
   const bytes = new Uint8Array(binary.length);
@@ -48,17 +18,6 @@ export function base64ToUint8Array(b64: string): Uint8Array {
   return bytes;
 }
 
-// ---------------------------------------------------------------------------
-// Gzip via CompressionStream (React Native / Web Streams)
-// ---------------------------------------------------------------------------
-
-/**
- * Returns true when the runtime exposes the Web Streams CompressionStream API.
- * In React Native 0.74+ with Hermes this is available.
- * In Expo Go it may not be available depending on the build.
- */
-// Typed interface for the runtime CompressionStream / DecompressionStream globals
-// that exist in React Native / browser but not in the Node.js type lib.
 type StreamConstructor = new (format: string) => {
   readable: ReadableStream<Uint8Array>;
   writable: WritableStream<Uint8Array>;
@@ -71,10 +30,6 @@ export function isCompressionStreamAvailable(): boolean {
   );
 }
 
-/**
- * Gzip-compress a Uint8Array using the Web Streams CompressionStream API.
- * Rejects if CompressionStream is not available.
- */
 export async function gzipBytes(input: Uint8Array): Promise<Uint8Array> {
   if (!isCompressionStreamAvailable()) {
     throw new Error("CompressionStream is not available in this runtime.");
@@ -87,7 +42,6 @@ export async function gzipBytes(input: Uint8Array): Promise<Uint8Array> {
   const writer = cs.writable.getWriter();
   const reader = cs.readable.getReader();
 
-  // Write all input then close the stream.
   void writer.write(input).then(() => writer.close());
 
   const chunks: Uint8Array[] = [];
@@ -109,15 +63,6 @@ export async function gzipBytes(input: Uint8Array): Promise<Uint8Array> {
   return result;
 }
 
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
-
-/**
- * Compress a PoseSequencePayload into a CompressedPosePayload envelope.
- *
- * Tries gzip first; falls back to uncompressed if CompressionStream is absent.
- */
 export async function compressPayload(
   payload: PoseSequencePayload,
 ): Promise<CompressedPosePayload> {
@@ -136,7 +81,6 @@ export async function compressPayload(
         compressed_size_bytes: compressed.length,
       };
     } catch {
-      // Fall through to uncompressed.
     }
   }
 
@@ -148,10 +92,6 @@ export async function compressPayload(
   };
 }
 
-/**
- * Decompress a CompressedPosePayload back to a PoseSequencePayload.
- * Used in tests and diagnostics.
- */
 export async function decompressPayload(
   envelope: CompressedPosePayload,
 ): Promise<PoseSequencePayload> {
@@ -186,18 +126,10 @@ export async function decompressPayload(
   return JSON.parse(decoder.decode(bytes)) as PoseSequencePayload;
 }
 
-/**
- * Compute a rough estimate of payload size before compression.
- * Used by the benchmark module without needing async.
- */
 export function estimatePayloadSize(payload: PoseSequencePayload): number {
   return new TextEncoder().encode(JSON.stringify(payload)).length;
 }
 
-/**
- * Compute percentile from a sorted array of numbers.
- * Used by the benchmark module.
- */
 export function percentile(sortedValues: number[], p: number): number {
   if (sortedValues.length === 0) return 0;
   const idx = Math.max(0, Math.ceil((p / 100) * sortedValues.length) - 1);

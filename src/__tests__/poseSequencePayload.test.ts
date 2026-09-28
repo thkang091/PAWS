@@ -1,10 +1,3 @@
-/**
- * Tests for PoseSequencePayload schema compatibility.
- *
- * Validates that the TypeScript payload structure matches what the server
- * expects, and that the benchmark and frame structures are schema-correct.
- */
-
 import type {
   PoseFrame,
   PoseSequencePayload,
@@ -14,16 +7,8 @@ import type {
 import { DEFAULT_ON_DEVICE_POSE_CONFIG } from "@/types/onDevicePose";
 import { MOCK_PAYLOAD } from "./__mocks__/pawsPoseModule";
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 const isFloat01 = (v: number) => typeof v === "number" && v >= 0 && v <= 1;
 const isNonNegativeInt = (v: number) => Number.isInteger(v) && v >= 0;
-
-// ---------------------------------------------------------------------------
-// PoseSequencePayload schema
-// ---------------------------------------------------------------------------
 
 describe("PoseSequencePayload schema", () => {
   const payload = MOCK_PAYLOAD as PoseSequencePayload;
@@ -55,10 +40,6 @@ describe("PoseSequencePayload schema", () => {
     expect(payload.recording_duration_ms).toBeGreaterThan(0);
   });
 });
-
-// ---------------------------------------------------------------------------
-// PoseFrame schema
-// ---------------------------------------------------------------------------
 
 describe("PoseFrame schema", () => {
   const frames = (MOCK_PAYLOAD as PoseSequencePayload).frames;
@@ -108,10 +89,6 @@ describe("PoseFrame schema", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// OnDevicePoseBenchmark schema
-// ---------------------------------------------------------------------------
-
 describe("OnDevicePoseBenchmark schema", () => {
   const bm = (MOCK_PAYLOAD as PoseSequencePayload).benchmark;
 
@@ -126,20 +103,14 @@ describe("OnDevicePoseBenchmark schema", () => {
   });
 
   it("p95 >= p50 >= avg when plausible", () => {
-    // True for mock — won't hold for all real distributions but holds here.
     expect(bm.p95_inference_ms).toBeGreaterThanOrEqual(bm.p50_inference_ms);
   });
 
   it("payload_size_bytes and total_upload_latency_ms are nullable", () => {
-    // Initially null before compression and upload.
     expect(bm.payload_size_bytes === null || typeof bm.payload_size_bytes === "number").toBe(true);
     expect(bm.total_upload_latency_ms === null || typeof bm.total_upload_latency_ms === "number").toBe(true);
   });
 });
-
-// ---------------------------------------------------------------------------
-// CompressedPosePayload schema
-// ---------------------------------------------------------------------------
 
 describe("CompressedPosePayload schema", () => {
   const envelope: CompressedPosePayload = {
@@ -170,10 +141,6 @@ describe("CompressedPosePayload schema", () => {
     );
   });
 });
-
-// ---------------------------------------------------------------------------
-// DEFAULT_ON_DEVICE_POSE_CONFIG
-// ---------------------------------------------------------------------------
 
 describe("DEFAULT_ON_DEVICE_POSE_CONFIG", () => {
   it("targetFps is a sensible value", () => {

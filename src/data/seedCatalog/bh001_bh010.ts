@@ -1,17 +1,3 @@
-/**
- * Seed data for BH001–BH010: Foundational Home Behaviors.
- *
- * This module is the single source of truth for these activities.
- * The SQL migration 0024_seed_bh001_bh010.sql inserts the same records.
- * Tests validate this data directly — no database required.
- *
- * Columns map 1-to-1 with training_catalog_activities plus
- * the columns added in 0023 (start_state_criteria, out_of_scope_claims,
- * recording_requirements).
- */
-
-// ─── Seed-row shape ───────────────────────────────────────────────────────────
-
 export type SeedActivity = {
   id: string;
   category: "BETTER_BEHAVIOR_AT_HOME" | "SAFETY_AND_OBEDIENCE" | "BETTER_WALKS" | "COOL_TRICKS_AND_GAMES" | "HELPFUL_SKILLS_AROUND_THE_HOUSE" | "CALM_ALONE_TIME";
@@ -203,10 +189,7 @@ ACTIVITY-SPECIFIC GEMINI VLM PROMPT
 ${activity.vlmPrompt}`;
 }
 
-// ─── Activities ───────────────────────────────────────────────────────────────
-
 const RAW_BH001_BH010: SeedActivity[] = [
-  // ── BH001 ──────────────────────────────────────────────────────────────────
   {
     id: "BH001",
     category: "BETTER_BEHAVIOR_AT_HOME",
@@ -330,7 +313,6 @@ Return a structured JSON result matching the DogTrainingVerificationResult schem
 In observedEvents, record: (a) the timestamp of each audible marker sound, (b) the timestamp of each visible treat delivery. Set confidence based on clarity of both the marker sound and the treat delivery timing. Populate satisfiedCriteria and failedCriteria using the exact criterion text from this prompt.`,
   },
 
-  // ── BH002 ──────────────────────────────────────────────────────────────────
   {
     id: "BH002",
     category: "BETTER_BEHAVIOR_AT_HOME",
@@ -456,7 +438,6 @@ JSON OUTPUT INSTRUCTION
 Return a structured JSON result. In observedEvents, record: (a) timestamp of name cue, (b) timestamp of observed orientation or the 2-second timeout. In satisfiedCriteria and failedCriteria, use the exact criterion text from this prompt. Set confidence based on the clarity of the head or body turn and its timing relative to the single name cue.`,
   },
 
-  // ── BH003 ──────────────────────────────────────────────────────────────────
   {
     id: "BH003",
     category: "BETTER_BEHAVIOR_AT_HOME",
@@ -579,7 +560,6 @@ JSON OUTPUT INSTRUCTION
 Return a structured JSON result. In observedEvents, record: (a) timestamp of sit initiation, (b) timestamp of sit completion (rear on floor), (c) timestamp of first visible handler attention. Sequence these to verify criterion 2. Use exact criterion text from this prompt in satisfiedCriteria and failedCriteria.`,
   },
 
-  // ── BH004 ──────────────────────────────────────────────────────────────────
   {
     id: "BH004",
     category: "BETTER_BEHAVIOR_AT_HOME",
@@ -703,7 +683,6 @@ JSON OUTPUT INSTRUCTION
 Return a structured JSON result. In observedEvents, record: (a) timestamp of down cue or lure initiation, (b) timestamp of elbow contact with floor, (c) timestamp of hip contact with floor (these may be simultaneous). Set confidence based on how clearly elbow and hip floor contact are confirmed and how clearly handler proximity is visible.`,
   },
 
-  // ── BH005 ──────────────────────────────────────────────────────────────────
   {
     id: "BH005",
     category: "BETTER_BEHAVIOR_AT_HOME",
@@ -825,7 +804,6 @@ JSON OUTPUT INSTRUCTION
 Return a structured JSON result. In observedEvents, record: (a) timestamp when all four paws first contact the floor in the stand, (b) the 3-second timer start, (c) the 3-second timer end or any break event. Set confidence based on how clearly all four paws and the 3-second hold window are visible.`,
   },
 
-  // ── BH006 ──────────────────────────────────────────────────────────────────
   {
     id: "BH006",
     category: "BETTER_BEHAVIOR_AT_HOME",
@@ -951,7 +929,6 @@ JSON OUTPUT INSTRUCTION
 Return a structured JSON result. In observedEvents, record: (a) timestamp of sit start, (b) timestamp of release cue delivery, (c) timestamp of dog's first movement after release. The sequencing of events (b) before (c) is the core verification criterion. Set confidence based on how clearly the release cue is audible and how clearly the dog's movement follows it rather than precedes it.`,
   },
 
-  // ── BH007 ──────────────────────────────────────────────────────────────────
   {
     id: "BH007",
     category: "BETTER_BEHAVIOR_AT_HOME",
@@ -1077,7 +1054,6 @@ JSON OUTPUT INSTRUCTION
 Return a structured JSON result. In matchedReferenceAssets, include one entry for TARGET_MAT with matched=true/false and your confidence score. In observedEvents, record: (a) timestamp of place cue, (b) timestamp of first paw inside mat boundary, (c) timestamp of at least two paws inside mat boundary. Set overall confidence based on reference match confidence and paw placement clarity.`,
   },
 
-  // ── BH008 ──────────────────────────────────────────────────────────────────
   {
     id: "BH008",
     category: "BETTER_BEHAVIOR_AT_HOME",
@@ -1198,7 +1174,6 @@ JSON OUTPUT INSTRUCTION
 In observedEvents, record: (a) timestamp of 4-paw mat entry, (b) 3-second timer start, (c) 3-second timer end or any paw-exit event. In matchedReferenceAssets, include one entry for TARGET_MAT. Set confidence based on reference match quality and paw boundary visibility.`,
   },
 
-  // ── BH009 ──────────────────────────────────────────────────────────────────
   {
     id: "BH009",
     category: "BETTER_BEHAVIOR_AT_HOME",
@@ -1317,7 +1292,6 @@ JSON OUTPUT INSTRUCTION
 In observedEvents, record: (a) timestamp of 4-paw entry completion, (b) 10-second timer start, (c) 10-second timer end or first paw-exit event. In matchedReferenceAssets, include TARGET_MAT entry. Set confidence based on paw boundary clarity throughout the hold.`,
   },
 
-  // ── BH010 ──────────────────────────────────────────────────────────────────
   {
     id: "BH010",
     category: "BETTER_BEHAVIOR_AT_HOME",

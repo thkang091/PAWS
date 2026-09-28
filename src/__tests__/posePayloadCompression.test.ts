@@ -1,11 +1,3 @@
-/**
- * Tests for posePayloadCompression utilities.
- *
- * CompressionStream is not available in the Jest Node environment so these
- * tests verify the "none" encoding fallback path and all pure helpers.
- * A separate integration test would cover the "gzip" path on a real device.
- */
-
 import {
   uint8ArrayToBase64,
   base64ToUint8Array,
@@ -16,10 +8,6 @@ import {
 } from "@/lib/posePayloadCompression";
 import type { PoseSequencePayload } from "@/types/onDevicePose";
 import { MOCK_PAYLOAD } from "./__mocks__/pawsPoseModule";
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 
 describe("uint8ArrayToBase64 / base64ToUint8Array round-trip", () => {
   it("round-trips an empty array", () => {
@@ -55,10 +43,6 @@ describe("uint8ArrayToBase64 / base64ToUint8Array round-trip", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// estimatePayloadSize
-// ---------------------------------------------------------------------------
-
 describe("estimatePayloadSize", () => {
   it("returns a positive integer", () => {
     const size = estimatePayloadSize(MOCK_PAYLOAD as PoseSequencePayload);
@@ -74,20 +58,11 @@ describe("estimatePayloadSize", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// isCompressionStreamAvailable
-// ---------------------------------------------------------------------------
-
 describe("isCompressionStreamAvailable", () => {
   it("returns a boolean", () => {
-    // Result depends on the runtime (true in Node 18+, false in older Node/Hermes).
     expect(typeof isCompressionStreamAvailable()).toBe("boolean");
   });
 });
-
-// ---------------------------------------------------------------------------
-// compressPayload — encoding depends on runtime CompressionStream availability
-// ---------------------------------------------------------------------------
 
 describe("compressPayload", () => {
   it("returns a CompressedPosePayload with a valid encoding", async () => {
@@ -100,11 +75,9 @@ describe("compressPayload", () => {
   });
 
   it("round-trips the payload through encoding", async () => {
-    // Import decompressPayload for round-trip verification.
     const { decompressPayload } = await import("@/lib/posePayloadCompression");
     const envelope = await compressPayload(MOCK_PAYLOAD as PoseSequencePayload);
     if (envelope.encoding === "none") {
-      // Verify directly for uncompressed path.
       const decoded = base64ToUint8Array(envelope.data);
       const json = new TextDecoder().decode(decoded);
       const restored = JSON.parse(json) as PoseSequencePayload;
@@ -112,7 +85,6 @@ describe("compressPayload", () => {
       expect(restored.frame_count).toBe(MOCK_PAYLOAD.frame_count);
       expect(restored.frames).toHaveLength(MOCK_PAYLOAD.frames.length);
     } else {
-      // Use decompressPayload for gzip path.
       const restored = await decompressPayload(envelope);
       expect(restored.verification_id).toBe(MOCK_PAYLOAD.verification_id);
       expect(restored.frame_count).toBe(MOCK_PAYLOAD.frame_count);
@@ -123,10 +95,8 @@ describe("compressPayload", () => {
   it("compressed_size_bytes <= original_size_bytes for gzip", async () => {
     const envelope = await compressPayload(MOCK_PAYLOAD as PoseSequencePayload);
     if (envelope.encoding === "gzip") {
-      // Gzip should reduce size for JSON payloads.
       expect(envelope.compressed_size_bytes).toBeLessThanOrEqual(envelope.original_size_bytes);
     } else {
-      // No compression: sizes are equal.
       expect(envelope.compressed_size_bytes).toBe(envelope.original_size_bytes);
     }
   });
@@ -139,10 +109,6 @@ describe("compressPayload", () => {
     expect(envelope).toHaveProperty("compressed_size_bytes");
   });
 });
-
-// ---------------------------------------------------------------------------
-// percentile
-// ---------------------------------------------------------------------------
 
 describe("percentile", () => {
   it("returns 0 for empty array", () => {

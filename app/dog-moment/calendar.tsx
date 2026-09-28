@@ -1,5 +1,5 @@
-import { DogMomentCalendar } from "@/components/dogMoment/DogMomentCalendar";
-import { DogMomentTimeline } from "@/components/dogMoment/DogMomentTimeline";
+import { DogMomentCalendar } from "@/features/home/components/dogMoment/DogMomentCalendar";
+import { DogMomentTimeline } from "@/features/home/components/dogMoment/DogMomentTimeline";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";

@@ -1,7 +1,3 @@
-/**
- * Tests for PoseRingBuffer.
- */
-
 import { PoseRingBuffer } from "@/lib/poseRingBuffer";
 import type { PoseFrame } from "@/types/onDevicePose";
 
@@ -57,8 +53,6 @@ describe("PoseRingBuffer", () => {
     it("returns frames in oldest-first order after wraparound", () => {
       const buf = new PoseRingBuffer(3);
       for (let i = 0; i < 5; i++) buf.push(makeFrame(i));
-      // After pushing 5 frames into capacity-3 buffer:
-      // frames 0, 1 were overwritten; we should have 2, 3, 4
       const arr = buf.toArray();
       expect(arr.map(f => f.frame_index)).toEqual([2, 3, 4]);
     });

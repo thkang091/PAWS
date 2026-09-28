@@ -58,6 +58,30 @@ export type Database = {
         };
         Update: Partial<Database["public"]["Tables"]["dogs"]["Row"]>;
       };
+      dog_selected_training_goals: {
+        Row: DogRelationshipRow<"goal"> & { priority_rank: number };
+        Insert: Partial<DogRelationshipRow<"goal"> & { priority_rank: number }> & { dog_id: string; goal: string; priority_rank: number };
+        Update: Partial<DogRelationshipRow<"goal"> & { priority_rank: number }>;
+      };
+      dog_training_pain_points: {
+        Row: DogRelationshipRow<"goal"> & { pain_point_key: string };
+        Insert: Partial<DogRelationshipRow<"goal"> & { pain_point_key: string }> & { dog_id: string; goal: string; pain_point_key: string };
+        Update: Partial<DogRelationshipRow<"goal"> & { pain_point_key: string }>;
+      };
+      dog_training_preferences: {
+        Row: {
+          dog_id: string;
+          preferred_section_id: string | null;
+          training_experience: string | null;
+          daily_minutes: number | null;
+          delivery_style: string | null;
+          onboarding_completed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["dog_training_preferences"]["Row"]> & { dog_id: string };
+        Update: Partial<Database["public"]["Tables"]["dog_training_preferences"]["Row"]>;
+      };
       dog_goals: { Row: DogRelationshipRow<"goal_key">; Insert: Partial<DogRelationshipRow<"goal_key">>; Update: Partial<DogRelationshipRow<"goal_key">> };
       dog_existing_skills: { Row: SkillRelationshipRow; Insert: Partial<SkillRelationshipRow>; Update: Partial<SkillRelationshipRow> };
       dog_target_skills: { Row: SkillRelationshipRow; Insert: Partial<SkillRelationshipRow>; Update: Partial<SkillRelationshipRow> };
@@ -66,9 +90,27 @@ export type Database = {
         Insert: Partial<DogRelationshipRow<"concern_key"> & { custom_note: string | null }>;
         Update: Partial<DogRelationshipRow<"concern_key"> & { custom_note: string | null }>;
       };
-      training_skills: { Row: TrainingSkillRow; Insert: Partial<TrainingSkillRow>; Update: Partial<TrainingSkillRow> };
-      dog_training_progress: { Row: TrainingProgressRow; Insert: Partial<TrainingProgressRow>; Update: Partial<TrainingProgressRow> };
-      training_sessions: { Row: TrainingSessionRow; Insert: Partial<TrainingSessionRow>; Update: Partial<TrainingSessionRow> };
+
+      training_curriculum_versions: { Row: TrainingCurriculumVersionRow; Insert: Partial<TrainingCurriculumVersionRow>; Update: Partial<TrainingCurriculumVersionRow> };
+      training_sections: { Row: TrainingSectionRow; Insert: Partial<TrainingSectionRow>; Update: Partial<TrainingSectionRow> };
+      training_skills: { Row: TrainingCurriculumSkillRow; Insert: Partial<TrainingCurriculumSkillRow>; Update: Partial<TrainingCurriculumSkillRow> };
+      training_levels: { Row: TrainingLevelRow; Insert: Partial<TrainingLevelRow>; Update: Partial<TrainingLevelRow> };
+      training_ready_cards: { Row: TrainingReadyCardRow; Insert: Partial<TrainingReadyCardRow>; Update: Partial<TrainingReadyCardRow> };
+      training_lesson_cards: { Row: TrainingLessonCardRow; Insert: Partial<TrainingLessonCardRow>; Update: Partial<TrainingLessonCardRow> };
+      training_adaptive_guidance: { Row: TrainingAdaptiveGuidanceRow; Insert: Partial<TrainingAdaptiveGuidanceRow>; Update: Partial<TrainingAdaptiveGuidanceRow> };
+      training_checkpoint_policies: { Row: TrainingCheckpointPolicyRow; Insert: Partial<TrainingCheckpointPolicyRow>; Update: Partial<TrainingCheckpointPolicyRow> };
+      training_skill_relationships: { Row: TrainingSkillRelationshipRow; Insert: Partial<TrainingSkillRelationshipRow>; Update: Partial<TrainingSkillRelationshipRow> };
+      training_media_bindings: { Row: TrainingMediaBindingRow; Insert: Partial<TrainingMediaBindingRow>; Update: Partial<TrainingMediaBindingRow> };
+      training_media_scenes: { Row: TrainingMediaSceneRow; Insert: Partial<TrainingMediaSceneRow>; Update: Partial<TrainingMediaSceneRow> };
+      training_game_mappings: { Row: TrainingGameMappingRow; Insert: Partial<TrainingGameMappingRow>; Update: Partial<TrainingGameMappingRow> };
+
+      dog_training_skill_progress: { Row: DogTrainingSkillProgressRow; Insert: Partial<DogTrainingSkillProgressRow>; Update: Partial<DogTrainingSkillProgressRow> };
+      dog_training_level_progress: { Row: DogTrainingLevelProgressRow; Insert: Partial<DogTrainingLevelProgressRow>; Update: Partial<DogTrainingLevelProgressRow> };
+      training_sessions: { Row: TrainingCurriculumSessionRow; Insert: Partial<TrainingCurriculumSessionRow>; Update: Partial<TrainingCurriculumSessionRow> };
+      training_attempt_reports: { Row: TrainingAttemptReportRow; Insert: Partial<TrainingAttemptReportRow>; Update: Partial<TrainingAttemptReportRow> };
+      training_review_assignments: { Row: TrainingReviewAssignmentRow; Insert: Partial<TrainingReviewAssignmentRow>; Update: Partial<TrainingReviewAssignmentRow> };
+      training_energy_ledger: { Row: TrainingEnergyLedgerRow; Insert: Partial<TrainingEnergyLedgerRow>; Update: Partial<TrainingEnergyLedgerRow> };
+
       quest_templates: { Row: QuestTemplateRow; Insert: Partial<QuestTemplateRow>; Update: Partial<QuestTemplateRow> };
       daily_quests: { Row: DailyQuestRow; Insert: Partial<DailyQuestRow>; Update: Partial<DailyQuestRow> };
       quest_completions: { Row: QuestCompletionRow; Insert: Partial<QuestCompletionRow>; Update: Partial<QuestCompletionRow> };
@@ -90,8 +132,6 @@ export type Database = {
       challenge_game_attempt_submissions: { Row: ChallengeGameAttemptSubmissionRow; Insert: Partial<ChallengeGameAttemptSubmissionRow>; Update: Partial<ChallengeGameAttemptSubmissionRow> };
       coupons: { Row: CouponRow; Insert: Partial<CouponRow>; Update: Partial<CouponRow> };
       coupon_purchases: { Row: CouponPurchaseRow; Insert: Partial<CouponPurchaseRow>; Update: Partial<CouponPurchaseRow> };
-      reward_catalog: { Row: RewardCatalogRow; Insert: Partial<RewardCatalogRow>; Update: Partial<RewardCatalogRow> };
-      reward_redemptions: { Row: RewardRedemptionRow; Insert: Partial<RewardRedemptionRow>; Update: Partial<RewardRedemptionRow> };
       avatar_catalog: { Row: AvatarCatalogRow; Insert: Partial<AvatarCatalogRow>; Update: Partial<AvatarCatalogRow> };
       user_avatar_items: { Row: UserAvatarItemRow; Insert: Partial<UserAvatarItemRow>; Update: Partial<UserAvatarItemRow> };
       activity_verifications: { Row: ActivityVerificationRow; Insert: Partial<ActivityVerificationRow>; Update: Partial<ActivityVerificationRow> };
@@ -103,17 +143,26 @@ export type Database = {
     Functions: {
       bootstrap_user_profile: { Args: Record<string, never>; Returns: Database["public"]["Tables"]["profiles"]["Row"] };
       create_dog_profile: { Args: CreateDogProfileArgs; Returns: Database["public"]["Tables"]["dogs"]["Row"] };
+      owns_dog: { Args: { target_dog_id: string }; Returns: boolean };
+      resolve_skill_session: { Args: { p_dog_id: string; p_skill_id: string }; Returns: Json };
+      get_training_energy: { Args: { p_dog_id: string; p_local_date: string }; Returns: Json };
+      start_training_session: { Args: { p_dog_id: string; p_skill_id: string; p_local_date: string; p_idempotency_key: string }; Returns: Json };
+      set_session_card_position: { Args: { p_session_id: string; p_card_key: string }; Returns: undefined };
+      report_training_result: { Args: { p_session_id: string; p_result: string; p_card_id?: string | null }; Returns: Json };
+      end_training_session: { Args: { p_session_id: string; p_reason?: string | null }; Returns: Json };
       initialize_daily_quests: { Args: { target_dog_id: string; requested_date: string }; Returns: Database["public"]["Tables"]["daily_quests"]["Row"][] };
-      complete_training_session: { Args: { target_dog_id: string; target_skill_id: string; request_key: string }; Returns: Json };
       complete_daily_quest: { Args: { target_daily_quest_id: string; request_key: string }; Returns: Json };
       submit_daily_dog_moment: { Args: { target_dog_id: string; storage_path_value: string; caption_value: string | null; local_date: string; request_key: string }; Returns: Json };
       enter_game: { Args: { target_dog_id: string; target_game_instance_id: string; request_key: string }; Returns: Json };
       start_challenge_game_attempt: { Args: { target_dog_id: string; target_challenge_game_id: string; request_key: string }; Returns: Json };
       purchase_coupon: { Args: { target_dog_id: string; target_coupon_id: string; request_key: string }; Returns: Json };
-      redeem_reward: { Args: { target_dog_id: string; target_reward_id: string; request_key: string }; Returns: Json };
       get_wallet_summary: { Args: { target_dog_id: string }; Returns: { silver_balance: number; gold_balance: number }[] };
       get_profile_dashboard: { Args: { target_dog_id: string }; Returns: Json };
       complete_dog_care_routine: { Args: { target_routine_id: string; completion_date_value: string; request_key: string }; Returns: Json };
+      purchase_avatar_item: { Args: { target_dog_id: string; target_avatar_item_id: string; request_key: string }; Returns: Json };
+      equip_avatar_item: { Args: { target_dog_id: string; target_avatar_item_id: string }; Returns: Json };
+      purchase_shop_item: { Args: { target_dog_id: string; target_shop_item_id: string; quantity_value: number; request_key: string }; Returns: Json };
+      approve_challenge_submission: { Args: { target_submission_id: string; verdict_value: string; reviewer_note_value?: string | null }; Returns: Json };
       submit_user_confirmed_routine: { Args: { target_dog_id: string; routine_activity_id: string; routine_notes: string | null; routine_metadata?: Json }; Returns: ActivityVerificationRow };
       submit_photo_confirmed_routine: { Args: { target_dog_id: string; routine_activity_id: string; storage_path_value: string; routine_notes: string | null; routine_metadata?: Json }; Returns: ActivityVerificationRow };
     };
@@ -128,7 +177,6 @@ export type Database = {
       challenge_game_difficulty: "easy" | "medium" | "hard" | "featured";
       challenge_attempt_status: "started" | "awaiting_submission" | "submitted" | "under_review" | "passed" | "failed" | "needs_review" | "refunded" | "error";
       coupon_status: "active" | "inactive" | "sold_out";
-      redemption_status: "requested" | "processing" | "fulfilled" | "rejected";
       plan_type: "free" | "monthly" | "yearly";
       training_category: "basics" | "obedience" | "fun_tricks" | "outdoor_skills" | "social_skills";
     };
@@ -152,6 +200,248 @@ type DogRelationshipRow<Key extends string> = BaseRow & {
 type SkillRelationshipRow = BaseRow & {
   dog_id: string;
   skill_id: string;
+};
+
+export type TrainingCurriculumVersionRow = {
+  id: string;
+  version_key: string;
+  title: string;
+  status: string;
+  effective_date: string | null;
+  created_at: string;
+};
+
+export type TrainingSectionRow = {
+  id: string;
+  curriculum_version_id: string;
+  section_number: number;
+  slug: string;
+  title: string;
+  description: string | null;
+  source_to_product_adaptation: string | null;
+  safety_boundary: string | null;
+  sort_order: number;
+};
+
+export type TrainingCurriculumSkillRow = {
+  id: string;
+  section_id: string;
+  skill_code: string;
+  internal_concept_id: string;
+  slug: string;
+  title: string;
+  source_label_ko: string | null;
+  one_line_goal: string;
+  product_status: string | null;
+  shared_skill_bridge_relation: string | null;
+  skill_promise: string | null;
+  boundaries: Json;
+  authoring_state: string | null;
+  sort_order: number;
+};
+
+export type TrainingLevelRow = {
+  id: string;
+  skill_id: string;
+  stage_type: "level" | "checkpoint";
+  level_number: number | null;
+  sequence_index: number;
+  title: string;
+  goal: string | null;
+  observable_criterion: string | null;
+  first_part: string | null;
+  next_part: string | null;
+  easier_path: string | null;
+  success_anchor: string | null;
+  entry_rule: string | null;
+  implementation_status: string | null;
+  additional_practice_allowed: boolean;
+};
+
+export type TrainingReadyCardRow = {
+  id: string;
+  level_id: string;
+  materials: Json;
+  safety_copy: string;
+  primary_action: string;
+  secondary_action: string;
+};
+
+export type TrainingLessonCardRow = {
+  id: string;
+  level_id: string;
+  card_key: string;
+  card_type: "orient" | "demo" | "guardian" | "additional_practice" | "completion";
+  sort_order: number;
+  title: string | null;
+  body: string | null;
+  key_action: string | null;
+  try_it: string | null;
+  harder_part: string | null;
+  finish_instruction: string | null;
+  success_copy: string | null;
+  not_yet_copy: string | null;
+  uncertainty_instruction: string | null;
+  buttons: Json;
+  media_binding_id: string | null;
+  exact_copy_available: boolean;
+  lesson_contract_version: string;
+};
+
+export type TrainingAdaptiveGuidanceRow = {
+  id: string;
+  level_id: string;
+  observation: string;
+  observation_stage: string | null;
+  guidance_title: string;
+  guidance_text: string;
+  routing_instruction: string | null;
+  sort_order: number;
+};
+
+export type TrainingCheckpointPolicyRow = {
+  id: string;
+  skill_id: string;
+  checkpoint_level_id: string;
+  entry_rule: string;
+  guardian_instruction: string;
+  success_copy: string;
+  not_yet_copy: string;
+  success_next_state: string;
+  not_yet_next_state: string;
+  no_immediate_retest: boolean;
+  maintenance_review_behavior: string | null;
+};
+
+export type TrainingSkillRelationshipRow = {
+  id: string;
+  from_skill_id: string;
+  to_skill_id: string | null;
+  relationship_type: "bridge" | "shared_foundation" | "related" | "advanced_context";
+  rule_text: string;
+  hard_prerequisite: boolean;
+};
+
+export type TrainingMediaBindingRow = {
+  id: string;
+  level_id: string;
+  demo_id: string;
+  media_url: string | null;
+  poster_url: string | null;
+  status: string;
+  production_notes: string | null;
+  fallback_text: string | null;
+};
+
+export type TrainingMediaSceneRow = {
+  id: string;
+  media_binding_id: string;
+  source_scene_id: string;
+  purpose: string;
+  required_sequence_beat: string | null;
+  acceptance_focus: string | null;
+  sort_order: number;
+};
+
+export type TrainingGameMappingRow = {
+  id: string;
+  skill_id: string;
+  status: string;
+  is_mapped_candidate: boolean;
+  challenge_title: string | null;
+  bounded_criterion: string | null;
+  train_effect: string | null;
+};
+
+export type DogTrainingSkillProgressRow = {
+  id: string;
+  dog_id: string;
+  skill_id: string;
+  status: "not_started" | "in_progress" | "completed";
+  current_level_number: number;
+  checkpoint_status: "not_eligible" | "eligible" | "passed" | "needs_review";
+  latest_result: "success" | "not_yet" | null;
+  review_soon: boolean;
+  level5_completed_at: string | null;
+  checkpoint_retry_not_before: string | null;
+  last_practiced_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type DogTrainingLevelProgressRow = {
+  id: string;
+  dog_id: string;
+  level_id: string;
+  status: "not_started" | "in_progress" | "completed";
+  latest_result: "success" | "not_yet" | null;
+  successful_at: string | null;
+  attempt_count: number;
+  last_practiced_at: string | null;
+  review_soon: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TrainingCurriculumSessionRow = {
+  id: string;
+  dog_id: string;
+  skill_id: string;
+  level_id: string;
+  session_type: "normal" | "review" | "bridge" | "checkpoint";
+  lesson_contract_version: string;
+  status: "active" | "completed" | "ended";
+  started_at: string;
+  completed_at: string | null;
+  ended_at: string | null;
+  energy_consumed: boolean;
+  retry_used: boolean;
+  final_result: "success" | "not_yet" | "ended" | null;
+  safety_disposition: string | null;
+  current_card_key: string | null;
+  effective_local_day: string;
+  idempotency_key: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TrainingAttemptReportRow = {
+  id: string;
+  session_id: string;
+  level_id: string;
+  card_id: string | null;
+  attempt_number: number;
+  is_additional_practice: boolean;
+  adaptive_guidance_id: string | null;
+  result: "success" | "not_yet" | "uncertain";
+  original_criterion_met: boolean;
+  reported_at: string;
+};
+
+export type TrainingReviewAssignmentRow = {
+  id: string;
+  dog_id: string;
+  skill_id: string;
+  level_id: string;
+  review_type: "easier_review" | "bridge" | "targeted_level_review" | "maintenance_review";
+  source_session_id: string | null;
+  due_at: string | null;
+  eligible_at: string | null;
+  status: "pending" | "active" | "completed" | "cancelled";
+  reason: string | null;
+  created_at: string;
+  completed_at: string | null;
+};
+
+export type TrainingEnergyLedgerRow = {
+  id: string;
+  dog_id: string;
+  effective_local_day: string;
+  delta: number;
+  reason: string;
+  session_id: string | null;
+  created_at: string;
 };
 
 export type TrainingSkillRow = EditableRow & {
@@ -379,26 +669,6 @@ export type CouponPurchaseRow = BaseRow & {
   gold_coin_cost: number;
   status: "purchased" | "redeemed" | "cancelled";
   idempotency_key: string;
-};
-
-export type RewardCatalogRow = EditableRow & {
-  name: string;
-  description: string;
-  gold_cost: number;
-  is_active: boolean;
-  fulfillment_type: string;
-};
-
-export type RewardRedemptionRow = EditableRow & {
-  reward_id: string;
-  owner_id: string;
-  dog_id: string;
-  status: Database["public"]["Enums"]["redemption_status"];
-  idempotency_key: string;
-  provider_reference: string | null;
-  fulfillment_note: string | null;
-  rejection_reason: string | null;
-  fulfilled_at: string | null;
 };
 
 export type AvatarCatalogRow = EditableRow & {

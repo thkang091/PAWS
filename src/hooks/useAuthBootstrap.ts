@@ -4,6 +4,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { env } from "@/config/env";
 import { getSupabaseClient } from "@/lib/supabase";
 import {
+  bootstrapUserProfile,
   restoreOrCreateAnonymousSession,
   signOutCurrentUser,
 } from "@/services/authService";
@@ -64,6 +65,10 @@ export const useAuthBootstrap = (): AuthBootstrapState => {
         setSession(authState.session);
         setUser(authState.user);
         setError(null);
+
+        bootstrapUserProfile().catch((bootstrapError: unknown) => {
+          console.warn("bootstrap_user_profile failed (non-fatal):", bootstrapError);
+        });
       })
       .catch((caughtError: unknown) => {
         if (!isMounted) {

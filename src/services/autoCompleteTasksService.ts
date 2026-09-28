@@ -1,14 +1,14 @@
 import { createIdempotencyKey, getClientOrThrow } from "@/services/serviceUtils";
 
 const TRAINING_QUEST_TEMPLATE_IDS = [
-  "1d113670-52f6-410b-acfc-baeec17e19b0", // Complete one 5-minute training session
-  "66fdfeda-9142-4b4f-a35f-756d7c828a1d", // Practice recall
-  "6473fee8-2b93-4bf9-bc0b-a580809587ce", // Review a completed skill
-  "16a4fc9b-3fad-4566-838f-87ac4bf153ae", // Spend focused bonding time together
+  "1d113670-52f6-410b-acfc-baeec17e19b0",
+  "66fdfeda-9142-4b4f-a35f-756d7c828a1d",
+  "6473fee8-2b93-4bf9-bc0b-a580809587ce",
+  "16a4fc9b-3fad-4566-838f-87ac4bf153ae",
 ];
 
 const DOG_MOMENT_QUEST_TEMPLATE_IDS = [
-  "368d5ecd-dd97-47d0-9cdf-f52a862b6889", // Upload today's Dog Moment
+  "368d5ecd-dd97-47d0-9cdf-f52a862b6889",
 ];
 
 const TRAINING_ROUTINE_KEYS = ["training_practice", "mental_stimulation"];
@@ -19,7 +19,6 @@ export const autoCompleteTrainingTasks = async (dogId: string): Promise<void> =>
   const client = getClientOrThrow();
   const date = todayKey();
 
-  // Complete matching pending quests
   const { data: quests } = await client
     .from("daily_quests")
     .select("id")
@@ -35,7 +34,6 @@ export const autoCompleteTrainingTasks = async (dogId: string): Promise<void> =>
     });
   }
 
-  // Complete matching pending care routines
   const { data: routines } = await client
     .from("dog_care_routines")
     .select("id")

@@ -1,20 +1,3 @@
-/**
- * Tests for onDevicePoseService.
- *
- * Covers:
- *   - Feature flag disabled -> server fallback
- *   - User outside rollout -> server fallback
- *   - Native module unavailable -> server fallback
- *   - Extraction throws -> server fallback
- *   - Quality gate: dropped frame rate too high -> server fallback
- *   - Quality gate: avg confidence too low -> server fallback
- *   - Successful on-device path
- *   - Server rejection -> server fallback (when fallback enabled)
- *   - Server rejection -> error (when fallback disabled)
- *   - isUserInOnDeviceRollout determinism and distribution
- *   - CoreMLPoseExtractor delegates to PawsPoseModule
- */
-
 import {
   attemptOnDevicePoseSubmit,
   CoreMLPoseExtractor,
@@ -30,10 +13,6 @@ import {
   __setPayload,
   __setShouldThrow,
 } from "./__mocks__/pawsPoseModule";
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 
 const BASE_FLAGS = {
   onDevicePoseEnabled: true,
@@ -54,21 +33,14 @@ const BASE_PARAMS = {
   config: BASE_CONFIG,
 };
 
-// Mock global fetch.
 const mockFetch = jest.fn();
 (globalThis as { fetch: typeof fetch }).fetch = mockFetch as unknown as typeof fetch;
 
 beforeEach(() => {
   __reset();
   mockFetch.mockReset();
-  // Default: server accepts the payload.
   mockFetch.mockResolvedValue({ ok: true, status: 200, json: async () => ({}) });
 });
-
-// ---------------------------------------------------------------------------
-// Helper to assert a server_fallback result and check its reason.
-// TypeScript does not narrow based on expect() calls, so we use explicit guards.
-// ---------------------------------------------------------------------------
 
 function assertServerFallback(
   result: Awaited<ReturnType<typeof attemptOnDevicePoseSubmit>>,
@@ -93,10 +65,6 @@ function assertServerFallbackContains(
     expect(result.reason).toContain(substring);
   }
 }
-
-// ---------------------------------------------------------------------------
-// Feature flags
-// ---------------------------------------------------------------------------
 
 describe("feature flag: onDevicePoseEnabled = false", () => {
   it("falls back to server immediately", async () => {
@@ -125,16 +93,11 @@ describe("feature flag: onDevicePoseRolloutPercentage = 100", () => {
       ...BASE_PARAMS,
       flags: { ...BASE_FLAGS, onDevicePoseRolloutPercentage: 100 },
     });
-    // Should not fall back due to rollout gate (may fall back for other reasons).
     if (result.path === "server_fallback") {
       expect(result.reason).not.toBe("outside_rollout");
     }
   });
 });
-
-// ---------------------------------------------------------------------------
-// Native module availability
-// ---------------------------------------------------------------------------
 
 describe("native module unavailable", () => {
   it("falls back to server", async () => {
@@ -144,10 +107,6 @@ describe("native module unavailable", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// Extraction failure
-// ---------------------------------------------------------------------------
-
 describe("extraction throws", () => {
   it("falls back to server with error reason", async () => {
     __setShouldThrow(true, "Vision framework error");
@@ -156,17 +115,13 @@ describe("extraction throws", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// Quality gates
-// ---------------------------------------------------------------------------
-
 describe("quality gate: dropped frame rate too high", () => {
   it("falls back to server", async () => {
     const payload: PoseSequencePayload = {
       ...MOCK_PAYLOAD,
       benchmark: {
         ...MOCK_PAYLOAD.benchmark,
-        dropped_frame_rate: 0.50,  // exceeds DEFAULT maxDroppedFrameRate=0.30
+        dropped_frame_rate: 0.50,
         dropped_frame_count: 12,
       },
     };
@@ -182,7 +137,7 @@ describe("quality gate: avg keypoint confidence too low", () => {
       ...MOCK_PAYLOAD,
       benchmark: {
         ...MOCK_PAYLOAD.benchmark,
-        avg_keypoint_confidence: 0.30,  // below DEFAULT minAverageKeypointConfidence=0.50
+        avg_keypoint_confidence: 0.30,
       },
     };
     __setPayload(payload);
@@ -197,23 +152,17 @@ describe("quality gate: dropped rate at threshold boundary", () => {
       ...MOCK_PAYLOAD,
       benchmark: {
         ...MOCK_PAYLOAD.benchmark,
-        dropped_frame_rate: 0.30,  // exactly at threshold -- should pass (>)
+        dropped_frame_rate: 0.30,
         avg_keypoint_confidence: 0.84,
       },
     };
     __setPayload(payload);
-    // Should reach the fetch step (not fall back due to quality gate).
     const result = await attemptOnDevicePoseSubmit(BASE_PARAMS);
-    // Either succeeds or falls back at a different step -- but not at quality gate.
     if (result.path === "server_fallback") {
       expect(result.reason).not.toContain("Dropped frame rate");
     }
   });
 });
-
-// ---------------------------------------------------------------------------
-// Server rejection
-// ---------------------------------------------------------------------------
 
 describe("server rejection with fallback enabled", () => {
   it("falls back to server_fallback path", async () => {
@@ -236,10 +185,6 @@ describe("server rejection with fallback disabled", () => {
     assertServerFallbackContains(result, "500");
   });
 });
-
-// ---------------------------------------------------------------------------
-// Successful on-device path
-// ---------------------------------------------------------------------------
 
 describe("successful on-device extraction and submission", () => {
   it("returns on_device path with benchmark", async () => {
@@ -268,10 +213,6 @@ describe("successful on-device extraction and submission", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// isUserInOnDeviceRollout
-// ---------------------------------------------------------------------------
-
 describe("isUserInOnDeviceRollout", () => {
   it("returns false for 0%", () => {
     expect(isUserInOnDeviceRollout("user-xyz", 0)).toBe(false);
@@ -288,10 +229,8 @@ describe("isUserInOnDeviceRollout", () => {
   });
 
   it("differs between different userIds", () => {
-    // With 50% rollout and many users, results should vary.
     const ids = Array.from({ length: 100 }, (_, i) => `user-${i}`);
     const included = ids.filter(id => isUserInOnDeviceRollout(id, 50));
-    // Not all should be included, not all excluded (statistical).
     expect(included.length).toBeGreaterThan(10);
     expect(included.length).toBeLessThan(90);
   });
@@ -299,7 +238,6 @@ describe("isUserInOnDeviceRollout", () => {
   it("approximately 50% of users fall in 50% rollout", () => {
     const ids = Array.from({ length: 1000 }, (_, i) => `stable-user-${i}`);
     const count = ids.filter(id => isUserInOnDeviceRollout(id, 50)).length;
-    // Allow generous range for hash distribution.
     expect(count).toBeGreaterThan(350);
     expect(count).toBeLessThan(650);
   });
@@ -307,14 +245,10 @@ describe("isUserInOnDeviceRollout", () => {
   it("approximately 5% of users fall in 5% rollout", () => {
     const ids = Array.from({ length: 2000 }, (_, i) => `test-user-${i}`);
     const count = ids.filter(id => isUserInOnDeviceRollout(id, 5)).length;
-    expect(count).toBeGreaterThan(50);   // >2.5%
-    expect(count).toBeLessThan(200);     // <10%
+    expect(count).toBeGreaterThan(50);
+    expect(count).toBeLessThan(200);
   });
 });
-
-// ---------------------------------------------------------------------------
-// CoreMLPoseExtractor
-// ---------------------------------------------------------------------------
 
 describe("CoreMLPoseExtractor", () => {
   it("returns success with shouldFallback=false for good payload", async () => {
@@ -361,10 +295,6 @@ describe("CoreMLPoseExtractor", () => {
     }
   });
 });
-
-// ---------------------------------------------------------------------------
-// ServerPoseExtractor
-// ---------------------------------------------------------------------------
 
 describe("ServerPoseExtractor", () => {
   it("always returns shouldFallback=true", async () => {

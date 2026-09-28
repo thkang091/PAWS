@@ -248,16 +248,6 @@ export const getDailyRoutineLogs = async (dogId: string): Promise<DailyRoutineLo
   return (data ?? []).map(mapRoutineLog);
 };
 
-/**
- * Submit a compressed on-device pose sequence payload to the backend for
- * analysis.
- *
- * This is the on-device alternative to uploadActivityVideo + requestActivityAnalysis.
- * The server endpoint /analyze/pose-sequence accepts the same compressed
- * envelope that the client creates via compressPayload().
- *
- * On any non-2xx response the caller should fall back to uploadActivityVideo.
- */
 export const submitPoseSequencePayload = async ({
   verificationId,
   userId,
@@ -279,7 +269,6 @@ export const submitPoseSequencePayload = async ({
     );
   }
 
-  // Update verification status to "analyzing" before submission.
   const client = getClientOrThrow();
   const update = await client
     .from("activity_verifications")

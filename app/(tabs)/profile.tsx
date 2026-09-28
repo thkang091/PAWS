@@ -1,583 +1,360 @@
-import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useRef, useState } from "react";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
+import Animated, {
+  Extrapolation,
+  FadeIn,
+  FadeInDown,
+  LinearTransition,
+  interpolate,
+  useAnimatedRef,
+  useAnimatedStyle,
+  useReducedMotion,
+  useScrollViewOffset,
+  useSharedValue,
+  withDelay,
+  withSpring,
+} from "react-native-reanimated";
 import { router } from "expo-router";
-import { GoldBar } from "@/components/ui/GoldBar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  BellIcon,
+  PencilSimpleIcon,
+} from "phosphor-react-native";
 
-import { MascotFallback } from "@/components/mascot/MascotFallback";
-import { AnonymousAccountWarningModal } from "@/components/account/AnonymousAccountWarningModal";
-import { SaveProgressBanner } from "@/components/account/SaveProgressBanner";
-import { ErrorState } from "@/components/ui/ErrorState";
-import { LoadingState } from "@/components/ui/LoadingState";
-import { ScreenContainer } from "@/components/ui/ScreenContainer";
-import { theme } from "@/constants/theme";
+import {
+  FocusHero,
+  IdentityPanel,
+  Panel,
+  PanelRow,
+  TemperamentHero,
+  glyphFor,
+} from "@/features/profile/components/ProfilePanels";
+import { ProfileDog } from "@/features/profile/components/ProfileDog";
+import { HEADER_HEIGHT, ScrollHeader } from "@/features/profile/components/ScrollHeader";
+import { SegmentedTabs } from "@/features/profile/components/SegmentedTabs";
+import { PressScale } from "@/components/ui/PressScale";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { useProfileDashboard } from "@/hooks/useProfileDashboard";
-import { useAccountStatus } from "@/hooks/useAccountStatus";
-import { useAuth } from "@/providers/AuthProvider";
-import type { DogStatus } from "@/types/domain";
+import { useWeightLogs } from "@/hooks/useWeightLogs";
+import {
+  bg,
+  icon as iconSize,
+  layout,
+  motion,
+  radius,
+  space,
+  text,
+} from "@/constants/design";
+import { PROFILE_TABS, bori, findSection, together } from "@/constants/profileRecord";
 
-const fmt = (s: string) =>
-  s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-
-const SKILL_ICONS: Record<keyof DogStatus, keyof typeof Ionicons.glyphMap> = {
-  focus: "eye-outline",
-  discipline: "ribbon-outline",
-  social: "people-outline",
-  energy: "flash-outline",
-  intelligence: "bulb-outline",
+const formatAge = (birthday: string | null, ageYears: number | null): string => {
+  if (birthday) {
+    const then = new Date(birthday);
+    const now = new Date();
+    let months = (now.getFullYear() - then.getFullYear()) * 12 + (now.getMonth() - then.getMonth());
+    if (now.getDate() < then.getDate()) months -= 1;
+    const years = Math.floor(Math.max(0, months) / 12);
+    const remainder = Math.max(0, months) % 12;
+    if (years === 0) return `${remainder}m`;
+    return remainder === 0 ? `${years}y` : `${years}y ${remainder}m`;
+  }
+  if (ageYears !== null) return `${ageYears}y`;
+  return "Not set";
 };
 
-const SKILL_LABELS: Array<[keyof DogStatus, string]> = [
-  ["focus", "Focus"],
-  ["discipline", "Discipline"],
-  ["social", "Social"],
-  ["energy", "Energy"],
-  ["intelligence", "Intelligence"],
-];
+const TAB_CLEARANCE = 116;
+const STAGE_BELOW_INSET = 224;
+const SHEET_OVERLAP = 28;
+
+const TAB_KEYS = PROFILE_TABS.map((tab) => tab.key);
+
+const DOOR_FOR_FACT: Record<string, string> = { records: "records", vaccines: "health" };
 
 export default function ProfileTabScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const reduceMotion = useReducedMotion();
+
   const dog = useCurrentDog();
-  const dashboard = useProfileDashboard(dog.data?.id);
-  const auth = useAuth();
-  const account = useAccountStatus();
-  const [showAnonymousWarning, setShowAnonymousWarning] = useState(false);
+  const dogId = dog.data?.id;
+  const weightLogs = useWeightLogs(dogId);
+  const dashboard = useProfileDashboard(dogId);
 
-  if (dog.isLoading || dashboard.isLoading)
-    return <ScreenContainer centered><LoadingState message="Loading profile..." /></ScreenContainer>;
-  if (!dog.data || dashboard.error)
-    return <ScreenContainer centered><ErrorState message="Profile dashboard could not load." onRetry={() => void dashboard.refetch()} /></ScreenContainer>;
+  const dogName = dog.data?.name ?? bori.name;
+  const named = (value: string) => value.replace(/Bori/g, dogName);
+  const dogBreed = dog.data?.breed ?? bori.breed;
+  const dogTag = dog.data?.dogTag ?? bori.dogTag;
+  const ageLabel = dog.data ? formatAge(dog.data.birthday, dog.data.ageYears) : bori.age;
+  const latestWeight = weightLogs.data?.[0];
+  const weightLabel = latestWeight ? `${latestWeight.weightValue}` : "Not set";
+  const weightUnit = latestWeight?.weightUnit;
 
-  const data = dashboard.data;
-  const level = data?.level ?? 1;
-  const bondXp = data?.bondXp ?? 0;
-  const xpInLevel = bondXp % 1000;
-  const xpProgress = xpInLevel / 1000;
+  const bondXpPerLevel = 100;
+  const bondLevel = dashboard.data?.level ?? together.bondLevel;
+  const bondXpInLevel = dashboard.data ? dashboard.data.bondXp % bondXpPerLevel : together.bondXpInLevel;
+
+  const [tabKey, setTabKey] = useState(TAB_KEYS[0]);
+  const tab = PROFILE_TABS.find((item) => item.key === tabKey) ?? PROFILE_TABS[0];
+  const panel = tab.panel;
+
+  const scrollRef = useAnimatedRef<Animated.ScrollView>();
+  const scrollY = useScrollViewOffset(scrollRef);
+
+  const arrival = useSharedValue(reduceMotion ? 1 : 0);
+  useEffect(() => {
+    if (reduceMotion) {
+      arrival.value = 1;
+      return;
+    }
+    arrival.value = withDelay(80, withSpring(1, motion.spring));
+  }, [arrival, reduceMotion]);
+
+  const stageHeight = insets.top + STAGE_BELOW_INSET;
+  const dogWidth = Math.min(width * 0.56, 236);
+
+  const dogStyle = useAnimatedStyle(() => {
+    if (reduceMotion) return {};
+    const y = scrollY.value;
+    const stretch = interpolate(y, [-160, 0], [1.16, 1], {
+      extrapolateLeft: Extrapolation.CLAMP,
+      extrapolateRight: Extrapolation.CLAMP,
+    });
+    return {
+      transform: [
+        { translateY: (y > 0 ? y * 0.4 : y * 0.12) + (1 - arrival.value) * 16 },
+        { scale: stretch * (0.965 + arrival.value * 0.035) },
+      ],
+      opacity: arrival.value,
+    };
+  });
+
+  const settle = reduceMotion ? undefined : LinearTransition.duration(motion.duration.select);
+
+  const previous = useRef(0);
+  const index = TAB_KEYS.indexOf(tabKey);
+  const direction = index >= previous.current ? 1 : -1;
+  previous.current = index;
+  const panelEnter = reduceMotion
+    ? undefined
+    : FadeIn.duration(motion.duration.select).withInitialValues({
+        opacity: 0,
+        transform: [{ translateX: direction * 24 }],
+      });
+
+  const enter = (order: number) =>
+    reduceMotion
+      ? undefined
+      : FadeInDown.duration(motion.duration.enter).delay(order * motion.stagger);
 
   return (
-    <ScreenContainer scroll>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Dog</Text>
-        <Pressable
-          style={styles.settingsBtn}
-          onPress={() => router.push("/notifications-settings")}
-          accessibilityRole="button"
-          accessibilityLabel="Settings"
-        >
-          <Ionicons name="settings-outline" size={19} color={theme.colors.textMuted} />
-        </Pressable>
-      </View>
+    <View style={styles.screen}>
+      <View style={[styles.stageBackdrop, { height: stageHeight + 600 }]} />
 
-      <SaveProgressBanner />
-
-      {/* Hero card */}
-      <View style={styles.heroCard}>
-        <View style={styles.avatarRow}>
-          <View style={styles.avatarWrap}>
-            <MascotFallback size={76} />
-            <View style={styles.levelBadge}>
-              <Text style={styles.levelBadgeText}>{level}</Text>
-            </View>
-          </View>
-          <View style={styles.heroCopy}>
-            <Text style={styles.heroName}>{dog.data.name}</Text>
-            <Text style={styles.heroBreed}>{dog.data.breed}</Text>
-            <View style={styles.dogTagRow}>
-              <Text style={styles.dogTag}>{dog.data.dogTag}</Text>
-            </View>
-          </View>
+      <Animated.ScrollView
+        ref={scrollRef}
+        contentContainerStyle={{ paddingBottom: TAB_CLEARANCE + insets.bottom }}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+      >
+        <View style={[styles.stage, { height: stageHeight }]}>
+          <Animated.View style={dogStyle}>
+            <ProfileDog width={dogWidth} />
+          </Animated.View>
         </View>
 
-        {/* XP progress */}
-        <View style={styles.xpSection}>
-          <View style={styles.xpLabelRow}>
-            <Text style={styles.xpLabel}>Bond Level {level}</Text>
-            <Text style={styles.xpValue}>{xpInLevel.toLocaleString()} / 1,000 XP</Text>
-          </View>
-          <View style={styles.xpTrack}>
-            <View style={[styles.xpFill, { width: `${Math.max(Math.round(xpProgress * 100), 2)}%` as `${number}%` }]} />
-          </View>
-          <Text style={styles.xpNext}>{(1000 - xpInLevel).toLocaleString()} XP to Level {level + 1}</Text>
-        </View>
+        <View style={styles.sheet}>
+          <Animated.View entering={enter(0)}>
+            <IdentityPanel
+              name={dogName}
+              breed={dogBreed?.trim() ? dogBreed : "Meet"}
+              tag={dogTag}
+              onPressBond={() => router.push("/profile/progress")}
+              rows={[
+                { key: "age", label: "Age", value: ageLabel },
+                {
+                  key: "weight",
+                  label: "Weight",
+                  value: latestWeight ? `${weightLabel} ${weightUnit}` : "Not set",
+                },
+                {
+                  key: "bond",
+                  label: "Bond level",
+                  value: String(bondLevel),
+                  steps: { filled: Math.round((bondXpInLevel / bondXpPerLevel) * 5), total: 5 },
+                },
+              ]}
+            />
+          </Animated.View>
 
-        {/* Currency */}
-        {data ? (
-          <View style={styles.currencyRow}>
-            <View style={styles.currencyPill}>
-              <Ionicons name="cash-outline" size={14} color={theme.colors.silver} />
-              <Text style={[styles.currencyAmount, { color: theme.colors.silver }]}>
-                {data.wallet.silverBalance.toLocaleString()}
-              </Text>
-              <Text style={styles.currencyLabel}>Silver</Text>
-            </View>
-            <View style={[styles.currencyPill, { backgroundColor: theme.colors.goldSoft }]}>
-              <GoldBar size={14} />
-              <Text style={[styles.currencyAmount, { color: theme.colors.gold }]}>
-                {data.wallet.goldBalance.toLocaleString()}
-              </Text>
-              <Text style={styles.currencyLabel}>Gold</Text>
-            </View>
-          </View>
-        ) : null}
-      </View>
+          <Animated.View entering={enter(2)} style={styles.switch}>
+            <SegmentedTabs options={PROFILE_TABS} value={tabKey} onChange={setTabKey} />
+          </Animated.View>
 
-      {/* Stat strip */}
-      <View style={styles.statStrip}>
-        <View style={styles.statItem}>
-          <Text style={[styles.statNum, { color: theme.colors.primaryDark }]}>
-            {bondXp.toLocaleString()}
-          </Text>
-          <Text style={styles.statLabel}>Bond XP</Text>
-        </View>
-        <View style={styles.statDiv} />
-        <View style={styles.statItem}>
-          <Text style={[styles.statNum, { color: theme.colors.secondary }]}>
-            {data?.streak ?? 0}
-          </Text>
-          <Text style={styles.statLabel}>Day Streak</Text>
-        </View>
-        <View style={styles.statDiv} />
-        <View style={styles.statItem}>
-          <Text style={[styles.statNum, { color: theme.colors.primary }]}>
-            {data?.trainingSummary?.completedSkills ?? 0}
-          </Text>
-          <Text style={styles.statLabel}>Skills Done</Text>
-        </View>
-      </View>
+          <Animated.View style={styles.panel} layout={settle}>
+            <Animated.View key={tabKey} entering={panelEnter}>
+              {panel.traits ? (
+                <TemperamentHero name={dogName} traits={panel.traits.rows} />
+              ) : null}
 
-      {/* Skill Development */}
-      {data ? (
-        <View style={styles.card}>
-          <Text style={styles.sectionLabel}>Skill Development</Text>
-          <View style={styles.skillList}>
-            {SKILL_LABELS.map(([key, label]) => (
-              <View key={key} style={styles.skillRow}>
-                <View style={styles.skillIconWrap}>
-                  <Ionicons name={SKILL_ICONS[key]} size={14} color={theme.colors.primaryDark} />
-                </View>
-                <Text style={styles.skillLabel}>{label}</Text>
-                <View style={styles.skillTrack}>
-                  <View style={[styles.skillFill, { width: `${data.status[key]}%` as `${number}%` }]} />
-                </View>
-                <Text style={styles.skillValue}>{data.status[key]}</Text>
-              </View>
-            ))}
-          </View>
+              {panel.spotlight ? (
+                <FocusHero
+                  lead={panel.spotlight.chip}
+                  title={panel.spotlight.title}
+                  meta={panel.spotlight.meta}
+                  progress={panel.spotlight.progress}
+                  progressNote={panel.spotlight.progressNote}
+                  onPress={() => router.push(panel.spotlight!.href as never)}
+                />
+              ) : null}
+
+              {panel.band ? (
+                <Panel lead={`${dogName}'s`} title="essentials." size="section" tone="card">
+                  {panel.band.map((figure, index) => (
+                    <PanelRow
+                      key={figure.key}
+                      label={figure.label}
+                      value={figure.value}
+                      order={index}
+                      onPress={
+                        DOOR_FOR_FACT[figure.key]
+                          ? () => router.push(`/profile/${DOOR_FOR_FACT[figure.key]}` as never)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </Panel>
+              ) : null}
+
+              {panel.meters ? (
+                <Panel
+                  tone="butter"
+                  lead={panel.meters.title}
+                  title={`${panel.meters.rows.reduce((t, r) => t + r.strong, 0)} of ${panel.meters.rows.reduce((t, r) => t + r.total, 0)} strong.`}
+                  size="section"
+                >
+                  {panel.meters.rows.map((row, index) => (
+                    <PanelRow
+                      key={row.key}
+                      label={row.label}
+                      steps={{ filled: row.strong, total: row.total }}
+                      value={`${row.strong}/${row.total}`}
+                      order={index}
+                    />
+                  ))}
+                </Panel>
+              ) : null}
+
+              {panel.rail ? (
+                <Panel
+                  tone="card"
+                  lead={panel.rail.title}
+                  title={`${panel.rail.cards[0]?.chip ?? "On record"}.`}
+                  size="section"
+                  onPress={() => router.push(tab.headHref as never)}
+                  label={`${panel.rail.title}. See all`}
+                >
+                  {panel.rail.cards.map((card, index) => (
+                    <PanelRow key={card.key} label={card.title} sub={card.meta} value={card.chip} order={index} />
+                  ))}
+                </Panel>
+              ) : null}
+
+              <Panel lead="Explore" title={`${named(panel.tilesTitle)}.`} size="section" tone="butter">
+                {tab.doors.flatMap((key) => {
+                  const section = findSection(key);
+                  return section
+                    ? [
+                        <PanelRow
+                          key={key}
+                          icon={glyphFor(key)}
+                          label={named(section.title)}
+                          sub={section.summary}
+                          onPress={() => router.push(`/profile/${key}`)}
+                        />,
+                      ]
+                    : [];
+                })}
+              </Panel>
+            </Animated.View>
+          </Animated.View>
+
+          <Animated.View entering={enter(3)} layout={settle} style={styles.account}>
+            <Panel
+              tone="card"
+              lead="Account"
+              title="Settings."
+              size="section"
+              meta="Notifications, account, privacy, sign out"
+              onPress={() => router.push("/profile/settings")}
+            />
+          </Animated.View>
         </View>
-      ) : null}
+      </Animated.ScrollView>
 
-      {/* About dog */}
-      <View style={styles.card}>
-        <View style={styles.aboutHeader}>
-          <Text style={styles.sectionLabel}>About {dog.data.name}</Text>
-          <Pressable onPress={() => router.push("/profile/edit")} accessibilityRole="button">
-            <Text style={styles.editLink}>Edit Profile</Text>
-          </Pressable>
-        </View>
-        <View style={styles.aboutGrid}>
-          <AboutCell label="Gender" value={fmt(dog.data.gender)} />
-          <AboutCell label="Obedience" value={fmt(dog.data.obedienceLevel)} />
-          <AboutCell label="Energy" value={fmt(dog.data.energyLevel)} />
-        </View>
-      </View>
-
-      {/* Rewards */}
-      <View style={styles.menuGroup}>
-        <Text style={styles.menuGroupLabel}>Rewards</Text>
-        <MenuRow
-          icon="gift-outline"
-          iconBg={theme.colors.goldSoft}
-          iconColor={theme.colors.gold}
-          label="Reward Center"
-          onPress={() => router.push("/rewards")}
-        />
-      </View>
-
-      {/* Account */}
-      <View style={styles.menuGroup}>
-        <Text style={styles.menuGroupLabel}>Account</Text>
-        <MenuRow
-          icon="notifications-outline"
-          iconBg={theme.colors.secondarySoft}
-          iconColor={theme.colors.secondary}
-          label="Notifications"
-          onPress={() => router.push("/notifications-settings")}
-        />
-        <View style={styles.menuRowDivider} />
-        <MenuRow
-          icon="cloud-upload-outline"
-          iconBg={theme.colors.primarySoft}
-          iconColor={theme.colors.primaryDark}
-          label="Save Progress"
-          onPress={() => router.push("/account/link")}
-        />
-        <View style={styles.menuRowDivider} />
-        <MenuRow
-          icon="log-out-outline"
-          iconBg={theme.colors.errorSoft}
-          iconColor={theme.colors.error}
-          label="Sign Out"
-          danger
-          onPress={() =>
-            account.data?.isAnonymous
-              ? setShowAnonymousWarning(true)
-              : void auth.signOut()
-          }
-        />
-      </View>
-
-      <AnonymousAccountWarningModal
-        visible={showAnonymousWarning}
-        onCancel={() => setShowAnonymousWarning(false)}
-        onConfirm={() => {
-          setShowAnonymousWarning(false);
-          void auth.signOut();
-        }}
+      <ScrollHeader
+        scrollY={scrollY}
+        title={dogName}
+        appearAt={stageHeight - 70}
+        insetTop={insets.top}
+        left={
+          <PressScale
+            accessibilityRole="button"
+            accessibilityLabel="Notifications"
+            hitSlop={12}
+            style={styles.glyphButton}
+            onPress={() => router.push("/notifications-settings")}
+          >
+            <BellIcon size={iconSize.nav} color={text.primary} weight="regular" />
+          </PressScale>
+        }
+        right={
+          <PressScale
+            accessibilityRole="button"
+            accessibilityLabel={`Edit ${named(tab.headTitle).toLowerCase()}`}
+            hitSlop={12}
+            style={styles.glyphButton}
+            onPress={() => router.push(tab.headHref as never)}
+          >
+            <PencilSimpleIcon size={iconSize.nav} color={text.primary} weight="regular" />
+          </PressScale>
+        }
       />
-    </ScreenContainer>
+    </View>
   );
 }
 
-// Sub-components
-
-const AboutCell = ({ label, value }: { label: string; value: string }) => (
-  <View style={styles.aboutCell}>
-    <Text style={styles.aboutCellLabel}>{label}</Text>
-    <Text style={styles.aboutCellValue}>{value}</Text>
-  </View>
-);
-
-const MenuRow = ({
-  icon,
-  iconBg,
-  iconColor,
-  label,
-  onPress,
-  danger = false,
-}: {
-  icon: keyof typeof Ionicons.glyphMap;
-  iconBg: string;
-  iconColor: string;
-  label: string;
-  onPress: () => void;
-  danger?: boolean;
-}) => (
-  <Pressable
-    style={({ pressed }) => [styles.menuRow, pressed && styles.menuRowPressed]}
-    onPress={onPress}
-    accessibilityRole="button"
-  >
-    <View style={[styles.menuIcon, { backgroundColor: iconBg }]}>
-      <Ionicons name={icon} size={17} color={iconColor} />
-    </View>
-    <Text style={[styles.menuLabel, danger && styles.menuLabelDanger]}>{label}</Text>
-    {!danger && (
-      <Ionicons name="chevron-forward" size={16} color={theme.colors.borderStrong} />
-    )}
-  </Pressable>
-);
-
-// Styles
-
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingBottom: theme.spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: theme.colors.border,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "900",
-    color: theme.colors.text,
-    letterSpacing: -0.3,
-  },
-  settingsBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: theme.colors.cardMuted,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  screen: { flex: 1, backgroundColor: bg.canvas },
 
-  heroCard: {
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.radii.xl,
-    padding: theme.spacing.lg,
-    gap: 14,
-    ...theme.shadows.soft,
-  },
-  avatarRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  avatarWrap: {
-    position: "relative",
-    width: 76,
-    height: 76,
-    flexShrink: 0,
-  },
-  levelBadge: {
+  stageBackdrop: {
     position: "absolute",
-    bottom: -2,
-    right: -2,
-    backgroundColor: theme.colors.primaryDark,
-    borderRadius: theme.radii.pill,
-    minWidth: 22,
-    height: 22,
+    top: -600,
+    left: 0,
+    right: 0,
+    backgroundColor: bg.stage,
+  },
+  stage: { alignItems: "center", justifyContent: "flex-end", overflow: "hidden" },
+
+  sheet: {
+    marginTop: -SHEET_OVERLAP,
+    paddingTop: space.xxl,
+    paddingHorizontal: layout.gutter,
+    backgroundColor: bg.canvas,
+    borderTopLeftRadius: radius.sheet,
+    borderTopRightRadius: radius.sheet,
+  },
+
+
+
+  switch: { marginTop: space.xxl },
+  panel: { minHeight: 420 },
+
+  account: { marginBottom: space.sm },
+
+  glyphButton: {
+    width: iconSize.nav,
+    height: HEADER_HEIGHT,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 5,
-    borderWidth: 2,
-    borderColor: theme.colors.card,
-  },
-  levelBadgeText: {
-    fontSize: 11,
-    fontWeight: "900",
-    color: "#fff",
-    letterSpacing: 0.2,
-  },
-  heroCopy: {
-    flex: 1,
-    gap: 3,
-  },
-  heroName: {
-    fontSize: 24,
-    fontWeight: "900",
-    color: theme.colors.text,
-    letterSpacing: -0.5,
-  },
-  heroBreed: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: theme.colors.textMuted,
-  },
-  dogTagRow: {
-    flexDirection: "row",
-    marginTop: 4,
-  },
-  dogTag: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: theme.colors.textSubtle,
-    backgroundColor: theme.colors.cardMuted,
-    borderRadius: theme.radii.pill,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-
-  xpSection: { gap: 6 },
-  xpLabelRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  xpLabel: { fontSize: 12, fontWeight: "800", color: theme.colors.primaryDark },
-  xpValue: { fontSize: 11, fontWeight: "700", color: theme.colors.textMuted },
-  xpTrack: {
-    height: 7,
-    backgroundColor: theme.colors.cardMuted,
-    borderRadius: theme.radii.pill,
-    overflow: "hidden",
-  },
-  xpFill: {
-    height: "100%",
-    backgroundColor: theme.colors.primaryDark,
-    borderRadius: theme.radii.pill,
-  },
-  xpNext: { fontSize: 11, color: theme.colors.textSubtle, fontWeight: "600" },
-
-  currencyRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  currencyPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    backgroundColor: theme.colors.silverSoft,
-    borderRadius: theme.radii.pill,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-  },
-  currencyAmount: {
-    fontSize: 14,
-    fontWeight: "900",
-  },
-  currencyLabel: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: theme.colors.textMuted,
-  },
-
-  statStrip: {
-    flexDirection: "row",
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.radii.lg,
-    overflow: "hidden",
-    ...theme.shadows.soft,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 14,
-    gap: 3,
-  },
-  statDiv: {
-    width: StyleSheet.hairlineWidth,
-    backgroundColor: theme.colors.border,
-    marginVertical: 10,
-  },
-  statNum: {
-    fontSize: 20,
-    fontWeight: "900",
-    letterSpacing: -0.3,
-  },
-  statLabel: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: theme.colors.textMuted,
-  },
-
-  card: {
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.radii.lg,
-    padding: theme.spacing.lg,
-    gap: theme.spacing.md,
-    ...theme.shadows.soft,
-  },
-  sectionLabel: {
-    fontSize: 11,
-    fontWeight: "800",
-    color: theme.colors.textSubtle,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-  },
-
-  skillList: { gap: 10 },
-  skillRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  skillIconWrap: {
-    width: 24,
-    height: 24,
-    borderRadius: 6,
-    backgroundColor: theme.colors.primarySoft,
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
-  skillLabel: {
-    width: 78,
-    fontSize: 13,
-    fontWeight: "700",
-    color: theme.colors.text,
-  },
-  skillTrack: {
-    flex: 1,
-    height: 6,
-    backgroundColor: theme.colors.cardMuted,
-    borderRadius: theme.radii.pill,
-    overflow: "hidden",
-  },
-  skillFill: {
-    height: "100%",
-    backgroundColor: theme.colors.primaryDark,
-    borderRadius: theme.radii.pill,
-    minWidth: 3,
-  },
-  skillValue: {
-    width: 24,
-    fontSize: 12,
-    fontWeight: "800",
-    color: theme.colors.primaryDark,
-    textAlign: "right",
-  },
-
-  aboutHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  editLink: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: theme.colors.primaryDark,
-  },
-  aboutGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  aboutCell: {
-    flex: 1,
-    minWidth: "45%",
-    backgroundColor: theme.colors.cardMuted,
-    borderRadius: theme.radii.md,
-    padding: 12,
-    gap: 3,
-  },
-  aboutCellLabel: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: theme.colors.textSubtle,
-    textTransform: "uppercase",
-    letterSpacing: 0.4,
-  },
-  aboutCellValue: {
-    fontSize: 14,
-    fontWeight: "800",
-    color: theme.colors.text,
-  },
-
-  menuGroup: {
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.radii.lg,
-    overflow: "hidden",
-    ...theme.shadows.soft,
-  },
-  menuGroupLabel: {
-    fontSize: 11,
-    fontWeight: "800",
-    color: theme.colors.textSubtle,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    paddingHorizontal: theme.spacing.lg,
-    paddingTop: theme.spacing.md,
-    paddingBottom: theme.spacing.sm,
-  },
-  menuRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: 13,
-    gap: 12,
-  },
-  menuRowPressed: {
-    backgroundColor: theme.colors.cardMuted,
-  },
-  menuIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: theme.radii.sm,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  menuLabel: {
-    flex: 1,
-    fontSize: theme.typography.sm,
-    fontWeight: "700",
-    color: theme.colors.text,
-  },
-  menuLabelDanger: {
-    color: theme.colors.error,
-  },
-  menuRowDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: theme.colors.border,
-    marginLeft: 56,
   },
 });

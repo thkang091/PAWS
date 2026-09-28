@@ -18,7 +18,10 @@ export const getCurrentProfile = async (): Promise<Profile | null> => {
   };
 };
 
+import { DEMO_MODE, demoGetDog } from "@/services/demoData";
+
 export const getCurrentDog = async (): Promise<Dog | null> => {
+  if (DEMO_MODE) return demoGetDog();
   const client = getClientOrThrow();
   const { data, error } = await client.from("dogs").select("*").order("created_at", { ascending: true }).limit(1).maybeSingle();
   throwIfError(error);

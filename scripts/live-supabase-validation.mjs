@@ -87,10 +87,24 @@ await run("training catalog", async () => {
   return `${data?.length ?? 0} rows readable`;
 });
 
-await run("latest reward catalog migration", async () => {
-  const { data, error } = await client.from("activity_reward_catalog").select("activity_id").limit(3);
+await run("shop catalog", async () => {
+  const { data, error } = await client.from("shop_items").select("id,item_key").limit(3);
   requireNoError({ data, error });
-  return `${data?.length ?? 0} activity reward rows readable`;
+  return `${data?.length ?? 0} shop item rows readable`;
+});
+
+await run("challenge games catalog", async () => {
+  const { data, error } = await client.from("challenge_games").select("id,verifier_prompt").eq("is_active", true).limit(3);
+  requireNoError({ data, error });
+  const missingPrompt = (data ?? []).some((row) => !row.verifier_prompt?.trim());
+  if (missingPrompt) throw new Error("a challenge game row has no verifier_prompt");
+  return `${data?.length ?? 0} challenge game rows readable, verifier_prompt present`;
+});
+
+await run("coupons catalog", async () => {
+  const { data, error } = await client.from("coupons").select("id,title").limit(3);
+  requireNoError({ data, error });
+  return `${data?.length ?? 0} coupon rows readable`;
 });
 
 await run("dog lookup under RLS", async () => {

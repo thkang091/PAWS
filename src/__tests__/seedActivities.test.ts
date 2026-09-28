@@ -1,62 +1,4 @@
-/**
- * Seed Data Validation — BH001–BH010
- *
- * These tests validate the TypeScript seed data (src/data/seedCatalog/bh001_bh010.ts)
- * without requiring a live database. The SQL migration 0024_seed_bh001_bh010.sql
- * inserts the same records; keeping both in sync is a human responsibility.
- *
- * Test categories:
- *   Count and identity
- *     - Exactly 10 activities seeded
- *     - All IDs are unique
- *     - IDs match expected BH001–BH010 pattern
- *   Reference assets
- *     - All activities include DOG_PROFILE
- *     - Place-mat activities (BH007–BH010) include TARGET_MAT
- *     - Non-mat activities do not include TARGET_MAT
- *   Duration values
- *     - min_clip_seconds is always < max_clip_seconds
- *     - Duration holds (BH008–BH010) have reduced FPS
- *     - BH010 (30s hold) has min_clip >= 38s
- *   VLM prompt quality
- *     - All prompts are non-empty
- *     - All prompts contain PASS CRITERIA section
- *     - All prompts contain FAIL CRITERIA section
- *     - All prompts contain NEEDS REVIEW section
- *     - All prompts contain SCORABLE VIDEO GATE section
- *     - No prompt contains placeholder strings (TODO, TBD, placeholder, FIXME)
- *   Criteria fields
- *     - All activities have at least one pass criterion
- *     - All activities have at least one fail criterion
- *     - All activities have at least one needs-review criterion
- *     - No criterion string is empty or whitespace-only
- *   Prerequisite and progression links
- *     - All prerequisite IDs reference an activity in BH001–BH010 or are empty
- *     - All regressionActivityId values reference an activity in BH001–BH010 or are null
- *     - All harderActivityId values reference an activity in BH001–BH010 or are null
- *     - BH001 has no prerequisites
- *     - BH001–BH010 form one ordered progression chain
- *   Audio requirements
- *     - BH001 (marker) requires audio
- *     - BH002 (name response) requires audio
- *     - BH006 (release cue) requires audio
- *     - Non-audio activities do not have audioRequired=true
- *   Confidence thresholds
- *     - minimumAutoPassConfidence is between 0 and 1 for all activities
- *     - minimumAutoFailConfidence is between 0 and 1 for all activities
- *     - minimumAutoFailConfidence >= minimumAutoPassConfidence for all activities
- *   Reward values
- *     - coinReward is 0 for all activities (non-CERTIFIED constraint)
- *     - starsAvailable is 3 for all activities
- *     - xpReward is > 0 for all activities
- *   Verification status
- *     - All activities have verificationStatus of BETA or DRAFT
- *     - All BH001–BH010 activities are BETA
- */
-
 import { BH001_BH010 } from "@/data/seedCatalog/bh001_bh010";
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const EXPECTED_IDS = [
   "BH001", "BH002", "BH003", "BH004", "BH005",
@@ -103,8 +45,6 @@ function hasPlaceholder(text: string): boolean {
   return PLACEHOLDER_PATTERNS.some((re) => re.test(text));
 }
 
-// ─── Count and identity ───────────────────────────────────────────────────────
-
 describe("Count and identity", () => {
   it("seeds exactly 10 activities", () => {
     expect(BH001_BH010).toHaveLength(10);
@@ -140,8 +80,6 @@ describe("Count and identity", () => {
   });
 });
 
-// ─── Reference assets ─────────────────────────────────────────────────────────
-
 describe("Reference assets", () => {
   it("all activities include DOG_PROFILE in required reference assets", () => {
     for (const a of BH001_BH010) {
@@ -167,8 +105,6 @@ describe("Reference assets", () => {
     }
   });
 });
-
-// ─── Duration values ──────────────────────────────────────────────────────────
 
 describe("Duration values", () => {
   it("min_clip_seconds is always less than max_clip_seconds", () => {
@@ -217,8 +153,6 @@ describe("Duration values", () => {
     }
   });
 });
-
-// ─── VLM prompt quality ───────────────────────────────────────────────────────
 
 describe("VLM prompt quality", () => {
   it("all prompts are non-empty", () => {
@@ -293,8 +227,6 @@ describe("VLM prompt quality", () => {
   });
 });
 
-// ─── Criteria fields ──────────────────────────────────────────────────────────
-
 describe("Criteria fields", () => {
   it("all activities have at least 2 pass criteria", () => {
     for (const a of BH001_BH010) {
@@ -360,8 +292,6 @@ describe("Criteria fields", () => {
   });
 });
 
-// ─── Prerequisite and progression links ───────────────────────────────────────
-
 describe("Prerequisite and progression links", () => {
   it("BH001 has no prerequisites", () => {
     const bh001 = BH001_BH010.find((a) => a.id === "BH001")!;
@@ -380,9 +310,7 @@ describe("Prerequisite and progression links", () => {
   it("all prerequisite IDs resolve within planned BH catalog or are empty", () => {
     for (const a of BH001_BH010) {
       for (const prereq of a.prerequisites) {
-        // BH prerequisites must be valid BH IDs (may reference future BH activities)
         expect(prereq).toMatch(/^BH\d{3}$/);
-        // All prereqs in this batch must point to earlier IDs (dependency ordering)
         const prereqNum = parseInt(prereq.replace("BH", ""), 10);
         const currentNum = parseInt(a.id.replace("BH", ""), 10);
         expect(prereqNum).toBeLessThan(currentNum);
@@ -428,8 +356,6 @@ describe("Prerequisite and progression links", () => {
   });
 });
 
-// ─── Required MVP field aliases ─────────────────────────────────────────────
-
 describe("Required MVP field aliases", () => {
   it("every activity exposes MVP field names alongside database field names", () => {
     for (const a of BH001_BH010) {
@@ -442,8 +368,6 @@ describe("Required MVP field aliases", () => {
     }
   });
 });
-
-// ─── Activity-specific MVP expectations ─────────────────────────────────────
 
 describe("Activity-specific MVP expectations", () => {
   it("BH002 uses a 2-second name-response window", () => {
@@ -483,8 +407,6 @@ describe("Activity-specific MVP expectations", () => {
   });
 });
 
-// ─── MVP reference-photo decision rules ─────────────────────────────────────
-
 describe("MVP reference-photo decision rules", () => {
   it("mat mismatch or ambiguous mat identity is a NEEDS_REVIEW condition, not FAIL", () => {
     for (const id of MAT_ACTIVITIES) {
@@ -503,8 +425,6 @@ describe("MVP reference-photo decision rules", () => {
     }
   });
 });
-
-// ─── Audio requirements ───────────────────────────────────────────────────────
 
 describe("Audio requirements", () => {
   it("BH001 (marker) requires audio", () => {
@@ -531,8 +451,6 @@ describe("Audio requirements", () => {
   });
 });
 
-// ─── Confidence thresholds ────────────────────────────────────────────────────
-
 describe("Confidence thresholds", () => {
   it("minimumAutoPassConfidence is between 0 and 1 for all activities", () => {
     for (const a of BH001_BH010) {
@@ -556,8 +474,6 @@ describe("Confidence thresholds", () => {
     }
   });
 });
-
-// ─── Reward values ────────────────────────────────────────────────────────────
 
 describe("Reward values", () => {
   it("coinReward is 0 for all activities (reserved for CERTIFIED only)", () => {
@@ -585,8 +501,6 @@ describe("Reward values", () => {
   });
 });
 
-// ─── Verification status ──────────────────────────────────────────────────────
-
 describe("Verification status", () => {
   it("all BH001–BH010 activities are BETA status", () => {
     for (const a of BH001_BH010) {
@@ -594,8 +508,6 @@ describe("Verification status", () => {
     }
   });
 });
-
-// ─── Recording requirements completeness ─────────────────────────────────────
 
 describe("Recording requirements completeness", () => {
   it("all activities have a cameraAngle", () => {

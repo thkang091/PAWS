@@ -217,14 +217,6 @@ export type GameEntry = {
   status: Database["public"]["Enums"]["game_entry_status"];
 };
 
-export type RewardDefinition = {
-  id: string;
-  name: string;
-  description: string;
-  goldCost: number;
-  isActive: boolean;
-};
-
 export type Coupon = {
   id: string;
   title: string;
@@ -241,18 +233,6 @@ export type CouponPurchase = {
   dogId: string;
   goldCoinCost: number;
   status: "purchased" | "redeemed" | "cancelled";
-  createdAt: string;
-};
-
-export type RewardRedemption = {
-  id: string;
-  rewardId: string;
-  dogId: string;
-  status: Database["public"]["Enums"]["redemption_status"];
-  providerReference: string | null;
-  fulfillmentNote: string | null;
-  rejectionReason: string | null;
-  fulfilledAt: string | null;
   createdAt: string;
 };
 
@@ -347,17 +327,24 @@ export type PlaceholderScreenContent = {
   nextPhase: string;
 };
 
-// ─────────────────────────────────────────────
-// Personalized Training Curriculum
-// ─────────────────────────────────────────────
-
 export type OwnerTrainingGoal =
   | 'BETTER_BEHAVIOR_AT_HOME'
   | 'SAFETY_AND_OBEDIENCE'
   | 'BETTER_WALKS'
   | 'COOL_TRICKS_AND_GAMES'
   | 'HELPFUL_SKILLS_AROUND_THE_HOUSE'
-  | 'CALM_ALONE_TIME';
+  | 'CALM_ALONE_TIME'
+  | 'RULES_AND_BOUNDARIES'
+  | 'CLEAR_COMMUNICATION'
+  | 'HANDLING_AND_GROOMING'
+  | 'CALM_EVERYDAY_MANNERS'
+  | 'PROBLEM_BEHAVIORS'
+  | 'POTTY_AND_REAL_WORLD'
+  | 'NOT_SURE_YET'
+  | 'SOMETHING_ELSE'
+  | 'DOING_WELL'
+  | 'HEALTHY_HABITS'
+  | 'SOCIAL_SKILLS';
 
 export type QuestContentType =
   | 'AI_VERIFIED_MAIN_QUEST'
@@ -365,10 +352,8 @@ export type QuestContentType =
   | 'HYBRID_QUEST'
   | 'HYBRID_BOSS_QUEST';
 
-/** Alias for OwnerTrainingGoal — used in new catalog modules. */
 export type TrainingGoalCategory = OwnerTrainingGoal;
 
-/** Alias for CurriculumVerificationStatus — used in new catalog modules. */
 export type VerificationStatus = CurriculumVerificationStatus;
 
 export type ReferenceAssetType =
@@ -388,7 +373,6 @@ export type ReferenceAssetType =
   | 'TARGET_PERSON'
   | 'CUSTOM_OBJECT';
 
-/** Full per-activity reference-asset specification. */
 export type ReferenceAssetRequirement = {
   type: ReferenceAssetType;
   required: boolean;
@@ -398,7 +382,6 @@ export type ReferenceAssetRequirement = {
   instructions: string[];
 };
 
-/** Allowed camera-angle values for a recording requirement. */
 export type CameraAngle =
   | 'SIDE_FULL_BODY'
   | 'FRONT_FULL_BODY'
@@ -411,7 +394,6 @@ export type CameraAngle =
   | 'MULTI_CLIP_COMPONENT_SET'
   | 'CUSTOM';
 
-/** Camera and framing requirements for a recording attempt. */
 export type RecordingRequirements = {
   cameraAngle: CameraAngle;
   fullDogBodyRequired: boolean;
@@ -421,9 +403,7 @@ export type RecordingRequirements = {
   audioRequired: boolean;
   targetObjectRequiredInFrame: boolean;
   destinationRequiredInFrame: boolean;
-  /** Start boundary (threshold, starting line) must be visible. */
   startBoundaryRequiredInFrame: boolean;
-  /** End boundary (mat edge, crate entry, far-side threshold) must be visible. */
   endBoundaryRequiredInFrame: boolean;
   setupInstructions: string[];
 };
@@ -476,14 +456,12 @@ export type TrainingCatalogActivity = {
   recordingRequirements: RecordingRequirements;
 
   startStateCriteria: string[];
-  /** Ordered sequence of events Gemini should detect in the clip. */
   orderedVisibleEvents: string[];
   passCriteria: string[];
   failCriteria: string[];
   needsReviewCriteria: string[];
   outOfScopeClaims: string[];
   safetyNotes: string[];
-  /** Shown to the owner after FAIL or NEEDS_REVIEW. */
   retryInstructions: string[];
 
   recommendedFps: number;
@@ -499,9 +477,7 @@ export type TrainingCatalogActivity = {
   coinReward: number;
   starsAvailable: number;
 
-  /** Semver version of the shared master VLM prompt used when this activity was last evaluated. */
   masterPromptVersion: string;
-  /** Semver version of this activity's vlmPrompt; increment on any edit. */
   activityPromptVersion: string;
 
   vlmPrompt: string;
@@ -565,23 +541,14 @@ export type VideoSubmission = {
   xpAwarded: number;
   coinsAwarded: number;
   status: 'pending' | 'processing' | 'passed' | 'failed' | 'needs_review' | 'error';
-  /** SHA-256 hex digest of the video bytes — used for deduplication. */
   submissionHash: string | null;
-  /** Integer version of vlm_prompt active at submission time. */
   promptVersion: number | null;
-  /** Configured Gemini model string, e.g. "gemini-2.5-flash". */
   modelIdentifier: string | null;
-  /** Storage paths of reference photos sent to Gemini. */
   referenceAssetStoragePaths: string[];
-  /** Verbatim JSON response body from Gemini. Never exposed to mobile clients. */
   rawGeminiResponse: Record<string, unknown> | null;
-  /** True once XP/coins have been issued for a confirmed PASS. */
   rewardGranted: boolean;
 };
 
-// ─── Boss-quest types ─────────────────────────────────────────────────────────
-
-/** A single component activity within a HYBRID_BOSS_QUEST. */
 export type BossQuestComponent = {
   componentActivityId: string;
   order: number;
@@ -609,13 +576,190 @@ export type DogTrainingStreak = {
   lastActivityDate: string | null;
 };
 
-// ─────────────────────────────────────────────
-// VLM Verification Result
-// ─────────────────────────────────────────────
+export type TrainingSection = {
+  id: string;
+  sectionNumber: number;
+  slug: string;
+  title: string;
+  description: string | null;
+  safetyBoundary: string | null;
+};
+
+export type TrainingSkillStatus = "not_started" | "in_progress" | "completed";
+export type TrainingCheckpointStatus = "not_eligible" | "eligible" | "passed" | "needs_review";
+export type TrainingResult = "success" | "not_yet";
+
+export type TrainingSkillSummary = {
+  id: string;
+  sectionId: string;
+  skillCode: string;
+  slug: string;
+  title: string;
+  oneLineGoal: string;
+  sortOrder: number;
+};
+
+export type DogTrainingSkillProgress = {
+  skillId: string;
+  status: TrainingSkillStatus;
+  currentLevelNumber: number;
+  checkpointStatus: TrainingCheckpointStatus;
+  latestResult: TrainingResult | null;
+  reviewSoon: boolean;
+  lastPracticedAt: string | null;
+  completedAt: string | null;
+};
+
+export type SectionRoadmapNode = {
+  skill: TrainingSkillSummary;
+  progress: DogTrainingSkillProgress | null;
+};
+
+export type SectionRoadmap = {
+  section: TrainingSection;
+  nodes: SectionRoadmapNode[];
+};
+
+export type DogTrainingPreferences = {
+  dogId: string;
+  preferredSectionId: string | null;
+  trainingExperience: string | null;
+  dailyMinutes: number | null;
+  deliveryStyle: string | null;
+  onboardingCompletedAt: string | null;
+};
+
+export type TrainingEnergy = {
+  base: number;
+  consumed: number;
+  remaining: number;
+};
+
+export type SkillSessionResolution = {
+  resolution: "resume" | "review" | "checkpoint" | "level";
+  levelId: string;
+  sessionType: "normal" | "review" | "bridge" | "checkpoint";
+  levelNumber: number | null;
+  sessionId?: string;
+  reviewAssignmentId?: string;
+  reviewType?: string;
+};
+
+export type TrainingSessionType = "normal" | "review" | "bridge" | "checkpoint";
+export type TrainingSessionStatus = "active" | "completed" | "ended";
+
+export type TrainingSession = {
+  id: string;
+  dogId: string;
+  skillId: string;
+  levelId: string;
+  sessionType: TrainingSessionType;
+  status: TrainingSessionStatus;
+  startedAt: string;
+  completedAt: string | null;
+  endedAt: string | null;
+  energyConsumed: boolean;
+  retryUsed: boolean;
+  finalResult: TrainingResult | "ended" | null;
+  currentCardKey: string | null;
+  idempotencyKey: string;
+};
+
+export type StartSessionResult = {
+  session: TrainingSession;
+  remainingEnergy: number;
+  chargedEnergy: boolean;
+};
+
+export type ReportResultOutcome = {
+  settled: boolean;
+  allowAdditionalPractice: boolean;
+  result: TrainingResult | null;
+  session: TrainingSession;
+};
+
+export type TrainingLessonCardButton = { label: string; role: string };
+
+export type TrainingLessonCard = {
+  id: string;
+  cardKey: string;
+  cardType: "orient" | "demo" | "guardian" | "additional_practice" | "completion";
+  sortOrder: number;
+  title: string | null;
+  body: string | null;
+  keyAction: string | null;
+  tryIt: string | null;
+  harderPart: string | null;
+  finishInstruction: string | null;
+  successCopy: string | null;
+  notYetCopy: string | null;
+  buttons: TrainingLessonCardButton[];
+};
+
+export type TrainingReadyCardMaterial = { label: string; detail: string };
+
+export type TrainingReadyCard = {
+  materials: TrainingReadyCardMaterial[];
+  safetyCopy: string;
+  primaryAction: string;
+  secondaryAction: string;
+};
+
+export type TrainingCheckpointPolicy = {
+  entryRule: string;
+  guardianInstruction: string;
+  successCopy: string;
+  notYetCopy: string;
+};
+
+export type TrainingLevelDetail = {
+  id: string;
+  skillId: string;
+  stageType: "level" | "checkpoint";
+  levelNumber: number | null;
+  title: string;
+  goal: string | null;
+  observableCriterion: string | null;
+  firstPart: string | null;
+  nextPart: string | null;
+  easierPath: string | null;
+  successAnchor: string | null;
+  additionalPracticeAllowed: boolean;
+  readyCard: TrainingReadyCard | null;
+  cards: TrainingLessonCard[];
+  checkpointPolicy: TrainingCheckpointPolicy | null;
+  media: TrainingMediaBinding | null;
+  skill: {
+    id: string;
+    skillCode: string;
+    title: string;
+    oneLineGoal: string;
+  };
+};
+
+export type TrainingMediaBinding = {
+  id: string;
+  levelId: string;
+  demoId: string;
+  mediaUrl: string | null;
+  posterUrl: string | null;
+  status: string;
+  fallbackText: string | null;
+};
+
+export type TrainingReviewAssignment = {
+  id: string;
+  dogId: string;
+  skillId: string;
+  levelId: string;
+  reviewType: "easier_review" | "bridge" | "targeted_level_review" | "maintenance_review";
+  status: "pending" | "active" | "completed" | "cancelled";
+  reason: string | null;
+  dueAt: string | null;
+};
 
 export type VerificationVerdict = 'PASS' | 'FAIL' | 'NEEDS_REVIEW' | 'UNSUPPORTED';
 
-/** Per-frame / per-clip quality flags reported by the VLM. */
 export type ClipQuality = {
   dogVisible: boolean;
   targetDogUnambiguous: boolean;
@@ -645,7 +789,6 @@ export type MatchedReferenceAsset = {
   notes: string;
 };
 
-/** Structured output produced by the VLM for a single video submission. */
 export type DogTrainingVerificationResult = {
   activityId: string;
 

@@ -1,37 +1,3 @@
-/**
- * Training Goal Selection — Unit Tests
- *
- * Covers:
- *   Validation
- *     - selecting 1 goal
- *     - selecting all 6 goals
- *     - rejecting 0 goals (below minimum)
- *     - rejecting more than 6 goals (above maximum)
- *     - rejecting duplicate goal keys
- *     - rejecting duplicate priority ranks
- *     - validated data preserves all goal fields
- *
- *   Persistence (mocked Supabase)
- *     - saveTrainingGoals deletes existing data before inserting
- *     - saveTrainingGoals deletes using the correct dog_id
- *     - saveTrainingGoals writes goal rows correctly for 1 goal
- *     - saveTrainingGoals writes all 6 goal rows with correct priority order
- *     - saveTrainingGoals stores category-specific pain points
- *     - saveTrainingGoals stores pain points across multiple goals separately
- *     - saveTrainingGoals skips pain-point insert when none are selected
- *     - saveTrainingGoals does nothing extra when goals array is empty
- *
- *   Loading saved selections (mocked Supabase)
- *     - getTrainingGoals returns [] when no goals are saved
- *     - getTrainingGoals returns hydrated SelectedOwnerGoal[] with pain points
- *     - getTrainingGoals returns goals with empty pain points when none stored
- *     - getTrainingGoals correctly associates pain points by category
- */
-
-// ─── Module mock: intercept @/lib/supabase before anything imports it ────────
-// Using an explicit factory prevents Jest from ever loading the real supabase.ts
-// (which imports react-native-url-polyfill, an ESM-only package that crashes the
-// Node test environment).
 jest.mock("@/lib/supabase", () => ({
   getSupabaseClient: jest.fn(),
 }));
@@ -41,16 +7,6 @@ import { onboardingSchema } from "@/validation/onboardingSchemas";
 import { getTrainingGoals, saveTrainingGoals } from "@/services/curriculumService";
 import type { SelectedOwnerGoal } from "@/types/domain";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Mock client factory
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Creates a chainable mock result: a Promise that can be awaited AND has every
- * Supabase query-builder method attached, each returning another chainable
- * result carrying the same data.  This lets a single fixture work for both
- * `.select().eq().order()` (three-step chain) and `.select().eq()` (two-step).
- */
 function mockResult(data: unknown, error: unknown = null) {
   const p = Promise.resolve({ data, error }) as Promise<{ data: unknown; error: unknown }> &
     Record<string, unknown>;
@@ -65,13 +21,6 @@ function mockResult(data: unknown, error: unknown = null) {
   return p;
 }
 
-/**
- * Lightweight Supabase client mock.
- *
- * - `tableData` controls what `.select()` resolves to per table name.
- * - `insertLog` accumulates every `.insert()` call ({ table, rows }).
- * - `deleteLog` accumulates every `.delete().eq()` call ({ table, col, val }).
- */
 function makeMockClient(tableData: Record<string, unknown[]> = {}) {
   const insertLog: Array<{ table: string; rows: unknown }> = [];
   const deleteLog: Array<{ table: string; col: string; val: unknown }> = [];
@@ -100,10 +49,6 @@ function makeMockClient(tableData: Record<string, unknown[]> = {}) {
   return { client, insertLog, deleteLog };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Shared fixtures
-// ─────────────────────────────────────────────────────────────────────────────
-
 const ONE_GOAL: SelectedOwnerGoal[] = [
   { goal: "SAFETY_AND_OBEDIENCE", priorityRank: 1, selectedPainPoints: ["recall", "leave_it"] },
 ];
@@ -117,7 +62,6 @@ const SIX_GOALS: SelectedOwnerGoal[] = [
   { goal: "CALM_ALONE_TIME",                 priorityRank: 6, selectedPainPoints: ["safe_zone_routine"] },
 ];
 
-/** Minimal valid onboarding form values for schema testing. */
 const BASE_FORM = {
   name: "Buddy",
   gender: "male" as const,
@@ -134,10 +78,6 @@ const BASE_FORM = {
   concernKeys: [],
   concernOtherNote: null,
 };
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Validation tests
-// ─────────────────────────────────────────────────────────────────────────────
 
 describe("training goal validation — onboardingSchema", () => {
   it("accepts exactly 1 selected goal", () => {
@@ -167,7 +107,6 @@ describe("training goal validation — onboardingSchema", () => {
   });
 
   it("rejects more than 6 goals", () => {
-    // 7 entries — max(6) fires before the duplicate-goal refine
     const tooMany: SelectedOwnerGoal[] = [
       ...SIX_GOALS,
       { goal: "BETTER_BEHAVIOR_AT_HOME", priorityRank: 7, selectedPainPoints: [] },
@@ -229,10 +168,6 @@ describe("training goal validation — onboardingSchema", () => {
     });
   });
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Persistence tests — saveTrainingGoals
-// ─────────────────────────────────────────────────────────────────────────────
 
 describe("saveTrainingGoals — persistence", () => {
   beforeEach(() => jest.clearAllMocks());
@@ -372,17 +307,11 @@ describe("saveTrainingGoals — persistence", () => {
 
     await saveTrainingGoals("dog-007", []);
 
-    // Deletes should fire to purge stale data.
     expect(deleteLog.length).toBeGreaterThan(0);
-    // No inserts should occur.
     const goalInsert = insertLog.find((e) => e.table === "dog_selected_training_goals");
     expect(goalInsert).toBeUndefined();
   });
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Loading saved selections — getTrainingGoals
-// ─────────────────────────────────────────────────────────────────────────────
 
 describe("getTrainingGoals — loading saved selections", () => {
   beforeEach(() => jest.clearAllMocks());

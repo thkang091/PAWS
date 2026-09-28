@@ -6,7 +6,6 @@ export type BreedExerciseData = {
 };
 
 export const BREED_EXERCISE_DATA: Record<string, BreedExerciseData> = {
-  // Very high energy
   border_collie: { minutesMin: 90, minutesMax: 120, label: "Border Collie", energyTier: "very_high" },
   australian_shepherd: { minutesMin: 90, minutesMax: 120, label: "Australian Shepherd", energyTier: "very_high" },
   siberian_husky: { minutesMin: 90, minutesMax: 120, label: "Siberian Husky", energyTier: "very_high" },
@@ -14,7 +13,6 @@ export const BREED_EXERCISE_DATA: Record<string, BreedExerciseData> = {
   jack_russell: { minutesMin: 60, minutesMax: 90, label: "Jack Russell Terrier", energyTier: "very_high" },
   weimaraner: { minutesMin: 90, minutesMax: 120, label: "Weimaraner", energyTier: "very_high" },
   dalmatian: { minutesMin: 60, minutesMax: 90, label: "Dalmatian", energyTier: "very_high" },
-  // High energy
   golden_retriever: { minutesMin: 60, minutesMax: 90, label: "Golden Retriever", energyTier: "high" },
   labrador: { minutesMin: 60, minutesMax: 90, label: "Labrador Retriever", energyTier: "high" },
   german_shepherd: { minutesMin: 60, minutesMax: 90, label: "German Shepherd", energyTier: "high" },
@@ -23,7 +21,6 @@ export const BREED_EXERCISE_DATA: Record<string, BreedExerciseData> = {
   rottweiler: { minutesMin: 60, minutesMax: 90, label: "Rottweiler", energyTier: "high" },
   vizsla: { minutesMin: 60, minutesMax: 90, label: "Vizsla", energyTier: "high" },
   standard_poodle: { minutesMin: 45, minutesMax: 60, label: "Standard Poodle", energyTier: "high" },
-  // Medium energy
   beagle: { minutesMin: 45, minutesMax: 60, label: "Beagle", energyTier: "medium" },
   cocker_spaniel: { minutesMin: 30, minutesMax: 60, label: "Cocker Spaniel", energyTier: "medium" },
   bernese: { minutesMin: 30, minutesMax: 60, label: "Bernese Mountain Dog", energyTier: "medium" },
@@ -32,7 +29,6 @@ export const BREED_EXERCISE_DATA: Record<string, BreedExerciseData> = {
   schnauzer: { minutesMin: 30, minutesMax: 45, label: "Schnauzer", energyTier: "medium" },
   shiba_inu: { minutesMin: 45, minutesMax: 60, label: "Shiba Inu", energyTier: "medium" },
   corgi: { minutesMin: 45, minutesMax: 60, label: "Corgi", energyTier: "medium" },
-  // Low energy
   bulldog: { minutesMin: 20, minutesMax: 40, label: "Bulldog", energyTier: "low" },
   basset_hound: { minutesMin: 30, minutesMax: 45, label: "Basset Hound", energyTier: "low" },
   shih_tzu: { minutesMin: 20, minutesMax: 30, label: "Shih Tzu", energyTier: "low" },
@@ -90,12 +86,12 @@ export type VaccineSchedule = {
 };
 
 export const VACCINE_SCHEDULE: VaccineSchedule[] = [
-  { key: "rabies", name: "Rabies", intervalMonths: 36, required: true, description: "Core vaccine. Required by law in most states." },
-  { key: "dhpp", name: "DHPP (Distemper/Parvo)", intervalMonths: 36, required: true, description: "Core 4-in-1 — distemper, hepatitis, parvovirus, parainfluenza." },
-  { key: "bordetella", name: "Bordetella (Kennel Cough)", intervalMonths: 12, required: false, description: "Recommended if your dog visits parks, groomers, or boarding." },
-  { key: "leptospirosis", name: "Leptospirosis", intervalMonths: 12, required: false, description: "Recommended for dogs exposed to wildlife or standing water." },
-  { key: "lyme", name: "Lyme Disease", intervalMonths: 12, required: false, description: "Recommended in tick-endemic regions." },
-  { key: "influenza", name: "Canine Influenza", intervalMonths: 12, required: false, description: "Recommended for dogs in social environments." },
+  { key: "rabies", name: "Rabies", intervalMonths: 36, required: true, description: "Required by law almost everywhere. Some products last one year, some three." },
+  { key: "dhpp", name: "DHPP (Distemper/Parvo)", intervalMonths: 36, required: true, description: "Distemper, adenovirus, parvovirus and parainfluenza in one shot." },
+  { key: "leptospirosis", name: "Leptospirosis", intervalMonths: 12, required: true, description: "Spread by wildlife and puddles, and passable to people. Core for North American dogs since 2022." },
+  { key: "bordetella", name: "Bordetella (Kennel Cough)", intervalMonths: 12, required: false, description: "Often required by daycare, boarding and groomers." },
+  { key: "lyme", name: "Lyme Disease", intervalMonths: 12, required: false, description: "For dogs in tick country: woods, long grass, the Northeast and Upper Midwest." },
+  { key: "influenza", name: "Canine Influenza", intervalMonths: 12, required: false, description: "For dogs who mix with lots of other dogs, like daycare, shows and parks." },
 ];
 
 export type GroomingType = {
@@ -112,7 +108,7 @@ export const GROOMING_TYPES: GroomingType[] = [
   { key: "ear_clean", label: "Ear clean", icon: "ear-outline", intervalDays: 14, description: "Every 2 weeks. Weekly for floppy-eared breeds." },
   { key: "teeth_brush", label: "Teeth brush", icon: "fitness-outline", intervalDays: 1, description: "Daily brushing prevents 80% of dental disease." },
   { key: "haircut", label: "Haircut", icon: "cut-outline", intervalDays: 42, description: "Every 6 weeks for long-coated breeds." },
-  { key: "flea_tick", label: "Flea & tick treatment", icon: "bug-outline", intervalDays: 30, description: "Monthly preventative treatment." },
+  { key: "flea_tick", label: "Flea & tick", icon: "bug-outline", intervalDays: 30, description: "Monthly preventative treatment." },
 ];
 
 export const MEDICATION_FREQUENCIES = [

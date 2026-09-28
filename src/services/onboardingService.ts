@@ -1,4 +1,6 @@
 import { getClientOrThrow, mapDog, throwIfError } from "@/services/serviceUtils";
+import { sectionNumberForFocus } from "@/constants/trainingCurriculumMapping";
+import { saveDogTrainingPreferences } from "@/services/trainingCurriculumService";
 import type { Dog, DogGender, EnergyLevel, ObedienceLevel, SelectedOwnerGoal } from "@/types/domain";
 
 export type CreateDogProfileInput = {
@@ -17,6 +19,11 @@ export type CreateDogProfileInput = {
   concernKeys: string[];
   concernOtherNote: string | null;
   selectedTrainingGoals: SelectedOwnerGoal[];
+  planPreferences?: {
+    trainingExperience: string;
+    dailyMinutes: number;
+    motivation: string;
+  };
 };
 
 const getErrorText = (error: unknown): string => {
@@ -103,7 +110,42 @@ const saveSelectedTrainingGoals = async (dogId: string, goals: SelectedOwnerGoal
   }
 };
 
+const savePlanPreferences = async (
+  dogId: string,
+  prefs: NonNullable<CreateDogProfileInput["planPreferences"]>,
+  selectedTrainingGoals: SelectedOwnerGoal[],
+): Promise<void> => {
+  try {
+    const client = getClientOrThrow();
+    const focusGoal = selectedTrainingGoals[0]?.goal ?? null;
+    const sectionNumber = focusGoal ? sectionNumberForFocus(focusGoal) : null;
+
+    let preferredSectionId: string | null = null;
+    if (sectionNumber !== null) {
+      const { data, error } = await client
+        .from("training_sections")
+        .select("id")
+        .eq("section_number", sectionNumber)
+        .maybeSingle();
+      if (!error && data) preferredSectionId = data.id as string;
+    }
+
+    await saveDogTrainingPreferences(dogId, {
+      preferredSectionId,
+      trainingExperience: prefs.trainingExperience,
+      dailyMinutes: prefs.dailyMinutes,
+      deliveryStyle: prefs.motivation,
+      markOnboardingComplete: true,
+    });
+  } catch (error) {
+    console.warn("Could not save training preferences.", error);
+  }
+};
+
+import { DEMO_MODE, demoCreateDog } from "@/services/demoData";
+
 export const createDogProfile = async (input: CreateDogProfileInput): Promise<Dog> => {
+  if (DEMO_MODE) return demoCreateDog(input.name);
   const client = getClientOrThrow();
   const { data, error } = await client.rpc("create_dog_profile", {
     dog_name: input.name,
@@ -137,6 +179,9 @@ export const createDogProfile = async (input: CreateDogProfileInput): Promise<Do
 
   const dogId = dog.id;
   await saveSelectedTrainingGoals(dogId, input.selectedTrainingGoals);
+  if (input.planPreferences) {
+    await savePlanPreferences(dogId, input.planPreferences, input.selectedTrainingGoals);
+  }
 
   client.functions.invoke("generate-roadmap", { body: { dogId } }).catch(console.error);
 

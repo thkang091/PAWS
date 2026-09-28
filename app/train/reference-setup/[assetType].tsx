@@ -16,8 +16,6 @@ import { getClientOrThrow } from "@/services/serviceUtils";
 import { saveReferenceAsset } from "@/services/curriculumService";
 import type { ReferenceAssetType } from "@/types/domain";
 
-// ── Asset display metadata ────────────────────────────────────────────────────
-
 const ASSET_META: Record<
   string,
   { label: string; icon: keyof typeof Ionicons.glyphMap; description: string; instructions: string[] }
@@ -29,7 +27,7 @@ const ASSET_META: Record<
       "A clear front-facing photo of your dog's face. Gemini uses this to confirm the right dog is in every training video you submit.",
     instructions: [
       "Photograph your dog in good natural or indoor lighting.",
-      "Face the camera directly — eyes and nose should both be clearly visible.",
+      "Face the camera directly. Eyes and nose should both be clearly visible.",
       "Avoid filters, cropping the face, or photos where the dog is moving.",
       "One photo is enough; 2–3 from slightly different angles helps more.",
     ],
@@ -42,8 +40,8 @@ const ASSET_META: Record<
     instructions: [
       "Place the mat on a plain floor with no other rugs or mats nearby.",
       "Photograph from directly above so the full shape, color, and texture are visible.",
-      "Include the full mat — don't crop the edges.",
-      "Good lighting is important — shadows obscure the texture pattern.",
+      "Include the full mat. Do not crop the edges.",
+      "Good lighting is important. Shadows obscure the texture pattern.",
     ],
   },
   TARGET_TOY: {
@@ -74,7 +72,7 @@ const ASSET_META: Record<
     description:
       "A photo of the doorway or threshold used in training. Gemini checks the dog is waiting at the correct doorway.",
     instructions: [
-      "Stand inside looking toward the door — capture the full door frame, threshold, and the door itself.",
+      "Stand inside looking toward the door. Capture the full door frame, threshold, and the door itself.",
       "Include the floor area on both sides of the threshold.",
       "Make sure the photo is taken in the same location you'll use for training.",
     ],
@@ -173,8 +171,6 @@ const DEFAULT_META = {
   instructions: ["Take a clear, well-lit photo of the required object."],
 };
 
-// ── Screen ────────────────────────────────────────────────────────────────────
-
 export default function ReferenceSetupScreen() {
   const { assetType } = useLocalSearchParams<{ assetType: string }>();
   const dog = useCurrentDog();
@@ -231,7 +227,6 @@ export default function ReferenceSetupScreen() {
       setUploading(true);
       const client = getClientOrThrow();
 
-      // Download bytes from the local URI
       const response = await fetch(asset.uri);
       const arrayBuffer = await response.arrayBuffer();
 
@@ -253,7 +248,6 @@ export default function ReferenceSetupScreen() {
       await queryClient.invalidateQueries({ queryKey: queryKeys.referenceAssets(dogId) });
       await refetchAssets();
 
-      // Success — let the user know and offer to go back
       Alert.alert(
         "Reference photo saved",
         `Your ${meta.label} photo is ready. Gemini will use it during video verification.`,
@@ -270,13 +264,11 @@ export default function ReferenceSetupScreen() {
 
   return (
     <ScreenContainer scroll>
-      {/* Back */}
       <Pressable style={s.back} onPress={() => router.back()} accessibilityRole="button">
         <Ionicons name="chevron-back" size={18} color={theme.colors.primaryDark} />
         <Text style={s.backText}>Activity</Text>
       </Pressable>
 
-      {/* Header */}
       <View style={s.header}>
         <View style={s.iconWrap}>
           <Ionicons name={meta.icon} size={28} color={theme.colors.primaryDark} />
@@ -285,7 +277,6 @@ export default function ReferenceSetupScreen() {
         <Text style={s.description}>{meta.description}</Text>
       </View>
 
-      {/* Existing photos */}
       {hasExisting && (
         <View style={s.existingCard}>
           <View style={s.existingHeader}>
@@ -300,14 +291,12 @@ export default function ReferenceSetupScreen() {
         </View>
       )}
 
-      {/* Preview */}
       {localUri && !uploading && (
         <View style={s.previewCard}>
           <Image source={{ uri: localUri }} style={s.previewImage} resizeMode="cover" />
         </View>
       )}
 
-      {/* Instructions */}
       <View style={s.instructionsCard}>
         <Text style={s.sectionLabel}>PHOTO TIPS</Text>
         {meta.instructions.map((tip, i) => (
@@ -318,7 +307,6 @@ export default function ReferenceSetupScreen() {
         ))}
       </View>
 
-      {/* Error */}
       {uploadError ? (
         <View style={s.errorCard}>
           <Ionicons name="alert-circle-outline" size={16} color={theme.colors.error} />
@@ -326,7 +314,6 @@ export default function ReferenceSetupScreen() {
         </View>
       ) : null}
 
-      {/* CTA */}
       <Pressable
         style={[s.uploadBtn, uploading && s.uploadBtnLoading]}
         onPress={pickAndUpload}
@@ -354,14 +341,12 @@ export default function ReferenceSetupScreen() {
           onPress={() => router.back()}
           accessibilityRole="button"
         >
-          <Text style={s.doneBtnText}>Done — go back to activity</Text>
+          <Text style={s.doneBtnText}>Done, go back to activity</Text>
         </Pressable>
       )}
     </ScreenContainer>
   );
 }
-
-// ── Styles ────────────────────────────────────────────────────────────────────
 
 const s = StyleSheet.create({
   back: {

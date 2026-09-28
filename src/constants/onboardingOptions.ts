@@ -1,3 +1,4 @@
+import type { DogPose } from "@/components/mascot/PawsDog";
 import type { CareEventType, EnergyLevel, ObedienceLevel, DogGender, OwnerTrainingGoal, TrainingGoalCategoryMeta } from "@/types/domain";
 
 export const genderOptions: Array<{ label: string; value: DogGender }> = [
@@ -6,8 +7,6 @@ export const genderOptions: Array<{ label: string; value: DogGender }> = [
   { label: "Unknown", value: "unknown" },
 ];
 
-// Legacy goal options kept for backward-compatibility with existing dog profiles.
-// New onboarding uses trainingGoalCategories instead.
 export const goalOptions = [
   { label: "Better bonding", value: "better_bonding" },
   { label: "Better training", value: "better_training" },
@@ -53,10 +52,6 @@ export const careEventOptions: Array<{ label: string; value: CareEventType }> = 
   { label: "Playtime", value: "playtime" },
   { label: "Custom", value: "custom" },
 ];
-
-// ─────────────────────────────────────────────
-// New Personalized Training Goal Categories
-// ─────────────────────────────────────────────
 
 export const trainingGoalCategories: TrainingGoalCategoryMeta[] = [
   {
@@ -167,8 +162,117 @@ export const trainingGoalCategories: TrainingGoalCategoryMeta[] = [
       { key: 'visible_progress_logging', label: 'Visible progress logging' },
     ],
   },
+  {
+    key: 'HANDLING_AND_GROOMING',
+    title: 'Handling and Grooming',
+    subtitle: 'Touch, nails, brushing, baths, vet visits',
+    iconName: 'cut-outline',
+    painPoints: [
+      { key: 'touch_confidence', label: 'Touch confidence' },
+      { key: 'brushing_basics', label: 'Brushing basics' },
+      { key: 'paw_checks', label: 'Paw checks' },
+      { key: 'nail_care', label: 'Nail care' },
+      { key: 'ears_eyes_teeth', label: 'Ears, eyes and teeth' },
+      { key: 'bath_time', label: 'Bath time' },
+      { key: 'being_picked_up', label: 'Being picked up' },
+      { key: 'vet_visits', label: 'Vet visits' },
+      { key: 'harness_and_collar', label: 'Harness and collar' },
+      { key: 'calm_care_routines', label: 'Calm care routines' },
+    ],
+  },
+  {
+    key: 'POTTY_AND_REAL_WORLD',
+    title: 'Potty Routine',
+    subtitle: 'A schedule, clear cues, and fewer accidents',
+    iconName: 'time-outline',
+    painPoints: [
+      { key: 'set_a_potty_schedule', label: 'Set a potty schedule' },
+      { key: 'potty_cues', label: 'Potty cues' },
+      { key: 'going_outside_successfully', label: 'Going outside successfully' },
+      { key: 'rewards_and_praise', label: 'Rewards and praise' },
+      { key: 'build_consistency', label: 'Build consistency' },
+      { key: 'overnight_routine', label: 'Overnight routine' },
+      { key: 'accident_recovery', label: 'Accident recovery' },
+      { key: 'signals_to_go_out', label: 'Signals to go out' },
+      { key: 'new_places', label: 'New places' },
+      { key: 'crate_and_potty', label: 'Crate and potty' },
+    ],
+  },
+  {
+    key: 'HEALTHY_HABITS',
+    title: 'Healthy Habits',
+    subtitle: 'Meals, water, sleep, exercise, daily checks',
+    iconName: 'nutrition-outline',
+    painPoints: [
+      { key: 'balanced_meals', label: 'Balanced meals' },
+      { key: 'fresh_water', label: 'Fresh water' },
+      { key: 'quality_sleep', label: 'Quality sleep' },
+      { key: 'regular_exercise', label: 'Regular exercise' },
+      { key: 'routine_checklist', label: 'Routine checklist' },
+      { key: 'weight_and_body_condition', label: 'Weight and body condition' },
+      { key: 'mealtime_manners', label: 'Mealtime manners' },
+      { key: 'enrichment_and_chewing', label: 'Enrichment and chewing' },
+      { key: 'rest_after_play', label: 'Rest after play' },
+      { key: 'daily_health_check', label: 'Daily health check' },
+    ],
+  },
+  {
+    key: 'SOCIAL_SKILLS',
+    title: 'Social Skills',
+    subtitle: 'Calm greetings, new people, other dogs',
+    iconName: 'people-outline',
+    painPoints: [
+      { key: 'calm_greetings', label: 'Calm greetings' },
+      { key: 'meeting_new_people', label: 'Meeting new people' },
+      { key: 'passing_other_dogs', label: 'Passing other dogs' },
+      { key: 'visitor_manners', label: 'Visitor manners' },
+      { key: 'building_confidence', label: 'Building confidence' },
+      { key: 'children_and_crowds', label: 'Children and crowds' },
+      { key: 'polite_play', label: 'Polite play' },
+      { key: 'giving_space', label: 'Giving space' },
+      { key: 'recovering_from_a_fright', label: 'Recovering from a fright' },
+      { key: 'busy_places', label: 'Busy places' },
+    ],
+  },
 ];
 
 export const trainingGoalCategoryMap = new Map<OwnerTrainingGoal, TrainingGoalCategoryMeta>(
   trainingGoalCategories.map((c) => [c.key, c])
 );
+
+export type DogAgeBucket = "puppy" | "young_adult" | "senior" | "unsure";
+
+export type AgeBucketOption = {
+  value: DogAgeBucket;
+  title: string;
+  detail: string | null;
+  pose: DogPose;
+  curious?: boolean;
+};
+
+export const ageBucketOptions: AgeBucketOption[] = [
+  { value: "puppy", title: "Puppy", detail: "Under 1 year", pose: "puppy" },
+  { value: "young_adult", title: "Young Adult", detail: "1–7 years", pose: "young" },
+  { value: "senior", title: "Senior", detail: "7+ years", pose: "senior" },
+  { value: "unsure", title: "Not sure", detail: null, pose: "unsure", curious: true },
+];
+
+export type TogetherDuration = "just_home" | "under_a_month" | "a_few_months" | "a_year_plus";
+
+export type TogetherIcon = "house" | "paw" | "bone" | "heart";
+
+export type TogetherOption = {
+  value: TogetherDuration;
+  labelTemplate: string;
+  icon: TogetherIcon;
+};
+
+export const togetherOptions: TogetherOption[] = [
+  { value: "just_home", labelTemplate: "Just brought {name} home", icon: "house" },
+  { value: "under_a_month", labelTemplate: "Less than a month", icon: "paw" },
+  { value: "a_few_months", labelTemplate: "A few months", icon: "bone" },
+  { value: "a_year_plus", labelTemplate: "A year or more", icon: "heart" },
+];
+
+export const formatTogetherLabel = (option: TogetherOption, dogName: string): string =>
+  option.labelTemplate.replace("{name}", dogName.trim() || "them");

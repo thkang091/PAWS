@@ -189,11 +189,9 @@ export const submitChallengeGameVideo = async (
   const userId = userData.user?.id;
   if (!userId) throw new Error("Authentication required.");
 
-  // 1. Read video bytes FIRST — no silver charged yet
   const response = await fetch(uri);
   const arrayBuffer = await response.arrayBuffer();
 
-  // 2. Create submission row
   const { data: submission, error: submissionError } = await client
     .from("dog_training_video_submissions")
     .insert({
@@ -208,7 +206,6 @@ export const submitChallengeGameVideo = async (
   throwIfError(submissionError);
   const submissionId = (submission as { id: string }).id;
 
-  // 3. Upload video to storage — if this fails, no silver is charged
   const extension = uri.toLowerCase().endsWith(".mov") ? "mov" : "mp4";
   const storagePath = `${userId}/${dogId}/${challengeGameId}/${submissionId}/challenge.${extension}`;
   const uploadResult = await client.storage
@@ -226,7 +223,6 @@ export const submitChallengeGameVideo = async (
 
   callbacks?.onUploaded?.();
 
-  // 4. Video is confirmed uploaded — NOW debit silver and record the attempt
   const attemptResult = await startChallengeGameAttempt(dogId, challengeGameId);
   callbacks?.onCharged?.();
   const attempt = attemptResult.attempt as ChallengeGameAttemptRow & {
@@ -235,7 +231,6 @@ export const submitChallengeGameVideo = async (
     bonus_xp: number;
   };
 
-  // 5. Run AI verification — edge function settles the attempt and issues rewards on PASS
   const { data: verifyData, error: verifyError } = await client.functions.invoke("verify-training-video", {
     body: {
       submission_id: submissionId,

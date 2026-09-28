@@ -3,12 +3,12 @@ import { StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { BehavioralConcernsStep } from "@/components/onboarding/BehavioralConcernsStep";
-import { EnergyLevelStep } from "@/components/onboarding/EnergyLevelStep";
-import { ExistingSkillsStep } from "@/components/onboarding/ExistingSkillsStep";
-import { ObedienceStep } from "@/components/onboarding/ObedienceStep";
-import { OwnerGoalsStep } from "@/components/onboarding/OwnerGoalsStep";
-import { TargetSkillsStep } from "@/components/onboarding/TargetSkillsStep";
+import { BehavioralConcernsStep } from "@/features/profile/components/BehavioralConcernsStep";
+import { EnergyLevelStep } from "@/features/profile/components/EnergyLevelStep";
+import { ExistingSkillsStep } from "@/features/profile/components/ExistingSkillsStep";
+import { ObedienceStep } from "@/features/profile/components/ObedienceStep";
+import { OwnerGoalsStep } from "@/features/profile/components/OwnerGoalsStep";
+import { TargetSkillsStep } from "@/features/profile/components/TargetSkillsStep";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppCard } from "@/components/ui/AppCard";
 import { AppTextInput } from "@/components/ui/AppTextInput";
@@ -18,13 +18,13 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { queryKeys } from "@/constants/queryKeys";
 import { theme } from "@/constants/theme";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
-import { useTrainingSkills } from "@/hooks/useTrainingSkills";
 import { getDogRelationships, updateDogProfile, type DogProfileUpdate } from "@/services/profileService";
-import type { EnergyLevel, ObedienceLevel } from "@/types/domain";
+import type { EnergyLevel, ObedienceLevel, TrainingSkill } from "@/types/domain";
+
+const NO_LEGACY_SKILLS: TrainingSkill[] = [];
 
 export default function ProfileEditScreen() {
   const dog = useCurrentDog();
-  const skills = useTrainingSkills();
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
@@ -59,7 +59,7 @@ export default function ProfileEditScreen() {
     }).catch(() => undefined);
   }, [dog.data]);
 
-  if (dog.isLoading || skills.isLoading) return <ScreenContainer centered><LoadingState message="Loading profile editor..." /></ScreenContainer>;
+  if (dog.isLoading) return <ScreenContainer centered><LoadingState message="Loading profile editor..." /></ScreenContainer>;
 
   return (
     <ScreenContainer scroll>
@@ -71,8 +71,8 @@ export default function ProfileEditScreen() {
           <ObedienceStep value={obedienceLevel} onChange={setObedienceLevel} />
           <EnergyLevelStep value={energyLevel} onChange={setEnergyLevel} />
           <OwnerGoalsStep selected={goalKeys} onChange={setGoalKeys} />
-          <ExistingSkillsStep skills={skills.data ?? []} selectedIds={existingSkillIds} onChange={setExistingSkillIds} />
-          <TargetSkillsStep skills={skills.data ?? []} selectedIds={targetSkillIds} onChange={setTargetSkillIds} />
+          <ExistingSkillsStep skills={NO_LEGACY_SKILLS} selectedIds={existingSkillIds} onChange={setExistingSkillIds} />
+          <TargetSkillsStep skills={NO_LEGACY_SKILLS} selectedIds={targetSkillIds} onChange={setTargetSkillIds} />
           <BehavioralConcernsStep selected={concernKeys} otherNote={concernOtherNote} onChange={setConcernKeys} onOtherNoteChange={setConcernOtherNote} />
           {save.error ? <Text style={styles.error}>{save.error.message}</Text> : null}
           <AppButton title="Save profile" loading={save.isPending} onPress={() => save.mutate({ name, breed, obedience_level: obedienceLevel, energy_level: energyLevel, goalKeys, existingSkillIds, targetSkillIds, concernKeys, concernOtherNote })} />

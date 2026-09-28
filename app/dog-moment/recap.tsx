@@ -1,5 +1,5 @@
-import { MonthlyRecapCard } from "@/components/dogMoment/MonthlyRecapCard";
-import { OnThisDayCard } from "@/components/dogMoment/OnThisDayCard";
+import { MonthlyRecapCard } from "@/features/home/components/dogMoment/MonthlyRecapCard";
+import { OnThisDayCard } from "@/features/home/components/dogMoment/OnThisDayCard";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";

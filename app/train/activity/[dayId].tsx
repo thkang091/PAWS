@@ -132,13 +132,11 @@ export default function RoadmapActivityDetailScreen() {
   return (
     <>
       <ScreenContainer scroll>
-        {/* Back */}
         <Pressable style={styles.back} onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Back to roadmap">
           <Ionicons name="chevron-back" size={18} color={theme.colors.primaryDark} />
           <Text style={styles.backText}>Roadmap</Text>
         </Pressable>
 
-        {/* Hero card */}
         <View style={[styles.hero, isBoss && styles.heroBoss]}>
           <View style={styles.badgeRow}>
             <View style={styles.badge}>
@@ -168,7 +166,6 @@ export default function RoadmapActivityDetailScreen() {
           </View>
         </View>
 
-        {/* Rewards */}
         <View style={styles.rewardBar}>
           <View style={styles.rewardChip}>
             <Ionicons name="flash-outline" size={14} color={theme.colors.primaryDark} />
@@ -186,7 +183,6 @@ export default function RoadmapActivityDetailScreen() {
           )}
         </View>
 
-        {/* Why picked */}
         {day.reasonSelected ? (
           <View style={styles.whyCard}>
             <Text style={styles.sectionLabel}>WHY PAWS PICKED THIS</Text>
@@ -194,7 +190,6 @@ export default function RoadmapActivityDetailScreen() {
           </View>
         ) : null}
 
-        {/* AI Checkpoint */}
         <View style={styles.checkpointCard}>
           <View style={styles.rowHeader}>
             <Ionicons name="camera-outline" size={15} color={theme.colors.primaryDark} />
@@ -203,7 +198,6 @@ export default function RoadmapActivityDetailScreen() {
           <Text style={styles.bodyText}>{activity.visibleCheckpoint}</Text>
         </View>
 
-        {/* Reference assets */}
         {activity.requiredReferenceAssets.length > 0 && (
           <View style={styles.assetsCard}>
             <Text style={styles.sectionLabel}>REFERENCE SETUP</Text>
@@ -234,7 +228,6 @@ export default function RoadmapActivityDetailScreen() {
           </View>
         )}
 
-        {/* Steps summary (inline, collapsible) */}
         {activity.tutorialSteps?.length > 0 && (
           <Pressable style={styles.stepsToggle} onPress={() => setStepsVisible((v) => !v)}>
             <Text style={styles.stepsToggleText}>Training steps</Text>
@@ -252,7 +245,6 @@ export default function RoadmapActivityDetailScreen() {
           </View>
         )}
 
-        {/* Submit */}
         <Pressable
           style={[styles.submitBtn, !hasRequiredAssets && styles.submitBtnWarn, submitting && styles.submitBtnLoading]}
           onPress={chooseVideoForGemini}

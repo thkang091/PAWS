@@ -1,0 +1,10 @@
+alter function public.create_dog_profile(text, dog_gender, date, numeric, text, date, date, obedience_level, energy_level, text[], uuid[], uuid[], text[], text) set search_path = public, extensions;
+alter function public.generate_dog_tag() set search_path = public, extensions;
+alter function public.owns_dog(uuid) set search_path = public, extensions;
+alter function public.set_updated_at() set search_path = public, extensions;
+alter function public.resolve_skill_session(uuid, uuid) set search_path = public, extensions;
+alter function public.get_training_energy(uuid, date) set search_path = public, extensions;
+alter function public.start_training_session(uuid, uuid, date, text) set search_path = public, extensions;
+alter function public.set_session_card_position(uuid, text) set search_path = public, extensions;
+alter function public.report_training_result(uuid, text, uuid) set search_path = public, extensions;
+alter function public.end_training_session(uuid, text) set search_path = public, extensions;

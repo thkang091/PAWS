@@ -4,11 +4,15 @@ import {
   getGroomingLogs,
   getMedications,
   getTodayExerciseLogs,
+  getExerciseLogsBetween,
   getTodayMedicationLogs,
   getVaccinations,
   logExercise,
   logGrooming,
   logMedicationGiven,
+  getMedicationLogsBetween,
+  deleteMedicationLog,
+  updateMedication,
   saveMedication,
   saveVaccination,
   upsertCareProfile,
@@ -113,6 +117,34 @@ export const useLogMedicationGiven = (dogId: string) => {
   });
 };
 
+export const useMedicationLogsBetween = (dogId: string | undefined, from: string, to: string) =>
+  useQuery({
+    queryKey: [...keys.medicationLogs(dogId ?? ""), from, to] as const,
+    queryFn: () => getMedicationLogsBetween(dogId ?? "", from, to),
+    enabled: Boolean(dogId),
+  });
+
+export const useDeleteMedicationLog = (dogId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (logId: string) => deleteMedicationLog(logId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: keys.medicationLogs(dogId) });
+    },
+  });
+};
+
+export const useUpdateMedication = (dogId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, patch }: { id: string; patch: Parameters<typeof updateMedication>[1] }) =>
+      updateMedication(id, patch),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: keys.medications(dogId) });
+    },
+  });
+};
+
 export const useTodayExerciseLogs = (dogId?: string) =>
   useQuery({
     queryKey: keys.exerciseLogs(dogId ?? ""),
@@ -126,9 +158,17 @@ export const useLogExercise = (dogId: string) => {
     mutationFn: (input: Parameters<typeof logExercise>[1]) => logExercise(dogId, input),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: keys.exerciseLogs(dogId) });
+      void qc.invalidateQueries({ queryKey: ["exerciseRange", dogId] });
     },
   });
 };
+
+export const useExerciseLogsBetween = (dogId: string | undefined, from: string, to: string) =>
+  useQuery({
+    queryKey: ["exerciseRange", dogId ?? "", from, to] as const,
+    queryFn: () => getExerciseLogsBetween(dogId ?? "", from, to),
+    enabled: Boolean(dogId),
+  });
 
 export const useGroomingLogs = (dogId?: string) =>
   useQuery({

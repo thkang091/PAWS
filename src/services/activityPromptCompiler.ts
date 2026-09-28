@@ -1,28 +1,4 @@
-/**
- * src/services/activityPromptCompiler.ts
- *
- * Compiles a complete, standalone activity-specific VLM prompt from a
- * TrainingCatalogActivity.
- *
- * The compiled prompt is used as the second part of every Gemini request,
- * after the shared master prompt.  It must be self-contained — the VLM
- * must be able to score the video from the compiled prompt alone, without
- * relying on any external context.
- *
- * Usage
- * ─────
- *   import { compileDogTrainingActivityPrompt } from "@/services/activityPromptCompiler";
- *   const prompt = compileDogTrainingActivityPrompt(activity);
- *   // store as activity.vlmPrompt and pass to GeminiDogTrainingVerificationRequest
- *
- * The compiled prompt must NOT be used to fabricate a verdict.  It is
- * only a structured instruction — the real Gemini API call still needs
- * to happen for any verdict to be meaningful.
- */
-
 import type { TrainingCatalogActivity, ReferenceAssetRequirement } from "@/types/trainingCatalog";
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function bulletList(items: string[], indent = "- "): string {
   if (items.length === 0) return "(none specified)";
@@ -54,15 +30,6 @@ function formatReferenceAssets(assets: ReferenceAssetRequirement[]): string {
     .join("\n\n");
 }
 
-// ─── Compiler ─────────────────────────────────────────────────────────────────
-
-/**
- * Compiles a complete, standalone activity-specific VLM prompt.
- *
- * The output is deterministic given the same activity object.  Store the
- * compiled string in `TrainingCatalogActivity.vlmPrompt` and in
- * `training_catalog_activities.vlm_prompt` in the database.
- */
 export function compileDogTrainingActivityPrompt(
   activity: TrainingCatalogActivity,
 ): string {

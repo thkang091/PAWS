@@ -50,7 +50,6 @@ export default function ActivityVerificationScreen() {
   const [catalogSubmitting, setCatalogSubmitting] = useState(false);
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [catalogVerdict, setCatalogVerdict] = useState<"PASS" | "FAIL" | "NEEDS_REVIEW" | null>(null);
-  // Benchmarking state — populated when on-device path runs.
   const [onDeviceBenchmark, setOnDeviceBenchmark] = useState<{
     path: string; avg_inference_ms?: number; p95_inference_ms?: number;
     dropped_frame_rate?: number; avg_keypoint_confidence?: number;
@@ -176,13 +175,6 @@ export default function ActivityVerificationScreen() {
     }
     if (!capture?.uri) return;
 
-    // -----------------------------------------------------------------------
-    // On-device pose extraction prototype path.
-    //
-    // Attempt on-device extraction first when the feature flag is enabled.
-    // On any failure or quality gate trigger, fall through to the existing
-    // server-side video upload path below. The existing path is NEVER removed.
-    // -----------------------------------------------------------------------
     if (
       features.onDevicePoseEnabled &&
       realAiConfigured &&
@@ -190,7 +182,6 @@ export default function ActivityVerificationScreen() {
       env.data.dogAiBaseUrl
     ) {
       try {
-        // Step 1: create the verification row (same as server path).
         const verification = await createActivityVerification({
           dogId: currentDog.id,
           definition,
@@ -198,7 +189,6 @@ export default function ActivityVerificationScreen() {
           sourceType: "in_app_video",
         });
 
-        // Step 2: attempt on-device extraction + submission.
         const odResult = await attemptOnDevicePoseSubmit({
           videoUri: capture.uri,
           verificationId: verification.id,
@@ -214,7 +204,6 @@ export default function ActivityVerificationScreen() {
         });
 
         if (odResult.path === "on_device") {
-          // On-device path succeeded. Record benchmark for diagnostics.
           setOnDeviceBenchmark({
             path: "on_device",
             avg_inference_ms: odResult.benchmark.avg_inference_ms,
@@ -222,7 +211,6 @@ export default function ActivityVerificationScreen() {
             dropped_frame_rate: odResult.benchmark.dropped_frame_rate,
             avg_keypoint_confidence: odResult.benchmark.avg_keypoint_confidence,
           });
-          // The server has already responded. Re-fetch the verification status.
           const updated = await import("@/services/activityVerificationService")
             .then(m => m.getActivityVerification(verification.id));
           setResultStatus(updated.status);
@@ -230,9 +218,6 @@ export default function ActivityVerificationScreen() {
           return;
         }
 
-        // On-device path fell back — record which path was used, then fall
-        // through to upload the video using the verification row we already
-        // created. Upload to storage manually to avoid creating a second row.
         setOnDeviceBenchmark({ path: odResult.reason });
         const storagePath = await uploadActivityVideo({
           dogId: currentDog.id,
@@ -255,16 +240,10 @@ export default function ActivityVerificationScreen() {
         setRetryGuidance(analysis.retry_guidance);
         return;
       } catch {
-        // Any unhandled error falls through to the standard mutation below.
         setOnDeviceBenchmark({ path: "on_device_error_fallback" });
       }
     }
 
-    // -----------------------------------------------------------------------
-    // Existing server-side video upload path (unchanged).
-    // Used when: feature flag is off, user is outside rollout, native module
-    // unavailable, or any unhandled error in the on-device path above.
-    // -----------------------------------------------------------------------
     submitVideo.mutate({
       definition,
       contextType,

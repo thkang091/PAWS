@@ -13,8 +13,6 @@ import { useCouponPurchases, useCoupons, usePurchaseCoupon } from "@/hooks/useCo
 import { useWallet } from "@/hooks/useWallet";
 import type { Coupon } from "@/types/domain";
 
-// ── Category config ───────────────────────────────────────────────────────────
-
 const CATEGORIES = ["All", "Food", "Treats", "Toys", "Grooming"] as const;
 type Category = (typeof CATEGORIES)[number];
 
@@ -27,10 +25,6 @@ const CAT_ICONS: Record<Category, CatIconName> = {
   Grooming: "cut-outline",
 };
 
-// ── Placeholder catalog ───────────────────────────────────────────────────────
-// Shown when no live coupons are in the database yet, so the shop always
-// has items to browse and motivate users to earn Gold Coins.
-
 type PlaceholderCoupon = {
   id: string;
   category: Exclude<Category, "All">;
@@ -41,40 +35,32 @@ type PlaceholderCoupon = {
 };
 
 const PLACEHOLDER_COUPONS: PlaceholderCoupon[] = [
-  // ── Food ──────────────────────────────────────────────────────────────────
   { id: "ph_food_1", category: "Food", title: "10% Off Premium Kibble", description: "Discount on any bag of premium dry dog food over 5 kg.", goldCoinCost: 5, icon: "nutrition-outline" },
   { id: "ph_food_2", category: "Food", title: "Free Wet Food Sample Pack", description: "Try 4 flavors of grain-free wet food, no purchase required.", goldCoinCost: 8, icon: "nutrition-outline" },
-  { id: "ph_food_3", category: "Food", title: "Buy 2 Get 1 Free — Raw Patties", description: "Valid on any frozen raw patty 3-pack from participating stores.", goldCoinCost: 12, icon: "nutrition-outline" },
+  { id: "ph_food_3", category: "Food", title: "Buy 2 Get 1 Free on Raw Patties", description: "Valid on any frozen raw patty 3-pack from participating stores.", goldCoinCost: 12, icon: "nutrition-outline" },
   { id: "ph_food_4", category: "Food", title: "20% Off Subscription Box", description: "First month discount on any monthly dog food subscription.", goldCoinCost: 15, icon: "nutrition-outline" },
-  { id: "ph_food_5", category: "Food", title: "Free Delivery — Food Order", description: "Free shipping on your next online dog food order, any size.", goldCoinCost: 6, icon: "nutrition-outline" },
-  // ── Treats ────────────────────────────────────────────────────────────────
+  { id: "ph_food_5", category: "Food", title: "Free Delivery on a Food Order", description: "Free shipping on your next online dog food order, any size.", goldCoinCost: 6, icon: "nutrition-outline" },
   { id: "ph_treat_1", category: "Treats", title: "Free Training Treat Bag", description: "Complimentary 150 g bag of soft training treats.", goldCoinCost: 4, icon: "gift-outline" },
   { id: "ph_treat_2", category: "Treats", title: "15% Off Dental Chews", description: "Discount on any dental chew pack for dogs over 5 kg.", goldCoinCost: 6, icon: "gift-outline" },
-  { id: "ph_treat_3", category: "Treats", title: "Buy 1 Get 1 — Freeze-Dried Treats", description: "BOGO deal on all freeze-dried meat treat varieties.", goldCoinCost: 10, icon: "gift-outline" },
+  { id: "ph_treat_3", category: "Treats", title: "Buy 1 Get 1 on Freeze-Dried Treats", description: "BOGO deal on all freeze-dried meat treat varieties.", goldCoinCost: 10, icon: "gift-outline" },
   { id: "ph_treat_4", category: "Treats", title: "Puppy Starter Treat Bundle", description: "Curated bundle of 3 beginner-friendly treat bags.", goldCoinCost: 14, icon: "gift-outline" },
   { id: "ph_treat_5", category: "Treats", title: "25% Off Jerky Strips", description: "Single-ingredient chicken or beef jerky, no fillers.", goldCoinCost: 7, icon: "gift-outline" },
-  // ── Toys ──────────────────────────────────────────────────────────────────
   { id: "ph_toy_1", category: "Toys", title: "Free Rope Tug Toy", description: "Heavy-duty braided rope toy suitable for medium and large dogs.", goldCoinCost: 5, icon: "happy-outline" },
   { id: "ph_toy_2", category: "Toys", title: "10% Off Puzzle Feeder", description: "Level 2 snuffle mat or slow-feeder bowl, your choice.", goldCoinCost: 9, icon: "happy-outline" },
   { id: "ph_toy_3", category: "Toys", title: "Interactive Ball Launcher", description: "Automatic fetch launcher, 3 size settings, 1 free ball included.", goldCoinCost: 20, icon: "happy-outline" },
   { id: "ph_toy_4", category: "Toys", title: "Squeaky Plush 3-Pack", description: "Set of 3 soft squeaky toys in assorted animal shapes.", goldCoinCost: 8, icon: "happy-outline" },
   { id: "ph_toy_5", category: "Toys", title: "Chew-Resistant Tug Ring", description: "Durable rubber tug ring rated for aggressive chewers.", goldCoinCost: 11, icon: "happy-outline" },
-  // ── Grooming ──────────────────────────────────────────────────────────────
   { id: "ph_groom_1", category: "Grooming", title: "Free Bath & Blowout Session", description: "One complimentary bath and blowout at participating salons.", goldCoinCost: 15, icon: "cut-outline" },
   { id: "ph_groom_2", category: "Grooming", title: "20% Off Full Groom", description: "Discount on bath, haircut, nail trim, and ear clean.", goldCoinCost: 18, icon: "cut-outline" },
-  { id: "ph_groom_3", category: "Grooming", title: "Nail Trim — On the House", description: "Free nail trim on your next grooming visit, no minimum spend.", goldCoinCost: 6, icon: "cut-outline" },
+  { id: "ph_groom_3", category: "Grooming", title: "Nail Trim on the House", description: "Free nail trim on your next grooming visit, no minimum spend.", goldCoinCost: 6, icon: "cut-outline" },
   { id: "ph_groom_4", category: "Grooming", title: "Deshedding Treatment Discount", description: "30% off de-shedding treatment for medium or large breeds.", goldCoinCost: 12, icon: "cut-outline" },
   { id: "ph_groom_5", category: "Grooming", title: "Spa Add-On Pack", description: "Teeth brushing, blueberry facial, and paw balm massage.", goldCoinCost: 10, icon: "cut-outline" },
 ];
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 type ModalState =
   | { kind: "purchase"; coupon: Coupon }
   | { kind: "locked"; coupon: Coupon; need: number }
   | { kind: "preview"; item: PlaceholderCoupon };
-
-// ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function RewardsScreen() {
   const dog = useCurrentDog();
@@ -99,17 +85,14 @@ export default function RewardsScreen() {
   const purchasedIds = new Set((purchases.data ?? []).map((p) => p.couponId));
   const ownedCoupons = purchases.data ?? [];
 
-  // Filter live coupons by category
   const liveCatalog = catalog.filter((c) =>
     activeCategory === "All" || c.title.toLowerCase().includes(activeCategory.toLowerCase()),
   );
 
-  // Placeholder coupons for the selected category (fill in the shop when DB is empty)
   const placeholders = PLACEHOLDER_COUPONS.filter(
     (p) => activeCategory === "All" || p.category === activeCategory,
   );
 
-  // Use live coupons when available, otherwise fall back to placeholders
   const showLive = liveCatalog.length > 0;
 
   const handleCouponPress = (c: Coupon) => {
@@ -123,7 +106,6 @@ export default function RewardsScreen() {
 
   return (
     <ScreenContainer scroll>
-      {/* Header */}
       <View style={styles.header}>
         <Pressable style={styles.backBtn} onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Go back">
           <Ionicons name="chevron-back" size={20} color={theme.colors.primaryDark} />
@@ -138,7 +120,6 @@ export default function RewardsScreen() {
         </View>
       </View>
 
-      {/* Tab switcher */}
       <View style={styles.segment}>
         <Pressable style={[styles.segBtn, activeTab === "shop" && styles.segBtnActive]} onPress={() => setActiveTab("shop")}>
           <Text style={[styles.segText, activeTab === "shop" && styles.segTextActive]}>Shop</Text>
@@ -151,10 +132,8 @@ export default function RewardsScreen() {
         </Pressable>
       </View>
 
-      {/* ── Shop tab ── */}
       {activeTab === "shop" && (
         <>
-          {/* Gold balance hint */}
           {gold === 0 ? (
             <Pressable style={styles.earnBanner} onPress={() => router.push("/(tabs)/game")} accessibilityRole="button">
               <View style={styles.earnBannerIcon}>
@@ -169,11 +148,10 @@ export default function RewardsScreen() {
           ) : (
             <View style={styles.goldReadyBanner}>
               <GoldBar size={15} />
-              <Text style={styles.goldReadyText}>You have {gold.toLocaleString()} gold — tap a coupon to unlock it</Text>
+              <Text style={styles.goldReadyText}>You have {gold.toLocaleString()} gold. Tap a coupon to unlock it</Text>
             </View>
           )}
 
-          {/* Category filter */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.catRow}>
             {CATEGORIES.map((cat) => (
               <Pressable key={cat} style={[styles.catChip, activeCategory === cat && styles.catChipActive]} onPress={() => setActiveCategory(cat)}>
@@ -183,7 +161,6 @@ export default function RewardsScreen() {
             ))}
           </ScrollView>
 
-          {/* Live coupons (from DB) */}
           {showLive && (
             <>
               {liveCatalog.slice(0, 1).map((c) => (
@@ -197,7 +174,6 @@ export default function RewardsScreen() {
             </>
           )}
 
-          {/* Placeholder coupons — always visible */}
           {placeholders.length > 0 && (
             <>
               {showLive && (
@@ -217,7 +193,6 @@ export default function RewardsScreen() {
         </>
       )}
 
-      {/* ── Owned tab ── */}
       {activeTab === "owned" && (
         <View style={styles.ownedSection}>
           {ownedCoupons.length === 0 ? (
@@ -257,7 +232,6 @@ export default function RewardsScreen() {
         </View>
       )}
 
-      {/* Purchase confirm */}
       <PurchaseModal
         visible={modal?.kind === "purchase"}
         coupon={modal?.kind === "purchase" ? modal.coupon : null}
@@ -271,7 +245,6 @@ export default function RewardsScreen() {
         }}
       />
 
-      {/* Locked — earn more */}
       <EarnModal
         visible={modal?.kind === "locked"}
         coupon={modal?.kind === "locked" ? modal.coupon : null}
@@ -280,7 +253,6 @@ export default function RewardsScreen() {
         onGoToGames={() => { setModal(null); router.push("/(tabs)/game"); }}
       />
 
-      {/* Placeholder preview */}
       <PreviewModal
         visible={modal?.kind === "preview"}
         item={modal?.kind === "preview" ? modal.item : null}
@@ -291,8 +263,6 @@ export default function RewardsScreen() {
     </ScreenContainer>
   );
 }
-
-// ── Sub-components ────────────────────────────────────────────────────────────
 
 const FeaturedCoupon = ({ coupon, gold, purchased, onPress }: { coupon: Coupon; gold: number; purchased: boolean; onPress: () => void }) => {
   const canAfford = gold >= coupon.goldCoinCost;
@@ -387,8 +357,6 @@ const PlaceholderRow = ({ item, gold, onPress }: { item: PlaceholderCoupon; gold
     </Pressable>
   );
 };
-
-// ── Modals ────────────────────────────────────────────────────────────────────
 
 const PurchaseModal = ({ visible, coupon, gold, loading, onCancel, onConfirm }: { visible: boolean; coupon: Coupon | null; gold: number; loading: boolean; onCancel: () => void; onConfirm: () => void }) => {
   const remaining = coupon ? gold - coupon.goldCoinCost : gold;
@@ -498,8 +466,6 @@ const PreviewModal = ({ visible, item, gold, onClose, onGoToGames }: { visible: 
     </Modal>
   );
 };
-
-// ── Styles ────────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", gap: theme.spacing.md, paddingBottom: theme.spacing.md, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.border },

@@ -68,6 +68,12 @@
           "photosPermission": "PAWS needs access to your photo library to upload training videos and reference photos.",
           "cameraPermission": "PAWS needs camera access to record your dog's training videos."
         }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "PAWS uses the microphone so you can ask your training coach out loud."
+        }
       ]
     ],
     "extra": {

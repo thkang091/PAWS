@@ -1,21 +1,3 @@
-/**
- * Static validations for the PAWS training-catalog type system,
- * prompt compiler, and verification normalizer.
- *
- * These tests validate structure, contracts, and logic WITHOUT:
- *   - seeding actual activities
- *   - calling the real Gemini API
- *   - fabricating VLM results
- *
- * They DO validate:
- *   - Type exports exist and are well-formed
- *   - compileDogTrainingActivityPrompt() produces correctly structured output
- *   - normalizeVerificationResult() applies all required rules
- *   - The shared master prompt contains all required content
- *   - The Zod schema accepts valid payloads and rejects invalid ones
- *   - Static invariants: no TODO/TBD/PLACEHOLDER/FIXME in any catalog type field
- */
-
 import { compileDogTrainingActivityPrompt } from "@/services/activityPromptCompiler";
 import {
   normalizeVerificationResult,
@@ -33,9 +15,6 @@ import type {
 } from "@/types/trainingCatalog";
 import type { DogTrainingVerificationResult } from "@/types/domain";
 
-// ─── Test fixtures ────────────────────────────────────────────────────────────
-
-/** Builds a fully-valid TrainingCatalogActivity for testing purposes. */
 function makeValidActivity(overrides: Partial<TrainingCatalogActivity> = {}): TrainingCatalogActivity {
   const base: TrainingCatalogActivity = {
     id: "BH001",
@@ -138,7 +117,6 @@ function makeValidActivity(overrides: Partial<TrainingCatalogActivity> = {}): Tr
   return { ...base, ...overrides };
 }
 
-/** Builds a fully-valid DogTrainingVerificationResult for testing normalizer. */
 function makeValidResult(overrides: Partial<DogTrainingVerificationResult> = {}): DogTrainingVerificationResult {
   const base: DogTrainingVerificationResult = {
     activityId: "BH001",
@@ -195,8 +173,6 @@ function makeValidContext(overrides: Partial<NormalizationContext> = {}): Normal
     ...overrides,
   };
 }
-
-// ─── 1. Type exports ──────────────────────────────────────────────────────────
 
 describe("Type exports", () => {
   it("TrainingCatalogActivity shape is complete", () => {
@@ -306,8 +282,6 @@ describe("Type exports", () => {
     expect(req.referenceAssets[0].type).toBe("DOG_PROFILE");
   });
 });
-
-// ─── 2. Catalog field validations ─────────────────────────────────────────────
 
 describe("Catalog field validations", () => {
   const VALID_CATEGORIES = [
@@ -441,8 +415,6 @@ describe("Catalog field validations", () => {
   });
 });
 
-// ─── 3. No placeholders ───────────────────────────────────────────────────────
-
 describe("No placeholders in activity fields", () => {
   const PLACEHOLDER_PATTERN = /TODO|TBD|PLACEHOLDER|FIXME|lorem ipsum/i;
   const activity = makeValidActivity();
@@ -478,8 +450,6 @@ describe("No placeholders in activity fields", () => {
     activity.tutorialSteps.forEach((c) => expect(c).not.toMatch(PLACEHOLDER_PATTERN));
   });
 });
-
-// ─── 4. Master prompt ─────────────────────────────────────────────────────────
 
 describe("Master VLM prompt", () => {
   it("MASTER_PROMPT_VERSION matches semver format", () => {
@@ -517,8 +487,6 @@ describe("Master VLM prompt", () => {
     expect(MASTER_VLM_PROMPT).toMatch(/anxiety/i);
   });
 });
-
-// ─── 5. Prompt compiler ───────────────────────────────────────────────────────
 
 describe("compileDogTrainingActivityPrompt", () => {
   const activity = makeValidActivity();
@@ -722,8 +690,6 @@ describe("compileDogTrainingActivityPrompt", () => {
   });
 });
 
-// ─── 6. Normalizer ───────────────────────────────────────────────────────────
-
 describe("normalizeVerificationResult", () => {
   it("returns PASS unchanged when all quality flags are good", () => {
     const result = makeValidResult({ verdict: "PASS", confidence: 0.92 });
@@ -880,8 +846,6 @@ describe("normalizeVerificationResult", () => {
   });
 
   it("Rule 9 — reference matched=false (unmatched) does not trigger Rule 9 alone", () => {
-    // Rule 9 is about matched=true with low confidence, NOT about matched=false.
-    // matched=false triggers Rule 4 or Rule 5 depending on required asset type.
     const result = makeValidResult({
       verdict: "PASS",
       missingEvidence: [],
@@ -894,7 +858,6 @@ describe("normalizeVerificationResult", () => {
       recordingRequirements: { audioRequired: false },
     });
     const normalized = normalizeVerificationResult(result, context);
-    // matched=false with confidence=0.30 does NOT trigger Rule 9 (only fires when matched=true)
     expect(normalized.verdict).toBe("PASS");
   });
 
@@ -940,8 +903,6 @@ describe("normalizeVerificationResult", () => {
     expect(ctx.requiredReferenceAssets.find((a) => a.type === "TARGET_MAT")).toBeTruthy();
   });
 });
-
-// ─── 7. Zod schema ────────────────────────────────────────────────────────────
 
 describe("dogTrainingVerificationSchema (Zod)", () => {
   it("parses a valid PASS result", () => {
@@ -1014,8 +975,6 @@ describe("dogTrainingVerificationSchema (Zod)", () => {
   });
 });
 
-// ─── 8. Boss-quest aggregation rule ──────────────────────────────────────────
-
 describe("Boss-quest aggregation rules", () => {
   it("boss PASS requires all mandatory components to PASS", () => {
     const components: BossQuestComponent[] = [
@@ -1029,11 +988,10 @@ describe("Boss-quest aggregation rules", () => {
       requireAllMandatoryComponentsToPass: true,
     };
 
-    // Simulate: all mandatory PASS → boss PASS
     const componentVerdicts: Record<string, "PASS" | "FAIL" | "NEEDS_REVIEW"> = {
       BH011: "PASS",
       BH012: "PASS",
-      BH013: "FAIL", // optional — should not block
+      BH013: "FAIL",
     };
 
     const mandatory = config.components.filter((c) => c.required);

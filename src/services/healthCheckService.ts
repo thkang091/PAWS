@@ -2,7 +2,7 @@ import { env } from "@/config/env";
 import { getClientOrThrow } from "@/services/serviceUtils";
 import { getAccountStatus } from "@/services/accountService";
 import { getCurrentDog, getCurrentProfile, getProfileDashboard } from "@/services/profileService";
-import { getTrainingSkills } from "@/services/trainingService";
+import { getTrainingSections } from "@/services/trainingCurriculumService";
 import { getDailyQuests } from "@/services/questService";
 import { getWalletSummary } from "@/services/walletService";
 import { todayKey } from "@/hooks/useDailyQuests";
@@ -36,7 +36,7 @@ export const runBackendHealthCheck = async (): Promise<BackendHealthCheckItem[]>
     check("dog", "Current dog", async () => (dog ? "Dog loads" : "No dog yet")),
     check("wallet", "Wallet RPC", async () => (dog ? `${(await getWalletSummary(dog.id)).silverBalance} Silver Coins` : "Skipped until dog exists")),
     check("dashboard", "Dashboard RPC", async () => (dog ? `Level ${(await getProfileDashboard(dog.id)).level}` : "Skipped until dog exists")),
-    check("catalog", "Training catalog", async () => `${(await getTrainingSkills()).length} skills`),
+    check("catalog", "Training curriculum", async () => `${(await getTrainingSections()).length} sections`),
     check("quests", "Daily quests", async () => (dog ? `${(await getDailyQuests(dog.id, todayKey())).length} quests` : "Skipped until dog exists")),
     check("storage", "Storage bucket", async () => {
       const { data, error } = await client.storage.from("dog-moments").list("", { limit: 1 });

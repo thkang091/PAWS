@@ -1,11 +1,3 @@
-/**
- * Test mock for the paws-pose native module.
- *
- * Returns a configurable synthetic pose payload so tests can exercise the
- * TypeScript orchestration layer without requiring a real iOS device or the
- * compiled native module.
- */
-
 import type { PoseSequencePayload } from "@/types/onDevicePose";
 
 export const MOCK_PAYLOAD: PoseSequencePayload = {
@@ -49,7 +41,6 @@ export const MOCK_PAYLOAD: PoseSequencePayload = {
   },
 };
 
-// Controls returned by individual tests.
 let _available = true;
 let _payload: PoseSequencePayload = MOCK_PAYLOAD;
 let _shouldThrow = false;

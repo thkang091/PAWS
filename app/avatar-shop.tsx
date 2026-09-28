@@ -4,7 +4,7 @@ import { Text } from "react-native";
 import { AvatarItemCard } from "@/components/avatar/AvatarItemCard";
 import { AvatarPreview } from "@/components/avatar/AvatarPreview";
 import { PurchaseConfirmationModal } from "@/components/avatar/PurchaseConfirmationModal";
-import { WalletSummary } from "@/components/profile/WalletSummary";
+import { WalletSummary } from "@/features/profile/components/WalletSummary";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";

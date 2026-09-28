@@ -1,8 +1,9 @@
 import { getClientOrThrow, throwIfError } from "@/services/serviceUtils";
 
-const today = () => new Date().toISOString().slice(0, 10);
+const localDay = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-// ── Types ────────────────────────────────────────────────────────────────────
+const today = () => localDay(new Date());
 
 export type CareProfile = {
   id: string;
@@ -11,6 +12,12 @@ export type CareProfile = {
   mealsPerDay: number;
   portionGramsPerMeal: number | null;
   foodBrand: string | null;
+  foodImageUrl: string | null;
+  foodKcalPer100g: number | null;
+  mealTimes: readonly string[] | null;
+  mealPortions: readonly number[] | null;
+  treatsPerDay: number;
+  waterRefillsTarget: number;
   onboardingCompleted: boolean;
 };
 
@@ -43,6 +50,7 @@ export type MedicationLog = {
   medicationId: string;
   dogId: string;
   givenDate: string;
+  createdAt: string;
 };
 
 export type ExerciseLog = {
@@ -54,6 +62,7 @@ export type ExerciseLog = {
   distanceMiles: number | null;
   walkCount: number | null;
   notes: string | null;
+  createdAt: string;
 };
 
 export type GroomingLog = {
@@ -64,8 +73,6 @@ export type GroomingLog = {
   nextDueDate: string | null;
   notes: string | null;
 };
-
-// ── Care Profile ─────────────────────────────────────────────────────────────
 
 export const getCareProfile = async (dogId: string): Promise<CareProfile | null> => {
   const client = getClientOrThrow();
@@ -83,6 +90,12 @@ export const getCareProfile = async (dogId: string): Promise<CareProfile | null>
     mealsPerDay: data.meals_per_day as number,
     portionGramsPerMeal: data.portion_grams_per_meal as number | null,
     foodBrand: data.food_brand as string | null,
+    foodImageUrl: (data.food_image_url as string | null | undefined) ?? null,
+    foodKcalPer100g: data.food_kcal_per_100g == null ? null : Number(data.food_kcal_per_100g),
+    mealTimes: Array.isArray(data.meal_times) ? (data.meal_times as string[]) : null,
+    mealPortions: Array.isArray(data.meal_portions) ? (data.meal_portions as number[]).map(Number) : null,
+    treatsPerDay: data.treats_per_day as number,
+    waterRefillsTarget: data.water_refills_target as number,
     onboardingCompleted: data.onboarding_completed as boolean,
   };
 };
@@ -98,16 +111,23 @@ export const upsertCareProfile = async (
 
   const { data, error } = await client
     .from("dog_care_profile")
-    .upsert({
-      dog_id: dogId,
-      owner_id: ownerId,
-      daily_exercise_goal_minutes: patch.dailyExerciseGoalMinutes ?? 60,
-      meals_per_day: patch.mealsPerDay ?? 2,
-      portion_grams_per_meal: patch.portionGramsPerMeal ?? null,
-      food_brand: patch.foodBrand ?? null,
-      onboarding_completed: patch.onboardingCompleted ?? false,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "dog_id" })
+    .upsert(
+      Object.fromEntries(
+        Object.entries({
+          dog_id: dogId,
+          owner_id: ownerId,
+          daily_exercise_goal_minutes: patch.dailyExerciseGoalMinutes,
+          meals_per_day: patch.mealsPerDay,
+          portion_grams_per_meal: patch.portionGramsPerMeal,
+          food_brand: patch.foodBrand,
+          treats_per_day: patch.treatsPerDay,
+          water_refills_target: patch.waterRefillsTarget,
+          onboarding_completed: patch.onboardingCompleted,
+          updated_at: new Date().toISOString(),
+        }).filter(([, value]) => value !== undefined),
+      ),
+      { onConflict: "dog_id" },
+    )
     .select()
     .single();
   throwIfError(error);
@@ -118,11 +138,15 @@ export const upsertCareProfile = async (
     mealsPerDay: data.meals_per_day as number,
     portionGramsPerMeal: data.portion_grams_per_meal as number | null,
     foodBrand: data.food_brand as string | null,
+    foodImageUrl: (data.food_image_url as string | null | undefined) ?? null,
+    foodKcalPer100g: data.food_kcal_per_100g == null ? null : Number(data.food_kcal_per_100g),
+    mealTimes: Array.isArray(data.meal_times) ? (data.meal_times as string[]) : null,
+    mealPortions: Array.isArray(data.meal_portions) ? (data.meal_portions as number[]).map(Number) : null,
+    treatsPerDay: data.treats_per_day as number,
+    waterRefillsTarget: data.water_refills_target as number,
     onboardingCompleted: data.onboarding_completed as boolean,
   };
 };
-
-// ── Vaccinations ─────────────────────────────────────────────────────────────
 
 export const getVaccinations = async (dogId: string): Promise<Vaccination[]> => {
   const client = getClientOrThrow();
@@ -185,8 +209,6 @@ export const deleteVaccination = async (id: string): Promise<void> => {
   const { error } = await client.from("dog_vaccinations").delete().eq("id", id);
   throwIfError(error);
 };
-
-// ── Medications ──────────────────────────────────────────────────────────────
 
 export const getMedications = async (dogId: string): Promise<Medication[]> => {
   const client = getClientOrThrow();
@@ -265,12 +287,62 @@ export const logMedicationGiven = async (
   const ownerId = user.user?.id;
   if (!ownerId) throw new Error("Authentication required.");
 
-  await client.from("dog_medication_logs").insert({
+  const { error } = await client.from("dog_medication_logs").insert({
     medication_id: medicationId,
     dog_id: dogId,
     owner_id: ownerId,
     given_date: today(),
   });
+  throwIfError(error);
+};
+
+const mapLog = (r: Record<string, unknown>): MedicationLog => ({
+  id: r.id as string,
+  medicationId: r.medication_id as string,
+  dogId: r.dog_id as string,
+  givenDate: r.given_date as string,
+  createdAt: r.created_at as string,
+});
+
+export const getMedicationLogsBetween = async (
+  dogId: string,
+  from: string,
+  to: string,
+): Promise<MedicationLog[]> => {
+  const client = getClientOrThrow();
+  const { data, error } = await client
+    .from("dog_medication_logs")
+    .select("*")
+    .eq("dog_id", dogId)
+    .gte("given_date", from)
+    .lte("given_date", to)
+    .order("created_at", { ascending: false });
+  throwIfError(error);
+  return (data ?? []).map(mapLog);
+};
+
+export const deleteMedicationLog = async (logId: string): Promise<boolean> => {
+  const client = getClientOrThrow();
+  const { data, error } = await client.from("dog_medication_logs").delete().eq("id", logId).select("id");
+  throwIfError(error);
+  return (data ?? []).length > 0;
+};
+
+export const updateMedication = async (
+  id: string,
+  patch: { medicationName?: string; dosage?: string | null; frequency?: string; startDate?: string; endDate?: string | null; reminderTime?: string | null; notes?: string | null },
+): Promise<void> => {
+  const client = getClientOrThrow();
+  const row: Record<string, unknown> = {};
+  if (patch.medicationName !== undefined) row.medication_name = patch.medicationName;
+  if (patch.dosage !== undefined) row.dosage = patch.dosage;
+  if (patch.frequency !== undefined) row.frequency = patch.frequency;
+  if (patch.startDate !== undefined) row.start_date = patch.startDate;
+  if (patch.endDate !== undefined) row.end_date = patch.endDate;
+  if (patch.reminderTime !== undefined) row.reminder_time = patch.reminderTime;
+  if (patch.notes !== undefined) row.notes = patch.notes;
+  const { error } = await client.from("dog_medications").update(row).eq("id", id);
+  throwIfError(error);
 };
 
 export const getTodayMedicationLogs = async (dogId: string): Promise<MedicationLog[]> => {
@@ -281,15 +353,8 @@ export const getTodayMedicationLogs = async (dogId: string): Promise<MedicationL
     .eq("dog_id", dogId)
     .eq("given_date", today());
   throwIfError(error);
-  return (data ?? []).map((r) => ({
-    id: r.id as string,
-    medicationId: r.medication_id as string,
-    dogId: r.dog_id as string,
-    givenDate: r.given_date as string,
-  }));
+  return (data ?? []).map(mapLog);
 };
-
-// ── Exercise ─────────────────────────────────────────────────────────────────
 
 export const getTodayExerciseLogs = async (dogId: string): Promise<ExerciseLog[]> => {
   const client = getClientOrThrow();
@@ -309,6 +374,34 @@ export const getTodayExerciseLogs = async (dogId: string): Promise<ExerciseLog[]
     distanceMiles: r.distance_miles as number | null,
     walkCount: r.walk_count as number | null,
     notes: r.notes as string | null,
+    createdAt: r.created_at as string,
+  }));
+};
+
+export const getExerciseLogsBetween = async (
+  dogId: string,
+  from: string,
+  to: string,
+): Promise<ExerciseLog[]> => {
+  const client = getClientOrThrow();
+  const { data, error } = await client
+    .from("dog_exercise_logs")
+    .select("*")
+    .eq("dog_id", dogId)
+    .gte("log_date", from)
+    .lte("log_date", to)
+    .order("created_at", { ascending: true });
+  throwIfError(error);
+  return (data ?? []).map((r) => ({
+    id: r.id as string,
+    dogId: r.dog_id as string,
+    logDate: r.log_date as string,
+    activityType: r.activity_type as string,
+    durationMinutes: r.duration_minutes as number,
+    distanceMiles: r.distance_miles == null ? null : Number(r.distance_miles),
+    walkCount: r.walk_count as number | null,
+    notes: r.notes as string | null,
+    createdAt: r.created_at as string,
   }));
 };
 
@@ -345,10 +438,9 @@ export const logExercise = async (
     distanceMiles: data.distance_miles as number | null,
     walkCount: data.walk_count as number | null,
     notes: data.notes as string | null,
+    createdAt: data.created_at as string,
   };
 };
-
-// ── Grooming ─────────────────────────────────────────────────────────────────
 
 export const getGroomingLogs = async (dogId: string): Promise<GroomingLog[]> => {
   const client = getClientOrThrow();

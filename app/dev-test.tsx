@@ -1,14 +1,3 @@
-/**
- * Developer AI Test Screen
- *
- * Three inference modes:
- *   Mock     - instant JSON response, no real AI needed
- *   Real     - DeepLabCut pose estimation + geometry classifier
- *   VLM      - Mistral Pixtral vision model, prompt-based, ~3-5 seconds
- *
- * Only accessible in development builds (__DEV__ === true).
- */
-
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
@@ -28,10 +17,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { env } from "@/config/env";
 import { theme } from "@/constants/theme";
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
 type InferenceMode = "mock" | "real" | "vlm";
 
@@ -76,16 +61,8 @@ type VlmResult = {
   activity_prompt: string;
 };
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
 const ACTIVITY_OPTIONS = ["sit", "down", "paw", "spin", "stay"];
 const TIER_OPTIONS = ["standard_daily", "premium_challenge", "gold_coin_reward"];
-
-// ---------------------------------------------------------------------------
-// Screen
-// ---------------------------------------------------------------------------
 
 export default function DevTestScreen() {
   const [selectedActivity, setSelectedActivity] = useState("sit");
@@ -98,10 +75,6 @@ export default function DevTestScreen() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [vlmResult, setVlmResult] = useState<VlmResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // -------------------------------------------------------------------------
-  // Pick or record video
-  // -------------------------------------------------------------------------
 
   const pickFromLibrary = useCallback(async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -149,10 +122,6 @@ export default function DevTestScreen() {
     setStage("idle");
   }, []);
 
-  // -------------------------------------------------------------------------
-  // Upload + analyze
-  // -------------------------------------------------------------------------
-
   const runAnalysis = useCallback(async () => {
     if (!videoUri) return;
 
@@ -167,7 +136,6 @@ export default function DevTestScreen() {
         );
       }
 
-      // ---- VLM mode --------------------------------------------------------
       if (inferenceMode === "vlm") {
         const prompt = vlmPrompt.trim();
         if (!prompt) {
@@ -208,7 +176,6 @@ export default function DevTestScreen() {
         return;
       }
 
-      // ---- Mock mode -------------------------------------------------------
       if (inferenceMode === "mock") {
         const storagePath = `dev-test/mock/${selectedActivity}/${verificationId}/video.mp4`;
         setStage("analyzing");
@@ -246,7 +213,6 @@ export default function DevTestScreen() {
         return;
       }
 
-      // ---- Real mode (DeepLabCut) ------------------------------------------
       setStage("uploading");
       setStageLabel("Sending video to backend...");
 
@@ -299,17 +265,12 @@ export default function DevTestScreen() {
     setStageLabel("");
   }, []);
 
-  // -------------------------------------------------------------------------
-  // Render
-  // -------------------------------------------------------------------------
-
   const busy = stage === "uploading" || stage === "analyzing" || stage === "picking";
 
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
-        {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Text style={styles.backText}>Back</Text>
@@ -318,7 +279,6 @@ export default function DevTestScreen() {
           <Text style={styles.subtitle}>Developer-only. Not in production builds.</Text>
         </View>
 
-        {/* Inference mode */}
         <Section label="Inference mode">
           <View style={styles.chips}>
             <ChipButton label="Mock" selected={inferenceMode === "mock"} onPress={() => setInferenceMode("mock")} />
@@ -336,7 +296,6 @@ export default function DevTestScreen() {
           ) : null}
         </Section>
 
-        {/* VLM prompt */}
         {inferenceMode === "vlm" ? (
           <Section label="Activity description (prompt)">
             <TextInput
@@ -354,7 +313,6 @@ export default function DevTestScreen() {
           </Section>
         ) : null}
 
-        {/* Activity selector (shown for mock + real) */}
         {inferenceMode !== "vlm" ? (
           <Section label="Activity">
             <View style={styles.chips}>
@@ -370,7 +328,6 @@ export default function DevTestScreen() {
           </Section>
         ) : null}
 
-        {/* Tier selector (mock + real only) */}
         {inferenceMode !== "vlm" ? (
           <Section label="Verification tier">
             <View style={styles.chips}>
@@ -386,7 +343,6 @@ export default function DevTestScreen() {
           </Section>
         ) : null}
 
-        {/* Video picker */}
         <Section label="Video">
           {videoUri ? (
             <View style={styles.videoWrap}>
@@ -408,7 +364,6 @@ export default function DevTestScreen() {
           )}
         </Section>
 
-        {/* Analyze button */}
         {videoUri && stage !== "done" ? (
           <Pressable
             onPress={runAnalysis}
@@ -426,7 +381,6 @@ export default function DevTestScreen() {
           </Pressable>
         ) : null}
 
-        {/* Error */}
         {stage === "error" && errorMessage ? (
           <View style={styles.errorCard}>
             <Text style={styles.errorTitle}>Error</Text>
@@ -437,20 +391,14 @@ export default function DevTestScreen() {
           </View>
         ) : null}
 
-        {/* Results */}
         {vlmResult ? <VlmResultPanel result={vlmResult} onReset={reset} /> : null}
         {result ? <DlcResultPanel result={result} onReset={reset} /> : null}
 
-        {/* Setup hint */}
         <SetupHint />
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-// ---------------------------------------------------------------------------
-// VLM result panel
-// ---------------------------------------------------------------------------
 
 function VlmResultPanel({ result, onReset }: { result: VlmResult; onReset: () => void }) {
   const passed = result.verdict === "pass";
@@ -471,7 +419,6 @@ function VlmResultPanel({ result, onReset }: { result: VlmResult; onReset: () =>
         </Text>
       </View>
 
-      {/* Why it passed or failed — the most important part */}
       <View style={[styles.reasoningBox, { borderLeftWidth: 3, borderLeftColor: color }]}>
         <Text style={[styles.reasoningLabel, { color }]}>
           {passed ? "Why it passed" : failed ? "Why it failed" : "Error"}
@@ -483,7 +430,6 @@ function VlmResultPanel({ result, onReset }: { result: VlmResult; onReset: () =>
       <ResultRow label="Model" value={result.model} />
       <ResultRow label="Inference time" value={`${(result.latency_ms / 1000).toFixed(1)}s`} />
 
-      {/* Frames the model actually saw */}
       {result.preview_frames && result.preview_frames.length > 0 ? (
         <View style={styles.previewSection}>
           <Text style={styles.moduleSectionTitle}>
@@ -524,10 +470,6 @@ function VlmResultPanel({ result, onReset }: { result: VlmResult; onReset: () =>
     </View>
   );
 }
-
-// ---------------------------------------------------------------------------
-// DLC result panel (same as before, renamed for clarity)
-// ---------------------------------------------------------------------------
 
 function DlcResultPanel({
   result,
@@ -690,10 +632,6 @@ function ModuleRow({ module: m }: { module: ModuleOutput }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Setup hint
-// ---------------------------------------------------------------------------
-
 function SetupHint() {
   const baseUrl = env.isValid ? env.data.dogAiBaseUrl : null;
 
@@ -702,7 +640,7 @@ function SetupHint() {
       <Text style={styles.hintTitle}>Setup status</Text>
       <HintRow
         label="Backend URL"
-        value={baseUrl ?? "Not set — add EXPO_PUBLIC_DOG_AI_BASE_URL"}
+        value={baseUrl ?? "Not set. Add EXPO_PUBLIC_DOG_AI_BASE_URL"}
         ok={!!baseUrl}
       />
       <HintRow
@@ -710,7 +648,7 @@ function SetupHint() {
         value={
           env.isValid && env.data.enableRealDogAi
             ? "Yes"
-            : "No — set EXPO_PUBLIC_ENABLE_REAL_DOG_AI=true"
+            : "No. Set EXPO_PUBLIC_ENABLE_REAL_DOG_AI=true"
         }
         ok={env.isValid && env.data.enableRealDogAi}
       />
@@ -736,10 +674,6 @@ function HintRow({ label, value, ok }: { label: string; value: string; ok: boole
     </View>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Small shared components
-// ---------------------------------------------------------------------------
 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -789,10 +723,6 @@ function ActionButton({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 function statusToColor(status: string): string {
   if (status === "passed") return theme.colors.success;
   if (status === "failed") return theme.colors.error;
@@ -801,10 +731,6 @@ function statusToColor(status: string): string {
   if (status === "unsupported_data_collection_only") return theme.colors.textMuted;
   return theme.colors.textMuted;
 }
-
-// ---------------------------------------------------------------------------
-// Styles
-// ---------------------------------------------------------------------------
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: theme.colors.background },

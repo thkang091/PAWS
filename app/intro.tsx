@@ -30,7 +30,7 @@ export default function IntroScreen() {
     const planId = planQuery.data;
 
     if (!dog || !profile?.onboardingCompleted) {
-      router.replace("/onboarding");
+      router.replace("/welcome");
       return;
     }
     if (!planId) {

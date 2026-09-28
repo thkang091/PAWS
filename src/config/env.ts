@@ -31,9 +31,6 @@ const envSchema = z.object({
   EXPO_PUBLIC_ENABLE_RANKED_GAMES: booleanString,
   EXPO_PUBLIC_DOG_AI_BASE_URL: z.string().trim().url().optional().or(z.literal("")),
 
-  // On-device pose extraction prototype.
-  // All default to off / 0 / fallback-enabled so the production build is safe
-  // without explicit env configuration.
   EXPO_PUBLIC_ON_DEVICE_POSE_ENABLED: booleanString,
   EXPO_PUBLIC_ON_DEVICE_POSE_ROLLOUT_PERCENTAGE: positiveIntString(0),
   EXPO_PUBLIC_ON_DEVICE_POSE_FALLBACK_TO_VIDEO_UPLOAD: z
@@ -70,7 +67,6 @@ export type AppEnv = {
   enableSensorRoutines: boolean;
   enableRankedGames: boolean;
   dogAiBaseUrl: string | null;
-  // On-device pose
   onDevicePoseEnabled: boolean;
   onDevicePoseRolloutPercentage: number;
   onDevicePoseFallbackToVideoUpload: boolean;
@@ -93,7 +89,6 @@ export type EnvValidationResult =
 
 const missingVariables = Object.entries(rawEnv)
   .filter(([key, value]) => {
-    // Optional keys that are allowed to be absent.
     const optional = [
       "EXPO_PUBLIC_ENABLE_PAID_PLANS",
       "EXPO_PUBLIC_ON_DEVICE_POSE_ENABLED",

@@ -12,8 +12,6 @@ import type {
   GameDefinition,
   GameEntry,
   GameInstance,
-  RewardDefinition,
-  RewardRedemption,
   SubscriptionPlan,
   TrainingProgress,
   TrainingSkill,
@@ -30,8 +28,6 @@ import type {
   GameEntryRow,
   GameInstanceRow,
   Json,
-  RewardCatalogRow,
-  RewardRedemptionRow,
   SubscriptionPlanRow,
   TrainingProgressRow,
   TrainingSkillRow,
@@ -191,26 +187,6 @@ export const mapGameEntry = (row: GameEntryRow): GameEntry => ({
   gameInstanceId: row.game_instance_id,
   dogId: row.dog_id,
   status: row.status,
-});
-
-export const mapReward = (row: RewardCatalogRow): RewardDefinition => ({
-  id: row.id,
-  name: row.name,
-  description: row.description,
-  goldCost: row.gold_cost,
-  isActive: row.is_active,
-});
-
-export const mapRedemption = (row: RewardRedemptionRow): RewardRedemption => ({
-  id: row.id,
-  rewardId: row.reward_id,
-  dogId: row.dog_id,
-  status: row.status,
-  providerReference: row.provider_reference,
-  fulfillmentNote: row.fulfillment_note,
-  rejectionReason: row.rejection_reason,
-  fulfilledAt: row.fulfilled_at,
-  createdAt: row.created_at,
 });
 
 export const mapCoupon = (row: CouponRow): Coupon => ({

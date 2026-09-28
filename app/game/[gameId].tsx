@@ -35,8 +35,6 @@ export default function ChallengeGameScreen() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ChallengeGameVerdict | null>(null);
 
-  // Refresh reference assets every time this screen comes into focus
-  // (user may have just come back from the reference-setup screen)
   useFocusEffect(
     useCallback(() => {
       void refAssets.refetch();
@@ -92,11 +90,8 @@ export default function ChallengeGameScreen() {
     try {
       setSubmitting(true);
       setSubmitStage("reading");
-      // Small delay so the label shows before blocking on fetch
       await new Promise((r) => setTimeout(r, 80));
       setSubmitStage("uploading");
-      // The service reads, uploads, then charges silver, then verifies
-      // We show stage labels by hooking into the timing
       const verdict = await submitChallengeGameVideo(dogId, game.id, asset.uri, {
         onUploaded: () => setSubmitStage("charging"),
         onCharged: () => setSubmitStage("verifying"),
@@ -110,14 +105,11 @@ export default function ChallengeGameScreen() {
     }
   };
 
-  // ── Result screen ─────────────────────────────────────────────────────────
-
   if (result) {
     const isPass = result.verdict === "PASS";
     const isNeedsReview = result.verdict === "NEEDS_REVIEW";
     return (
       <ScreenContainer scroll>
-        {/* Verdict hero */}
         <View style={[styles.verdictHero, isPass && styles.verdictHeroPass, isNeedsReview && styles.verdictHeroReview]}>
           <View style={styles.verdictIconCircle}>
             <Ionicons
@@ -138,7 +130,6 @@ export default function ChallengeGameScreen() {
           </Text>
         </View>
 
-        {/* Rewards (PASS only) */}
         {isPass && (
           <View style={styles.rewardCard}>
             <Text style={styles.rewardCardTitle}>Rewards Earned</Text>
@@ -163,7 +154,6 @@ export default function ChallengeGameScreen() {
           </View>
         )}
 
-        {/* Retry guidance */}
         {result.retryInstruction && (
           <View style={styles.infoCard}>
             <Ionicons name="information-circle-outline" size={18} color={theme.colors.primaryDark} />
@@ -171,7 +161,6 @@ export default function ChallengeGameScreen() {
           </View>
         )}
 
-        {/* Observations */}
         {result.observations.length > 0 && (
           <View style={styles.observationsCard}>
             <Text style={styles.observationsTitle}>AI Observations</Text>
@@ -184,7 +173,6 @@ export default function ChallengeGameScreen() {
           </View>
         )}
 
-        {/* Dog profile missing — show in result too */}
         {!hasDogProfile && (
           <View style={styles.refMissingCard}>
             <Ionicons name="camera-outline" size={20} color="#B85C00" />
@@ -204,7 +192,6 @@ export default function ChallengeGameScreen() {
           </View>
         )}
 
-        {/* Actions */}
         <View style={styles.actionsRow}>
           <Pressable style={styles.secondaryBtn} onPress={() => router.replace("/(tabs)/game")}>
             <Text style={styles.secondaryBtnText}>Back to Games</Text>
@@ -220,11 +207,8 @@ export default function ChallengeGameScreen() {
     );
   }
 
-  // ── Instruction screen ────────────────────────────────────────────────────
-
   return (
     <ScreenContainer scroll>
-      {/* Header card */}
       <View style={styles.heroCard}>
         <View style={styles.heroTop}>
           <View style={[styles.diffChip, { backgroundColor: diff.bg }]}>
@@ -257,12 +241,10 @@ export default function ChallengeGameScreen() {
         </View>
       </View>
 
-      {/* ── Pre-flight checklist ── */}
       <View style={styles.preflightCard}>
         <Text style={styles.preflightTitle}>Before you submit</Text>
         <Text style={styles.preflightSub}>Both must be ready before silver is charged.</Text>
 
-        {/* Check 1: Dog profile photo */}
         <View style={[styles.preflightRow, !hasDogProfile && styles.preflightRowMissing]}>
           <View style={[styles.preflightCheck, hasDogProfile ? styles.preflightCheckOk : styles.preflightCheckFail]}>
             <Ionicons
@@ -294,7 +276,6 @@ export default function ChallengeGameScreen() {
           )}
         </View>
 
-        {/* Check 2: Silver balance */}
         <View style={[styles.preflightRow, !canAfford && styles.preflightRowMissing]}>
           <View style={[styles.preflightCheck, canAfford ? styles.preflightCheckOk : styles.preflightCheckFail]}>
             <Ionicons
@@ -309,7 +290,7 @@ export default function ChallengeGameScreen() {
             </Text>
             <Text style={styles.preflightItemSub}>
               {canAfford
-                ? `You have ${silver} silver — ready`
+                ? `You have ${silver} silver, ready`
                 : `You have ${silver} silver, need ${game.economy.silverCoinEntryCost - silver} more`}
             </Text>
           </View>
@@ -327,7 +308,6 @@ export default function ChallengeGameScreen() {
         </View>
       </View>
 
-      {/* Dog profile photo setup banner (if missing) */}
       {!hasDogProfile && (
         <View style={styles.setupBanner}>
           <View style={styles.setupBannerTop}>
@@ -355,7 +335,6 @@ export default function ChallengeGameScreen() {
         </View>
       )}
 
-      {/* Setup steps */}
       {game.recordingSetup.length > 0 && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Recording Setup</Text>
@@ -370,7 +349,6 @@ export default function ChallengeGameScreen() {
         </View>
       )}
 
-      {/* Instructions */}
       {game.userInstructions.length > 0 && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Instructions</Text>
@@ -383,7 +361,6 @@ export default function ChallengeGameScreen() {
         </View>
       )}
 
-      {/* Safety notes */}
       {(game.safetyNotes ?? []).length > 0 && (
         <View style={[styles.section, styles.safetySection]}>
           <View style={styles.sectionTitleRow}>
@@ -399,7 +376,6 @@ export default function ChallengeGameScreen() {
         </View>
       )}
 
-      {/* How the submission works */}
       <View style={styles.howCard}>
         <Text style={styles.howTitle}>How submission works</Text>
         <View style={styles.howRow}>
@@ -431,7 +407,6 @@ export default function ChallengeGameScreen() {
         </View>
       </View>
 
-      {/* Error */}
       {error && (
         <View style={styles.errorBanner}>
           <Ionicons name="alert-circle-outline" size={16} color={theme.colors.error} />
@@ -439,14 +414,13 @@ export default function ChallengeGameScreen() {
         </View>
       )}
 
-      {/* Submit CTA */}
       {submitting ? (
         <View style={styles.submittingCard}>
           <ActivityIndicator size="small" color={theme.colors.primaryDark} />
           <View style={styles.submittingBody}>
             <Text style={styles.submittingText}>{stageLabel[submitStage]}</Text>
             {submitStage === "uploading" && (
-              <Text style={styles.submittingNote}>Silver not charged yet — uploading first</Text>
+              <Text style={styles.submittingNote}>Silver not charged yet, uploading first</Text>
             )}
             {submitStage === "verifying" && (
               <Text style={styles.submittingNote}>Silver charged · Gemini is reviewing your clip</Text>
@@ -454,7 +428,6 @@ export default function ChallengeGameScreen() {
           </View>
         </View>
       ) : !hasDogProfile ? (
-        // Can't submit without dog profile photo — show clear CTA to fix
         <Pressable
           style={styles.blockedBtn}
           onPress={() => router.push("/train/reference-setup/DOG_PROFILE")}
@@ -489,8 +462,6 @@ export default function ChallengeGameScreen() {
   );
 }
 
-// ── Styles ────────────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create({
   heroCard: { backgroundColor: theme.colors.card, borderRadius: theme.radii.lg, padding: theme.spacing.lg, gap: theme.spacing.sm, ...theme.shadows.soft },
   heroTop: { flexDirection: "row", alignItems: "center", gap: theme.spacing.sm, flexWrap: "wrap" },
@@ -507,7 +478,6 @@ const styles = StyleSheet.create({
   metaPill: { flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: theme.colors.cardMuted, borderRadius: theme.radii.pill, paddingHorizontal: 10, paddingVertical: 5 },
   metaPillText: { fontSize: theme.typography.xs, color: theme.colors.textMuted, fontWeight: "700" },
 
-  // Pre-flight checklist
   preflightCard: { backgroundColor: theme.colors.card, borderRadius: theme.radii.lg, padding: theme.spacing.lg, gap: 12, ...theme.shadows.soft },
   preflightTitle: { fontSize: theme.typography.md, fontWeight: "900", color: theme.colors.text },
   preflightSub: { fontSize: theme.typography.xs, color: theme.colors.textMuted, marginTop: -4 },
@@ -523,7 +493,6 @@ const styles = StyleSheet.create({
   preflightFixBtn: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: theme.colors.error, borderRadius: theme.radii.pill, paddingHorizontal: 12, paddingVertical: 7, flexShrink: 0 },
   preflightFixBtnText: { fontSize: theme.typography.xs, fontWeight: "900", color: "#fff" },
 
-  // Dog profile setup banner
   setupBanner: { backgroundColor: "#FFF5EC", borderWidth: 1.5, borderColor: "#FFD6A0", borderRadius: theme.radii.lg, padding: theme.spacing.lg, gap: 10 },
   setupBannerTop: { flexDirection: "row", alignItems: "center", gap: 8 },
   setupBannerTitle: { fontSize: theme.typography.sm, fontWeight: "900", color: theme.colors.primaryDark, flex: 1 },
@@ -533,7 +502,6 @@ const styles = StyleSheet.create({
   setupBannerBtnText: { fontSize: theme.typography.sm, fontWeight: "900", color: "#fff" },
   setupBannerReturn: { fontSize: theme.typography.xs, color: theme.colors.textMuted, textAlign: "center" },
 
-  // Reference missing in result
   refMissingCard: { flexDirection: "row", alignItems: "flex-start", gap: 12, backgroundColor: "#FFF5EC", borderWidth: 1.5, borderColor: "#FFD6A0", borderRadius: theme.radii.lg, padding: theme.spacing.md },
   refMissingBody: { flex: 1 },
   refMissingTitle: { fontSize: theme.typography.sm, fontWeight: "900", color: "#B85C00" },
@@ -549,7 +517,6 @@ const styles = StyleSheet.create({
   stepNumText: { fontSize: 11, fontWeight: "900", color: theme.colors.primaryDark },
   stepText: { flex: 1, fontSize: theme.typography.xs, color: theme.colors.text, lineHeight: 18 },
 
-  // How it works
   howCard: { backgroundColor: theme.colors.card, borderRadius: theme.radii.lg, padding: theme.spacing.lg, gap: 10, ...theme.shadows.soft },
   howTitle: { fontSize: theme.typography.sm, fontWeight: "900", color: theme.colors.text, marginBottom: 2 },
   howRow: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
@@ -580,7 +547,6 @@ const styles = StyleSheet.create({
 
   disclaimer: { fontSize: theme.typography.xs, color: theme.colors.textSubtle, textAlign: "center", lineHeight: 16 },
 
-  // Result screen
   verdictHero: { backgroundColor: theme.colors.cardMuted, borderRadius: theme.radii.lg, padding: theme.spacing.xl, alignItems: "center", gap: theme.spacing.sm, ...theme.shadows.soft },
   verdictHeroPass: { backgroundColor: theme.colors.primarySoft },
   verdictHeroReview: { backgroundColor: theme.colors.goldSoft },

@@ -1,12 +1,72 @@
-import { useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { useMemo, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Svg, { Circle } from "react-native-svg";
+import Animated, {
+  FadeIn,
+  useAnimatedProps,
+  useReducedMotion,
+  useSharedValue,
+  withDelay,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import { useEffect } from "react";
+import * as Haptics from "expo-haptics";
+import {
+  BathtubIcon,
+  BugIcon,
+  EarIcon,
+  PawPrintIcon,
+  ScissorsIcon,
+  ShowerIcon,
+  ToothIcon,
+} from "phosphor-react-native";
 
-import { ScreenContainer } from "@/components/ui/ScreenContainer";
-import { theme } from "@/constants/theme";
-import { GROOMING_TYPES, daysUntilGrooming, isGroomingOverdue } from "@/constants/careHealth";
+import { DetailShell } from "@/features/care/components/DetailShell";
+import { DetailSheet, Field } from "@/features/care/components/DetailSheet";
+import { Band, PanelHead, Spotlight } from "@/components/ui/panels";
+import { PressScale } from "@/components/ui/PressScale";
+import { GROOMING_TYPES, daysUntilGrooming } from "@/constants/careHealth";
 import { useGroomingLogs, useLogGrooming } from "@/hooks/useCareHealth";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
+import type { GroomingLog } from "@/services/careHealthService";
+import {
+  accent,
+  bg,
+  border,
+  icon as iconSize,
+  motion,
+  radius,
+  space,
+  text,
+  type,
+} from "@/constants/design";
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+type PhosphorIcon = typeof ScissorsIcon;
+
+const GLYPH: Record<string, PhosphorIcon> = {
+  bath: BathtubIcon,
+  nail_trim: ScissorsIcon,
+  ear_clean: EarIcon,
+  teeth_brush: ToothIcon,
+  haircut: ShowerIcon,
+  flea_tick: BugIcon,
+};
+
+const today = () => new Date().toISOString().slice(0, 10);
+
+type Job = {
+  key: string;
+  label: string;
+  description: string;
+  intervalDays: number;
+  last?: GroomingLog;
+  days: number | null;
+  doneToday: boolean;
+  elapsed: number;
+};
 
 export default function GroomingScreen() {
   const dog = useCurrentDog();
@@ -14,131 +74,261 @@ export default function GroomingScreen() {
   const logs = useGroomingLogs(dogId);
   const logGroom = useLogGrooming(dogId);
 
-  const [logOpen, setLogOpen] = useState<string | null>(null);
-  const [notes, setNotes] = useState("");
+  const [noteFor, setNoteFor] = useState<Job | null>(null);
+  const [note, setNote] = useState("");
 
-  const latestByType = new Map<string, import("@/services/careHealthService").GroomingLog>();
-  for (const l of logs.data ?? []) {
-    if (!latestByType.has(l.groomingType)) latestByType.set(l.groomingType, l);
-  }
+  const jobs = useMemo<Job[]>(() => {
+    const latest = new Map<string, GroomingLog>();
+    for (const log of logs.data ?? []) {
+      if (!latest.has(log.groomingType)) latest.set(log.groomingType, log);
+    }
 
-  const today = () => new Date().toISOString().slice(0, 10);
+    return GROOMING_TYPES.map((groom) => {
+      const last = latest.get(groom.key);
+      const days = last ? daysUntilGrooming(last.doneDate, groom.intervalDays) : null;
+      const elapsed =
+        days === null
+          ? 0
+          : Math.min(1, Math.max(0, (groom.intervalDays - days) / groom.intervalDays));
+      return {
+        key: groom.key,
+        label: groom.label,
+        description: groom.description,
+        intervalDays: groom.intervalDays,
+        last,
+        days,
+        doneToday: last?.doneDate === today(),
+        elapsed,
+      };
+    });
+  }, [logs.data]);
 
-  const handleLog = (type: string, intervalDays: number) => {
-    const doneDate = today();
+  const overdue = jobs.filter((job) => job.days !== null && job.days < 0);
+  const never = jobs.filter((job) => job.days === null);
+  const doneToday = jobs.filter((job) => job.doneToday);
+
+  const worst = [...jobs].sort((a, b) => (a.days ?? -9999) - (b.days ?? -9999))[0];
+
+  const log = (job: Job, withNote: string | null) => {
     const next = new Date();
-    next.setDate(next.getDate() + intervalDays);
+    next.setDate(next.getDate() + job.intervalDays);
     logGroom.mutate({
-      groomingType: type,
-      doneDate,
+      groomingType: job.key,
+      doneDate: today(),
       nextDueDate: next.toISOString().slice(0, 10),
-      notes: notes.trim() || null,
-    }, {
-      onSuccess: () => {
-        setLogOpen(null);
-        setNotes("");
-      },
+      notes: withNote,
     });
   };
 
-  const openType = GROOMING_TYPES.find((g) => g.key === logOpen);
+  const spotlight = worst
+    ? {
+        chip:
+          worst.days === null
+            ? "Never logged"
+            : worst.days < 0
+              ? `${Math.abs(worst.days)} days over`
+              : worst.days === 0
+                ? "Due today"
+                : `In ${worst.days} days`,
+        glyph: "scissors",
+        title: worst.days !== null && worst.days > 0 ? "Nothing overdue" : worst.label,
+        meta:
+          worst.days !== null && worst.days > 0
+            ? `${worst.label} is next, in ${worst.days} days.`
+            : worst.description,
+      }
+    : null;
 
   return (
-    <ScreenContainer scroll>
-      <Text style={s.title}>Grooming & hygiene</Text>
-      <Text style={s.sub}>Tap any item to mark it done today.</Text>
+    <DetailShell
+      title="Grooming"
+      glyph={<ScissorsIcon size={iconSize.standard} color={accent.deep} weight="fill" />}
+    >
+      {spotlight ? <Spotlight data={spotlight} onPress={() => worst && log(worst, null)} /> : null}
 
-      {GROOMING_TYPES.map((g) => {
-        const last = latestByType.get(g.key);
-        const overdue = last ? isGroomingOverdue(last.doneDate, g.intervalDays) : true;
-        const days = last ? daysUntilGrooming(last.doneDate, g.intervalDays) : null;
-        const doneToday = last?.doneDate === today();
+      <Band
+        figures={[
+          { key: "overdue", glyph: "scissors", value: String(overdue.length), label: "Overdue" },
+          { key: "never", glyph: "folder", value: String(never.length), label: "Never logged" },
+          { key: "today", glyph: "heart", value: String(doneToday.length), label: "Done today" },
+        ]}
+      />
 
-        return (
-          <Pressable key={g.key} style={s.card} onPress={() => setLogOpen(g.key)} accessibilityRole="button">
-            <View style={[s.icon, doneToday && s.iconDone, overdue && !doneToday && s.iconOverdue]}>
-              <Ionicons
-                name={g.icon as never}
-                size={20}
-                color={doneToday ? "#fff" : overdue ? theme.colors.error : theme.colors.primaryDark}
-              />
-            </View>
-            <View style={s.cardBody}>
-              <Text style={s.groomLabel}>{g.label}</Text>
-              <Text style={s.groomDesc}>{g.description}</Text>
-              {doneToday ? (
-                <Text style={s.statusDone}>Done today</Text>
-              ) : last ? (
-                <Text style={[s.status, overdue && s.statusRed]}>
-                  {overdue ? `Overdue by ${Math.abs(days!)} days` : `Due in ${days} days`}
-                </Text>
-              ) : (
-                <Text style={s.statusMissing}>Never recorded — tap to log</Text>
-              )}
-            </View>
-            {!doneToday && (
-              <Ionicons name="checkmark-circle-outline" size={22} color={theme.colors.borderStrong} />
-            )}
-            {doneToday && (
-              <Ionicons name="checkmark-circle" size={22} color={theme.colors.success} />
-            )}
-          </Pressable>
-        );
-      })}
+      <PanelHead title="Every few weeks" />
+      <Text style={styles.hint}>Tap to log one done today. Hold to add a note with it.</Text>
 
-      <Modal visible={Boolean(logOpen)} transparent animationType="slide" onRequestClose={() => setLogOpen(null)}>
-        <Pressable style={s.overlay} onPress={() => setLogOpen(null)}>
-          <Pressable style={s.sheet} onPress={(e) => e.stopPropagation()}>
-            <View style={s.handle} />
-            <Text style={s.sheetTitle}>Log {openType?.label}</Text>
-            <Text style={s.sheetSub}>{openType?.description}</Text>
+      <View style={styles.grid}>
+        {jobs.map((job, index) => (
+          <JobCard
+            key={job.key}
+            job={job}
+            order={index}
+            busy={logGroom.isPending}
+            onLog={() => {
+              void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              log(job, null);
+            }}
+            onNote={() => {
+              void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              setNote("");
+              setNoteFor(job);
+            }}
+          />
+        ))}
+      </View>
 
-            <Text style={s.label}>Notes (optional)</Text>
-            <TextInput
-              style={[s.input, { height: 64, textAlignVertical: "top" }]}
-              value={notes}
-              onChangeText={setNotes}
-              multiline
-              placeholder="Any observations, products used…"
-              placeholderTextColor={theme.colors.textMuted}
-            />
-
-            <Pressable
-              style={[s.saveBtn, logGroom.isPending && { opacity: 0.6 }]}
-              onPress={() => openType && handleLog(openType.key, openType.intervalDays)}
-              disabled={logGroom.isPending}
-            >
-              <Ionicons name="checkmark" size={18} color="#fff" />
-              <Text style={s.saveBtnText}>{logGroom.isPending ? "Saving…" : `Mark ${openType?.label} done`}</Text>
-            </Pressable>
-          </Pressable>
-        </Pressable>
-      </Modal>
-    </ScreenContainer>
+      <DetailSheet
+        open={noteFor !== null}
+        title={noteFor ? `Log ${noteFor.label.toLowerCase()}` : ""}
+        saveLabel="Log it for today"
+        saving={logGroom.isPending}
+        onClose={() => setNoteFor(null)}
+        onSave={() => {
+          if (!noteFor) return;
+          log(noteFor, note.trim() || null);
+          setNoteFor(null);
+        }}
+      >
+        <Text style={styles.sheetNote}>{noteFor?.description}</Text>
+        <Field
+          label="Note"
+          value={note}
+          onChangeText={setNote}
+          placeholder="Groomer, product used, anything you noticed…"
+          multiline
+        />
+      </DetailSheet>
+    </DetailShell>
   );
 }
 
-const s = StyleSheet.create({
-  title: { fontSize: 20, fontWeight: "900", color: theme.colors.text, marginBottom: 4 },
-  sub: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 16 },
-  card: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: theme.colors.card, borderRadius: theme.radii.lg, padding: 14, marginBottom: 10, ...theme.shadows.soft },
-  icon: { width: 40, height: 40, borderRadius: 12, backgroundColor: theme.colors.primarySoft, alignItems: "center", justifyContent: "center", flexShrink: 0 },
-  iconDone: { backgroundColor: theme.colors.primary },
-  iconOverdue: { backgroundColor: "#FEE2E2" },
-  cardBody: { flex: 1 },
-  groomLabel: { fontSize: 14, fontWeight: "800", color: theme.colors.text, marginBottom: 2 },
-  groomDesc: { fontSize: 12, color: theme.colors.textMuted, marginBottom: 3 },
-  status: { fontSize: 12, fontWeight: "600", color: theme.colors.textSubtle },
-  statusRed: { color: theme.colors.error },
-  statusDone: { fontSize: 12, fontWeight: "600", color: theme.colors.success },
-  statusMissing: { fontSize: 12, color: theme.colors.textMuted, fontStyle: "italic" },
-  overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "flex-end" },
-  sheet: { backgroundColor: theme.colors.background, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },
-  handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: theme.colors.border, alignSelf: "center", marginBottom: 20 },
-  sheetTitle: { fontSize: 18, fontWeight: "900", color: theme.colors.text, marginBottom: 4 },
-  sheetSub: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 16 },
-  label: { fontSize: 12, fontWeight: "700", color: theme.colors.textMuted, marginBottom: 6, marginTop: 8, textTransform: "uppercase", letterSpacing: 0.5 },
-  input: { borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radii.md, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14, color: theme.colors.text, backgroundColor: theme.colors.card },
-  saveBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: theme.colors.primaryDark, borderRadius: theme.radii.pill, paddingVertical: 14, marginTop: 20 },
-  saveBtnText: { fontSize: 15, fontWeight: "800", color: "#fff" },
+const SIZE = 56;
+const STROKE = 5;
+const R = (SIZE - STROKE) / 2;
+const C = 2 * Math.PI * R;
+
+const JobCard = ({
+  job,
+  order,
+  busy,
+  onLog,
+  onNote,
+}: {
+  job: Job;
+  order: number;
+  busy: boolean;
+  onLog: () => void;
+  onNote: () => void;
+}) => {
+  const reduceMotion = useReducedMotion();
+  const Glyph = GLYPH[job.key] ?? PawPrintIcon;
+  const due = job.days !== null && job.days <= 0;
+
+  const swept = useSharedValue(reduceMotion ? job.elapsed : 0);
+  useEffect(() => {
+    swept.value = reduceMotion
+      ? job.elapsed
+      : withDelay(
+          motion.duration.enter + order * 40,
+          withSpring(job.elapsed, motion.spring),
+        );
+  }, [job.elapsed, order, reduceMotion, swept]);
+
+  const arc = useAnimatedProps(() => {
+    const length = C * Math.max(0, swept.value);
+    return { strokeDasharray: [length, C], opacity: length < 1 ? 0 : 1 };
+  });
+
+  const status = job.doneToday
+    ? "Done today"
+    : job.days === null
+      ? "Never logged"
+      : job.days < 0
+        ? `${Math.abs(job.days)} days over`
+        : job.days === 0
+          ? "Due today"
+          : `In ${job.days} days`;
+
+  return (
+    <Animated.View
+      entering={
+        reduceMotion ? undefined : FadeIn.duration(motion.duration.enter).delay(order * 40)
+      }
+      style={styles.slot}
+    >
+      <PressScale
+        accessibilityRole="button"
+        accessibilityLabel={`${job.label}. ${status}. Tap to log it done today, hold to add a note.`}
+        scaleTo={0.96}
+        disabled={busy}
+        style={[styles.card, job.doneToday && styles.cardDone]}
+        onPress={onLog}
+        onLongPress={onNote}
+      >
+        <View style={styles.ringWrap}>
+          <Svg width={SIZE} height={SIZE}>
+            <Circle
+              cx={SIZE / 2}
+              cy={SIZE / 2}
+              r={R}
+              stroke={bg.canvas}
+              strokeWidth={STROKE}
+              fill="none"
+            />
+            <AnimatedCircle
+              cx={SIZE / 2}
+              cy={SIZE / 2}
+              r={R}
+              stroke={due && !job.doneToday ? accent.deep : border.default}
+              strokeWidth={STROKE}
+              strokeLinecap="round"
+              fill="none"
+              transform={`rotate(-90 ${SIZE / 2} ${SIZE / 2})`}
+              animatedProps={arc}
+            />
+          </Svg>
+          <View style={styles.ringGlyph} pointerEvents="none">
+            <Glyph size={iconSize.feature} color={text.primary} weight="regular" />
+          </View>
+        </View>
+
+        <Text style={styles.label} numberOfLines={1}>
+          {job.label}
+        </Text>
+        <Text
+          style={[
+            styles.status,
+            (due || job.days === null) && !job.doneToday && styles.statusDue,
+          ]}
+          numberOfLines={1}
+        >
+          {status}
+        </Text>
+      </PressScale>
+    </Animated.View>
+  );
+};
+
+const styles = StyleSheet.create({
+  hint: { ...type.caption, color: text.tertiary, marginTop: -space.sm, marginBottom: space.lg },
+
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: space.md },
+  slot: { width: "48%", flexGrow: 1 },
+  card: {
+    alignItems: "center",
+    paddingVertical: space.xl,
+    paddingHorizontal: space.md,
+    borderRadius: radius.card,
+    backgroundColor: bg.subtle,
+  },
+  cardDone: { backgroundColor: accent.soft },
+
+  ringWrap: { width: SIZE, height: SIZE, alignItems: "center", justifyContent: "center" },
+  ringGlyph: { position: "absolute" },
+
+  label: { ...type.cardTitle, fontWeight: "600", color: text.primary, marginTop: space.md },
+  status: { ...type.caption, color: text.tertiary, marginTop: 2 },
+  statusDue: { color: text.primary, fontWeight: "600" },
+
+  sheetNote: { ...type.supporting, color: text.tertiary, marginTop: space.md },
 });

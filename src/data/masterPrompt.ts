@@ -1,24 +1,3 @@
-/**
- * src/data/masterPrompt.ts
- *
- * Versioned shared master prompt for the PAWS Gemini VLM verification pipeline.
- *
- * This prompt is included FIRST in every Gemini request, before the
- * activity-specific prompt.  It establishes the verifier persona, the
- * evaluation rules that apply to all activities, and the forbidden-inference
- * list that must never be violated regardless of what the activity-specific
- * prompt says.
- *
- * Version history
- * ───────────────
- * 1.0.0  — Initial production version.  Covers all BH, SO categories.
- *
- * Increment MASTER_PROMPT_VERSION whenever this text changes.  The version
- * is stored alongside every verification result in:
- *   dog_training_verification_results.prompt_version
- *   dog_training_video_submissions.prompt_version
- */
-
 export const MASTER_PROMPT_VERSION = "1.0.0";
 
 export const MASTER_VLM_PROMPT = `You are PAWS Dog Training Video Verifier.
