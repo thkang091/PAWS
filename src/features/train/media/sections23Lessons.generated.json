@@ -1,0 +1,1682 @@
+{
+  "2-1": [
+    {
+      "id": "section-2-1-l1",
+      "levelNumber": 1,
+      "duration": 5.666667,
+      "coverageNote": "Instructional marker captions, not an audio transcript or an exact marker pulse. Hidden-food example starts with a hand already in the pouch.",
+      "steps": [
+        {
+          "title": "Marker, then reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Say your marker once before offering the treat."
+            },
+            {
+              "at": 2.8,
+              "text": "Bring the reward to your dog."
+            },
+            {
+              "at": 4.8,
+              "text": "Let your dog finish, then reset."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-1-l2",
+      "levelNumber": 2,
+      "duration": 7.6,
+      "coverageNote": "Instructional marker captions, not an audio transcript or an exact marker pulse. Hidden-food example starts with a hand already in the pouch.",
+      "steps": [
+        {
+          "title": "Mark a small glance",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Watch for a small glance toward you."
+            },
+            {
+              "at": 1.5,
+              "text": "Mark the choice once."
+            },
+            {
+              "at": 5.8,
+              "text": "Deliver the reward after the marker."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-1-l3",
+      "levelNumber": 3,
+      "duration": 8.8,
+      "coverageNote": "Instructional marker captions, not an audio transcript or an exact marker pulse. Hidden-food example starts with a hand already in the pouch.",
+      "steps": [
+        {
+          "title": "Keep the reward hidden",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Keep the food hidden while your dog looks toward you."
+            },
+            {
+              "at": 4.0,
+              "text": "Mark the attention before bringing out the food."
+            },
+            {
+              "at": 5.8,
+              "text": "Take the reward from the pouch and deliver it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-1-l4",
+      "levelNumber": 4,
+      "duration": 13.1,
+      "coverageNote": "Instructional marker captions, not an audio transcript or an exact marker pulse. Hidden-food example starts with a hand already in the pouch.",
+      "steps": [
+        {
+          "title": "Mark a small glance",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Watch for a small glance toward you."
+            },
+            {
+              "at": 1.5,
+              "text": "Mark the choice once."
+            },
+            {
+              "at": 5.8,
+              "text": "Deliver the reward after the marker."
+            }
+          ]
+        },
+        {
+          "title": "Another behavior example",
+          "cues": [
+            {
+              "at": 7.6,
+              "text": "Separate example: notice your dog leaving the object."
+            },
+            {
+              "at": 10.1,
+              "text": "Use the same marker for this clear choice."
+            },
+            {
+              "at": 11.7,
+              "text": "Follow the marker with a reward."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-1-l5",
+      "levelNumber": 5,
+      "duration": 8.4,
+      "coverageNote": "Instructional marker captions, not an audio transcript or an exact marker pulse. Hidden-food example starts with a hand already in the pouch.",
+      "steps": [
+        {
+          "title": "Reward within a routine",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Reward your dog for staying on the waiting spot."
+            },
+            {
+              "at": 2.5,
+              "text": "Move toward the handle while your dog stays."
+            },
+            {
+              "at": 5.0,
+              "text": "Reward again on the spot."
+            },
+            {
+              "at": 7.0,
+              "text": "Release and finish the short routine."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "2-2": [
+    {
+      "id": "section-2-2-l1",
+      "levelNumber": 1,
+      "duration": 10.9,
+      "coverageNote": "Active flirt-pole footage demonstrates pause/resume order, not low-arousal play. Separate contexts are independent examples. C05 duplicates C04 and remains checkpoint-only.",
+      "steps": [
+        {
+          "title": "Pause and resume play",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Pause the toy movement and wait briefly."
+            },
+            {
+              "at": 2.5,
+              "text": "Release to make the toy available again."
+            },
+            {
+              "at": 5.5,
+              "text": "For your practice, keep the toy low and movements small."
+            },
+            {
+              "at": 9.0,
+              "text": "Let your dog enjoy the toy."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-2-l2",
+      "levelNumber": 2,
+      "duration": 6.666667,
+      "coverageNote": "Active flirt-pole footage demonstrates pause/resume order, not low-arousal play. Separate contexts are independent examples. C05 duplicates C04 and remains checkpoint-only.",
+      "steps": [
+        {
+          "title": "Pause a treat offer",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Finish the previous reward, then close your hand."
+            },
+            {
+              "at": 1.5,
+              "text": "Wait briefly without pushing your hand toward your dog."
+            },
+            {
+              "at": 3.5,
+              "text": "Notice your dog moving away from the closed hand."
+            },
+            {
+              "at": 4.6,
+              "text": "Open your hand and offer the treat."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-2-l3",
+      "levelNumber": 3,
+      "duration": 6.9,
+      "coverageNote": "Active flirt-pole footage demonstrates pause/resume order, not low-arousal play. Separate contexts are independent examples. C05 duplicates C04 and remains checkpoint-only.",
+      "steps": [
+        {
+          "title": "An easy alternative",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Pause play and ask for the familiar release."
+            },
+            {
+              "at": 2.0,
+              "text": "Ask once for an easy sit."
+            },
+            {
+              "at": 3.5,
+              "text": "Let the sit make play available again."
+            },
+            {
+              "at": 5.0,
+              "text": "Resume; use smaller, lower toy movements at home."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-2-l4",
+      "levelNumber": 4,
+      "duration": 10.9,
+      "coverageNote": "Active flirt-pole footage demonstrates pause/resume order, not low-arousal play. Separate contexts are independent examples. C05 duplicates C04 and remains checkpoint-only.",
+      "steps": [
+        {
+          "title": "An indoor boundary example",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Separate example: pause the door movement briefly."
+            },
+            {
+              "at": 3.0,
+              "text": "Wait for your dog to settle back."
+            },
+            {
+              "at": 5.0,
+              "text": "Open the door while your dog waits."
+            },
+            {
+              "at": 8.4,
+              "text": "Release and let your dog leave."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-2-l5",
+      "levelNumber": 5,
+      "duration": 21.8,
+      "coverageNote": "Active flirt-pole footage demonstrates pause/resume order, not low-arousal play. Separate contexts are independent examples. C05 duplicates C04 and remains checkpoint-only.",
+      "steps": [
+        {
+          "title": "Pause and resume play",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Pause the toy movement and wait briefly."
+            },
+            {
+              "at": 2.5,
+              "text": "Release to make the toy available again."
+            },
+            {
+              "at": 5.5,
+              "text": "For your practice, keep the toy low and movements small."
+            },
+            {
+              "at": 9.0,
+              "text": "Let your dog enjoy the toy."
+            }
+          ]
+        },
+        {
+          "title": "An indoor boundary example",
+          "cues": [
+            {
+              "at": 10.9,
+              "text": "Separate example: pause the door movement briefly."
+            },
+            {
+              "at": 13.9,
+              "text": "Wait for your dog to settle back."
+            },
+            {
+              "at": 15.9,
+              "text": "Open the door while your dog waits."
+            },
+            {
+              "at": 19.3,
+              "text": "Release and let your dog leave."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "2-3": [
+    {
+      "id": "section-2-3-l1",
+      "levelNumber": 1,
+      "duration": 3.466667,
+      "coverageNote": "Visible toy and body movement assist the redirect. The source distance label is not a universal recommendation. Outdoor footage illustrates application, not proof of an established home routine.",
+      "steps": [
+        {
+          "title": "Yes predicts a reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Say “Yes” once for the choice you want."
+            },
+            {
+              "at": 0.8,
+              "text": "Open your hand and deliver the reward."
+            },
+            {
+              "at": 2.5,
+              "text": "Finish the reward before the next repetition."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-3-l2",
+      "levelNumber": 2,
+      "duration": 5.1,
+      "coverageNote": "Visible toy and body movement assist the redirect. The source distance label is not a universal recommendation. Outdoor footage illustrates application, not proof of an established home routine.",
+      "steps": [
+        {
+          "title": "This way guides a turn",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Use “This way” with a clear, easy direction."
+            },
+            {
+              "at": 1.5,
+              "text": "Help the turn with your movement and visible toy."
+            },
+            {
+              "at": 3.5,
+              "text": "Mark the new choice and reward with the toy."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-3-l3",
+      "levelNumber": 3,
+      "duration": 8.566667,
+      "coverageNote": "Visible toy and body movement assist the redirect. The source distance label is not a universal recommendation. Outdoor footage illustrates application, not proof of an established home routine.",
+      "steps": [
+        {
+          "title": "Yes predicts a reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Say “Yes” once for the choice you want."
+            },
+            {
+              "at": 0.8,
+              "text": "Open your hand and deliver the reward."
+            },
+            {
+              "at": 2.5,
+              "text": "Finish the reward before the next repetition."
+            }
+          ]
+        },
+        {
+          "title": "This way guides a turn",
+          "cues": [
+            {
+              "at": 3.466667,
+              "text": "Another example: use “This way” with a clear, easy direction."
+            },
+            {
+              "at": 4.966667,
+              "text": "Help the turn with your movement and visible toy."
+            },
+            {
+              "at": 6.966667,
+              "text": "Mark the new choice and reward with the toy."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-3-l4",
+      "levelNumber": 4,
+      "duration": 10.2,
+      "coverageNote": "Visible toy and body movement assist the redirect. The source distance label is not a universal recommendation. Outdoor footage illustrates application, not proof of an established home routine.",
+      "steps": [
+        {
+          "title": "Turn away from a distraction",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Start far enough from the other dog to stay comfortable."
+            },
+            {
+              "at": 3.0,
+              "text": "Use your familiar redirect and turn together."
+            },
+            {
+              "at": 6.5,
+              "text": "Move away from the distraction."
+            },
+            {
+              "at": 8.5,
+              "text": "Reward in the new position."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-3-l5",
+      "levelNumber": 5,
+      "duration": 18.833333,
+      "coverageNote": "Visible toy and body movement assist the redirect. The source distance label is not a universal recommendation. Outdoor footage illustrates application, not proof of an established home routine.",
+      "steps": [
+        {
+          "title": "Use each word for its job",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Mark a clear choice beside you."
+            },
+            {
+              "at": 3.0,
+              "text": "Reward with a short toy game."
+            },
+            {
+              "at": 8.0,
+              "text": "Reset and begin another easy turn."
+            },
+            {
+              "at": 13.5,
+              "text": "Use “This way” to guide the new direction."
+            },
+            {
+              "at": 16.5,
+              "text": "Mark the new choice and offer the toy."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "2-4": [
+    {
+      "id": "section-2-4-l1",
+      "levelNumber": 1,
+      "duration": 11.233333,
+      "coverageNote": "Different reward types are separate demonstrations; no claim of consecutive success or a measured reinforcement schedule.",
+      "steps": [
+        {
+          "title": "Repeat the same reward rule",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Watch for attention toward you."
+            },
+            {
+              "at": 2.5,
+              "text": "Mark and reward that choice."
+            },
+            {
+              "at": 5.5,
+              "text": "Wait for the same easy behavior again."
+            },
+            {
+              "at": 8.5,
+              "text": "Keep the rule the same and reward again."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-4-l2",
+      "levelNumber": 2,
+      "duration": 8.0,
+      "coverageNote": "Different reward types are separate demonstrations; no claim of consecutive success or a measured reinforcement schedule.",
+      "steps": [
+        {
+          "title": "Reward in place",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Bring the reward to the waiting spot."
+            },
+            {
+              "at": 2.5,
+              "text": "Keep the same position as you move toward the handle."
+            },
+            {
+              "at": 5.0,
+              "text": "Give the next reward on the spot."
+            },
+            {
+              "at": 6.8,
+              "text": "Release before moving away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-4-l3",
+      "levelNumber": 3,
+      "duration": 8.8,
+      "coverageNote": "Different reward types are separate demonstrations; no claim of consecutive success or a measured reinforcement schedule.",
+      "steps": [
+        {
+          "title": "Food follows the behavior",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Keep food out of view while you wait for attention."
+            },
+            {
+              "at": 4.0,
+              "text": "Mark the choice first."
+            },
+            {
+              "at": 5.8,
+              "text": "Bring the hidden reward out and deliver it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-4-l4",
+      "levelNumber": 4,
+      "duration": 21.5,
+      "coverageNote": "Different reward types are separate demonstrations; no claim of consecutive success or a measured reinforcement schedule.",
+      "steps": [
+        {
+          "title": "Food reward example",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Cue the familiar sit with your hand."
+            },
+            {
+              "at": 1.5,
+              "text": "Wait for the sit to finish."
+            },
+            {
+              "at": 3.5,
+              "text": "Reward the sit with food."
+            }
+          ]
+        },
+        {
+          "title": "Another reward example",
+          "cues": [
+            {
+              "at": 5.3,
+              "text": "Separate repetition: ask for the same sit."
+            },
+            {
+              "at": 7.8,
+              "text": "Offer brief petting if your dog enjoys it."
+            },
+            {
+              "at": 9.9,
+              "text": "Let your dog move away when finished."
+            }
+          ]
+        },
+        {
+          "title": "A toy reward example",
+          "cues": [
+            {
+              "at": 11.0,
+              "text": "Another dog: ask for the familiar sit."
+            },
+            {
+              "at": 14.3,
+              "text": "Let a short toy game reward the sit."
+            },
+            {
+              "at": 18.0,
+              "text": "Allow your dog to enjoy the toy and return."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-4-l5",
+      "levelNumber": 5,
+      "duration": 11.0,
+      "coverageNote": "Different reward types are separate demonstrations; no claim of consecutive success or a measured reinforcement schedule.",
+      "steps": [
+        {
+          "title": "Food reward example",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Cue the familiar sit with your hand."
+            },
+            {
+              "at": 1.5,
+              "text": "Wait for the sit to finish."
+            },
+            {
+              "at": 3.5,
+              "text": "Reward the sit with food."
+            }
+          ]
+        },
+        {
+          "title": "Another reward example",
+          "cues": [
+            {
+              "at": 5.3,
+              "text": "Separate repetition: ask for the same sit."
+            },
+            {
+              "at": 7.8,
+              "text": "Offer brief petting if your dog enjoys it."
+            },
+            {
+              "at": 9.9,
+              "text": "Let your dog move away when finished."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "2-5": [
+    {
+      "id": "section-2-5-l1",
+      "levelNumber": 1,
+      "duration": 25.3,
+      "coverageNote": "Play, attention, chew redirection and easier stay practice are distinct reset examples. The chew replaces access to shoes; no food reward is shown in that clip.",
+      "steps": [
+        {
+          "title": "Pause an activity",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Pause the moving toy for a brief wait."
+            },
+            {
+              "at": 2.5,
+              "text": "Release before starting the toy again."
+            },
+            {
+              "at": 5.5,
+              "text": "Practise with lower, smaller movements than this game."
+            },
+            {
+              "at": 9.0,
+              "text": "Keep the play break short."
+            }
+          ]
+        },
+        {
+          "title": "A quiet reward example",
+          "cues": [
+            {
+              "at": 10.9,
+              "text": "Separate example: stop the ball and wait for attention."
+            },
+            {
+              "at": 13.9,
+              "text": "Reward attention while your dog stays in place."
+            },
+            {
+              "at": 16.9,
+              "text": "Keep the next ball movement small."
+            },
+            {
+              "at": 19.9,
+              "text": "Pause the ball again and ask for attention."
+            },
+            {
+              "at": 22.9,
+              "text": "Reward the easy response."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-5-l2",
+      "levelNumber": 2,
+      "duration": 35.7,
+      "coverageNote": "Play, attention, chew redirection and easier stay practice are distinct reset examples. The chew replaces access to shoes; no food reward is shown in that clip.",
+      "steps": [
+        {
+          "title": "Move to an approved activity",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Get attention and invite your dog away from the shoes."
+            },
+            {
+              "at": 5.0,
+              "text": "Let your dog move with you without pulling."
+            },
+            {
+              "at": 11.0,
+              "text": "Put the shoes out of reach."
+            },
+            {
+              "at": 18.0,
+              "text": "Offer an approved chew instead."
+            },
+            {
+              "at": 28.0,
+              "text": "Let the chew become the calm alternative."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-5-l3",
+      "levelNumber": 3,
+      "duration": 35.7,
+      "coverageNote": "Play, attention, chew redirection and easier stay practice are distinct reset examples. The chew replaces access to shoes; no food reward is shown in that clip.",
+      "steps": [
+        {
+          "title": "Move to an approved activity",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Get attention and invite your dog away from the shoes."
+            },
+            {
+              "at": 5.0,
+              "text": "Let your dog move with you without pulling."
+            },
+            {
+              "at": 11.0,
+              "text": "Put the shoes out of reach."
+            },
+            {
+              "at": 18.0,
+              "text": "Offer an approved chew instead."
+            },
+            {
+              "at": 28.0,
+              "text": "Let the chew become the calm alternative."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-5-l4",
+      "levelNumber": 4,
+      "duration": 16.1,
+      "coverageNote": "Play, attention, chew redirection and easier stay practice are distinct reset examples. The chew replaces access to shoes; no food reward is shown in that clip.",
+      "steps": [
+        {
+          "title": "Make the retry easier",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Pause when the movement becomes too difficult."
+            },
+            {
+              "at": 3.0,
+              "text": "Reset with an easy, familiar position."
+            },
+            {
+              "at": 7.5,
+              "text": "Try the movement again more slowly."
+            },
+            {
+              "at": 12.0,
+              "text": "Reward the easier response."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-2-5-l5",
+      "levelNumber": 5,
+      "duration": 30.0,
+      "coverageNote": "Play, attention, chew redirection and easier stay practice are distinct reset examples. The chew replaces access to shoes; no food reward is shown in that clip.",
+      "steps": [
+        {
+          "title": "Reset and finish",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Pause and guide your dog back to the practice area."
+            },
+            {
+              "at": 5.0,
+              "text": "Ask for an easy, familiar position."
+            },
+            {
+              "at": 10.0,
+              "text": "Use a shorter wait this time."
+            },
+            {
+              "at": 15.0,
+              "text": "Return and reward the easier repetition."
+            },
+            {
+              "at": 22.0,
+              "text": "Release, then finish the session."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "3-1": [
+    {
+      "id": "section-3-1-l1",
+      "levelNumber": 1,
+      "duration": 12.2,
+      "coverageNote": "Level 5 reuses the familiar-trainer back-stroke example with the user-approved shoulder-or-back wording. Combined examples are separate demonstrations.",
+      "steps": [
+        {
+          "title": "One gentle shoulder touch",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog choose to stay beside you."
+            },
+            {
+              "at": 2.0,
+              "text": "Touch the shoulder gently, then withdraw."
+            },
+            {
+              "at": 5.0,
+              "text": "Pause before the next touch."
+            },
+            {
+              "at": 8.5,
+              "text": "Reward and give your dog a break."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-1-l2",
+      "levelNumber": 2,
+      "duration": 8.266667,
+      "coverageNote": "Level 5 reuses the familiar-trainer back-stroke example with the user-approved shoulder-or-back wording. Combined examples are separate demonstrations.",
+      "steps": [
+        {
+          "title": "Touch, pause, reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Begin at a body area your dog already finds comfortable."
+            },
+            {
+              "at": 1.0,
+              "text": "Touch the upper back briefly, then remove your hand."
+            },
+            {
+              "at": 3.5,
+              "text": "Reward and pause."
+            },
+            {
+              "at": 5.5,
+              "text": "Try a short neck-side touch, then reward."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-1-l3",
+      "levelNumber": 3,
+      "duration": 14.133333,
+      "coverageNote": "Level 5 reuses the familiar-trainer back-stroke example with the user-approved shoulder-or-back wording. Combined examples are separate demonstrations.",
+      "steps": [
+        {
+          "title": "Chest and shoulder examples",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Touch the chest lightly and briefly."
+            },
+            {
+              "at": 3.0,
+              "text": "Withdraw, reward and pause."
+            },
+            {
+              "at": 8.0,
+              "text": "Try one gentle shoulder touch."
+            },
+            {
+              "at": 11.0,
+              "text": "Remove your hand and reward again."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-1-l4",
+      "levelNumber": 4,
+      "duration": 26.333333,
+      "coverageNote": "Level 5 reuses the familiar-trainer back-stroke example with the user-approved shoulder-or-back wording. Combined examples are separate demonstrations.",
+      "steps": [
+        {
+          "title": "One gentle shoulder touch",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog choose to stay beside you."
+            },
+            {
+              "at": 2.0,
+              "text": "Touch the shoulder gently, then withdraw."
+            },
+            {
+              "at": 5.0,
+              "text": "Pause before the next touch."
+            },
+            {
+              "at": 8.5,
+              "text": "Reward and give your dog a break."
+            }
+          ]
+        },
+        {
+          "title": "Chest and shoulder examples",
+          "cues": [
+            {
+              "at": 12.2,
+              "text": "Another example: touch the chest lightly and briefly."
+            },
+            {
+              "at": 15.2,
+              "text": "Withdraw, reward and pause."
+            },
+            {
+              "at": 20.2,
+              "text": "Try one gentle shoulder touch."
+            },
+            {
+              "at": 23.2,
+              "text": "Remove your hand and reward again."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-1-l5",
+      "levelNumber": 5,
+      "duration": 4.033333,
+      "coverageNote": "Level 5 reuses the familiar-trainer back-stroke example with the user-approved shoulder-or-back wording. Combined examples are separate demonstrations.",
+      "steps": [
+        {
+          "title": "A familiar adult offers a brief touch",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog choose to stay near the familiar adult."
+            },
+            {
+              "at": 0.5,
+              "text": "Offer one brief, gentle back stroke."
+            },
+            {
+              "at": 1.3,
+              "text": "Take the hand away and pause."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "3-2": [
+    {
+      "id": "section-3-2-l1",
+      "levelNumber": 1,
+      "duration": 5.733333,
+      "coverageNote": "Level 5 uses the curriculum-approved easier path: tool contact without cutting. No nail trim is demonstrated. Original recording graphics remain.",
+      "steps": [
+        {
+          "title": "Begin with the lower leg",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Start with your dog resting comfortably."
+            },
+            {
+              "at": 1.0,
+              "text": "Touch lightly along the lower leg, then withdraw."
+            },
+            {
+              "at": 3.5,
+              "text": "Reward and leave the leg free."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-2-l2",
+      "levelNumber": 2,
+      "duration": 9.566667,
+      "coverageNote": "Level 5 uses the curriculum-approved easier path: tool contact without cutting. No nail trim is demonstrated. Original recording graphics remain.",
+      "steps": [
+        {
+          "title": "Brief paw-top contact",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Approach the top of the paw gently."
+            },
+            {
+              "at": 0.8,
+              "text": "Touch briefly without gripping the paw."
+            },
+            {
+              "at": 3.6,
+              "text": "Withdraw and reward."
+            }
+          ]
+        },
+        {
+          "title": "An offered-paw example",
+          "cues": [
+            {
+              "at": 4.766667,
+              "text": "Separate example: let your dog offer the paw."
+            },
+            {
+              "at": 5.766667,
+              "text": "Support the offered paw lightly on your palm."
+            },
+            {
+              "at": 6.966667,
+              "text": "Release the paw and reward."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-2-l3",
+      "levelNumber": 3,
+      "duration": 7.533333,
+      "coverageNote": "Level 5 uses the curriculum-approved easier path: tool contact without cutting. No nail trim is demonstrated. Original recording graphics remain.",
+      "steps": [
+        {
+          "title": "One toe at a time",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Touch one toe lightly without squeezing."
+            },
+            {
+              "at": 2.2,
+              "text": "Release and reward."
+            },
+            {
+              "at": 4.0,
+              "text": "Another brief toe-and-nail touch."
+            },
+            {
+              "at": 6.0,
+              "text": "Withdraw and reward again."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-2-l4",
+      "levelNumber": 4,
+      "duration": 10.566667,
+      "coverageNote": "Level 5 uses the curriculum-approved easier path: tool contact without cutting. No nail trim is demonstrated. Original recording graphics remain.",
+      "steps": [
+        {
+          "title": "Introduce the tool",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog notice the tool from a comfortable distance."
+            },
+            {
+              "at": 2.5,
+              "text": "Reward for calmly noticing it."
+            },
+            {
+              "at": 5.0,
+              "text": "Keep the tool away from the paw for the sound example."
+            },
+            {
+              "at": 8.0,
+              "text": "Reward and pause before doing more."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-2-l5",
+      "levelNumber": 5,
+      "duration": 4.233333,
+      "coverageNote": "Level 5 uses the curriculum-approved easier path: tool contact without cutting. No nail trim is demonstrated. Original recording graphics remain.",
+      "steps": [
+        {
+          "title": "Touch without cutting",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Use the easier option: touch the tool to one nail."
+            },
+            {
+              "at": 1.3,
+              "text": "Remove the tool without cutting."
+            },
+            {
+              "at": 2.5,
+              "text": "Reward and stop after this easy contact."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "3-3": [
+    {
+      "id": "section-3-3-l1",
+      "levelNumber": 1,
+      "duration": 3.166667,
+      "coverageNote": "External cheek, lip and rear-side contact only. Combined checks are separate demonstrations, not internal ear/eye care.",
+      "steps": [
+        {
+          "title": "Outside of the ear only",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Touch the outside of the ear flap briefly."
+            },
+            {
+              "at": 1.3,
+              "text": "Withdraw your hand and reward."
+            },
+            {
+              "at": 2.4,
+              "text": "Pause before another touch."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-3-l2",
+      "levelNumber": 2,
+      "duration": 6.033333,
+      "coverageNote": "External cheek, lip and rear-side contact only. Combined checks are separate demonstrations, not internal ear/eye care.",
+      "steps": [
+        {
+          "title": "Touch the cheek",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Approach from the side of the cheek."
+            },
+            {
+              "at": 1.0,
+              "text": "Touch the cheek beside the eye, never the eye itself."
+            },
+            {
+              "at": 2.5,
+              "text": "Remove your finger and reward."
+            },
+            {
+              "at": 4.5,
+              "text": "Allow a pause and a choice to move away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-3-l3",
+      "levelNumber": 3,
+      "duration": 15.8,
+      "coverageNote": "External cheek, lip and rear-side contact only. Combined checks are separate demonstrations, not internal ear/eye care.",
+      "steps": [
+        {
+          "title": "Start beside the muzzle",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Offer a gentle hand approach."
+            },
+            {
+              "at": 1.5,
+              "text": "Touch the outer lip briefly."
+            },
+            {
+              "at": 3.5,
+              "text": "Withdraw before offering the reward."
+            },
+            {
+              "at": 5.0,
+              "text": "Let your dog finish and pause."
+            }
+          ]
+        },
+        {
+          "title": "A brief lip-lift example",
+          "cues": [
+            {
+              "at": 7.466667,
+              "text": "Separate example: approach the side of the muzzle."
+            },
+            {
+              "at": 8.966667,
+              "text": "Lift one lip edge gently; keep the mouth closed."
+            },
+            {
+              "at": 10.666667,
+              "text": "Release the lip and reward."
+            },
+            {
+              "at": 12.966667,
+              "text": "Pause and let your dog choose whether to return."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-3-l4",
+      "levelNumber": 4,
+      "duration": 10.233333,
+      "coverageNote": "External cheek, lip and rear-side contact only. Combined checks are separate demonstrations, not internal ear/eye care.",
+      "steps": [
+        {
+          "title": "External rear-side contact",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Approach the rear side gently from beside your dog."
+            },
+            {
+              "at": 2.0,
+              "text": "Use light external contact only."
+            },
+            {
+              "at": 5.5,
+              "text": "Withdraw your hand and pause."
+            },
+            {
+              "at": 7.5,
+              "text": "Reward before considering another touch."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-3-l5",
+      "levelNumber": 5,
+      "duration": 11.5,
+      "coverageNote": "External cheek, lip and rear-side contact only. Combined checks are separate demonstrations, not internal ear/eye care.",
+      "steps": [
+        {
+          "title": "Outside of the ear only",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Touch the outside of the ear flap briefly."
+            },
+            {
+              "at": 1.3,
+              "text": "Withdraw your hand and reward."
+            },
+            {
+              "at": 2.4,
+              "text": "Pause before another touch."
+            }
+          ]
+        },
+        {
+          "title": "A brief lip-lift example",
+          "cues": [
+            {
+              "at": 3.166667,
+              "text": "Separate example: approach the side of the muzzle."
+            },
+            {
+              "at": 4.666667,
+              "text": "Lift one lip edge gently; keep the mouth closed."
+            },
+            {
+              "at": 6.366667,
+              "text": "Release the lip and reward."
+            },
+            {
+              "at": 8.666667,
+              "text": "Pause and let your dog choose whether to return."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "3-4": [
+    {
+      "id": "section-3-4-l1",
+      "levelNumber": 1,
+      "duration": 13.6,
+      "coverageNote": "Dry-mat footage illustrates preparation. Damp cloth and towel are separate examples; Level 5 uses the curriculum-approved cloth/towel alternative, not a full bath.",
+      "steps": [
+        {
+          "title": "Choose the dry mat",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Invite your dog onto a dry, non-slip mat."
+            },
+            {
+              "at": 1.7,
+              "text": "Reward with all four paws on the mat."
+            },
+            {
+              "at": 3.8,
+              "text": "Release before moving away."
+            }
+          ]
+        },
+        {
+          "title": "A short mat wait",
+          "cues": [
+            {
+              "at": 6.2,
+              "text": "Another repetition: let your dog wait on the dry mat."
+            },
+            {
+              "at": 9.2,
+              "text": "Make a small shift while your dog stays."
+            },
+            {
+              "at": 11.7,
+              "text": "Return the reward to the mat."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-4-l2",
+      "levelNumber": 2,
+      "duration": 18.966667,
+      "coverageNote": "Dry-mat footage illustrates preparation. Damp cloth and towel are separate examples; Level 5 uses the curriculum-approved cloth/towel alternative, not a full bath.",
+      "steps": [
+        {
+          "title": "Water at a distance",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Keep your dog at a comfortable distance from the water."
+            },
+            {
+              "at": 4.0,
+              "text": "Introduce a brief, gentle water cue."
+            },
+            {
+              "at": 10.0,
+              "text": "Turn the water off before returning."
+            },
+            {
+              "at": 14.0,
+              "text": "Go back to your dog and reward."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-4-l3",
+      "levelNumber": 3,
+      "duration": 10.866667,
+      "coverageNote": "Dry-mat footage illustrates preparation. Damp cloth and towel are separate examples; Level 5 uses the curriculum-approved cloth/towel alternative, not a full bath.",
+      "steps": [
+        {
+          "title": "Introduce a damp cloth",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog notice the damp cloth."
+            },
+            {
+              "at": 2.0,
+              "text": "Use gentle contact on an easy body area."
+            },
+            {
+              "at": 5.5,
+              "text": "Keep contact light and allow your dog to move away."
+            },
+            {
+              "at": 8.8,
+              "text": "Lift the cloth away and pause."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-4-l4",
+      "levelNumber": 4,
+      "duration": 4.766667,
+      "coverageNote": "Dry-mat footage illustrates preparation. Damp cloth and towel are separate examples; Level 5 uses the curriculum-approved cloth/towel alternative, not a full bath.",
+      "steps": [
+        {
+          "title": "Brief towel contact",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Offer the towel beside your dog."
+            },
+            {
+              "at": 1.0,
+              "text": "Touch the side gently with the towel."
+            },
+            {
+              "at": 2.5,
+              "text": "Remove it without rubbing."
+            },
+            {
+              "at": 3.7,
+              "text": "Reward and pause."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-4-l5",
+      "levelNumber": 5,
+      "duration": 15.633333,
+      "coverageNote": "Dry-mat footage illustrates preparation. Damp cloth and towel are separate examples; Level 5 uses the curriculum-approved cloth/towel alternative, not a full bath.",
+      "steps": [
+        {
+          "title": "Introduce a damp cloth",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog notice the damp cloth."
+            },
+            {
+              "at": 2.0,
+              "text": "Use gentle contact on an easy body area."
+            },
+            {
+              "at": 5.5,
+              "text": "Keep contact light and allow your dog to move away."
+            },
+            {
+              "at": 8.8,
+              "text": "Lift the cloth away and pause."
+            }
+          ]
+        },
+        {
+          "title": "Brief towel contact",
+          "cues": [
+            {
+              "at": 10.866667,
+              "text": "Another example: offer the towel beside your dog."
+            },
+            {
+              "at": 11.866667,
+              "text": "Touch the side gently with the towel."
+            },
+            {
+              "at": 13.366667,
+              "text": "Remove it without rubbing."
+            },
+            {
+              "at": 14.566667,
+              "text": "Reward and pause."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "3-5": [
+    {
+      "id": "section-3-5-l1",
+      "levelNumber": 1,
+      "duration": 10.1,
+      "coverageNote": "Level 3 uses the user-approved brief back-stroke alternative. Level 4 demonstrates outside collar contact and withdrawal with one handler, not a handler change or harness fitting. Level 5 combines separate approach/reward and touch/free-exit examples, not one uninterrupted attempt.",
+      "steps": [
+        {
+          "title": "Approach and receive a reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog choose to approach the familiar adult."
+            },
+            {
+              "at": 2.0,
+              "text": "Offer the reward low and within easy reach."
+            },
+            {
+              "at": 4.5,
+              "text": "Pause without reaching to restrain your dog."
+            },
+            {
+              "at": 7.5,
+              "text": "Let your dog move away freely."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-5-l2",
+      "levelNumber": 2,
+      "duration": 10.1,
+      "coverageNote": "Level 3 uses the user-approved brief back-stroke alternative. Level 4 demonstrates outside collar contact and withdrawal with one handler, not a handler change or harness fitting. Level 5 combines separate approach/reward and touch/free-exit examples, not one uninterrupted attempt.",
+      "steps": [
+        {
+          "title": "Approach and receive a reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog choose to approach the familiar adult."
+            },
+            {
+              "at": 2.0,
+              "text": "Offer the reward low and within easy reach."
+            },
+            {
+              "at": 4.5,
+              "text": "Pause without reaching to restrain your dog."
+            },
+            {
+              "at": 7.5,
+              "text": "Let your dog move away freely."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-5-l3",
+      "levelNumber": 3,
+      "duration": 4.033333,
+      "coverageNote": "Level 3 uses the user-approved brief back-stroke alternative. Level 4 demonstrates outside collar contact and withdrawal with one handler, not a handler change or harness fitting. Level 5 combines separate approach/reward and touch/free-exit examples, not one uninterrupted attempt.",
+      "steps": [
+        {
+          "title": "One brief back stroke",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Approach gently from beside your dog."
+            },
+            {
+              "at": 0.5,
+              "text": "Touch the back lightly and briefly."
+            },
+            {
+              "at": 1.3,
+              "text": "Remove your hand and pause."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-5-l4",
+      "levelNumber": 4,
+      "duration": 5.566667,
+      "coverageNote": "Level 3 uses the user-approved brief back-stroke alternative. Level 4 demonstrates outside collar contact and withdrawal with one handler, not a handler change or harness fitting. Level 5 combines separate approach/reward and touch/free-exit examples, not one uninterrupted attempt.",
+      "steps": [
+        {
+          "title": "Touch the outside of the collar",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog stay comfortably beside you."
+            },
+            {
+              "at": 0.7,
+              "text": "Touch the outside of the collar without pulling."
+            },
+            {
+              "at": 4.7,
+              "text": "Take your hand away and pause."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-3-5-l5",
+      "levelNumber": 5,
+      "duration": 16.3,
+      "coverageNote": "Level 3 uses the user-approved brief back-stroke alternative. Level 4 demonstrates outside collar contact and withdrawal with one handler, not a handler change or harness fitting. Level 5 combines separate approach/reward and touch/free-exit examples, not one uninterrupted attempt.",
+      "steps": [
+        {
+          "title": "Approach and receive a reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog choose to approach the familiar adult."
+            },
+            {
+              "at": 2.0,
+              "text": "Offer the reward low and within easy reach."
+            },
+            {
+              "at": 4.5,
+              "text": "Pause without reaching to restrain your dog."
+            },
+            {
+              "at": 7.5,
+              "text": "Let your dog move away freely."
+            }
+          ]
+        },
+        {
+          "title": "Gentle contact and a free exit",
+          "cues": [
+            {
+              "at": 10.1,
+              "text": "Another example: let your dog choose to come close."
+            },
+            {
+              "at": 11.6,
+              "text": "Offer gentle strokes along the back."
+            },
+            {
+              "at": 13.8,
+              "text": "Withdraw your hand."
+            },
+            {
+              "at": 14.6,
+              "text": "Let your dog walk away freely."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

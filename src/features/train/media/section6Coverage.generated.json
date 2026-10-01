@@ -1,0 +1,242 @@
+{
+  "missing": [],
+  "courses": {
+    "6-1": {
+      "title": "Drop It on Cue",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "6-1/PAWS_6-1_01_Treat_Trade_and_Toy_Return.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 273
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "6-1/PAWS_6-1_02_Drop_Cue_Trade_and_Return.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 218
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "6-1/PAWS_6-1_03_Release_First_Toy_Take_Second.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 341
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "6-1/PAWS_6-1_02_Drop_Cue_Trade_and_Return.mp4",
+            "6-1/PAWS_6-1_04_Drop_During_Play_and_Resume.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 381
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "6-1/PAWS_6-1_04_Drop_During_Play_and_Resume.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 163
+        }
+      ]
+    },
+    "6-2": {
+      "title": "Choose Toys, Not Hands",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "6-2/PAWS_6-2_01_Choose_Toy_Before_Play.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 261
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "6-2/PAWS_6-2_02_Stop_Toy_Movement_Calmly.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 128
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "6-2/PAWS_6-2_03_Calm_Pause_Toy_Choice_and_Resume.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 109
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "6-2/PAWS_6-2_01_Choose_Toy_Before_Play.mp4",
+            "6-2/PAWS_6-2_02_Stop_Toy_Movement_Calmly.mp4",
+            "6-2/PAWS_6-2_03_Calm_Pause_Toy_Choice_and_Resume.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 498
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "6-2/PAWS_6-2_01_Choose_Toy_Before_Play.mp4",
+            "6-2/PAWS_6-2_03_Calm_Pause_Toy_Choice_and_Resume.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 370
+        }
+      ]
+    },
+    "6-3": {
+      "title": "Redirect Destructive Chewing",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "6-3/PAWS_6-3_01_Provide_Chew_in_Managed_Space.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 432
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "6-3/PAWS_6-3_02_Redirect_From_Item_to_Toy.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 402
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "6-3/PAWS_6-3_02_Redirect_From_Item_to_Toy.mp4",
+            "6-3/PAWS_6-3_03_Chew_During_Calm_Movement.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 671
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "6-3/PAWS_6-3_03_Chew_During_Calm_Movement.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 269
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "6-3/PAWS_6-3_01_Provide_Chew_in_Managed_Space.mp4",
+            "6-3/PAWS_6-3_02_Redirect_From_Item_to_Toy.mp4",
+            "6-3/PAWS_6-3_03_Chew_During_Calm_Movement.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 1103
+        }
+      ]
+    },
+    "6-4": {
+      "title": "Reduce Demand Barking",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "6-4/PAWS_6-4_01_Quiet_Pause_and_Reward.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 133
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "6-4/PAWS_6-4_02_Stop_Toy_Movement.mp4",
+            "6-4/PAWS_6-4_03_Quiet_Toy_Choice_and_Play.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 237
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "6-4/PAWS_6-4_03_Quiet_Toy_Choice_and_Play.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 109
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "6-4/PAWS_6-4_01_Quiet_Pause_and_Reward.mp4",
+            "6-4/PAWS_6-4_02_Stop_Toy_Movement.mp4",
+            "6-4/PAWS_6-4_03_Quiet_Toy_Choice_and_Play.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 370
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "6-4/PAWS_6-4_01_Quiet_Pause_and_Reward.mp4",
+            "6-4/PAWS_6-4_03_Quiet_Toy_Choice_and_Play.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 242
+        }
+      ]
+    },
+    "6-5": {
+      "title": "Manage Alert Barking",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "6-5/PAWS_6-5_01_Notice_Turn_Back_and_Reward.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 106
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "6-5/PAWS_6-5_01_Notice_Turn_Back_and_Reward.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 106
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "6-5/PAWS_6-5_02_Practice_the_Resting_Space_Route.mp4",
+            "6-5/PAWS_6-5_03_Knock_Move_Away_to_Mat_and_Reward.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 533
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "6-5/PAWS_6-5_03_Knock_Move_Away_to_Mat_and_Reward.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 266
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "4-3/clips/PAWS_4-3_C06_natural_neighbor_sound_reorient_on_sofa_v1.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 369
+        }
+      ]
+    }
+  }
+}

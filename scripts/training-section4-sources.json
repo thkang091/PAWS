@@ -1,0 +1,182 @@
+[
+  {
+    "skill": "4-1",
+    "id": "C01",
+    "file": "4-1/clips/PAWS_4-1_C01_Name_once_and_wait_Zak_v1.mp4",
+    "duration": 14.17
+  },
+  {
+    "skill": "4-1",
+    "id": "C02",
+    "file": "4-1/clips/PAWS_4-1_C02_Short_indoor_distance_Zak_v1.mp4",
+    "duration": 9.27
+  },
+  {
+    "skill": "4-1",
+    "id": "C03",
+    "file": "4-1/clips/PAWS_4-1_C03_Turn_from_mild_person_distraction_Pupford_v1.mp4",
+    "duration": 4.3
+  },
+  {
+    "skill": "4-1",
+    "id": "C04",
+    "file": "4-1/clips/PAWS_4-1_C04_Open_indoor_doorway_response_Zak_v1.mp4",
+    "duration": 10.9
+  },
+  {
+    "skill": "4-1",
+    "id": "C05",
+    "file": "4-1/clips/PAWS_4-1_C05_Outdoor_name_orientation_Battersea_v1.mp4",
+    "duration": 9.3
+  },
+  {
+    "skill": "4-2",
+    "id": "C01",
+    "file": "4-2/clips/PAWS_4-2_C01_stationary_object_look_back_reward_v1.mp4",
+    "duration": 9.5
+  },
+  {
+    "skill": "4-2",
+    "id": "C02",
+    "file": "4-2/clips/PAWS_4-2_C02_small_object_movement_pause_reward_v1.mp4",
+    "duration": 10.0
+  },
+  {
+    "skill": "4-2",
+    "id": "C03",
+    "file": "4-2/clips/PAWS_4-2_C03_distant_adult_look_disengage_reward_v1.mp4",
+    "duration": 10.9
+  },
+  {
+    "skill": "4-2",
+    "id": "C04",
+    "file": "4-2/clips/PAWS_4-2_C04_distant_dog_look_back_reward_v1.mp4",
+    "duration": 10.6
+  },
+  {
+    "skill": "4-2",
+    "id": "C05",
+    "file": "4-2/clips/PAWS_4-2_C05_park_visual_trigger_check_in_reward_v1.mp4",
+    "duration": 12.23
+  },
+  {
+    "skill": "4-2",
+    "id": "C06",
+    "file": "4-2/clips/PAWS_4-2_C06_visual_trigger_reward_increase_distance_v1.mp4",
+    "duration": 15.2
+  },
+  {
+    "skill": "4-3",
+    "id": "08",
+    "file": "4-3/clips/PAWS_4-3_08_Knock_Walk_Away_Together_and_Reward_Zak.mp4",
+    "duration": 8.87
+  },
+  {
+    "skill": "4-3",
+    "id": "C01",
+    "file": "4-3/clips/PAWS_4-3_C01_soft_recorded_wind_notice_reward_v1.mp4",
+    "duration": 9.47
+  },
+  {
+    "skill": "4-3",
+    "id": "C02",
+    "file": "4-3/clips/PAWS_4-3_C02_brief_recorded_vacuum_guardian_reward_v1.mp4",
+    "duration": 7.13
+  },
+  {
+    "skill": "4-3",
+    "id": "C03",
+    "file": "4-3/clips/PAWS_4-3_C03_recorded_doorbell_turn_back_reward_v1.mp4",
+    "duration": 6.5
+  },
+  {
+    "skill": "4-3",
+    "id": "C04",
+    "file": "4-3/clips/PAWS_4-3_C04_distant_keys_sound_resting_place_reward_v1.mp4",
+    "duration": 7.37
+  },
+  {
+    "skill": "4-3",
+    "id": "C05",
+    "file": "4-3/clips/PAWS_4-3_C05_real_vacuum_increase_distance_reward_pause_v1.mp4",
+    "duration": 13.5
+  },
+  {
+    "skill": "4-3",
+    "id": "C06",
+    "file": "4-3/clips/PAWS_4-3_C06_natural_neighbor_sound_reorient_on_sofa_v1.mp4",
+    "duration": 12.3
+  },
+  {
+    "skill": "4-3",
+    "id": "C07",
+    "file": "4-3/clips/PAWS_4-3_C07_vacuum_sound_retreat_and_rest_v1.mp4",
+    "duration": 16.03
+  },
+  {
+    "skill": "4-4",
+    "id": "01",
+    "file": "4-4/PAWS_4-4_01_Enter_Resting_Mat_and_Reward.mp4",
+    "duration": 8.91
+  },
+  {
+    "skill": "4-4",
+    "id": "02",
+    "file": "4-4/PAWS_4-4_02_One_Step_Return_Pause_Reward.mp4",
+    "duration": 7.4
+  },
+  {
+    "skill": "4-4",
+    "id": "03",
+    "file": "4-4/PAWS_4-4_03_Short_Distance_Return_Reward.mp4",
+    "duration": 7.67
+  },
+  {
+    "skill": "4-4",
+    "id": "04",
+    "file": "4-4/PAWS_4-4_04_Nearby_Walk_Return_Reward.mp4",
+    "duration": 10.22
+  },
+  {
+    "skill": "4-4",
+    "id": "05",
+    "file": "4-4/PAWS_4-4_05_Small_Drawer_Action_and_Reward.mp4",
+    "duration": 9.17
+  },
+  {
+    "skill": "4-4",
+    "id": "06",
+    "file": "4-4/PAWS_4-4_06_Empty_Hand_Cue_Pause_and_Release.mp4",
+    "duration": 15.4
+  },
+  {
+    "skill": "4-4",
+    "id": "07",
+    "file": "4-4/PAWS_4-4_07_Choose_Bed_While_Guardian_Reads.mp4",
+    "duration": 20.2
+  },
+  {
+    "skill": "4-5",
+    "id": "01",
+    "file": "4-5/PAWS_4-5_01_Go_to_Starting_Spot_Pause_and_Release.mp4",
+    "duration": 9.6
+  },
+  {
+    "skill": "4-5",
+    "id": "02",
+    "file": "4-5/PAWS_4-5_02_Brief_Cue_Arrival_and_Reward.mp4",
+    "duration": 5.93
+  },
+  {
+    "skill": "4-5",
+    "id": "03",
+    "file": "4-5/PAWS_4-5_03_Same_Start_From_Other_Side.mp4",
+    "duration": 5.5
+  },
+  {
+    "skill": "4-5",
+    "id": "04",
+    "file": "4-5/PAWS_4-5_04_Start_Spot_to_Walk_Departure.mp4",
+    "duration": 7.3
+  }
+]

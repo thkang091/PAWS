@@ -20,6 +20,8 @@ import type {
   TrainingSkillSummary,
 } from "@/types/domain";
 import type { Json } from "@/types/database";
+import { applyLocalLevelContent, applyLocalSkillContent, DROP_IT_PREPARATION } from "@/features/train/media/dropItContent";
+import { CHEWING_PREPARATION } from "@/features/train/media/chewingContent";
 
 const mapSection = (row: Record<string, unknown>): TrainingSection => ({
   id: row.id as string,
@@ -30,7 +32,7 @@ const mapSection = (row: Record<string, unknown>): TrainingSection => ({
   safetyBoundary: (row.safety_boundary as string | null) ?? null,
 });
 
-const mapSkillSummary = (row: Record<string, unknown>): TrainingSkillSummary => ({
+const mapSkillSummary = (row: Record<string, unknown>): TrainingSkillSummary => applyLocalSkillContent({
   id: row.id as string,
   sectionId: row.section_id as string,
   skillCode: row.skill_code as string,
@@ -257,6 +259,16 @@ export const startTrainingSession = async (
   };
 };
 
+export const continueTrainingSession = async (completedSessionId: string): Promise<StartSessionResult> => {
+  const { data, error } = await getClientOrThrow().rpc("continue_training_session", {
+    p_completed_session_id: completedSessionId,
+    p_local_date: getEffectiveLocalDate(),
+  });
+  throwIfError(error);
+  const result = data as { session: Record<string, unknown>; remainingEnergy: number; chargedEnergy: boolean };
+  return { session: mapSession(result.session), remainingEnergy: result.remainingEnergy, chargedEnergy: result.chargedEnergy };
+};
+
 export const getActiveTrainingSession = async (dogId: string, skillId: string): Promise<TrainingSession | null> => {
   const client = getClientOrThrow();
   const { data, error } = await client
@@ -270,6 +282,12 @@ export const getActiveTrainingSession = async (dogId: string, skillId: string): 
     .maybeSingle();
   throwIfError(error);
   return data ? mapSession(data as Record<string, unknown>) : null;
+};
+
+export const getTrainingSession = async (sessionId: string): Promise<TrainingSession> => {
+  const { data, error } = await getClientOrThrow().from("training_sessions").select("*").eq("id", sessionId).single();
+  throwIfError(error);
+  return mapSession(data as Record<string, unknown>);
 };
 
 export const setSessionCardPosition = async (sessionId: string, cardKey: string): Promise<void> => {
@@ -395,6 +413,22 @@ const mapMediaBinding = (row: Record<string, unknown>): TrainingMediaBinding => 
   fallbackText: (row.fallback_text as string | null) ?? null,
 });
 
+// Preparation belongs to the whole skill. Curriculum ready cards are stored
+// on Level 1, even when the session resolver selects a later Level/checkpoint.
+export const getTrainingPreparation = async (skillId: string): Promise<TrainingReadyCard> => {
+  const client = getClientOrThrow();
+  const level = await client.from("training_levels").select("id, training_skills(skill_code)")
+    .eq("skill_id", skillId).eq("stage_type", "level").eq("level_number", 1).single();
+  throwIfError(level.error);
+  const joinedSkill: unknown = level.data?.training_skills;
+  const skill = (Array.isArray(joinedSkill) ? joinedSkill[0] : joinedSkill) as { skill_code: string } | undefined;
+  if (skill?.skill_code === "1-3") return DROP_IT_PREPARATION;
+  if (skill?.skill_code === "6-3") return CHEWING_PREPARATION;
+  const ready = await client.from("training_ready_cards").select("*").eq("level_id", level.data!.id).single();
+  throwIfError(ready.error);
+  return mapReadyCard(ready.data as Record<string, unknown>);
+};
+
 export const getTrainingLevelDetail = async (levelId: string): Promise<TrainingLevelDetail> => {
   const client = getClientOrThrow();
   const [levelResult, readyResult, cardsResult, checkpointResult, mediaResult] = await Promise.all([
@@ -414,7 +448,7 @@ export const getTrainingLevelDetail = async (levelId: string): Promise<TrainingL
     training_skills: { id: string; skill_code: string; title: string; one_line_goal: string };
   };
 
-  return {
+  return applyLocalLevelContent({
     id: levelRow.id as string,
     skillId: levelRow.skill_id as string,
     stageType: levelRow.stage_type as TrainingLevelDetail["stageType"],
@@ -437,5 +471,5 @@ export const getTrainingLevelDetail = async (levelId: string): Promise<TrainingL
       title: levelRow.training_skills.title,
       oneLineGoal: levelRow.training_skills.one_line_goal,
     },
-  };
+  });
 };

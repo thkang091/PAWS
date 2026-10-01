@@ -1,4 +1,7 @@
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY ?? null;
+// Keep local AI credentials out of EAS metadata and cloud build manifests.
+const includeLocalAiKey =
+  process.env.EXPO_NO_DOTENV !== "1" && process.env.EAS_BUILD !== "true";
 
 module.exports = ({ config }) => ({
   ...config,
@@ -21,8 +24,12 @@ module.exports = ({ config }) => ({
   ],
   extra: {
     ...config.extra,
-    geminiApiKey:
-      process.env.GEMINI_API_KEY ?? process.env.EXPO_PUBLIC_GEMINI_API_KEY ?? null,
+    ...(includeLocalAiKey
+      ? {
+          geminiApiKey:
+            process.env.GEMINI_API_KEY ?? process.env.EXPO_PUBLIC_GEMINI_API_KEY ?? null,
+        }
+      : {}),
     googleMapsConfigured: Boolean(GOOGLE_MAPS_API_KEY),
     googleMapsKey: GOOGLE_MAPS_API_KEY,
   },

@@ -68,7 +68,7 @@ const DISMISS_DISTANCE = 140;
 const DISMISS_VELOCITY = 0.5;
 
 export default function CoachSheet() {
-  const params = useLocalSearchParams<{ step?: string; state?: string; dayId?: string; skillId?: string; cardIndex?: string }>();
+  const params = useLocalSearchParams<{ step?: string; state?: string; dayId?: string; skillId?: string; levelId?: string; cardIndex?: string }>();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
@@ -78,9 +78,9 @@ export default function CoachSheet() {
   const resolution = useQuery({
     queryKey: dog.data?.id && params.skillId ? queryKeys.skillSessionResolution(dog.data.id, params.skillId) : ["skillSessionResolution", "missing"],
     queryFn: () => resolveSkillSession(dog.data?.id ?? "", params.skillId ?? ""),
-    enabled: Boolean(dog.data?.id && params.skillId),
+    enabled: Boolean(dog.data?.id && params.skillId && !params.levelId),
   });
-  const levelId = resolution.data?.levelId ?? null;
+  const levelId = params.levelId || resolution.data?.levelId || null;
   const levelDetail = useQuery({
     queryKey: levelId ? queryKeys.trainingLessonLevel(levelId) : ["trainingLessonLevel", "missing"],
     queryFn: () => getTrainingLevelDetail(levelId ?? ""),

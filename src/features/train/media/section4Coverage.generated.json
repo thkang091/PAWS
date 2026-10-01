@@ -1,0 +1,236 @@
+{
+  "missing": [],
+  "courses": {
+    "4-1": {
+      "title": "Respond to Your Name",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "4-1/clips/PAWS_4-1_C01_Name_once_and_wait_Zak_v1.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 425
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "4-1/clips/PAWS_4-1_C02_Short_indoor_distance_Zak_v1.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 278
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "4-1/clips/PAWS_4-1_C03_Turn_from_mild_person_distraction_Pupford_v1.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 129
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "4-1/clips/PAWS_4-1_C04_Open_indoor_doorway_response_Zak_v1.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 327
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "4-1/clips/PAWS_4-1_C05_Outdoor_name_orientation_Battersea_v1.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 279
+        }
+      ]
+    },
+    "4-2": {
+      "title": "Notice Visual Triggers Calmly",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "4-2/clips/PAWS_4-2_C01_stationary_object_look_back_reward_v1.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 285
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "4-2/clips/PAWS_4-2_C02_small_object_movement_pause_reward_v1.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 300
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "4-2/clips/PAWS_4-2_C03_distant_adult_look_disengage_reward_v1.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 327
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "4-2/clips/PAWS_4-2_C04_distant_dog_look_back_reward_v1.mp4",
+            "4-2/clips/PAWS_4-2_C06_visual_trigger_reward_increase_distance_v1.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 774
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "4-2/clips/PAWS_4-2_C05_park_visual_trigger_check_in_reward_v1.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 367
+        }
+      ]
+    },
+    "4-3": {
+      "title": "Recover From Everyday Sounds",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "4-3/clips/PAWS_4-3_C01_soft_recorded_wind_notice_reward_v1.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 284
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "4-3/clips/PAWS_4-3_C02_brief_recorded_vacuum_guardian_reward_v1.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 214
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "4-3/clips/PAWS_4-3_C03_recorded_doorbell_turn_back_reward_v1.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 195
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "4-3/clips/PAWS_4-3_C04_distant_keys_sound_resting_place_reward_v1.mp4",
+            "4-3/clips/PAWS_4-3_08_Knock_Walk_Away_Together_and_Reward_Zak.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 487
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "4-3/clips/PAWS_4-3_C06_natural_neighbor_sound_reorient_on_sofa_v1.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 369
+        }
+      ]
+    },
+    "4-4": {
+      "title": "Use Your Resting Space",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "4-4/PAWS_4-4_01_Enter_Resting_Mat_and_Reward.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 267
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "4-4/PAWS_4-4_02_One_Step_Return_Pause_Reward.mp4",
+            "4-4/PAWS_4-4_03_Short_Distance_Return_Reward.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 451
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "4-4/PAWS_4-4_06_Empty_Hand_Cue_Pause_and_Release.mp4",
+            "4-4/PAWS_4-4_02_One_Step_Return_Pause_Reward.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 684
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "4-4/PAWS_4-4_05_Small_Drawer_Action_and_Reward.mp4",
+            "4-4/PAWS_4-4_04_Nearby_Walk_Return_Reward.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 580
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "4-4/PAWS_4-4_07_Choose_Bed_While_Guardian_Reads.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 606
+        }
+      ]
+    },
+    "4-5": {
+      "title": "Follow a Daily Routine",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "4-5/PAWS_4-5_01_Go_to_Starting_Spot_Pause_and_Release.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 288
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "4-5/PAWS_4-5_02_Brief_Cue_Arrival_and_Reward.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 178
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "4-5/PAWS_4-5_01_Go_to_Starting_Spot_Pause_and_Release.mp4",
+            "4-5/PAWS_4-5_04_Start_Spot_to_Walk_Departure.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 506
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "4-5/PAWS_4-5_03_Same_Start_From_Other_Side.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 164
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "4-5/PAWS_4-5_04_Start_Spot_to_Walk_Departure.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 218
+        }
+      ]
+    }
+  }
+}

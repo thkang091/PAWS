@@ -1,0 +1,949 @@
+{
+  "6-1": [
+    {
+      "id": "section-6-1-l1",
+      "levelNumber": 1,
+      "duration": 9.1,
+      "coverageNote": "Cue captions are instructions, not a speech transcript. Toy value is selected by the guardian, not proven by the footage. The Level 4 clips are separate demonstrations; the shared Drop It mechanics do not merge progress with 1-3.",
+      "steps": [
+        {
+          "title": "Trade and return the toy",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Begin with a safe, easy toy."
+            },
+            {
+              "at": 2.4,
+              "text": "Offer a treat trade without pulling the toy away."
+            },
+            {
+              "at": 4.2,
+              "text": "Let your dog finish the reward."
+            },
+            {
+              "at": 6.3,
+              "text": "Offer the toy again."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-1-l2",
+      "levelNumber": 2,
+      "duration": 7.266667,
+      "coverageNote": "Cue captions are instructions, not a speech transcript. Toy value is selected by the guardian, not proven by the footage. The Level 4 clips are separate demonstrations; the shared Drop It mechanics do not merge progress with 1-3.",
+      "steps": [
+        {
+          "title": "Cue before the trade",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Say “Drop” once before offering the trade."
+            },
+            {
+              "at": 1.8,
+              "text": "Offer the reward and allow the release."
+            },
+            {
+              "at": 3.5,
+              "text": "Pause while your dog finishes the reward."
+            },
+            {
+              "at": 5.6,
+              "text": "Return the toy for another short game."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-1-l3",
+      "levelNumber": 3,
+      "duration": 11.366667,
+      "coverageNote": "Cue captions are instructions, not a speech transcript. Toy value is selected by the guardian, not proven by the footage. The Level 4 clips are separate demonstrations; the shared Drop It mechanics do not merge progress with 1-3.",
+      "steps": [
+        {
+          "title": "Trade between two toys",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Begin a short game with the first toy."
+            },
+            {
+              "at": 2.0,
+              "text": "Pause and cue the release."
+            },
+            {
+              "at": 3.5,
+              "text": "Make the second toy available after the release."
+            },
+            {
+              "at": 6.8,
+              "text": "Keep the exchange gentle and brief."
+            },
+            {
+              "at": 9.5,
+              "text": "Let the next toy reward letting go."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-1-l4",
+      "levelNumber": 4,
+      "duration": 12.7,
+      "coverageNote": "Cue captions are instructions, not a speech transcript. Toy value is selected by the guardian, not proven by the footage. The Level 4 clips are separate demonstrations; the shared Drop It mechanics do not merge progress with 1-3.",
+      "steps": [
+        {
+          "title": "Cue before the trade",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Say “Drop” once before offering the trade."
+            },
+            {
+              "at": 1.8,
+              "text": "Offer the reward and allow the release."
+            },
+            {
+              "at": 3.5,
+              "text": "Pause while your dog finishes the reward."
+            },
+            {
+              "at": 5.6,
+              "text": "Return the toy for another short game."
+            }
+          ]
+        },
+        {
+          "title": "Drop during play",
+          "cues": [
+            {
+              "at": 7.266667,
+              "text": "Another example: pause the game and say “Drop” once."
+            },
+            {
+              "at": 8.766667,
+              "text": "Allow the release without taking the toy by force."
+            },
+            {
+              "at": 9.966667,
+              "text": "Offer the toy again."
+            },
+            {
+              "at": 11.266667,
+              "text": "Resume a short, gentle game."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-1-l5",
+      "levelNumber": 5,
+      "duration": 5.433333,
+      "coverageNote": "Cue captions are instructions, not a speech transcript. Toy value is selected by the guardian, not proven by the footage. The Level 4 clips are separate demonstrations; the shared Drop It mechanics do not merge progress with 1-3.",
+      "steps": [
+        {
+          "title": "Drop during play",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Pause the game and say “Drop” once."
+            },
+            {
+              "at": 1.5,
+              "text": "Allow the release without taking the toy by force."
+            },
+            {
+              "at": 2.7,
+              "text": "Offer the toy again."
+            },
+            {
+              "at": 4.0,
+              "text": "Resume a short, gentle game."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "6-2": [
+    {
+      "id": "section-6-2-l1",
+      "levelNumber": 1,
+      "duration": 8.7,
+      "coverageNote": "Pause mechanics are shown without a verified teeth-to-skin event. Do not provoke contact. Level 5 reuses an adult-led example for practice with another informed familiar adult; it does not show the same dog switching handlers.",
+      "steps": [
+        {
+          "title": "Offer the toy before play",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Offer an easy-to-grip toy away from your fingers."
+            },
+            {
+              "at": 2.5,
+              "text": "Let your dog choose the toy."
+            },
+            {
+              "at": 4.5,
+              "text": "Begin gentle play with the mouth on the toy."
+            },
+            {
+              "at": 7.0,
+              "text": "Keep your hands away from the biting end."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-2-l2",
+      "levelNumber": 2,
+      "duration": 4.266667,
+      "coverageNote": "Pause mechanics are shown without a verified teeth-to-skin event. Do not provoke contact. Level 5 reuses an adult-led example for practice with another informed familiar adult; it does not show the same dog switching handlers.",
+      "steps": [
+        {
+          "title": "Practise stopping the movement",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Practise with gentle, small toy movements."
+            },
+            {
+              "at": 2.8,
+              "text": "Slow the movement and pause the toy."
+            },
+            {
+              "at": 3.6,
+              "text": "If teeth touch skin, stop play calmly."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-2-l3",
+      "levelNumber": 3,
+      "duration": 3.633333,
+      "coverageNote": "Pause mechanics are shown without a verified teeth-to-skin event. Do not provoke contact. Level 5 reuses an adult-led example for practice with another informed familiar adult; it does not show the same dog switching handlers.",
+      "steps": [
+        {
+          "title": "Resume after a calm moment",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Wait for a brief calm moment."
+            },
+            {
+              "at": 1.6,
+              "text": "Offer the toy within easy reach."
+            },
+            {
+              "at": 2.6,
+              "text": "Resume when your dog takes the toy."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-2-l4",
+      "levelNumber": 4,
+      "duration": 16.6,
+      "coverageNote": "Pause mechanics are shown without a verified teeth-to-skin event. Do not provoke contact. Level 5 reuses an adult-led example for practice with another informed familiar adult; it does not show the same dog switching handlers.",
+      "steps": [
+        {
+          "title": "Offer the toy before play",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Offer an easy-to-grip toy away from your fingers."
+            },
+            {
+              "at": 2.5,
+              "text": "Let your dog choose the toy."
+            },
+            {
+              "at": 4.5,
+              "text": "Begin gentle play with the mouth on the toy."
+            },
+            {
+              "at": 7.0,
+              "text": "Keep your hands away from the biting end."
+            }
+          ]
+        },
+        {
+          "title": "Practise stopping the movement",
+          "cues": [
+            {
+              "at": 8.7,
+              "text": "Another example: practise with gentle, small toy movements."
+            },
+            {
+              "at": 11.5,
+              "text": "Slow the movement and pause the toy."
+            },
+            {
+              "at": 12.3,
+              "text": "If teeth touch skin, stop play calmly."
+            }
+          ]
+        },
+        {
+          "title": "Resume after a calm moment",
+          "cues": [
+            {
+              "at": 12.966667,
+              "text": "Another example: wait for a brief calm moment."
+            },
+            {
+              "at": 14.566667,
+              "text": "Offer the toy within easy reach."
+            },
+            {
+              "at": 15.566667,
+              "text": "Resume when your dog takes the toy."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-2-l5",
+      "levelNumber": 5,
+      "duration": 12.333333,
+      "coverageNote": "Pause mechanics are shown without a verified teeth-to-skin event. Do not provoke contact. Level 5 reuses an adult-led example for practice with another informed familiar adult; it does not show the same dog switching handlers.",
+      "steps": [
+        {
+          "title": "Offer the toy before play",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Offer an easy-to-grip toy away from your fingers."
+            },
+            {
+              "at": 2.5,
+              "text": "Let your dog choose the toy."
+            },
+            {
+              "at": 4.5,
+              "text": "Begin gentle play with the mouth on the toy."
+            },
+            {
+              "at": 7.0,
+              "text": "Keep your hands away from the biting end."
+            }
+          ]
+        },
+        {
+          "title": "Resume after a calm moment",
+          "cues": [
+            {
+              "at": 8.7,
+              "text": "Another example: wait for a brief calm moment."
+            },
+            {
+              "at": 10.3,
+              "text": "Offer the toy within easy reach."
+            },
+            {
+              "at": 11.3,
+              "text": "Resume when your dog takes the toy."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "6-3": [
+    {
+      "id": "section-6-3-l1",
+      "levelNumber": 1,
+      "duration": 14.4,
+      "coverageNote": "User-approved app-only revision: prepare a safe space, manage access and redirect to an approved toy, then maintain the activity during mild movement. No independent two-object test. The source decoration is a visual reference only; practise with a large safe neutral item. The crate is the original familiar setup, not mandatory equipment. Separate management examples are not one continuous routine.",
+      "steps": [
+        {
+          "title": "Prepare a comfortable chew space",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Prepare a familiar space and a suitable chew."
+            },
+            {
+              "at": 2.5,
+              "text": "Let your dog enter willingly."
+            },
+            {
+              "at": 5.5,
+              "text": "Offer the chew and stay nearby."
+            },
+            {
+              "at": 9.0,
+              "text": "Let your dog settle into the chew activity."
+            },
+            {
+              "at": 12.0,
+              "text": "Supervise and keep the setup comfortable."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-3-l2",
+      "levelNumber": 2,
+      "duration": 13.4,
+      "coverageNote": "User-approved app-only revision: prepare a safe space, manage access and redirect to an approved toy, then maintain the activity during mild movement. No independent two-object test. The source decoration is a visual reference only; practise with a large safe neutral item. The crate is the original familiar setup, not mandatory equipment. Separate management examples are not one continuous routine.",
+      "steps": [
+        {
+          "title": "Redirect to an approved toy",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "For practice, choose a large, safe neutral item."
+            },
+            {
+              "at": 2.5,
+              "text": "Keep access to the item managed."
+            },
+            {
+              "at": 5.8,
+              "text": "Offer an approved toy as the alternative."
+            },
+            {
+              "at": 8.5,
+              "text": "Let your dog engage with the toy."
+            },
+            {
+              "at": 11.0,
+              "text": "Keep the short game gentle."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-3-l3",
+      "levelNumber": 3,
+      "duration": 22.366667,
+      "coverageNote": "User-approved app-only revision: prepare a safe space, manage access and redirect to an approved toy, then maintain the activity during mild movement. No independent two-object test. The source decoration is a visual reference only; practise with a large safe neutral item. The crate is the original familiar setup, not mandatory equipment. Separate management examples are not one continuous routine.",
+      "steps": [
+        {
+          "title": "Redirect to an approved toy",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "For practice, choose a large, safe neutral item."
+            },
+            {
+              "at": 2.5,
+              "text": "Keep access to the item managed."
+            },
+            {
+              "at": 5.8,
+              "text": "Offer an approved toy as the alternative."
+            },
+            {
+              "at": 8.5,
+              "text": "Let your dog engage with the toy."
+            },
+            {
+              "at": 11.0,
+              "text": "Keep the short game gentle."
+            }
+          ]
+        },
+        {
+          "title": "Keep chewing during mild activity",
+          "cues": [
+            {
+              "at": 13.4,
+              "text": "Another example: begin with your dog settled with the chew."
+            },
+            {
+              "at": 15.6,
+              "text": "Make one small, calm movement nearby."
+            },
+            {
+              "at": 18.2,
+              "text": "Allow your dog to continue chewing."
+            },
+            {
+              "at": 20.4,
+              "text": "Stay nearby and keep supervising."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-3-l4",
+      "levelNumber": 4,
+      "duration": 8.966667,
+      "coverageNote": "User-approved app-only revision: prepare a safe space, manage access and redirect to an approved toy, then maintain the activity during mild movement. No independent two-object test. The source decoration is a visual reference only; practise with a large safe neutral item. The crate is the original familiar setup, not mandatory equipment. Separate management examples are not one continuous routine.",
+      "steps": [
+        {
+          "title": "Keep chewing during mild activity",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Begin with your dog settled with the chew."
+            },
+            {
+              "at": 2.2,
+              "text": "Make one small, calm movement nearby."
+            },
+            {
+              "at": 4.8,
+              "text": "Allow your dog to continue chewing."
+            },
+            {
+              "at": 7.0,
+              "text": "Stay nearby and keep supervising."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-3-l5",
+      "levelNumber": 5,
+      "duration": 36.766667,
+      "coverageNote": "User-approved app-only revision: prepare a safe space, manage access and redirect to an approved toy, then maintain the activity during mild movement. No independent two-object test. The source decoration is a visual reference only; practise with a large safe neutral item. The crate is the original familiar setup, not mandatory equipment. Separate management examples are not one continuous routine.",
+      "steps": [
+        {
+          "title": "Prepare a comfortable chew space",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Prepare a familiar space and a suitable chew."
+            },
+            {
+              "at": 2.5,
+              "text": "Let your dog enter willingly."
+            },
+            {
+              "at": 5.5,
+              "text": "Offer the chew and stay nearby."
+            },
+            {
+              "at": 9.0,
+              "text": "Let your dog settle into the chew activity."
+            },
+            {
+              "at": 12.0,
+              "text": "Supervise and keep the setup comfortable."
+            }
+          ]
+        },
+        {
+          "title": "Redirect to an approved toy",
+          "cues": [
+            {
+              "at": 14.4,
+              "text": "Another example: for practice, choose a large, safe neutral item."
+            },
+            {
+              "at": 16.9,
+              "text": "Keep access to the item managed."
+            },
+            {
+              "at": 20.2,
+              "text": "Offer an approved toy as the alternative."
+            },
+            {
+              "at": 22.9,
+              "text": "Let your dog engage with the toy."
+            },
+            {
+              "at": 25.4,
+              "text": "Keep the short game gentle."
+            }
+          ]
+        },
+        {
+          "title": "Keep chewing during mild activity",
+          "cues": [
+            {
+              "at": 27.8,
+              "text": "Another example: begin with your dog settled with the chew."
+            },
+            {
+              "at": 30.0,
+              "text": "Make one small, calm movement nearby."
+            },
+            {
+              "at": 32.6,
+              "text": "Allow your dog to continue chewing."
+            },
+            {
+              "at": 34.8,
+              "text": "Stay nearby and keep supervising."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "6-4": [
+    {
+      "id": "section-6-4-l1",
+      "levelNumber": 1,
+      "duration": 4.433333,
+      "coverageNote": "Quiet food reward, toy stopping and calm play are separate demonstrations. No fabricated barking-to-pause event or continuous reduction-of-food trial is claimed. Level 3 uses the easier alternative without barking.",
+      "steps": [
+        {
+          "title": "Reward a quiet pause",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Look for a brief quiet moment."
+            },
+            {
+              "at": 1.5,
+              "text": "Mark the quiet pause."
+            },
+            {
+              "at": 2.8,
+              "text": "Offer the reward while your dog stays quiet."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-4-l2",
+      "levelNumber": 2,
+      "duration": 7.9,
+      "coverageNote": "Quiet food reward, toy stopping and calm play are separate demonstrations. No fabricated barking-to-pause event or continuous reduction-of-food trial is claimed. Level 3 uses the easier alternative without barking.",
+      "steps": [
+        {
+          "title": "Practise pausing the activity",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Begin a short, gentle toy activity."
+            },
+            {
+              "at": 2.8,
+              "text": "Slow and pause the toy movement."
+            },
+            {
+              "at": 3.6,
+              "text": "Use this calm pause if demand barking starts."
+            }
+          ]
+        },
+        {
+          "title": "Let quiet lead to play",
+          "cues": [
+            {
+              "at": 4.266667,
+              "text": "Another example: wait for a quiet, easy moment."
+            },
+            {
+              "at": 5.866667,
+              "text": "Offer the toy as the alternative."
+            },
+            {
+              "at": 6.866667,
+              "text": "Let gentle play reward the calm choice."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-4-l3",
+      "levelNumber": 3,
+      "duration": 3.633333,
+      "coverageNote": "Quiet food reward, toy stopping and calm play are separate demonstrations. No fabricated barking-to-pause event or continuous reduction-of-food trial is claimed. Level 3 uses the easier alternative without barking.",
+      "steps": [
+        {
+          "title": "Let quiet lead to play",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Wait for a quiet, easy moment."
+            },
+            {
+              "at": 1.6,
+              "text": "Offer the toy as the alternative."
+            },
+            {
+              "at": 2.6,
+              "text": "Let gentle play reward the calm choice."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-4-l4",
+      "levelNumber": 4,
+      "duration": 12.333333,
+      "coverageNote": "Quiet food reward, toy stopping and calm play are separate demonstrations. No fabricated barking-to-pause event or continuous reduction-of-food trial is claimed. Level 3 uses the easier alternative without barking.",
+      "steps": [
+        {
+          "title": "Reward a quiet pause",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Look for a brief quiet moment."
+            },
+            {
+              "at": 1.5,
+              "text": "Mark the quiet pause."
+            },
+            {
+              "at": 2.8,
+              "text": "Offer the reward while your dog stays quiet."
+            }
+          ]
+        },
+        {
+          "title": "Practise pausing the activity",
+          "cues": [
+            {
+              "at": 4.433333,
+              "text": "Another example: begin a short, gentle toy activity."
+            },
+            {
+              "at": 7.233333,
+              "text": "Slow and pause the toy movement."
+            },
+            {
+              "at": 8.033333,
+              "text": "Use this calm pause if demand barking starts."
+            }
+          ]
+        },
+        {
+          "title": "Let quiet lead to play",
+          "cues": [
+            {
+              "at": 8.7,
+              "text": "Another example: wait for a quiet, easy moment."
+            },
+            {
+              "at": 10.3,
+              "text": "Offer the toy as the alternative."
+            },
+            {
+              "at": 11.3,
+              "text": "Let gentle play reward the calm choice."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-4-l5",
+      "levelNumber": 5,
+      "duration": 8.066667,
+      "coverageNote": "Quiet food reward, toy stopping and calm play are separate demonstrations. No fabricated barking-to-pause event or continuous reduction-of-food trial is claimed. Level 3 uses the easier alternative without barking.",
+      "steps": [
+        {
+          "title": "Reward a quiet pause",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Look for a brief quiet moment."
+            },
+            {
+              "at": 1.5,
+              "text": "Mark the quiet pause."
+            },
+            {
+              "at": 2.8,
+              "text": "Offer the reward while your dog stays quiet."
+            }
+          ]
+        },
+        {
+          "title": "Let quiet lead to play",
+          "cues": [
+            {
+              "at": 4.433333,
+              "text": "Another example: wait for a quiet, easy moment."
+            },
+            {
+              "at": 6.033333,
+              "text": "Offer the toy as the alternative."
+            },
+            {
+              "at": 7.033333,
+              "text": "Let gentle play reward the calm choice."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "6-5": [
+    {
+      "id": "section-6-5-l1",
+      "levelNumber": 1,
+      "duration": 3.533333,
+      "coverageNote": "Level 2 uses the approved easier option of rewarding before barking. Level 3 includes route practice without a trigger followed by a separate cue example. Level 5 reuses the verified everyday neighbor-sound footage from 4-3 with the dog already at a resting spot. Playback remains muted.",
+      "steps": [
+        {
+          "title": "Notice, turn back, reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog notice the mild cue."
+            },
+            {
+              "at": 1.2,
+              "text": "Notice attention returning to you."
+            },
+            {
+              "at": 2.3,
+              "text": "Reward before barking builds."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-5-l2",
+      "levelNumber": 2,
+      "duration": 3.533333,
+      "coverageNote": "Level 2 uses the approved easier option of rewarding before barking. Level 3 includes route practice without a trigger followed by a separate cue example. Level 5 reuses the verified everyday neighbor-sound footage from 4-3 with the dog already at a resting spot. Playback remains muted.",
+      "steps": [
+        {
+          "title": "Notice, turn back, reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog notice the mild cue."
+            },
+            {
+              "at": 1.2,
+              "text": "Notice attention returning to you."
+            },
+            {
+              "at": 2.3,
+              "text": "Reward before barking builds."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-5-l3",
+      "levelNumber": 3,
+      "duration": 17.766667,
+      "coverageNote": "Level 2 uses the approved easier option of rewarding before barking. Level 3 includes route practice without a trigger followed by a separate cue example. Level 5 reuses the verified everyday neighbor-sound footage from 4-3 with the dog already at a resting spot. Playback remains muted.",
+      "steps": [
+        {
+          "title": "Practise the resting-space route",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Practise the route without a trigger first."
+            },
+            {
+              "at": 2.5,
+              "text": "Invite your dog onto the familiar mat."
+            },
+            {
+              "at": 4.5,
+              "text": "Allow a comfortable position."
+            },
+            {
+              "at": 6.5,
+              "text": "Reward at the resting space."
+            }
+          ]
+        },
+        {
+          "title": "Move away from a soft cue",
+          "cues": [
+            {
+              "at": 8.9,
+              "text": "Another example: keep the sound brief and gentle."
+            },
+            {
+              "at": 10.9,
+              "text": "Invite your dog to turn toward you."
+            },
+            {
+              "at": 12.1,
+              "text": "Move together toward the resting space."
+            },
+            {
+              "at": 15.2,
+              "text": "Reward after moving away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-5-l4",
+      "levelNumber": 4,
+      "duration": 8.866667,
+      "coverageNote": "Level 2 uses the approved easier option of rewarding before barking. Level 3 includes route practice without a trigger followed by a separate cue example. Level 5 reuses the verified everyday neighbor-sound footage from 4-3 with the dog already at a resting spot. Playback remains muted.",
+      "steps": [
+        {
+          "title": "Move away from a soft cue",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Keep the sound brief and gentle."
+            },
+            {
+              "at": 2.0,
+              "text": "Invite your dog to turn toward you."
+            },
+            {
+              "at": 3.2,
+              "text": "Move together toward the resting space."
+            },
+            {
+              "at": 6.3,
+              "text": "Reward after moving away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-6-5-l5",
+      "levelNumber": 5,
+      "duration": 12.3,
+      "coverageNote": "Level 2 uses the approved easier option of rewarding before barking. Level 3 includes route practice without a trigger followed by a separate cue example. Level 5 reuses the verified everyday neighbor-sound footage from 4-3 with the dog already at a resting spot. Playback remains muted.",
+      "steps": [
+        {
+          "title": "An everyday alert at the resting spot",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Notice the everyday sound from the resting spot."
+            },
+            {
+              "at": 2.5,
+              "text": "Reward attention returning to you."
+            },
+            {
+              "at": 5.5,
+              "text": "Let your dog remain close and settle."
+            },
+            {
+              "at": 9.5,
+              "text": "Finish the moment calmly."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
