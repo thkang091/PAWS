@@ -5,17 +5,19 @@ import { CelebratingPawsDog } from "./CelebratingPawsDog";
 import { TrainingFlowButton, TrainingFlowScreen } from "./TrainingFlowScreen";
 import { accent, radius, space, text, type } from "@/constants/design";
 
-export function TrainingRoundComplete({ lessonTitle, lessonComplete = false, onClose, onViewVideos }: {
+export function TrainingRoundComplete({ lessonTitle, lessonComplete = false, onClose, onViewVideos, busy = false, error }: {
   lessonTitle: string;
   lessonComplete?: boolean;
   onClose: () => void;
   onViewVideos?: () => void;
+  busy?: boolean;
+  error?: string | null;
 }) {
   const reduceMotion = useReducedMotion();
 
   return <TrainingFlowScreen label={lessonTitle} centered onClose={onClose} footer={<>
-    <TrainingFlowButton label="Continue" onPress={onClose} />
-    {lessonComplete && onViewVideos ? <TrainingFlowButton label="Rewatch lesson" onPress={onViewVideos} secondary /> : null}
+    <TrainingFlowButton label={busy ? "Saving…" : "Continue"} disabled={busy} onPress={onClose} />
+    {lessonComplete && onViewVideos ? <TrainingFlowButton label="Rewatch lesson" disabled={busy} onPress={onViewVideos} secondary /> : null}
   </>}>
     <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(200)} style={styles.celebration}>
       <CelebratingPawsDog />
@@ -25,12 +27,14 @@ export function TrainingRoundComplete({ lessonTitle, lessonComplete = false, onC
         <LockOpenIcon size={22} color={text.primary} />
         <View style={styles.unlockCopy}><Text style={styles.unlockTitle}>All lesson videos unlocked</Text><Text style={styles.unlockDetail}>Rewatch whenever you need.</Text></View>
       </View> : null}
+      {error ? <Text style={styles.error} accessibilityLiveRegion="polite">{error}</Text> : null}
     </Animated.View>
   </TrainingFlowScreen>;
 }
 
 const styles = StyleSheet.create({
   celebration: { alignItems: "center", gap: space.lg, paddingVertical: space.md },
+  error: { ...type.supporting, color: "#B3261E" },
   title: { ...type.pageTitle, color: text.primary, textAlign: "center" },
   copy: { ...type.body, color: text.secondary, textAlign: "center", maxWidth: 290 },
   unlocked: { flexDirection: "row", alignItems: "center", gap: space.md, backgroundColor: accent.soft, borderRadius: radius.card, padding: space.lg, marginTop: space.md, alignSelf: "stretch" },

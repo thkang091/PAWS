@@ -147,6 +147,7 @@ export type Database = {
       resolve_skill_session: { Args: { p_dog_id: string; p_skill_id: string }; Returns: Json };
       get_training_energy: { Args: { p_dog_id: string; p_local_date: string }; Returns: Json };
       reset_training_energy: { Args: { p_dog_id: string; p_local_date: string }; Returns: Json };
+      training_round_action: { Args: { p_dog_id: string; p_skill_id: string; p_action: string; p_local_date: string; p_payload?: Json }; Returns: Json };
       start_training_session: { Args: { p_dog_id: string; p_skill_id: string; p_local_date: string; p_idempotency_key: string }; Returns: Json };
       continue_training_session: { Args: { p_completed_session_id: string; p_local_date: string }; Returns: Json };
       set_session_card_position: { Args: { p_session_id: string; p_card_key: string }; Returns: undefined };

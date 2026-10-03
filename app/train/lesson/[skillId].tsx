@@ -56,6 +56,8 @@ import {
 import { buildCardSequence, findCardIndex } from "@/services/lessonCardSequence";
 import { continueTrainingClip, recordTrainingClipHelp } from "@/services/trainingClipFlow";
 import type { TrainingSession } from "@/types/domain";
+import { getTrainingRoundContext } from "@/services/trainingRoundService";
+import { TrainingRoundLesson } from "@/features/train/components/flow/TrainingRoundLesson";
 
 const findIndex = findCardIndex;
 
@@ -63,6 +65,21 @@ const BAR = 116;
 const MIN_STAGE = 208;
 
 export default function LessonScreen() {
+  const { skillId } = useLocalSearchParams<{ skillId: string }>();
+  const dog = useCurrentDog();
+  const dogId = dog.data?.id;
+  const round = useQuery({
+    queryKey: ["trainingRound", dogId, skillId],
+    queryFn: () => getTrainingRoundContext(dogId!,skillId!),
+    enabled: Boolean(dogId && skillId),
+    staleTime: 0,
+  });
+  if (dog.isLoading || round.isLoading) return <SafeAreaView style={styles.safe}><LoadingState message="Preparing lesson…" /></SafeAreaView>;
+  if (!dogId || !skillId || (round.isError && !round.data)) return <SafeAreaView style={styles.safe}><ErrorState message="Couldn't prepare your session." onRetry={() => { void dog.refetch(); void round.refetch(); }} /></SafeAreaView>;
+  return round.data ? <TrainingRoundLesson key={`${dogId}:${skillId}`} dogId={dogId} skillId={skillId} initial={round.data} /> : <LegacyLessonScreen />;
+}
+
+function LegacyLessonScreen() {
   const { skillId } = useLocalSearchParams<{ skillId: string }>();
   const dog = useCurrentDog();
   const dogId = dog.data?.id;

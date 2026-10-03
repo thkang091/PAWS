@@ -69,7 +69,7 @@ const DISMISS_DISTANCE = 140;
 const DISMISS_VELOCITY = 0.5;
 
 export default function CoachSheet() {
-  const params = useLocalSearchParams<{ step?: string; state?: string; dayId?: string; skillId?: string; levelId?: string; cardIndex?: string; preview?: string; previewLevel?: string }>();
+  const params = useLocalSearchParams<{ step?: string; state?: string; dayId?: string; skillId?: string; levelId?: string; cardIndex?: string; preview?: string; previewLevel?: string; clip?: string }>();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
@@ -88,12 +88,15 @@ export default function CoachSheet() {
     enabled: Boolean(levelId),
   });
 
+  const realClip = params.clip === "1" && levelDetail.data
+    ? getTrainingClipLessons(levelDetail.data.skill.skillCode).find(item => item.levelNumber === levelDetail.data?.levelNumber)
+    : null;
   const realLesson = levelDetail.data
     ? {
         number: levelDetail.data.levelNumber ?? 1,
         chapter: levelDetail.data.skill.title,
         title: levelDetail.data.title,
-        steps: buildCardSequence(levelDetail.data)
+        steps: realClip ? realClip.steps.map(step => ({ title: step.title, cues: step.cues.map(cue => cue.text) })) : buildCardSequence(levelDetail.data)
           .filter((card) => card.type !== "completion")
           .map((card) => ({
             title: card.title ?? levelDetail.data!.title,

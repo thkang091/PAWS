@@ -1,5 +1,9 @@
 # Train flow 검토 및 제안 — 2026-10-01
 
+## Implementation status — 2026-10-03
+
+The real lesson route now includes rounds, persisted warmup feedback, Coach struggle capture, completion, and free rewatch. Activation is waiting for approval of the new remote migration. See [implementation and verification](train-rounds-implementation.md). The existing flow remains available while the server lacks the migration.
+
 ## 화면 설계 보완 — Level은 내부 진행 단위
 
 사용자 결정: 보호자에게 L1/L2/L3, 2/5 같은 구분을 알리는 것이 목표가 아니다.

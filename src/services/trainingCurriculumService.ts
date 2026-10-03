@@ -63,7 +63,7 @@ const mapPreferences = (row: Record<string, unknown>): DogTrainingPreferences =>
   onboardingCompletedAt: (row.onboarding_completed_at as string | null) ?? null,
 });
 
-const mapSession = (row: Record<string, unknown>): TrainingSession => ({
+export const mapTrainingSession = (row: Record<string, unknown>): TrainingSession => ({
   id: row.id as string,
   dogId: row.dog_id as string,
   skillId: row.skill_id as string,
@@ -79,6 +79,8 @@ const mapSession = (row: Record<string, unknown>): TrainingSession => ({
   currentCardKey: (row.current_card_key as string | null) ?? null,
   idempotencyKey: row.idempotency_key as string,
 });
+
+const mapSession = mapTrainingSession;
 
 const mapButtons = (value: Json): TrainingLessonCardButton[] =>
   Array.isArray(value)

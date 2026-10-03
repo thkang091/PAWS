@@ -42,7 +42,7 @@ type ShelfTopic = TrainingTopic & {
 const curriculumStepsFor = (roadmap: SectionRoadmap): { steps: TrailStep[]; skillIds: string[]; done: number } => {
   let sawCurrent = false;
   const steps = roadmap.nodes.map((node) => {
-    const isDone = node.progress?.checkpointStatus === "passed";
+    const isDone = Boolean(node.progress?.level5CompletedAt || node.progress?.checkpointStatus === "passed");
     const state: TrailStep["state"] = isDone ? "done" : !sawCurrent ? "current" : "available";
     if (!isDone && !sawCurrent) sawCurrent = true;
     return { id: node.skill.id, title: node.skill.title, state };

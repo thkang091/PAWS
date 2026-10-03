@@ -18,17 +18,25 @@ export type TrainingReviewQuestion = {
 };
 export type TrainingReviewAnswer = { questionId: string; optionId: string };
 
-/** Mount with a new key for a new run. Answers are local until the caller connects storage. */
-export function TrainingReviewQuiz({ questions, onComplete, onClose, onWatch }: {
+/** The preview uses local state; live rounds pass their persisted cursor and answers. */
+export function TrainingReviewQuiz({ questions, onComplete, onClose, onWatch, saved, onAnswer, onAdvance, busy = false, error }: {
   questions: readonly TrainingReviewQuestion[];
   onComplete: (answers: TrainingReviewAnswer[]) => void;
   onClose: () => void;
   onWatch: (question: TrainingReviewQuestion) => void;
+  saved?: { index: number; answers: TrainingReviewAnswer[] };
+  onAnswer?: (answer: TrainingReviewAnswer) => void;
+  onAdvance?: () => void;
+  busy?: boolean;
+  error?: string | null;
 }) {
-  const [index, setIndex] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<TrainingReviewAnswer[]>([]);
+  const [localIndex, setIndex] = useState(0);
+  const [draft, setDraft] = useState<{ questionId: string; optionId: string } | null>(null);
+  const [localAnswers, setAnswers] = useState<TrainingReviewAnswer[]>([]);
+  const index = saved?.index ?? localIndex;
+  const answers = saved?.answers ?? localAnswers;
   const question = questions[index];
+  const selected = answers[index]?.optionId ?? (draft?.questionId === question?.id ? draft?.optionId : null);
   const checked = answers.length > index;
   const correct = selected === question?.correctOptionId;
   const last = index === questions.length - 1;
@@ -39,19 +47,22 @@ export function TrainingReviewQuiz({ questions, onComplete, onClose, onWatch }: 
   </TrainingFlowScreen>;
 
   const advance = () => {
-    if (!selected) return;
+    if (!selected || busy) return;
     if (!checked) {
+      if (onAnswer) { onAnswer({ questionId: question.id, optionId: selected }); return; }
       setAnswers(previous => [...previous, { questionId: question.id, optionId: selected }]);
+    } else if (onAdvance) {
+      onAdvance();
     } else if (last) {
       onComplete(answers);
     } else {
       setIndex(previous => previous + 1);
-      setSelected(null);
+      setDraft(null);
     }
   };
 
   return <TrainingFlowScreen contentKey={question.id} revealEnd={checked} label={`Quick refresher · ${index + 1} of ${questions.length}`} onClose={onClose} progress={{ current: index + (checked ? 1 : 0), total: questions.length }} footer={
-    <TrainingFlowButton label={checked ? last ? "Start training" : "Continue" : "Check answer"} disabled={!selected} onPress={advance} />
+    <TrainingFlowButton label={busy ? "Saving…" : checked ? last ? "Start training" : "Continue" : "Check answer"} disabled={!selected || busy} onPress={advance} />
   }>
     <View style={styles.context}>
       <ArrowCounterClockwiseIcon size={20} color={text.secondary} />
@@ -62,7 +73,7 @@ export function TrainingReviewQuiz({ questions, onComplete, onClose, onWatch }: 
       {question.options.map((option) => {
         const isSelected = selected === option.id;
         const isCorrect = checked && option.id === question.correctOptionId;
-        return <PressScale key={option.id} accessibilityRole="radio" accessibilityLabel={option.label} accessibilityState={{ checked: isSelected, disabled: checked }} aria-checked={isSelected} disabled={checked} onPress={() => setSelected(option.id)} style={[styles.option, isSelected && styles.selected, isCorrect && styles.correct]}>
+        return <PressScale key={option.id} accessibilityRole="radio" accessibilityLabel={option.label} accessibilityState={{ checked: isSelected, disabled: checked || busy }} aria-checked={isSelected} disabled={checked || busy} onPress={() => setDraft({ questionId: question.id, optionId: option.id })} style={[styles.option, isSelected && styles.selected, isCorrect && styles.correct]}>
           <View style={[styles.radio, isSelected && styles.radioSelected]}>{isCorrect ? <CheckIcon size={16} color={text.primary} weight="bold" /> : isSelected ? <View style={styles.dot} /> : null}</View>
           <Text style={[styles.optionText, (isSelected || isCorrect) && styles.emphasis]}>{option.label}</Text>
         </PressScale>;
@@ -75,11 +86,13 @@ export function TrainingReviewQuiz({ questions, onComplete, onClose, onWatch }: 
         <PlayIcon size={18} color={text.primary} weight="fill" /><Text style={styles.watchText}>Watch this moment</Text>
       </PressScale>
     </View> : null}
+    {error ? <Text accessibilityLiveRegion="polite" style={styles.error}>{error}</Text> : null}
   </TrainingFlowScreen>;
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  error: { ...type.supporting, color: "#B3261E" },
   context: { flexDirection: "row", gap: space.md, alignItems: "center" },
   eyebrow: { ...type.eyebrow, color: text.tertiary, marginBottom: space.xs },
   contextTitle: { ...type.supporting, color: text.secondary },
