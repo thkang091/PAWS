@@ -1,11 +1,11 @@
 import { useMemo, useRef, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import Animated, { FadeIn, FadeOut, useReducedMotion } from "react-native-reanimated";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
-import { ArrowRightIcon, ClockCounterClockwiseIcon, CoinsIcon, FireIcon, LightningIcon } from "phosphor-react-native";
+import { ClockCounterClockwiseIcon, CoinsIcon, FireIcon, LightningIcon } from "phosphor-react-native";
 
 import { SaveProgressBanner } from "@/components/account/SaveProgressBanner";
 import { TopicHeader } from "@/features/train/components/TopicHeader";
@@ -25,8 +25,6 @@ import { useDogRoadmap } from "@/hooks/useDogRoadmap";
 import { useDogStreak } from "@/hooks/useDogStreak";
 import { useProfileDashboard } from "@/hooks/useProfileDashboard";
 import { useWallet } from "@/hooks/useWallet";
-import { getErrorMessage } from "@/lib/errors";
-import { generateRoadmap } from "@/services/curriculumService";
 import { getAllSectionRoadmaps, getTrainingEnergy, resetTrainingEnergy } from "@/services/trainingCurriculumService";
 import { setActiveTopic, useTrainingTopic } from "@/features/train/state/trainingTopic";
 import type { PersonalizedRoadmapDay, SectionRoadmap } from "@/types/domain";
@@ -70,7 +68,7 @@ export default function TrainTabScreen() {
     },
   });
 
-  const { roadmap, days, refetch } = useDogRoadmap(dogId);
+  const { days } = useDogRoadmap(dogId);
   const wallet = useWallet(dogId ?? "");
   const streak = useDogStreak(dogId);
   const streakCount = streak.isSuccess ? (streak.data?.currentStreak ?? 0) : undefined;
@@ -93,8 +91,6 @@ export default function TrainTabScreen() {
 
   const reduceMotion = useReducedMotion();
   const { active, done: sampleDone } = useTrainingTopic();
-  const [generating, setGenerating] = useState(false);
-  const [generateError, setGenerateError] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
   const direction = useRef(1);
   const contentRef = useRef<ScrollView>(null);
@@ -170,20 +166,6 @@ export default function TrainTabScreen() {
     direction.current = index > activeIndex ? 1 : -1;
     setActiveTopic(key);
     contentRef.current?.scrollTo({ y: 0, animated: false });
-  };
-
-  const handleGenerate = async () => {
-    if (!dogId) return;
-    try {
-      setGenerating(true);
-      setGenerateError(null);
-      await generateRoadmap(dogId, false);
-      void refetch();
-    } catch (error) {
-      setGenerateError(getErrorMessage(error, "Plan generation failed. Please retry."));
-    } finally {
-      setGenerating(false);
-    }
   };
 
   if (dog.isLoading && !dog.error) {
@@ -274,25 +256,6 @@ export default function TrainTabScreen() {
                 }}
               />
 
-              {dog.data && !roadmap ? (
-                <PressScale
-                  accessibilityRole="button"
-                  accessibilityLabel={`Build ${dog.data.name}'s personal plan`}
-                  disabled={generating}
-                  scaleTo={0.98}
-                  style={styles.build}
-                  onPress={() => void handleGenerate()}
-                >
-                  <Text style={styles.buildText} numberOfLines={2}>
-                    {generateError ?? `Build ${dog.data.name}'s personal plan`}
-                  </Text>
-                  {generating ? (
-                    <ActivityIndicator color={text.secondary} />
-                  ) : (
-                    <ArrowRightIcon size={icon.inline} color={text.secondary} weight="bold" />
-                  )}
-                </PressScale>
-              ) : null}
             </Animated.View>
           ) : null}
         </View>
@@ -390,18 +353,4 @@ const styles = StyleSheet.create({
     paddingBottom: TAB_CLEARANCE + space.lg,
   },
 
-  build: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: space.md,
-    marginTop: space.md,
-    paddingHorizontal: space.lg,
-    height: 48,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: border.soft,
-    backgroundColor: bg.surface,
-  },
-  buildText: { ...type.supporting, fontWeight: "600", color: text.primary, flexShrink: 1 },
 });

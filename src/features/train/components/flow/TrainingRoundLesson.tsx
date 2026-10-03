@@ -15,7 +15,7 @@ import { TrainingReviewQuiz } from "./TrainingReviewQuiz";
 import { TrainingPracticeClip } from "./TrainingPracticeClip";
 import { TrainingRoundComplete } from "./TrainingRoundComplete";
 import { TrainingFlowButton } from "./TrainingFlowScreen";
-import { getTrainingLevelDetail, getTrainingPreparation } from "@/services/trainingCurriculumService";
+import { getAllSectionRoadmaps, getTrainingLevelDetail, getTrainingPreparation } from "@/services/trainingCurriculumService";
 import { newRoundKey, trainingRoundAction, type RoundAction, type RoundQuestion, type TrainingRoundContext } from "@/services/trainingRoundService";
 import { makeRefresherQuestion } from "../../rounds/refresherQuestion";
 import { getTrainingClipLessons } from "../../media/trainingClipLessons";
@@ -38,6 +38,15 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const collapse = useSharedValue(0);
+  const paid = Boolean(context.round || context.canResume);
+  const needsProgress = preparing && !paid && !context.unlocked;
+  const lessonStarted = useQuery({
+    queryKey: queryKeys.allTrainingSectionRoadmaps(dogId),
+    queryFn: () => getAllSectionRoadmaps(dogId),
+    enabled: needsProgress,
+    select: roadmaps => roadmaps.some(section => section.nodes.some(node =>
+      node.skill.id === skillId && node.progress != null && node.progress.status !== "not_started")),
+  });
   const level = useQuery({ queryKey: queryKeys.trainingLessonLevel(context.levelId), queryFn: () => getTrainingLevelDetail(context.levelId) });
   const preparation = useQuery({ queryKey: ["trainingPreparation", skillId], queryFn: () => getTrainingPreparation(skillId) });
   const skill = level.data?.skill;
@@ -85,8 +94,8 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
     if (result) setPreparing(false);
   };
 
-  if (level.isLoading || preparation.isLoading) return <SafeAreaView style={styles.screen}><LoadingState message="Preparing lesson…" /></SafeAreaView>;
-  if (level.isError || preparation.isError || !skill || !clip) return <SafeAreaView style={styles.screen}><ErrorState message="Couldn't prepare this lesson." onRetry={() => { void level.refetch(); void preparation.refetch(); }} /><TrainingFlowButton label="Back to roadmap" onPress={close} /></SafeAreaView>;
+  if (level.isLoading || preparation.isLoading || (needsProgress && lessonStarted.isLoading)) return <SafeAreaView style={styles.screen}><LoadingState message="Preparing lesson…" /></SafeAreaView>;
+  if (level.isError || preparation.isError || (needsProgress && lessonStarted.isError && lessonStarted.data === undefined) || !skill || !clip) return <SafeAreaView style={styles.screen}><ErrorState message="Couldn't prepare this lesson." onRetry={() => { void level.refetch(); void preparation.refetch(); if (needsProgress) void lessonStarted.refetch(); }} /><TrainingFlowButton label="Back to roadmap" onPress={close} /></SafeAreaView>;
 
   if (library) return <UnlockedLessonVideos skillCode={code} title={skill.title} onClose={close} />;
   if (watch) return <TrainingPracticeClip key={watch.id} skillCode={watch.skillCode} title={watch.lessonTitle} level={watch.level} reviewAt={watch.cueAt} onContinue={() => setWatch(null)} onClose={() => setWatch(null)} />;
@@ -108,8 +117,9 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
       });
     }} />;
 
-  const paid = Boolean(context.round || context.canResume);
   const unavailable = !context.unlocked && !paid && context.energy.remaining === 0;
+  const sessionLabel = paid || lessonStarted.data ? "Continue session" : "Start session";
+  const startLabel = paid ? sessionLabel : `${sessionLabel} · 1 Energy`;
   return <View style={styles.screen}>
     <ScrollView contentContainerStyle={styles.preparation}>
       <View style={{ height: Math.round(height*0.45) }}>
@@ -124,7 +134,7 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
     </ScrollView>
     <PressScale accessibilityRole="button" accessibilityLabel="Close" style={[styles.close,{top:insets.top+space.sm}]} onPress={close}><XIcon size={24} color={text.inverse} /></PressScale>
     <View style={[styles.footer,{paddingBottom:insets.bottom+space.lg}]}>
-      <TrainingFlowButton label={busy ? "Preparing…" : context.unlocked ? "Watch lesson videos" : unavailable ? "No Energy left today" : paid ? "Continue" : "Start session · 1 Energy"} disabled={busy || unavailable} onPress={() => { void start(); }} />
+      <TrainingFlowButton label={busy ? "Preparing…" : context.unlocked ? "Watch lesson videos" : unavailable ? "No Energy left today" : startLabel} disabled={busy || unavailable} onPress={() => { void start(); }} />
       {context.round?.status === "active" ? <TrainingFlowButton label="End this session" secondary disabled={busy} onPress={() => { void act("end").then(result => { if (result) close(); }); }} /> : null}
     </View>
   </View>;
