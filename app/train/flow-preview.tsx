@@ -54,7 +54,7 @@ function TrainingFlowPreview() {
     setScreen("prepare");
   };
   const continuePractice = () => {
-    if (round === 1 && level === 2) { setFinishedFirst(true); setScreen("sessionComplete"); }
+    if (round === 1 && level === 3) { setFinishedFirst(true); setScreen("sessionComplete"); }
     else if (level === 5) setScreen("lessonComplete");
     else setLevel(previous => previous + 1);
   };
@@ -107,7 +107,7 @@ function PreparationPreview({ round, onStart, onClose }: { round: 1 | 2; onStart
       <View style={{ height: Math.max(280, height * 0.4) }}><LessonHero title={PREVIEW_LESSON.title} chapter="Introduction" lessonNumber={1} poster={getTrainingClipAssets(PREVIEW_LESSON.code, 1)?.poster} collapse={collapse} topInset={insets.top} onBack={onClose} /></View>
       <View style={styles.preparation}>
         <LessonPreparation skillCode={PREVIEW_LESSON.code} purpose="Build a calm waiting habit at the door, one small step at a time." materials={[{ label: "Small treats", detail: "Easy to give on the waiting spot" }, { label: "A mat and a secure door", detail: "Keep the area quiet and use a leash when needed" }]} />
-        <View style={styles.sessionNote}><Text style={styles.cardTitle}>This session</Text><Text style={styles.copy}>{round === 1 ? "Find the waiting spot and reach for the handle." : "Practise waiting as the door opens."}</Text></View>
+        <View style={styles.sessionNote}><Text style={styles.cardTitle}>This session</Text><Text style={styles.copy}>{round === 1 ? "Find the waiting spot and practise waiting as the door opens." : "Revisit the door opening, then practise leaving together."}</Text></View>
       </View>
     </ScrollView>
     <View style={[styles.footer, { paddingBottom: insets.bottom + space.lg }]}>

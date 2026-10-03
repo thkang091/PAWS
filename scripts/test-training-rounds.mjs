@@ -9,6 +9,7 @@ const other = '10000000-0000-0000-0000-000000000002';
 const dog = '20000000-0000-0000-0000-000000000001';
 const secondDog = '20000000-0000-0000-0000-000000000002';
 const legacyDog = '20000000-0000-0000-0000-000000000003';
+const upgradeDog = '20000000-0000-0000-0000-000000000004';
 const skill = '30000000-0000-0000-0000-000000000001';
 const skill2 = '30000000-0000-0000-0000-000000000002';
 let assertions = 0;
@@ -29,7 +30,7 @@ try {
     '20260929165234_training_course_energy_continuation.sql',
     '20261003144611_training_rounds_and_refresher.sql',
   ]) await db.exec(await readFile(new URL(`../supabase/migrations/${file}`,import.meta.url),'utf8'));
-  await db.exec(`insert into dogs values('${dog}','${uid}'),('${secondDog}','${uid}'),('${legacyDog}','${uid}');
+  await db.exec(`insert into dogs values('${dog}','${uid}'),('${secondDog}','${uid}'),('${legacyDog}','${uid}'),('${upgradeDog}','${uid}');
     insert into training_curriculum_versions(id,version_key,title) values('40000000-0000-0000-0000-000000000001','test','test');
     insert into training_sections(id,curriculum_version_id,section_number,slug,title,sort_order) values('50000000-0000-0000-0000-000000000001','40000000-0000-0000-0000-000000000001',1,'rules','Rules',1);
     insert into training_skills(id,section_id,skill_code,internal_concept_id,slug,title,one_line_goal,sort_order) values
@@ -37,13 +38,26 @@ try {
       ('${skill2}','50000000-0000-0000-0000-000000000001','1-2','floor','floor','Choose Your Spot','Choose',2);
     insert into training_levels(skill_id,stage_type,level_number,sequence_index,title)
       select s.id,'level',n,n,'Action '||n from training_skills s cross join generate_series(1,5) n;
-    grant select on all tables in schema public to authenticated;
+    insert into training_sessions(dog_id,skill_id,level_id,session_type,status,energy_consumed,effective_local_day,idempotency_key)
+      select '${upgradeDog}','${skill}',id,'normal','active',true,current_date,'old-paid' from training_levels where skill_id='${skill}' and level_number=2;
+    insert into training_rounds(dog_id,skill_id,end_level,idempotency_key,current_session_id)
+      select '${upgradeDog}','${skill}',2,'old-active',id from training_sessions where idempotency_key='old-paid';
+    update training_sessions set training_round_id=(select id from training_rounds where idempotency_key='old-active') where idempotency_key='old-paid';
+    insert into training_rounds(dog_id,skill_id,end_level,status,phase,completed_at,acknowledged_at,idempotency_key)
+      values('${upgradeDog}','${skill2}',2,'completed','complete',now(),now(),'old-completed');
+    insert into training_energy_ledger(dog_id,effective_local_day,delta,reason) values('${upgradeDog}',current_date,-1,'old-round');`);
+  await db.exec(await readFile(new URL('../supabase/migrations/20261003151409_training_three_clip_rounds.sql',import.meta.url),'utf8'));
+  eq((await db.query("select end_level from training_rounds where idempotency_key='old-active'")).rows[0].end_level,3,'upgrade extends only unfinished first round');
+  eq((await db.query("select end_level from training_rounds where idempotency_key='old-completed'")).rows[0].end_level,2,'historical completion unchanged');
+  eq((await db.query('select sum(delta)::int n from training_energy_ledger where dog_id=$1',[upgradeDog])).rows[0].n,-1,'upgrade does not charge Energy');
+  await db.exec(`grant select on all tables in schema public to authenticated;
     set role authenticated;
     select set_config('request.jwt.claim.sub','${uid}',false);`);
   const action = async (op, payload={}, d=dog, sk=skill) => (await db.query(
     'select public.training_round_action($1,$2,$3,current_date,$4::jsonb) as state',[d,sk,op,JSON.stringify(payload)]
   )).rows[0].state;
   const payload = r => ({roundId:r.round.id,sessionId:r.session.id});
+  const levelNumber = async r => (await db.query('select level_number n from training_levels where id=$1',[r.levelId])).rows[0].n;
   let r = await action('get'); eq(r.round,null,'read does not create'); eq(r.energy.remaining,3,'initial energy');
   r = await action('start',{key:'round-a'}); const first=payload(r);
   eq(r.round.phase,'practice','no arbitrary quiz'); eq(r.energy.remaining,2,'one charge');
@@ -57,10 +71,17 @@ try {
   eq((await action('continue',first)).session.id,r.session.id,'retry cannot complete next step');
   eq((await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n,1,'single success report');
   await reject(() => db.query('select continue_training_session($1,current_date)',[first.sessionId]),/current training round/);
-  r=await action('continue',payload(r)); eq(r.round.status,'completed','two steps end first round');
+  r=await action('continue',payload(r)); eq(r.round.status,'active','two steps do not end first round');
+  eq(await levelNumber(r),3,'third clip belongs to first paid round');
+  eq((await action('start',{key:'resume-third'})).session.id,r.session.id,'resume retains current third clip');
+  r=await action('continue',payload(r)); eq(r.round.status,'completed','three steps end first round');
+  eq(r.energy.remaining,2,'all three clips cost one Energy');
+  const originalThird = (await db.query('select to_jsonb(p) p from dog_training_level_progress p where dog_id=$1 and level_id=$2',[dog,r.levelId])).rows[0].p;
   eq(r.unlocked,false,'not yet unlocked'); eq((await action('start',{key:'not-yet-acked'})).round.id,r.round.id,'lost completion stays visible');
   const done=payload(r); await action('ack',done); await action('ack',done);
   r=await action('start',{key:'round-b'}); eq(r.energy.remaining,1,'second round charge');
+  eq(await levelNumber(r),3,'second paid round repeats third clip');
+  eq(r.session.session_type,'review','overlap is a recap session');
   eq(r.round.phase,'quiz','struggles become next paid refresher'); eq(r.round.review_items.length,3,'quiz capped at three');
   await reject(() => action('continue',payload(r)),/Finish refresher first/);
   await reject(() => action('advance_quiz',{...payload(r),cursor:0}),/Answer first/);
@@ -76,9 +97,17 @@ try {
   }
   eq(r.round.phase,'practice','quiz finishes into paid practice');
   eq(r.energy.remaining,1,'quiz no extra energy');
-  eq((await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n,2,'quiz answers not skill successes');
-  for(let i=0;i<3;i++) r=await action('continue',payload(r));
+  eq((await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n,3,'quiz answers not skill successes');
+  const recapPayload=payload(r), recapLevel=r.levelId;
+  r=await action('continue',recapPayload); eq(await levelNumber(r),4,'recap continues into fourth clip');
+  eq((await action('continue',recapPayload)).session.id,r.session.id,'recap retry cannot complete successor');
+  eq((await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n,3,'recap creates no duplicate success report');
+  eq((await db.query('select to_jsonb(p) p from dog_training_level_progress p where dog_id=$1 and level_id=$2',[dog,recapLevel])).rows[0].p,originalThird,'recap preserves original progress and success timestamp');
+  r=await action('continue',payload(r)); eq(await levelNumber(r),5,'second round includes fifth clip');
+  eq(r.round.status,'active','second round still needs third clip');
+  r=await action('continue',payload(r));
   eq(r.round.status,'completed','three-step round done'); eq(r.unlocked,true,'last step unlocks videos');
+  eq((await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n,5,'six viewings create five successes');
   await action('ack',payload(r));
   r=await action('start',{key:'rewatch'}); eq(r.round,null,'rewatch creates no round'); eq(r.energy.remaining,1,'rewatch free');
   await db.exec('reset role');
@@ -91,6 +120,21 @@ try {
   r=await action('continue',paused,secondDog); eq(r.energy.remaining,0,'free continuation at zero');
   await action('end',payload(r),secondDog); await action('end',payload(r),secondDog);
   eq((await action('get',{},secondDog)).round,null,'explicit end ends round');
+  await db.exec('reset role');
+  await db.exec(`insert into dog_training_preferences(dog_id,daily_energy_base) values('${secondDog}',4);set role authenticated;`);
+  r=await action('start',{key:'after-early-end'},secondDog);
+  eq(await levelNumber(r),1,'fresh first group includes three clips after early End');
+  eq(r.session.session_type,'review','already completed first clip is a recap');
+  for(let i=0;i<3;i++) r=await action('continue',payload(r),secondDog);
+  eq(r.round.status,'completed','restarted first group ends after three clips');
+  eq(r.energy.remaining,0,'restarted group charges once');
+  await action('ack',payload(r),secondDog);
+  // The paid round already open at migration time extends to L3 at no charge.
+  r=await action('start',{key:'resume-upgraded'},upgradeDog);
+  eq(await levelNumber(r),2,'upgrade resumes existing video');
+  r=await action('continue',payload(r),upgradeDog); eq(await levelNumber(r),3,'upgraded round adds third clip');
+  r=await action('continue',payload(r),upgradeDog); eq(r.round.status,'completed','upgraded round completes at third clip');
+  eq(r.energy.remaining,2,'upgraded continuation is free');
   // Existing paid practice, even an easier review, is adopted. Finishing it
   // cannot lower the highest recorded progress.
   await db.exec('reset role');
@@ -103,7 +147,7 @@ try {
   r=await action('start',{key:'adopt'},legacyDog); eq(r.energy.remaining,2,'legacy adoption never charges');
   await action('help',{...payload(r),question:question(1)},legacyDog);
   eq((await action('get',{},legacyDog)).session.status,'active','help stays active even without additional practice');
-  r=await action('continue',payload(r),legacyDog); r=await action('continue',payload(r),legacyDog);
+  for(let i=0;i<3;i++) r=await action('continue',payload(r),legacyDog);
   eq((await db.query('select current_level_number n from dog_training_skill_progress where dog_id=$1',[legacyDog])).rows[0].n,4,'highest progress preserved');
   await action('ack',payload(r),legacyDog);
   r=await action('start',{key:'after-adoption'},legacyDog);
@@ -118,5 +162,5 @@ try {
   await db.exec('reset role; set role anon');
   await reject(()=>action('get'),/permission denied/);
   console.log(`Training rounds: ${assertions} SQL assertions passed (real migrations, local Postgres).`);
-} catch(error) { console.error(error.message); process.exitCode=1; }
+} catch(error) { console.error(`After ${assertions} assertions: ${error.message}`); process.exitCode=1; }
 finally { await db.close(); }

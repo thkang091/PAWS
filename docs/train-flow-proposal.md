@@ -4,6 +4,8 @@
 
 The real lesson route now includes rounds, persisted warmup feedback, Coach struggle capture, completion, and free rewatch. The approved migration was applied to PAWS on 2026-10-03. See [implementation and verification](train-rounds-implementation.md). The legacy fallback remains for servers without the migration.
 
+최신 사용자 결정: Energy 1회마다 영상 3개를 진행한다. 5개 영상은 **L1–L3 / L3–L5**로 구성하고, 겹치는 L3은 복습으로 처리하여 성공 기록·진행도를 중복 반영하지 않는다. 이 결정이 아래 초기 제안의 2+3 구성보다 우선한다. 일시 중단 후 재개는 같은 유료 회차의 남은 영상부터 이어지며, 명시적으로 회차를 종료한 뒤 새로 시작할 때는 다시 3개 묶음으로 진행한다.
+
 ## 화면 설계 보완 — Level은 내부 진행 단위
 
 사용자 결정: 보호자에게 L1/L2/L3, 2/5 같은 구분을 알리는 것이 목표가 아니다.
