@@ -27,7 +27,7 @@ try {
     '20260915000004_training_rpc_functions.sql','20260917073000_fix_checkpoint_review_self_cancel.sql',
     '20260917061500_configurable_daily_energy_base.sql',
     '20260929165234_training_course_energy_continuation.sql',
-    '20261003092948_training_rounds_and_refresher.sql',
+    '20261003144611_training_rounds_and_refresher.sql',
   ]) await db.exec(await readFile(new URL(`../supabase/migrations/${file}`,import.meta.url),'utf8'));
   await db.exec(`insert into dogs values('${dog}','${uid}'),('${secondDog}','${uid}'),('${legacyDog}','${uid}');
     insert into training_curriculum_versions(id,version_key,title) values('40000000-0000-0000-0000-000000000001','test','test');

@@ -2,7 +2,7 @@
 
 ## Implementation status — 2026-10-03
 
-The real lesson route now includes rounds, persisted warmup feedback, Coach struggle capture, completion, and free rewatch. Activation is waiting for approval of the new remote migration. See [implementation and verification](train-rounds-implementation.md). The existing flow remains available while the server lacks the migration.
+The real lesson route now includes rounds, persisted warmup feedback, Coach struggle capture, completion, and free rewatch. The approved migration was applied to PAWS on 2026-10-03. See [implementation and verification](train-rounds-implementation.md). The legacy fallback remains for servers without the migration.
 
 ## 화면 설계 보완 — Level은 내부 진행 단위
 

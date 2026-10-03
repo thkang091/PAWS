@@ -16,9 +16,11 @@ Roadmap → existing preparation content → start/resume → optional refresher
 
 ## Storage and rollout
 
-`20261003092948_training_rounds_and_refresher.sql` adds owner-readable `training_rounds` and `training_struggles`, a session→round link, and an authenticated action RPC in front of a private function. Clients cannot directly write either table. Round start/continuation is serialized per dog. Existing successful sessions and the Energy ledger remain authoritative; no records are reset or backfilled.
+`20261003144611_training_rounds_and_refresher.sql` adds owner-readable `training_rounds` and `training_struggles`, a session→round link, and an authenticated action RPC in front of a private function. Clients cannot directly write either table. Round start/continuation is serialized per dog. Existing successful sessions and the Energy ledger remain authoritative; no records are reset or backfilled.
 
-The lesson route probes this RPC. Only a missing-function response uses the legacy flow; auth/offline/other errors do not start a second session through a fallback. Until the migration is approved and applied, devices continue using the previous session flow. The remote database hold is still in effect pending explicit approval for this migration.
+Applied to PAWS (`ytitmpodghiehzlmrhte`) on 2026-10-03 after explicit user approval. The local migration filename matches the server-recorded version `20261003144611`. The lesson route probes this RPC; only a missing-function response uses the legacy flow. Auth/offline/other errors do not start a second session through a fallback.
+
+Deployment verification: owner-authenticated `get` returned a valid level and Energy state; unauthenticated access was denied in SQL and the REST API. RLS is enabled, `authenticated` has no direct write permission, and `anon` cannot execute the RPC. Existing session/progress/Energy ledger counts remained 98/26/56 across deployment. The security advisor's guest-sign-in notices for these tables are expected: PAWS supports guest accounts, restricted to their own dog by `owns_dog` ([advisor reference](https://supabase.com/docs/guides/database/database-advisors?queryGroups=lint&lint=0012_auth_allow_anonymous_sign_ins)). Existing unrelated advisories were left unchanged.
 
 Quiz snapshots are assembled from existing clip captions at the moment Help opens, with versioned IDs and rotated choices. These are small comprehension checks, not an assessment of the dog's ability. The incorrect alternatives currently use three authored sets shared across the curriculum; more tailored alternatives can be authored without changing storage or the player.
 
@@ -30,4 +32,4 @@ Quiz snapshots are assembled from existing clip captions at the moment Help open
 
 The local SQL harness applies the real curriculum/session/result/Energy/continuation migrations plus the new migration in an isolated PostgreSQL runtime. It checks ownership/RLS, start/answer/continue retries, first-answer immutability, no quiz progress awards, 2+3 boundaries, zero-Energy resume, adoption of old paid reviews, monotonic progress, final unlock, and free revisits. It does not simulate separate concurrent PostgreSQL connections; dog row locks plus uniqueness enforce those invariants in the deployed database.
 
-The shared completion, quiz and player are browser-checked at 390×844. Live round persistence on the emulator/iPhone still needs the approved migration and a device check; preview navigation is not evidence of remote persistence.
+The shared completion, quiz and player are browser-checked at 390×844. The deployed RPC and iOS manifest/bundle returned expected responses. A Reload command was sent to the two connected development clients. Full on-device practice/quiz testing is being performed by the user; browser preview navigation is not evidence of remote persistence.
