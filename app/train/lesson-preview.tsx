@@ -27,7 +27,7 @@ import {
 import { CURRENT_LESSON } from "@/features/train/components/currentLesson";
 import { LessonHero } from "@/features/train/components/LessonHero";
 import { LessonNowPlaying } from "@/features/train/components/LessonNowPlaying";
-import { LessonSteps } from "@/features/train/components/LessonSteps";
+import { LessonPreparation } from "@/features/train/components/LessonPreparation";
 import {
   cueIndexAt,
   flattenCues,
@@ -61,7 +61,9 @@ const clock = (seconds: number) => {
 };
 
 export default function LessonScreen() {
-  const { dayId, totalDays } = useLocalSearchParams<{ dayId?: string; totalDays?: string }>();
+  const { dayId, totalDays, title, purpose } = useLocalSearchParams<{
+    dayId?: string; totalDays?: string; title?: string; purpose?: string;
+  }>();
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
@@ -159,7 +161,7 @@ export default function LessonScreen() {
       <Animated.View style={[styles.hero, heroStyle]}>
         <LessonHero
           lessonNumber={LESSON.number}
-          title={LESSON.title}
+          title={title ?? LESSON.title}
           chapter={LESSON.chapter}
           badge={LESSON.badge}
           collapse={collapse}
@@ -179,32 +181,16 @@ export default function LessonScreen() {
         style={{ marginTop: heroMin }}
         contentContainerStyle={{ paddingTop: range, paddingBottom: BAR + insets.bottom }}
       >
-        <View style={[styles.sheet, phase !== "live" && styles.sheetTall]}>
+        <View style={styles.sheet}>
           {phase !== "live" ? (
             <Animated.View
               style={[styles.intro, phase === "sweeping" && styles.leaving, introStyle]}
               pointerEvents={phase === "intro" ? "auto" : "none"}
             >
-              <View style={styles.trainer}>
-                <View style={styles.avatar}>
-                  <Text style={styles.avatarInitial}>{LESSON.trainer.name.slice(0, 1)}</Text>
-                </View>
-                <View style={styles.trainerCopy}>
-                  <Text style={styles.trainerName}>{LESSON.trainer.name}</Text>
-                  <Text style={styles.trainerRole}>{LESSON.trainer.role}</Text>
-                </View>
-              </View>
-
-              <Text style={styles.blurb}>{LESSON.blurb}</Text>
-
-              <Text style={styles.sectionTitle}>How this lesson goes</Text>
-              <Text style={styles.sectionBlurb}>
-                Five steps, in order. Work through them at your dog&rsquo;s pace.
-              </Text>
-
-              <View style={styles.steps}>
-                <LessonSteps steps={script.steps} />
-              </View>
+              <LessonPreparation
+                purpose={purpose ?? LESSON.blurb}
+                materials={LESSON.materials}
+              />
             </Animated.View>
           ) : null}
 
@@ -399,29 +385,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: radius.sheet,
     borderTopRightRadius: radius.sheet,
   },
-  sheetTall: { minHeight: 520 },
   intro: { paddingBottom: space.md },
   leaving: { position: "absolute", left: layout.gutter, right: layout.gutter, top: space.xl },
-
-  trainer: { flexDirection: "row", alignItems: "center", gap: space.md },
-  avatar: {
-    width: 46,
-    height: 46,
-    borderRadius: radius.pill,
-    backgroundColor: accent.primary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatarInitial: { ...type.cardTitle, fontWeight: "700", color: text.primary },
-  trainerCopy: { flex: 1 },
-  trainerName: { ...type.cardTitle, fontWeight: "600", color: text.primary },
-  trainerRole: { ...type.caption, color: text.secondary, marginTop: 1 },
-
-  blurb: { ...type.body, color: text.secondary, marginTop: space.lg },
-
-  sectionTitle: { ...type.sectionTitle, color: text.primary, marginTop: space.section },
-  sectionBlurb: { ...type.supporting, color: text.secondary, marginTop: space.xs },
-  steps: { marginTop: space.xl },
 
   bar: {
     position: "absolute",

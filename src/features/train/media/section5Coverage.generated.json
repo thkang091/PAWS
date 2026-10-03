@@ -1,0 +1,142 @@
+{
+  "missing": [],
+  "courses": {
+    "5-1": {
+      "title": "Use an Indoor Potty Area",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "5-1/PAWS_5-1_02_Follow_Indoor_Route_Pause_and_Reward.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 205
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "assets/training/sources/section5/indoor-potty-and-reward.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 285
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "5-1/PAWS_5-1_02_Follow_Indoor_Route_Pause_and_Reward.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 205
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "5-1/PAWS_5-1_03_Same_Potty_Area_From_Another_Start.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 174
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "5-1/PAWS_5-1_02_Follow_Indoor_Route_Pause_and_Reward.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 205
+        }
+      ]
+    },
+    "5-2": {
+      "title": "Recover Calmly After Accidents",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "assets/training/sources/section5/notice-an-accident.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 68
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "5-2/PAWS_5-2_03_Wipe_the_Floor_and_Lift_the_Cloth.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 337
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "5-2/PAWS_5-2_04_Write_a_Potty_Log.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 281
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "5-2/PAWS_5-2_06_Use_the_Familiar_Indoor_Potty_Route.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 205
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "assets/training/sources/section5/recovery-clean.mp4",
+            "assets/training/sources/section5/recovery-record.mp4",
+            "5-2/PAWS_5-2_06_Use_the_Familiar_Indoor_Potty_Route.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 445
+        }
+      ]
+    },
+    "5-3": {
+      "title": "Use an Outdoor Potty Area",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "5-3/PAWS_5-3_01_Outdoor_Route_Wait_Reward_and_Continue.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 479
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "5-3/PAWS_5-3_02_Wait_for_Completion_then_Praise_Zak.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 295
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "5-3/PAWS_5-3_03_Allow_Quiet_Sniffing_on_Leash_Pupford.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 485
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "5-3/PAWS_5-3_04_Move_Away_From_Distant_Distractions_Zak.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 456
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "5-3/PAWS_5-3_01_Outdoor_Route_Wait_Reward_and_Continue.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 479
+        }
+      ]
+    }
+  }
+}

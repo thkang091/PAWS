@@ -7,7 +7,7 @@ import { CloudArrowUpIcon, XIcon } from "phosphor-react-native";
 
 import { PressScale } from "@/components/ui/PressScale";
 import { useAccountStatus } from "@/hooks/useAccountStatus";
-import { accent, border, icon, motion, radius, space, text, type } from "@/constants/design";
+import { accent, bg, border, icon, motion, radius, space, text, type } from "@/constants/design";
 
 export const SaveProgressBanner = ({ forceVisible = false }: { forceVisible?: boolean }) => {
   const [dismissed, setDismissed] = useState(false);
@@ -60,6 +60,7 @@ export const SaveProgressBanner = ({ forceVisible = false }: { forceVisible?: bo
 
 const styles = StyleSheet.create({
   row: {
+    backgroundColor: bg.surface,
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: space.md,

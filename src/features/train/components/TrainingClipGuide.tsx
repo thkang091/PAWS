@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { PressScale } from "@/components/ui/PressScale";
 import { accent, border, radius, space, text, type } from "@/constants/design";
@@ -7,7 +7,7 @@ import type { TrainingClipPlayback } from "@/hooks/useTrainingClipPlayback";
 
 const stamp = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
 
-export function TrainingClipGuide({ lesson, playback }: { lesson: TrainingClipLesson; playback: TrainingClipPlayback }) {
+export const TrainingClipGuide = memo(function TrainingClipGuide({ lesson, playback }: { lesson: TrainingClipLesson; playback: TrainingClipPlayback }) {
   const scroll = useRef<ScrollView>(null);
   const [rows, setRows] = useState<Record<number, { y: number; height: number }>>({});
   const [viewportHeight, setViewportHeight] = useState(0);
@@ -54,7 +54,10 @@ export function TrainingClipGuide({ lesson, playback }: { lesson: TrainingClipLe
     </ScrollView>
     {playback.error ? <PressScale accessibilityRole="button" accessibilityLabel="Retry video" onPress={() => void playback.retry()}><Text style={styles.remaining}>Retry video</Text></PressScale> : null}
   </View>;
-}
+}, (previous, next) => previous.lesson === next.lesson
+  && previous.playback.currentCue?.at === next.playback.currentCue?.at
+  && previous.playback.error === next.playback.error
+  && previous.playback.seek === next.playback.seek && previous.playback.retry === next.playback.retry);
 
 export function TrainingClipTimeline({ lesson, playback }: { lesson: TrainingClipLesson; playback: TrainingClipPlayback }) {
   const [trackWidth, setTrackWidth] = useState(1);

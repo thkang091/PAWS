@@ -34,6 +34,7 @@ import { CoachMark, CoachReply, CoachThinking } from "@/features/train/component
 import { StepRail } from "@/features/train/components/coach/StepRail";
 import { UserBubble } from "@/features/train/components/coach/UserBubble";
 import { CURRENT_LESSON } from "@/features/train/components/currentLesson";
+import { getTrainingClipLessons } from "@/features/train/media/trainingClipLessons";
 import { PressScale } from "@/components/ui/PressScale";
 import { buildChapters } from "@/constants/trainingChapters";
 import { queryKeys } from "@/constants/queryKeys";
@@ -68,7 +69,7 @@ const DISMISS_DISTANCE = 140;
 const DISMISS_VELOCITY = 0.5;
 
 export default function CoachSheet() {
-  const params = useLocalSearchParams<{ step?: string; state?: string; dayId?: string; skillId?: string; levelId?: string; cardIndex?: string }>();
+  const params = useLocalSearchParams<{ step?: string; state?: string; dayId?: string; skillId?: string; levelId?: string; cardIndex?: string; preview?: string; previewLevel?: string }>();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
@@ -103,12 +104,21 @@ export default function CoachSheet() {
       }
     : null;
 
-  const lesson = realLesson ?? {
+  // Preview context uses the existing Coach without changing live lesson resolution.
+  const previewClip = __DEV__ && params.preview === "doorway" && !params.skillId && !params.levelId
+    ? getTrainingClipLessons("1-1").find(item => item.levelNumber === Number(params.previewLevel))
+    : undefined;
+  const lesson = realLesson ?? (previewClip ? {
+    number: 1,
+    chapter: "Rules & Boundaries",
+    title: "Wait at the Door",
+    steps: previewClip.steps.map(step => ({ title: step.title, cues: step.cues.map(cue => cue.text) })),
+  } : {
     number: CURRENT_LESSON.number,
     chapter: CURRENT_LESSON.chapter,
     title: CURRENT_LESSON.title,
     steps: CURRENT_LESSON.script.steps.map((step) => ({ title: step.title, cues: step.cues.map((c) => c.text) })),
-  };
+  });
   const steps = lesson.steps;
   const stepIndex =
     params.cardIndex !== undefined && !Number.isNaN(Number(params.cardIndex))

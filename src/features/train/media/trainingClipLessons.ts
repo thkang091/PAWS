@@ -3,6 +3,7 @@ import { FURNITURE_BOUNDARY_LESSONS } from "./furnitureBoundaryLesson";
 import basicRulesLessons from "./basicRulesLessons.generated.json";
 import sections23Lessons from "./sections23Lessons.generated.json";
 import section4Lessons from "./section4Lessons.generated.json";
+import section5Lessons from "./section5Lessons.generated.json";
 import section6Lessons from "./section6Lessons.generated.json";
 
 const courses: Readonly<Record<string, readonly TrainingClipLesson[]>> = {
@@ -11,6 +12,7 @@ const courses: Readonly<Record<string, readonly TrainingClipLesson[]>> = {
   ...basicRulesLessons,
   ...sections23Lessons,
   ...section4Lessons,
+  ...section5Lessons,
   ...section6Lessons,
 };
 const empty: readonly TrainingClipLesson[] = [];

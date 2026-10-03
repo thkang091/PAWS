@@ -7,6 +7,8 @@ import sections23Coverage from "../features/train/media/sections23Coverage.gener
 import section4Lessons from "../features/train/media/section4Lessons.generated.json";
 import section4Coverage from "../features/train/media/section4Coverage.generated.json";
 import section6Lessons from "../features/train/media/section6Lessons.generated.json";
+import section5Lessons from "../features/train/media/section5Lessons.generated.json";
+import section5Coverage from "../features/train/media/section5Coverage.generated.json";
 
 describe("doorway wait instructional clips", () => {
   test("binds only to the matching skill and level, never a checkpoint or missing level", () => {
@@ -17,7 +19,7 @@ describe("doorway wait instructional clips", () => {
     expect(getDoorwayWaitLesson("1-1", "level", 6)).toBeNull();
   });
 
-  test.each([...DOORWAY_WAIT_LESSONS, ...FURNITURE_BOUNDARY_LESSONS, ...Object.values(basicRulesLessons).flat(), ...Object.values(sections23Lessons).flat(), ...Object.values(section4Lessons).flat(), ...Object.values(section6Lessons).flat()])("$id has ordered captions inside the exported file", (lesson) => {
+  test.each([...DOORWAY_WAIT_LESSONS, ...FURNITURE_BOUNDARY_LESSONS, ...Object.values(basicRulesLessons).flat(), ...Object.values(sections23Lessons).flat(), ...Object.values(section4Lessons).flat(), ...Object.values(section5Lessons).flat(), ...Object.values(section6Lessons).flat()])("$id has ordered captions inside the exported file", (lesson) => {
     const cues = lesson.steps.flatMap((step) => step.cues);
     expect(cues[0].at).toBe(0);
     for (let i = 0; i < cues.length; i++) {
@@ -41,7 +43,7 @@ describe("doorway wait instructional clips", () => {
     expect(getTrainingClipLesson(skill, "checkpoint", null)).toBeNull();
   });
 
-  test.each(Object.entries({ ...sections23Lessons, ...section4Lessons, ...section6Lessons }))("%s connects only reviewed Levels", (skill, lessons) => {
+  test.each(Object.entries({ ...sections23Lessons, ...section4Lessons, ...section5Lessons, ...section6Lessons }))("%s connects only reviewed Levels", (skill, lessons) => {
     expect(lessons.map(lesson => lesson.levelNumber)).toEqual([1, 2, 3, 4, 5]);
     lessons.forEach(lesson => expect(getTrainingClipLesson(skill, "level", lesson.levelNumber)).toBe(lesson));
     expect(new Set(lessons.map(lesson => lesson.levelNumber)).size).toBe(lessons.length);
@@ -53,12 +55,30 @@ describe("doorway wait instructional clips", () => {
     expect(sections23Coverage.missing).toEqual([]);
   });
 
-  test("Section 4 is complete while Section 5 remains unbound", () => {
+  test("Sections 4 and 5 bind their existing curriculum skills only", () => {
     expect(section4Coverage.missing).toEqual([]);
     expect(Object.keys(section4Lessons)).toEqual(['4-1', '4-2', '4-3', '4-4', '4-5']);
-    for (let skill = 1; skill <= 5; skill++) {
+    expect(section5Coverage.missing).toEqual([]);
+    expect(Object.keys(section5Lessons)).toEqual(['5-1', '5-2', '5-3']);
+    for (let skill = 4; skill <= 5; skill++) {
       for (let level = 1; level <= 5; level++) {
         expect(getTrainingClipLesson(`5-${skill}`, 'level', level)).toBeNull();
+      }
+    }
+  });
+
+  test("Section 5 stays under 30 seconds, with three short recovery examples only in 5-2 L5", () => {
+    for (const [skill, lessons] of Object.entries(section5Lessons)) {
+      for (const lesson of lessons) {
+        expect(getTrainingClipLesson(skill, 'level', lesson.levelNumber)).toBe(lesson);
+        expect(lesson.steps).toHaveLength(skill === '5-2' && lesson.levelNumber === 5 ? 3 : 1);
+        expect(lesson.duration / 0.6).toBeLessThanOrEqual(30);
+      }
+    }
+    for (const [skill, course] of Object.entries(section5Coverage.courses)) {
+      for (const level of course.levels) {
+        expect(level.sources).toHaveLength(skill === '5-2' && level.levelNumber === 5 ? 3 : 1);
+        level.sources.forEach(source => expect(source).not.toContain('Explanation'));
       }
     }
   });

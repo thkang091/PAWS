@@ -27,12 +27,14 @@ import { PressScale } from "@/components/ui/PressScale";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { LessonHero } from "@/features/train/components/LessonHero";
+import { LessonPreparation } from "@/features/train/components/LessonPreparation";
 import { LessonNowPlaying } from "@/features/train/components/LessonNowPlaying";
 import { TrainingLessonVideo } from "@/features/train/components/TrainingLessonVideo";
 import { TrainingClipGuide, TrainingClipTimeline } from "@/features/train/components/TrainingClipGuide";
 import { TrainingClipVideo } from "@/features/train/components/TrainingClipVideo";
 import { getTrainingClipLesson, getTrainingClipLessons } from "@/features/train/media/trainingClipLessons";
 import { getTrainingClipAssets } from "@/features/train/media/trainingClipAssets";
+import { prepareTrainingClip } from "@/features/train/media/prepareTrainingClip";
 import { useTrainingClipPlayback } from "@/hooks/useTrainingClipPlayback";
 import type { LessonCue } from "@/features/train/components/lessonScript";
 import { useLessonPlayback } from "@/hooks/useLessonPlayback";
@@ -113,13 +115,20 @@ export default function LessonScreen() {
   const skillCode = levelDetail.data?.skill.skillCode;
   const clipLesson = getTrainingClipLesson(skillCode, levelDetail.data?.stageType, levelDetail.data?.levelNumber);
   const clipAssets = getTrainingClipAssets(skillCode, clipLesson?.levelNumber);
-  const preparationAssets = getTrainingClipAssets(skillCode, 1);
+  const preparationAssets = getTrainingClipAssets(skillCode, getTrainingClipLessons(skillCode)[0]?.levelNumber ?? 1);
   const clipPlayback = useTrainingClipPlayback(
     clipLesson,
     clipAssets?.source ?? null,
     Boolean(preparationAccepted && session?.status === "active" && (clipLesson || activeCard?.type !== "completion")),
     clipLesson ? session?.id : activeCard?.key,
   );
+
+  const nextClipSource = getTrainingClipAssets(skillCode, (clipLesson?.levelNumber ?? 0) + 1)?.source;
+  useEffect(() => {
+    if (!clipLesson || clipPlayback.loading || clipPlayback.error || !nextClipSource) return;
+    // Warm only the next clip once the current download is finished.
+    void prepareTrainingClip(nextClipSource).catch(() => {});
+  }, [clipLesson, clipPlayback.loading, clipPlayback.error, nextClipSource]);
 
   useEffect(() => {
     if (activeSessionQuery.data && !session) {
@@ -190,7 +199,7 @@ export default function LessonScreen() {
   };
 
   const handleStart = async () => {
-    if (clipActionPending.current) return;
+    if (clipActionPending.current || (clipLesson && (clipPlayback.loading || clipPlayback.error))) return;
     clipActionPending.current = true;
     setSubmitting(true);
     setActionError(null);
@@ -338,26 +347,36 @@ export default function LessonScreen() {
   return (
     <View style={styles.screen}>
       <Animated.View style={[styles.hero, isClipSession ? { height: clipHeroHeight } : heroStyle]}>
-        {isPreparing && preparationAssets ? (
-          <View style={[styles.clipStage, { paddingTop: insets.top + 60 }]}>
-            <Image source={preparationAssets.poster} style={styles.preparationPoster} resizeMode="contain" accessibilityLabel={`${levelDetail.data?.skill.title} preparation`} />
-          </View>
+        {isPreparing ? (
+          <LessonHero
+            title={levelDetail.data?.skill.title ?? ""}
+            collapse={collapse}
+            topInset={insets.top}
+            showChrome={false}
+          >
+            <View style={[styles.clipStage, { paddingTop: insets.top + 60 }]}>
+              {preparationAssets?.poster || levelDetail.data?.media?.posterUrl ? (
+                <Image
+                  source={preparationAssets?.poster ?? { uri: levelDetail.data!.media!.posterUrl! }}
+                  style={styles.preparationPoster}
+                  resizeMode="cover"
+                  accessibilityLabel={`${levelDetail.data?.skill.title} preparation`}
+                />
+              ) : <View style={[styles.preparationPoster, styles.preparationPlaceholder]} />}
+            </View>
+          </LessonHero>
         ) : clipLesson ? (
           <View style={[styles.clipStage, { paddingTop: insets.top + 60 }]}>
             <TrainingClipVideo playback={clipPlayback} poster={clipAssets?.poster} contentFit="cover" />
           </View>
         ) : <LessonHero
-          title={(isPreparing ? levelDetail.data?.skill.title : levelDetail.data?.title) ?? ""}
+          title={levelDetail.data?.title ?? ""}
           chapter={levelDetail.data?.skill.title}
           badge={badge}
           collapse={collapse}
           topInset={insets.top}
         >
-          {isPreparing ? (
-            levelDetail.data?.media?.posterUrl
-              ? <Image source={{ uri: levelDetail.data.media.posterUrl }} style={styles.preparationPoster} resizeMode="contain" />
-              : <View style={styles.preparationPoster} />
-          ) : <TrainingLessonVideo media={levelDetail.data?.media ?? null} fill />}
+          <TrainingLessonVideo media={levelDetail.data?.media ?? null} fill />
         </LessonHero>}
       </Animated.View>
 
@@ -420,23 +439,14 @@ export default function LessonScreen() {
         style={{ marginTop: heroMin }}
         contentContainerStyle={{ paddingTop: range, paddingBottom: BAR + insets.bottom }}
       >
-        <View style={styles.sheet}>
+        <View style={[styles.sheet, isPreparing && styles.preparationSheet]}>
           {isPreparing ? (
             <>
-              <Text style={styles.title}>{levelDetail.data?.skill.title}</Text>
-              <Text style={styles.skillLabel}>Before you start</Text>
-
-              {ready ? (
-                <View style={styles.stack}>
-                  {ready.materials.map((m) => (
-                    <View key={m.label} style={styles.materialRow}>
-                      <Text style={styles.materialLabel}>{m.label}</Text>
-                      <Text style={styles.materialDetail}>{m.detail}</Text>
-                    </View>
-                  ))}
-                  <Text style={styles.safetyCopy}>{ready.safetyCopy}</Text>
-                </View>
-              ) : null}
+              <LessonPreparation
+                skillCode={skillCode}
+                purpose={levelDetail.data?.skill.oneLineGoal ?? ""}
+                materials={ready?.materials ?? []}
+              />
 
               {isNewSession && remaining === 0 ? (
                 <Text style={styles.energyWarning}>
@@ -445,6 +455,11 @@ export default function LessonScreen() {
               ) : null}
 
               {actionError ? <Text style={styles.errorText}>{actionError}</Text> : null}
+              {clipLesson && clipPlayback.error ? (
+                <PressScale accessibilityRole="button" accessibilityLabel="Retry video" onPress={clipPlayback.retry}>
+                  <Text style={styles.errorText}>Couldn't prepare video. Tap to retry.</Text>
+                </PressScale>
+              ) : null}
             </>
           ) : card ? (
             <>
@@ -500,11 +515,15 @@ export default function LessonScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={isNewSession ? "Start, uses 1 Energy" : "Continue"}
                 style={[styles.primaryButton, submitting && styles.primaryButtonDisabled]}
-                disabled={submitting || (isNewSession && remaining === 0)}
+                disabled={submitting || (isNewSession && remaining === 0) || Boolean(clipLesson && (clipPlayback.loading || clipPlayback.error))}
                 onPress={() => void handleStart()}
               >
                 <Text style={styles.primaryButtonText}>
-                  {submitting
+                  {clipLesson && clipPlayback.loading
+                    ? "Preparing video…"
+                    : clipLesson && clipPlayback.error
+                    ? "Video unavailable"
+                    : submitting
                     ? "Starting…"
                     : isNewSession
                       ? remaining === 0
@@ -594,6 +613,7 @@ const styles = StyleSheet.create({
   hero: { position: "absolute", top: 0, left: 0, right: 0, minHeight: MIN_STAGE },
   clipStage: { flex: 1, backgroundColor: "#141414", paddingBottom: space.xl },
   preparationPoster: { width: "100%", height: "100%" },
+  preparationPlaceholder: { backgroundColor: bg.subtle },
   topBar: {
     position: "absolute",
     left: layout.gutter,
@@ -635,17 +655,12 @@ const styles = StyleSheet.create({
     gap: space.md,
     minHeight: 420,
   },
-  skillLabel: { ...type.eyebrow, color: text.secondary },
+  preparationSheet: { minHeight: 0 },
   clipSheet: { flex: 1, minHeight: 0, paddingTop: space.lg, paddingBottom: 0, gap: space.sm },
   clipBottomBar: { position: "relative", borderTopWidth: 0, paddingTop: 0 },
   eyebrow: { ...type.eyebrow, color: accent.band },
   title: { ...type.sectionTitle, color: text.primary },
   body: { ...type.body, color: text.secondary },
-  stack: { gap: space.md, marginTop: space.lg },
-  materialRow: { gap: 2 },
-  materialLabel: { ...type.cardTitle, fontWeight: "600", color: text.primary },
-  materialDetail: { ...type.supporting, color: text.secondary },
-  safetyCopy: { ...type.supporting, color: text.secondary, marginTop: space.sm },
   energyWarning: {
     ...type.supporting,
     color: "#8A5A00",

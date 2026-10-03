@@ -51,6 +51,7 @@ const mapSkillProgress = (row: Record<string, unknown>): DogTrainingSkillProgres
   reviewSoon: row.review_soon as boolean,
   lastPracticedAt: (row.last_practiced_at as string | null) ?? null,
   completedAt: (row.completed_at as string | null) ?? null,
+  level5CompletedAt: (row.level5_completed_at as string | null) ?? null,
 });
 
 const mapPreferences = (row: Record<string, unknown>): DogTrainingPreferences => ({
@@ -211,6 +212,17 @@ export const getTrainingEnergy = async (dogId: string): Promise<TrainingEnergy> 
   });
   throwIfError(error);
   const result = data as { base: number; consumed: number; remaining: number };
+  return { base: result.base, consumed: result.consumed, remaining: result.remaining };
+};
+
+export const resetTrainingEnergy = async (dogId: string): Promise<TrainingEnergy> => {
+  const client = getClientOrThrow();
+  const { data, error } = await client.rpc("reset_training_energy", {
+    p_dog_id: dogId,
+    p_local_date: getEffectiveLocalDate(),
+  });
+  if (error) throw new Error("Couldn't refill energy. Please try again.");
+  const result = data as TrainingEnergy;
   return { base: result.base, consumed: result.consumed, remaining: result.remaining };
 };
 

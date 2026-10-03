@@ -10,6 +10,7 @@
     "@supabase/supabase-js": "^2.109.0",
     "@tanstack/react-query": "^5.101.0",
     "expo": "~56.0.22",
+    "expo-asset": "~56.0.24",
     "expo-audio": "~56.0.13",
     "expo-camera": "~56.0.8",
     "expo-constants": "~56.0.17",

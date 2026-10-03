@@ -11,12 +11,14 @@ import { useTrainingClipPlayback } from "@/hooks/useTrainingClipPlayback";
 import { accent, bg, radius, space, text, type } from "@/constants/design";
 import sections23Coverage from "@/features/train/media/sections23Coverage.generated.json";
 import section4Coverage from "@/features/train/media/section4Coverage.generated.json";
+import section5Coverage from "@/features/train/media/section5Coverage.generated.json";
 import section6Coverage from "@/features/train/media/section6Coverage.generated.json";
 
 const courseTitles: Record<string, string> = {
   "1-1": "Wait at the Door", "1-2": "Stay Off the Furniture", "1-3": "Drop It", "1-4": "Start a Potty Routine", "1-5": "Pause Unnecessary Barking",
   ...Object.fromEntries(Object.entries(sections23Coverage.courses).map(([skill, course]) => [skill, course.title])),
   ...Object.fromEntries(Object.entries(section4Coverage.courses).map(([skill, course]) => [skill, course.title])),
+  ...Object.fromEntries(Object.entries(section5Coverage.courses).map(([skill, course]) => [skill, course.title])),
   ...Object.fromEntries(Object.entries(section6Coverage.courses).map(([skill, course]) => [skill, course.title])),
 };
 

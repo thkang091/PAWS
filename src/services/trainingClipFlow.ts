@@ -1,6 +1,25 @@
 import { getTrainingClipLesson } from "@/features/train/media/trainingClipLessons";
 import { getTrainingSession, reportTrainingResult, resolveSkillSession, getTrainingLevelDetail, getTrainingEnergy, continueTrainingSession } from "@/services/trainingCurriculumService";
 
+// Finish before resolving a future visit. Celebration must not depend on the
+// next day's checkpoint/review being fetchable or start another paid session.
+export async function finishTrainingClipCourse(sessionId: string, cardId: string | null) {
+  let session = await getTrainingSession(sessionId);
+  const level = await getTrainingLevelDetail(session.levelId);
+  if (level.stageType !== "level" || level.levelNumber !== 5) {
+    throw new Error("Complete Level 5 to unlock these videos.");
+  }
+  if (session.status === "active") {
+    const outcome = await reportTrainingResult(session.id, "success", cardId);
+    if (!outcome.settled) throw new Error("Could not complete this Level.");
+    session = outcome.session;
+  }
+  if (session.status !== "completed" || session.finalResult !== "success") {
+    throw new Error("This session is no longer active. Reopen the lesson to continue.");
+  }
+  return session;
+}
+
 export async function continueTrainingClip(sessionId: string, cardId: string | null) {
   let session = await getTrainingSession(sessionId);
   if (session.status === "active") {

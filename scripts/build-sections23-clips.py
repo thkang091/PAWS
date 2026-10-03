@@ -38,7 +38,7 @@ def build(source, ff, render_skills=None, content=None, prefix='sections23', ass
             filters, steps, total = [], [], 0
             for index, ident in enumerate(sequence):
                 entry = sources[skill, ident]
-                path = source / entry['file']
+                path = ROOT / entry['projectFile'] if 'projectFile' in entry else source / entry['file']
                 if (skill, ident) not in frames_by_source:
                     frames_by_source[skill, ident] = count_frames(ff, path, True)
                 frames = frames_by_source[skill, ident]

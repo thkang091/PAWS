@@ -6,7 +6,7 @@ export type Lesson = {
   badge: string;
   title: string;
   blurb: string;
-  trainer: { name: string; role: string };
+  materials: { label: string; detail: string }[];
   script: LessonScript;
 };
 
@@ -16,6 +16,9 @@ export const CURRENT_LESSON: Lesson = {
   badge: "The most popular lesson",
   title: "Socialization: meeting people and other dogs",
   blurb: "Build confidence around new people, dogs and places, a step at a time.",
-  trainer: { name: "Emily Carter", role: "Certified dog trainer" },
+  materials: [
+    { label: "Rewards", detail: "Small treats your dog enjoys." },
+    { label: "Practice space", detail: "A quiet spot with room to move." },
+  ],
   script: SOCIALIZATION_SCRIPT,
 };

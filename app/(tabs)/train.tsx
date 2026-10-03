@@ -1,19 +1,21 @@
 import { useMemo, useRef, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import Animated, { FadeIn, FadeOut, useReducedMotion } from "react-native-reanimated";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
-import { ArrowRightIcon, ClockCounterClockwiseIcon, CoinsIcon } from "phosphor-react-native";
+import { ArrowRightIcon, ClockCounterClockwiseIcon, CoinsIcon, FireIcon, LightningIcon } from "phosphor-react-native";
 
 import { SaveProgressBanner } from "@/components/account/SaveProgressBanner";
 import { TopicHeader } from "@/features/train/components/TopicHeader";
 import { TopicPicker } from "@/features/train/components/TopicPicker";
 import { TopicTrail, type TrailStep } from "@/features/train/components/TopicTrail";
+import { GardenBackdrop } from "@/features/train/components/GardenBackdrop";
+import { EnergySheet } from "@/features/train/components/EnergySheet";
 import { PressScale } from "@/components/ui/PressScale";
 import { LoadingState } from "@/components/ui/LoadingState";
-import { accent, bg, border, icon, layout, motion, radius, space, text, type } from "@/constants/design";
+import { accent, bg, border, icon, layout, motion, radius, scene, space, text, type } from "@/constants/design";
 import { buildChapters } from "@/constants/trainingChapters";
 import { queryKeys } from "@/constants/queryKeys";
 import { isCurriculumTopic, SECTION_NUMBER_BY_TOPIC_KEY } from "@/constants/trainingCurriculumMapping";
@@ -25,7 +27,7 @@ import { useProfileDashboard } from "@/hooks/useProfileDashboard";
 import { useWallet } from "@/hooks/useWallet";
 import { getErrorMessage } from "@/lib/errors";
 import { generateRoadmap } from "@/services/curriculumService";
-import { getAllSectionRoadmaps } from "@/services/trainingCurriculumService";
+import { getAllSectionRoadmaps, getTrainingEnergy, resetTrainingEnergy } from "@/services/trainingCurriculumService";
 import { setActiveTopic, useTrainingTopic } from "@/features/train/state/trainingTopic";
 import type { PersonalizedRoadmapDay, SectionRoadmap } from "@/types/domain";
 
@@ -53,13 +55,30 @@ const curriculumStepsFor = (roadmap: SectionRoadmap): { steps: TrailStep[]; skil
 };
 
 export default function TrainTabScreen() {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const dog = useCurrentDog();
   const dogId = dog.data?.id;
+  const queryClient = useQueryClient();
+  const [energyOpen, setEnergyOpen] = useState(false);
+  const refill = useMutation({
+    mutationFn: (id: string) => resetTrainingEnergy(id),
+    retry: false,
+    onSuccess: async (_, id) => {
+      await queryClient.invalidateQueries({ queryKey: ["trainingEnergy", id] });
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setEnergyOpen(false);
+    },
+  });
 
   const { roadmap, days, refetch } = useDogRoadmap(dogId);
-  const { data: streak } = useDogStreak(dogId);
   const wallet = useWallet(dogId ?? "");
+  const streak = useDogStreak(dogId);
+  const streakCount = streak.isSuccess ? (streak.data?.currentStreak ?? 0) : undefined;
+  const energy = useQuery({
+    queryKey: dogId ? queryKeys.trainingEnergy(dogId, new Date().toDateString()) : ["trainingEnergy", "missing"],
+    queryFn: () => getTrainingEnergy(dogId ?? ""),
+    enabled: Boolean(dogId),
+  });
   useProfileDashboard(dogId);
 
   const sectionRoadmaps = useQuery({
@@ -132,11 +151,14 @@ export default function TrainTabScreen() {
       return;
     }
     const day = item.days?.[index];
-    if (day) {
-      router.push(`/train/lesson-preview?dayId=${day.id}&totalDays=${days.length}`);
-      return;
-    }
-    router.push(`/train/lesson-preview?topic=${item.key}&lesson=${index}`);
+    router.push({
+      pathname: "/train/lesson-preview",
+      params: {
+        title: item.steps[index]?.title ?? item.title,
+        purpose: item.blurb,
+        ...(day ? { dayId: day.id, totalDays: String(days.length) } : { topic: item.key, lesson: String(index) }),
+      },
+    });
   };
 
   const continueTopic = (item: ShelfTopic) => {
@@ -181,20 +203,41 @@ export default function TrainTabScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <View style={styles.header}>
-        <View style={styles.headerCopy}>
-          <Text style={styles.pageTitle}>Train</Text>
-          {streak && streak.currentStreak > 0 ? (
-            <Text style={styles.streak}>{streak.currentStreak} day streak</Text>
-          ) : null}
+      <GardenBackdrop width={width} height={height} />
+      <View style={[styles.contentFrame, styles.header]}>
+        <PressScale
+          style={styles.silver}
+          accessibilityRole="button"
+          accessibilityLabel={`Energy: ${energy.data?.remaining ?? "Loading"}. Refill energy`}
+          disabled={!dogId}
+          onPress={() => {
+            refill.reset();
+            void energy.refetch();
+            void Haptics.selectionAsync();
+            setEnergyOpen(true);
+          }}
+        >
+          <LightningIcon size={icon.inline} color={accent.band} weight="fill" />
+          <Text style={styles.silverNum}>{energy.data?.remaining ?? "—"}</Text>
+        </PressScale>
+
+        <View
+          style={styles.silver}
+          accessible
+          accessibilityLabel={`Streak: ${streakCount ?? "Loading"} days`}
+        >
+          <FireIcon size={icon.inline} color={accent.band} weight="fill" />
+          <Text style={styles.silverNum}>{streakCount ?? "—"}</Text>
         </View>
 
-        {wallet.data ? (
-          <View style={styles.silver}>
-            <CoinsIcon size={icon.inline} color={accent.band} weight="fill" />
-            <Text style={styles.silverNum}>{wallet.data.silverBalance.toLocaleString()}</Text>
-          </View>
-        ) : null}
+        <View
+          style={styles.silver}
+          accessible
+          accessibilityLabel={`Coins: ${wallet.data?.silverBalance ?? "Loading"}`}
+        >
+          <CoinsIcon size={icon.inline} color={accent.band} weight="fill" />
+          <Text style={styles.silverNum}>{wallet.data?.silverBalance.toLocaleString() ?? "—"}</Text>
+        </View>
 
         <PressScale
           accessibilityRole="button"
@@ -211,12 +254,7 @@ export default function TrainTabScreen() {
       </View>
 
       <View style={styles.body}>
-        <ScrollView
-          ref={contentRef}
-          style={styles.column}
-          contentContainerStyle={styles.columnInner}
-          showsVerticalScrollIndicator={false}
-        >
+        <View style={styles.contentFrame}>
           <SaveProgressBanner />
 
           {topic ? (
@@ -255,7 +293,22 @@ export default function TrainTabScreen() {
                   )}
                 </PressScale>
               ) : null}
+            </Animated.View>
+          ) : null}
+        </View>
 
+        <ScrollView
+          ref={contentRef}
+          style={styles.column}
+          contentContainerStyle={[styles.contentFrame, styles.columnInner]}
+          showsVerticalScrollIndicator={false}
+        >
+          {topic ? (
+            <Animated.View
+              key={topic.key}
+              entering={enter}
+              exiting={reduceMotion ? undefined : FadeOut.duration(90)}
+            >
               <TopicTrail
                 topicKey={topic.key}
                 steps={topic.steps}
@@ -267,6 +320,16 @@ export default function TrainTabScreen() {
           ) : null}
         </ScrollView>
       </View>
+
+      {energyOpen ? (
+        <EnergySheet
+          energy={energy.data}
+          busy={refill.isPending}
+          error={refill.isError ? "Couldn't refill energy. Please try again." : undefined}
+          onClose={() => setEnergyOpen(false)}
+          onRefill={() => { if (dogId && !refill.isPending) refill.mutate(dogId); }}
+        />
+      ) : null}
 
       <TopicPicker
         topics={topics}
@@ -282,19 +345,22 @@ export default function TrainTabScreen() {
 const TAB_CLEARANCE = 112;
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: bg.canvas },
+  safe: { flex: 1, backgroundColor: scene.ground },
 
+  contentFrame: {
+    width: "100%",
+    maxWidth: 520 + layout.gutter * 2,
+    alignSelf: "center",
+    paddingHorizontal: layout.gutter,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     gap: space.sm,
-    paddingHorizontal: layout.gutter,
     paddingTop: space.sm,
     paddingBottom: space.lg,
   },
-  headerCopy: { flex: 1 },
-  pageTitle: { ...type.pageTitle, color: text.primary },
-  streak: { ...type.caption, fontWeight: "600", color: text.secondary, marginTop: 2 },
   silver: {
     flexDirection: "row",
     alignItems: "center",
@@ -304,6 +370,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     borderWidth: 1,
     borderColor: border.soft,
+    backgroundColor: bg.surface,
   },
   silverNum: { ...type.caption, fontWeight: "700", color: text.primary, fontVariant: ["tabular-nums"] },
   round: {
@@ -312,13 +379,16 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     borderWidth: 1,
     borderColor: border.soft,
+    backgroundColor: bg.surface,
     alignItems: "center",
     justifyContent: "center",
   },
 
   body: { flex: 1 },
   column: { flex: 1 },
-  columnInner: { paddingHorizontal: layout.gutter, paddingBottom: TAB_CLEARANCE + space.lg },
+  columnInner: {
+    paddingBottom: TAB_CLEARANCE + space.lg,
+  },
 
   build: {
     flexDirection: "row",
@@ -331,6 +401,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     borderWidth: 1,
     borderColor: border.soft,
+    backgroundColor: bg.surface,
   },
   buildText: { ...type.supporting, fontWeight: "600", color: text.primary, flexShrink: 1 },
 });

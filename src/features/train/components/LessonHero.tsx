@@ -25,6 +25,7 @@ export type LessonHeroProps = {
   onBack?: () => void;
   onPlay?: () => void;
   children?: ReactNode;
+  showChrome?: boolean;
 };
 
 const BADGE = 104;
@@ -40,6 +41,7 @@ export const LessonHero = ({
   onBack,
   onPlay,
   children,
+  showChrome = true,
 }: LessonHeroProps) => {
   const overlay = useAnimatedStyle(() => ({
     opacity: Math.max(0, 1 - collapse.value / 0.66),
@@ -73,7 +75,7 @@ export const LessonHero = ({
         />
       </Animated.View>
 
-      <View style={[styles.chrome, { top: topInset + space.sm }]} pointerEvents="box-none">
+      {showChrome ? <View style={[styles.chrome, { top: topInset + space.sm }]} pointerEvents="box-none">
         {onBack ? (
           <PressScale
             accessibilityRole="button"
@@ -98,7 +100,7 @@ export const LessonHero = ({
             </View>
           ) : null}
         </Animated.View>
-      </View>
+      </View> : null}
 
       {badge ? (
         <Animated.View
