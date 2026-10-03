@@ -9,7 +9,7 @@ export type TrainingRound = {
   status: "active" | "completed" | "ended";
   phase: "quiz" | "practice" | "complete";
   current_session_id: string;
-  review_items: { eventId: string; question: RoundQuestion }[];
+  review_items: { eventId: string | null; sourceSessionId?: string; question: RoundQuestion }[];
   answers: TrainingReviewAnswer[];
   quiz_cursor: number;
   acknowledged_at: string | null;

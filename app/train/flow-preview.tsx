@@ -33,7 +33,7 @@ function TrainingFlowPreview() {
   const [round, setRound] = useState<1 | 2>(1);
   const [level, setLevel] = useState(1);
   const [struggles, setStruggles] = useState<string[]>([]);
-  const [questions, setQuestions] = useState<readonly TrainingReviewQuestion[]>(PREVIEW_QUESTIONS);
+  const [questions, setQuestions] = useState<readonly TrainingReviewQuestion[]>(PREVIEW_QUESTIONS.slice(0, 2));
   const [reviewClip, setReviewClip] = useState<TrainingReviewQuestion | null>(null);
   const [run, setRun] = useState(0);
   const [finishedFirst, setFinishedFirst] = useState(false);
@@ -48,7 +48,8 @@ function TrainingFlowPreview() {
   const prepare = (nextRound: 1 | 2, sample = false) => {
     setRound(nextRound);
     setLevel(nextRound === 1 ? 1 : 3);
-    setQuestions(nextRound === 1 ? [] : sample ? [PREVIEW_QUESTIONS[1]] : PREVIEW_QUESTIONS.filter(item => struggles.includes(item.id) || struggles.includes(`level-${item.level}`)).slice(0, 3));
+    const priority = sample ? [PREVIEW_QUESTIONS[1]] : PREVIEW_QUESTIONS.filter(item => struggles.includes(item.id) || struggles.includes(`level-${item.level}`));
+    setQuestions(nextRound === 1 ? [] : [...priority, ...PREVIEW_QUESTIONS.filter(item => !priority.includes(item))].slice(0, 2));
     if (nextRound === 1) { setStruggles([]); setFinishedFirst(false); }
     setRun(previous => previous + 1);
     setScreen("prepare");
@@ -77,13 +78,13 @@ function TrainingFlowPreview() {
         </View>
         <Text style={styles.cardTitle}>Explore each screen</Text>
         {([
-          ["quiz", "Quick refresher", "Three questions · selection & feedback"],
+          ["quiz", "Review quiz", "Two questions · selection & feedback"],
           ["practice", "Practice & help", "Existing player & Coach"],
           ["sessionComplete", "Session complete", "A little celebration together"],
           ["lessonComplete", "Lesson complete", "Celebrate & unlock your videos"],
           ["library", "Your lesson videos", "Choose a moment to rewatch"],
         ] as const).map(([target, title, description]) => <PressScale key={target} accessibilityRole="button" accessibilityLabel={title} onPress={() => {
-          if (target === "quiz") { setRound(2); setQuestions(PREVIEW_QUESTIONS); setRun(previous => previous + 1); }
+          if (target === "quiz") { setRound(2); setQuestions(PREVIEW_QUESTIONS.slice(0, 2)); setRun(previous => previous + 1); }
           if (target === "practice") { setRound(1); setLevel(2); }
           setScreen(target);
         }} style={styles.screenRow}><View style={styles.flex}><Text style={styles.cardTitle}>{title}</Text><Text style={styles.smallCopy}>{description}</Text></View><ArrowRightIcon size={22} color={text.secondary} /></PressScale>)}

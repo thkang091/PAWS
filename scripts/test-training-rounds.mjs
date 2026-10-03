@@ -10,8 +10,10 @@ const dog = '20000000-0000-0000-0000-000000000001';
 const secondDog = '20000000-0000-0000-0000-000000000002';
 const legacyDog = '20000000-0000-0000-0000-000000000003';
 const upgradeDog = '20000000-0000-0000-0000-000000000004';
+const shortClipDog = '20000000-0000-0000-0000-000000000005';
 const skill = '30000000-0000-0000-0000-000000000001';
 const skill2 = '30000000-0000-0000-0000-000000000002';
+const shortSkill = '30000000-0000-0000-0000-000000000003';
 let assertions = 0;
 const eq = (actual, expected, label) => { assert.deepEqual(actual,expected,label); assertions++; };
 const reject = async (fn, pattern) => { await assert.rejects(fn,pattern); assertions++; };
@@ -30,12 +32,13 @@ try {
     '20260929165234_training_course_energy_continuation.sql',
     '20261003144611_training_rounds_and_refresher.sql',
   ]) await db.exec(await readFile(new URL(`../supabase/migrations/${file}`,import.meta.url),'utf8'));
-  await db.exec(`insert into dogs values('${dog}','${uid}'),('${secondDog}','${uid}'),('${legacyDog}','${uid}'),('${upgradeDog}','${uid}');
+  await db.exec(`insert into dogs values('${dog}','${uid}'),('${secondDog}','${uid}'),('${legacyDog}','${uid}'),('${upgradeDog}','${uid}'),('${shortClipDog}','${uid}');
     insert into training_curriculum_versions(id,version_key,title) values('40000000-0000-0000-0000-000000000001','test','test');
     insert into training_sections(id,curriculum_version_id,section_number,slug,title,sort_order) values('50000000-0000-0000-0000-000000000001','40000000-0000-0000-0000-000000000001',1,'rules','Rules',1);
     insert into training_skills(id,section_id,skill_code,internal_concept_id,slug,title,one_line_goal,sort_order) values
       ('${skill}','50000000-0000-0000-0000-000000000001','1-1','door','door','Wait at the Door','Wait',1),
-      ('${skill2}','50000000-0000-0000-0000-000000000001','1-2','floor','floor','Choose Your Spot','Choose',2);
+      ('${skill2}','50000000-0000-0000-0000-000000000001','1-2','floor','floor','Choose Your Spot','Choose',2),
+      ('${shortSkill}','50000000-0000-0000-0000-000000000001','5-2','accident','accident','Handle accidents calmly','Stay calm',3);
     insert into training_levels(skill_id,stage_type,level_number,sequence_index,title)
       select s.id,'level',n,n,'Action '||n from training_skills s cross join generate_series(1,5) n;
     insert into training_sessions(dog_id,skill_id,level_id,session_type,status,energy_consumed,effective_local_day,idempotency_key)
@@ -47,6 +50,7 @@ try {
       values('${upgradeDog}','${skill2}',2,'completed','complete',now(),now(),'old-completed');
     insert into training_energy_ledger(dog_id,effective_local_day,delta,reason) values('${upgradeDog}',current_date,-1,'old-round');`);
   await db.exec(await readFile(new URL('../supabase/migrations/20261003151409_training_three_clip_rounds.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/20261003154551_training_two_question_review_quiz.sql',import.meta.url),'utf8'));
   eq((await db.query("select end_level from training_rounds where idempotency_key='old-active'")).rows[0].end_level,3,'upgrade extends only unfinished first round');
   eq((await db.query("select end_level from training_rounds where idempotency_key='old-completed'")).rows[0].end_level,2,'historical completion unchanged');
   eq((await db.query('select sum(delta)::int n from training_energy_ledger where dog_id=$1',[upgradeDog])).rows[0].n,-1,'upgrade does not charge Energy');
@@ -58,6 +62,15 @@ try {
   )).rows[0].state;
   const payload = r => ({roundId:r.round.id,sessionId:r.session.id});
   const levelNumber = async r => (await db.query('select level_number n from training_levels where id=$1',[r.levelId])).rows[0].n;
+  const finishQuiz = async (state,d=dog,sk=skill) => {
+    while(state.round.phase==='quiz') {
+      const cursor=state.round.quiz_cursor;
+      const question=state.round.review_items[cursor].question;
+      state=await action('answer',{...payload(state),questionId:question.id,optionId:question.correctOptionId},d,sk);
+      state=await action('advance_quiz',{...payload(state),cursor},d,sk);
+    }
+    return state;
+  };
   let r = await action('get'); eq(r.round,null,'read does not create'); eq(r.energy.remaining,3,'initial energy');
   r = await action('start',{key:'round-a'}); const first=payload(r);
   eq(r.round.phase,'practice','no arbitrary quiz'); eq(r.energy.remaining,2,'one charge');
@@ -82,8 +95,10 @@ try {
   r=await action('start',{key:'round-b'}); eq(r.energy.remaining,1,'second round charge');
   eq(await levelNumber(r),3,'second paid round repeats third clip');
   eq(r.session.session_type,'review','overlap is a recap session');
-  eq(r.round.phase,'quiz','struggles become next paid refresher'); eq(r.round.review_items.length,3,'quiz capped at three');
-  await reject(() => action('continue',payload(r)),/Finish refresher first/);
+  eq(r.round.phase,'quiz','struggles become next paid review quiz'); eq(r.round.review_items.length,2,'quiz has exactly two questions');
+  eq(r.round.review_items.every(item=>item.eventId!==null),true,'struggles take priority over fallback');
+  eq(new Set(r.round.review_items.map(item=>item.question.concept)).size,2,'concepts do not repeat');
+  await reject(() => action('continue',payload(r)),/Finish review quiz first/);
   await reject(() => action('advance_quiz',{...payload(r),cursor:0}),/Answer first/);
   const q=r.round.review_items[0].question;
   r=await action('answer',{...payload(r),questionId:q.id,optionId:'1'});
@@ -91,7 +106,7 @@ try {
   eq((await action('get')).round.quiz_cursor,0,'feedback resumes before next');
   r=await action('advance_quiz',{...payload(r),cursor:0});
   r=await action('advance_quiz',{...payload(r),cursor:0}); eq(r.round.quiz_cursor,1,'advance retry does not skip');
-  for(let i=1;i<3;i++) {
+  for(let i=1;i<2;i++) {
     r=await action('answer',{...payload(r),questionId:r.round.review_items[i].question.id,optionId:'0'});
     r=await action('advance_quiz',{...payload(r),cursor:i});
   }
@@ -125,6 +140,19 @@ try {
   r=await action('start',{key:'after-early-end'},secondDog);
   eq(await levelNumber(r),1,'fresh first group includes three clips after early End');
   eq(r.session.session_type,'review','already completed first clip is a recap');
+  eq(r.round.phase,'quiz','returning practice reviews even without Help');
+  eq(r.round.review_items.length,2,'zero struggles still produces two questions');
+  eq(r.round.review_items.every(item=>item.eventId===null),true,'fallback does not invent Help events');
+  eq(r.round.review_items.every(item=>item.question.level===1),true,'fallback excludes next clip ended before completion');
+  eq((await action('get',{},secondDog)).round.review_items,r.round.review_items,'question snapshot survives reopening');
+  const missed=r.round.review_items[0].question;
+  const wrongOption=missed.options.find(o=>o.id!==missed.correctOptionId).id;
+  r=await action('answer',{...payload(r),questionId:missed.id,optionId:wrongOption},secondDog);
+  await action('answer',{...payload(r),questionId:missed.id,optionId:wrongOption},secondDog);
+  eq((await db.query('select count(*)::int n from training_struggles where dog_id=$1',[secondDog])).rows[0].n,1,'missed fallback becomes one future review concept');
+  r=await action('advance_quiz',{...payload(r),cursor:0},secondDog);
+  r=await finishQuiz(r,secondDog);
+  eq((await db.query('select count(*)::int n from training_struggles where dog_id=$1',[secondDog])).rows[0].n,1,'correct fallback does not create a struggle');
   for(let i=0;i<3;i++) r=await action('continue',payload(r),secondDog);
   eq(r.round.status,'completed','restarted first group ends after three clips');
   eq(r.energy.remaining,0,'restarted group charges once');
@@ -152,13 +180,28 @@ try {
   await action('ack',payload(r),legacyDog);
   r=await action('start',{key:'after-adoption'},legacyDog);
   eq(r.round.phase,'quiz','struggle survives later success');
+  eq(r.round.review_items.length,2,'one struggle is filled with a second question');
+  eq(r.round.review_items[0].question.concept,question(1).concept,'single struggle comes first');
+  eq(r.round.review_items[1].eventId,null,'second question comes from training content');
+  eq(r.round.review_items[1].question.level,1,'supplement prefers same clip as struggle');
+  eq(new Set(r.round.review_items.map(item=>item.question.concept)).size,2,'supplement differs from struggled concept');
   await reject(()=>action('help',{...payload(r),question:question(1)},legacyDog),/Practice is not active/);
   await reject(()=>action('continue',{...payload(r),sessionId:first.sessionId},legacyDog),/Session changed/);
+  // Even the shortest one-caption clip has two related concepts at a valid seek point.
+  r=await action('start',{key:'short-first'},shortClipDog,shortSkill);
+  r=await action('continue',payload(r),shortClipDog,shortSkill);
+  await action('end',payload(r),shortClipDog,shortSkill);
+  r=await action('start',{key:'short-return'},shortClipDog,shortSkill);
+  eq(r.round.review_items.length,2,'single-caption completed clip still supports two questions');
+  eq(r.round.review_items.every(item=>item.question.skillCode==='5-2' && item.question.level===1 && item.question.cueAt===0),true,'short-clip questions seek the studied moment');
+  eq(new Set(r.round.review_items.map(item=>item.question.concept)).size,2,'short-clip concepts differ');
   await reject(()=>db.query('select training_round_action($1,$2,$3,current_date+10,$4)',[dog,skill,'get','{}']),/Invalid local date/);
   await db.query("select set_config('request.jwt.claim.sub',$1,false)",[other]);
   await reject(()=>action('get'),/Dog not found/);
   eq((await db.query('select count(*)::int n from training_rounds')).rows[0].n,0,'RLS other owner sees none');
   await reject(()=>db.exec("update training_rounds set phase='complete'"),/permission denied/);
+  await reject(()=>db.exec('select * from training_private.training_review_captions'),/permission denied/);
+  await reject(()=>db.query('select training_private.select_training_review_items($1)',[dog]),/permission denied/);
   await db.exec('reset role; set role anon');
   await reject(()=>action('get'),/permission denied/);
   console.log(`Training rounds: ${assertions} SQL assertions passed (real migrations, local Postgres).`);

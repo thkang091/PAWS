@@ -41,7 +41,7 @@ export function TrainingReviewQuiz({ questions, onComplete, onClose, onWatch, sa
   const correct = selected === question?.correctOptionId;
   const last = index === questions.length - 1;
 
-  if (!question) return <TrainingFlowScreen label="Quick refresher" onClose={onClose} footer={<TrainingFlowButton label="Start training" onPress={() => onComplete([])} />}>
+  if (!question) return <TrainingFlowScreen label="Review quiz" onClose={onClose} footer={<TrainingFlowButton label="Start training" onPress={() => onComplete([])} />}>
     <Text style={styles.title}>Ready to keep going?</Text>
     <Text style={styles.copy}>Your next practice is ready.</Text>
   </TrainingFlowScreen>;
@@ -61,12 +61,12 @@ export function TrainingReviewQuiz({ questions, onComplete, onClose, onWatch, sa
     }
   };
 
-  return <TrainingFlowScreen contentKey={question.id} revealEnd={checked} label={`Quick refresher · ${index + 1} of ${questions.length}`} onClose={onClose} progress={{ current: index + (checked ? 1 : 0), total: questions.length }} footer={
+  return <TrainingFlowScreen contentKey={question.id} revealEnd={checked} label={`Review quiz · ${index + 1} of ${questions.length}`} onClose={onClose} progress={{ current: index + (checked ? 1 : 0), total: questions.length }} footer={
     <TrainingFlowButton label={busy ? "Saving…" : checked ? last ? "Start training" : "Continue" : "Check answer"} disabled={!selected || busy} onPress={advance} />
   }>
     <View style={styles.context}>
       <ArrowCounterClockwiseIcon size={20} color={text.secondary} />
-      <View style={styles.flex}><Text style={styles.eyebrow}>FROM YOUR LAST SESSION</Text><Text style={styles.contextTitle}>{question.lessonTitle}</Text></View>
+      <View style={styles.flex}><Text style={styles.eyebrow}>FROM YOUR TRAINING</Text><Text style={styles.contextTitle}>{question.lessonTitle}</Text></View>
     </View>
     <Text accessibilityRole="header" style={styles.title}>{question.prompt}</Text>
     <View style={styles.options} accessibilityRole="radiogroup" accessibilityLabel="Choose an answer">
