@@ -1,3 +1,4 @@
+import { getTrainingClipPoster, getTrainingPosterPosition } from "@/features/train/media/trainingClipPosters";
 import { useEffect, useState } from "react";
 import { BackHandler, Modal, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { Redirect, router, Stack, useLocalSearchParams } from "expo-router";
@@ -13,7 +14,6 @@ import { TrainingReviewQuiz, type TrainingReviewQuestion } from "@/features/trai
 import { TrainingRoundComplete } from "@/features/train/components/flow/TrainingRoundComplete";
 import { TrainingPracticePreview } from "@/features/train/components/flow/TrainingPracticePreview";
 import { PREVIEW_LESSON, PREVIEW_QUESTIONS } from "@/features/train/components/flow/previewData";
-import { getTrainingClipAssets } from "@/features/train/media/trainingClipAssets";
 import { accent, bg, border, layout, radius, space, text, type } from "@/constants/design";
 
 type Screen = "gallery" | "prepare" | "quiz" | "practice" | "sessionComplete" | "lessonComplete" | "library";
@@ -105,7 +105,7 @@ function PreparationPreview({ round, onStart, onClose }: { round: 1 | 2; onStart
   const collapse = useSharedValue(0);
   return <View style={styles.screen}>
     <ScrollView>
-      <View style={{ height: Math.max(280, height * 0.4) }}><LessonHero title={PREVIEW_LESSON.title} chapter="Introduction" lessonNumber={1} poster={getTrainingClipAssets(PREVIEW_LESSON.code, 1)?.poster} collapse={collapse} topInset={insets.top} onBack={onClose} /></View>
+      <View style={{ height: Math.max(280, height * 0.4) }}><LessonHero title={PREVIEW_LESSON.title} chapter="Introduction" lessonNumber={1} poster={getTrainingClipPoster(PREVIEW_LESSON.code, 1)} posterPosition={getTrainingPosterPosition(PREVIEW_LESSON.code)} collapse={collapse} topInset={insets.top} onBack={onClose} /></View>
       <View style={styles.preparation}>
         <LessonPreparation skillCode={PREVIEW_LESSON.code} purpose="Build a calm waiting habit at the door, one small step at a time." materials={[{ label: "Small treats", detail: "Easy to give on the waiting spot" }, { label: "A mat and a secure door", detail: "Keep the area quiet and use a leash when needed" }]} />
         <View style={styles.sessionNote}><Text style={styles.cardTitle}>This session</Text><Text style={styles.copy}>{round === 1 ? "Find the waiting spot and practise waiting as the door opens." : "Revisit the door opening, then practise leaving together."}</Text></View>

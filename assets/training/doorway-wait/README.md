@@ -1,5 +1,11 @@
 # Doorway wait media pilot
 
+**Historical assets:** Since 2026-10-03, lesson 1-1 uses official YouTube range
+playback. MP4s remain as provenance and are not imported by the runtime.
+The original JPGs were restored for preparation/library artwork at the user's
+request on 2026-10-04, through a separate poster-only registry.
+See `docs/train-youtube-pilot.md` for current behavior.
+
 Copied unchanged from `C:/Users/Minjae/Desktop/PAWS_vid/Actual/1-1/clips` on 2026-09-29.
 The original library and its manifest remain the source provenance record.
 

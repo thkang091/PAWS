@@ -1,3 +1,4 @@
+import { getTrainingClipPoster, getTrainingPosterPosition } from "@/features/train/media/trainingClipPosters";
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -84,6 +85,7 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
   // needed, so a network loss cannot turn Pause into End or lose paid progress.
   const close = () => { invalidate(); router.back(); };
   const acknowledge = async (showVideos = false) => {
+    if (showVideos && !context.unlocked) return;
     const done = context.round?.status === "completed" && !context.round.acknowledged_at;
     if (done && !await act("ack")) return;
     if (showVideos) { setPreparing(false); setLibrary(true); } else close();
@@ -97,7 +99,7 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
   if (level.isLoading || preparation.isLoading || (needsProgress && lessonStarted.isLoading)) return <SafeAreaView style={styles.screen}><LoadingState message="Preparing lesson…" /></SafeAreaView>;
   if (level.isError || preparation.isError || (needsProgress && lessonStarted.isError && lessonStarted.data === undefined) || !skill || !clip) return <SafeAreaView style={styles.screen}><ErrorState message="Couldn't prepare this lesson." onRetry={() => { void level.refetch(); void preparation.refetch(); if (needsProgress) void lessonStarted.refetch(); }} /><TrainingFlowButton label="Back to roadmap" onPress={close} /></SafeAreaView>;
 
-  if (library) return <UnlockedLessonVideos skillCode={code} title={skill.title} onClose={close} />;
+  if (library && context.unlocked) return <UnlockedLessonVideos skillCode={code} title={skill.title} onClose={close} />;
   if (watch) return <TrainingPracticeClip key={watch.id} skillCode={watch.skillCode} title={watch.lessonTitle} level={watch.level} reviewAt={watch.cueAt} onContinue={() => setWatch(null)} onClose={() => setWatch(null)} />;
   if (!preparing && context.round?.phase === "quiz") return <TrainingReviewQuiz
     questions={context.round.review_items.map(item => item.question)}
@@ -124,7 +126,7 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
     <ScrollView contentContainerStyle={styles.preparation}>
       <View style={{ height: Math.round(height*0.45) }}>
         <LessonHero title={skill.title} collapse={collapse} topInset={insets.top} showChrome={false}
-          poster={getTrainingClipAssets(code,1)?.poster} />
+          poster={getTrainingClipPoster(code, 1)} posterPosition={getTrainingPosterPosition(code)} />
       </View>
       <View style={styles.sheet}>
         <LessonPreparation skillCode={code} purpose={skill.oneLineGoal} materials={preparation.data?.materials ?? []} />

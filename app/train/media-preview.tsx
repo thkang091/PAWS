@@ -13,6 +13,8 @@ import sections23Coverage from "@/features/train/media/sections23Coverage.genera
 import section4Coverage from "@/features/train/media/section4Coverage.generated.json";
 import section5Coverage from "@/features/train/media/section5Coverage.generated.json";
 import section6Coverage from "@/features/train/media/section6Coverage.generated.json";
+import { YouTubeTrainingClip } from "@/features/train/components/YouTubeTrainingClip";
+import { getTrainingYouTubeSegment } from "@/features/train/media/trainingYouTube";
 
 const courseTitles: Record<string, string> = {
   "1-1": "Wait at the Door", "1-2": "Stay Off the Furniture", "1-3": "Drop It", "1-4": "Start a Potty Routine", "1-5": "Pause Unnecessary Barking",
@@ -32,6 +34,18 @@ export default function TrainingMediaPreview() {
 function MediaPreview() {
   const { skill } = useLocalSearchParams<{ skill?: string }>();
   const skillCode = skill && getTrainingClipLessons(skill).length ? skill : "1-1";
+  if (getTrainingYouTubeSegment(skillCode, 1)) return <YouTubePreview key={skillCode} skillCode={skillCode} />;
+  return <NativeMediaPreview skillCode={skillCode} />;
+}
+
+function YouTubePreview({ skillCode }: { skillCode: string }) {
+  const [level, setLevel] = useState(1);
+  const close = () => router.replace("/(tabs)/train");
+  return <YouTubeTrainingClip skillCode={skillCode} title={courseTitles[skillCode]} level={level} onLevelChange={setLevel}
+    onClose={close} onContinue={() => level < 5 ? setLevel(level + 1) : close()} continueLabel={level < 5 ? "Next level" : "Back to Train"} />;
+}
+
+function NativeMediaPreview({ skillCode }: { skillCode: string }) {
   const lessons = getTrainingClipLessons(skillCode);
   const [level, setLevel] = useState(1);
   const lesson = lessons.find(item => item.levelNumber === level) ?? lessons[0];

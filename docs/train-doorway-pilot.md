@@ -1,5 +1,8 @@
 # Wait at the Door: clip and caption pilot
 
+**Historical implementation:** superseded on 2026-10-03 by the
+[official YouTube playback pilot](train-youtube-pilot.md).
+
 Implemented for Rules & boundaries, skill `1-1`, Levels 1–5. Checkpoints
 retain their existing content.
 

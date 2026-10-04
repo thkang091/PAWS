@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import {
   type ImageSourcePropType,
-  Image,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { Image, type ImageContentPosition } from "expo-image";
 import Animated, { type SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import Svg, { Circle, Defs, Path, Text as SvgText, TextPath } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,6 +20,8 @@ export type LessonHeroProps = {
   chapter?: string;
   badge?: string;
   poster?: ImageSourcePropType;
+  posterPosition?: ImageContentPosition;
+  mediaLabel?: string;
   collapse: SharedValue<number>;
   topInset: number;
   onBack?: () => void;
@@ -36,6 +38,8 @@ export const LessonHero = ({
   chapter,
   badge,
   poster,
+  posterPosition = "center",
+  mediaLabel = "Video slot",
   collapse,
   topInset,
   onBack,
@@ -56,10 +60,12 @@ export const LessonHero = ({
       {children ? (
         <View style={StyleSheet.absoluteFill}>{children}</View>
       ) : poster ? (
-        <Image source={poster} style={StyleSheet.absoluteFill} resizeMode="cover" />
+        <View style={StyleSheet.absoluteFill}>
+          <Image source={poster} style={{ width: "100%", height: "100%" }} contentFit="cover" contentPosition={posterPosition} accessibilityLabel={`${title} preparation`} />
+        </View>
       ) : (
         <View style={[StyleSheet.absoluteFill, styles.plate]}>
-          <Text style={styles.plateText}>Video slot</Text>
+          <Text style={styles.plateText}>{mediaLabel}</Text>
         </View>
       )}
 

@@ -14,7 +14,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.tminjae1124.paws",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "PAWS needs camera access to record your dog's training videos for AI verification.",

@@ -1,5 +1,7 @@
+import { getTrainingClipPoster, getTrainingPosterPosition } from "@/features/train/media/trainingClipPosters";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Image, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Linking, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Image } from "expo-image";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -36,6 +38,10 @@ import { getTrainingClipLesson, getTrainingClipLessons } from "@/features/train/
 import { getTrainingClipAssets } from "@/features/train/media/trainingClipAssets";
 import { prepareTrainingClip } from "@/features/train/media/prepareTrainingClip";
 import { useTrainingClipPlayback } from "@/hooks/useTrainingClipPlayback";
+import { YouTubeEmbed } from "@/features/train/components/YouTubeEmbed";
+import { YouTubeControlsButton } from "@/features/train/components/YouTubeControlsButton";
+import { useYouTubeTrainingPlayback } from "@/hooks/useYouTubeTrainingPlayback";
+import { getTrainingYouTubeSegments, youtubeWatchUrl } from "@/features/train/media/trainingYouTube";
 import type { LessonCue } from "@/features/train/components/lessonScript";
 import { useLessonPlayback } from "@/hooks/useLessonPlayback";
 import { accent, bg, border, icon as iconSize, layout, radius, space, text, type } from "@/constants/design";
@@ -131,14 +137,20 @@ function LegacyLessonScreen() {
   const activeCard = cards[cardIndex] ?? null;
   const skillCode = levelDetail.data?.skill.skillCode;
   const clipLesson = getTrainingClipLesson(skillCode, levelDetail.data?.stageType, levelDetail.data?.levelNumber);
+  const youtubeSegments = getTrainingYouTubeSegments(skillCode, clipLesson?.levelNumber);
+  const hasYouTube = youtubeSegments.length > 0;
   const clipAssets = getTrainingClipAssets(skillCode, clipLesson?.levelNumber);
-  const preparationAssets = getTrainingClipAssets(skillCode, getTrainingClipLessons(skillCode)[0]?.levelNumber ?? 1);
-  const clipPlayback = useTrainingClipPlayback(
+  const preparationPoster = getTrainingClipPoster(skillCode, getTrainingClipLessons(skillCode)[0]?.levelNumber ?? 1);
+  const nativeClipPlayback = useTrainingClipPlayback(
     clipLesson,
     clipAssets?.source ?? null,
-    Boolean(preparationAccepted && session?.status === "active" && (clipLesson || activeCard?.type !== "completion")),
+    Boolean(!hasYouTube && preparationAccepted && session?.status === "active" && (clipLesson || activeCard?.type !== "completion")),
     clipLesson ? session?.id : activeCard?.key,
   );
+  const youtubePlayback = useYouTubeTrainingPlayback(clipLesson, youtubeSegments,
+    Boolean(hasYouTube && preparationAccepted && session?.status === "active"), 0, session?.id);
+  const youtubeSegment = youtubePlayback.segment;
+  const clipPlayback = youtubeSegment ? youtubePlayback : nativeClipPlayback;
 
   const nextClipSource = getTrainingClipAssets(skillCode, (clipLesson?.levelNumber ?? 0) + 1)?.source;
   useEffect(() => {
@@ -216,7 +228,7 @@ function LegacyLessonScreen() {
   };
 
   const handleStart = async () => {
-    if (clipActionPending.current || (clipLesson && (clipPlayback.loading || clipPlayback.error))) return;
+    if (clipActionPending.current || (clipLesson && !youtubeSegment && (clipPlayback.loading || clipPlayback.error))) return;
     clipActionPending.current = true;
     setSubmitting(true);
     setActionError(null);
@@ -342,7 +354,7 @@ function LegacyLessonScreen() {
   const isCompletion = !clipLesson && card?.type === "completion";
   const isClipSession = Boolean(clipLesson && session && !isPreparing);
   // The sheet overlaps the hero by space.xl, leaving 40% above its edge.
-  const clipHeroHeight = Math.round(height * 0.4) + space.xl;
+  const clipHeroHeight = Math.max(Math.round(height * 0.4), youtubeSegment ? insets.top + 60 + 200 : 0) + space.xl;
 
   const clockDone = Boolean(clipLesson) || cardCues.length === 0 || playback.status === "ended";
   const spokenCue = playback.status === "idle" ? -1 : Math.min(
@@ -371,12 +383,12 @@ function LegacyLessonScreen() {
             topInset={insets.top}
             showChrome={false}
           >
-            <View style={[styles.clipStage, { paddingTop: insets.top + 60 }]}>
-              {preparationAssets?.poster || levelDetail.data?.media?.posterUrl ? (
+            <View style={{ flex: 1 }}>
+              {preparationPoster || levelDetail.data?.media?.posterUrl ? (
                 <Image
-                  source={preparationAssets?.poster ?? { uri: levelDetail.data!.media!.posterUrl! }}
+                  source={preparationPoster ?? { uri: levelDetail.data!.media!.posterUrl! }}
                   style={styles.preparationPoster}
-                  resizeMode="cover"
+                  contentFit="cover" contentPosition={getTrainingPosterPosition(skillCode)}
                   accessibilityLabel={`${levelDetail.data?.skill.title} preparation`}
                 />
               ) : <View style={[styles.preparationPoster, styles.preparationPlaceholder]} />}
@@ -384,7 +396,8 @@ function LegacyLessonScreen() {
           </LessonHero>
         ) : clipLesson ? (
           <View style={[styles.clipStage, { paddingTop: insets.top + 60 }]}>
-            <TrainingClipVideo playback={clipPlayback} poster={clipAssets?.poster} contentFit="cover" />
+            {youtubePlayback.embedProps ? <YouTubeEmbed key={youtubePlayback.embedKey} {...youtubePlayback.embedProps} />
+              : <TrainingClipVideo playback={nativeClipPlayback} poster={clipAssets?.poster} contentFit="cover" />}
           </View>
         ) : <LessonHero
           title={levelDetail.data?.title ?? ""}
@@ -414,7 +427,7 @@ function LegacyLessonScreen() {
           </PressScale>
         )}
 
-        {!isPreparing && session && card ? (
+        {!isPreparing && youtubeSegment ? <YouTubeControlsButton expanded={youtubePlayback.showControls} onPress={youtubePlayback.toggleControls} /> : !isPreparing && session && card ? (
           <View style={styles.progressDots}>
             {clipLesson ? getTrainingClipLessons(skillCode).map((item) => (
               <View key={item.id} style={[styles.dot, item.levelNumber === clipLesson.levelNumber && styles.dotActive]} />
@@ -446,6 +459,12 @@ function LegacyLessonScreen() {
         <View style={[styles.sheet, styles.clipSheet, { marginTop: clipHeroHeight - space.xl }]}>
           <Text style={styles.title}>{levelDetail.data?.title}</Text>
           <TrainingClipGuide key={clipLesson.id} lesson={clipLesson} playback={clipPlayback} />
+          {youtubeSegment && youtubePlayback.error ? <>
+            <Text style={styles.errorText}>{youtubePlayback.error}</Text>
+            <PressScale accessibilityRole="link" accessibilityLabel="Open original video on YouTube" onPress={() => {
+              youtubePlayback.pause(); void Linking.openURL(youtubeWatchUrl(youtubeSegment)).catch(() => {});
+            }}><Text style={styles.body}>Open on YouTube ↗</Text></PressScale>
+          </> : null}
           {actionError ? <Text style={styles.errorText}>{actionError}</Text> : null}
         </View>
       ) : <Animated.ScrollView
@@ -532,13 +551,13 @@ function LegacyLessonScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={isNewSession ? "Start, uses 1 Energy" : "Continue"}
                 style={[styles.primaryButton, submitting && styles.primaryButtonDisabled]}
-                disabled={submitting || (isNewSession && remaining === 0) || Boolean(clipLesson && (clipPlayback.loading || clipPlayback.error))}
+                disabled={submitting || (isNewSession && remaining === 0) || Boolean(clipLesson && !youtubeSegment && (clipPlayback.loading || clipPlayback.error))}
                 onPress={() => void handleStart()}
               >
                 <Text style={styles.primaryButtonText}>
-                  {clipLesson && clipPlayback.loading
+                  {clipLesson && !youtubeSegment && clipPlayback.loading
                     ? "Preparing video…"
-                    : clipLesson && clipPlayback.error
+                    : clipLesson && !youtubeSegment && clipPlayback.error
                     ? "Video unavailable"
                     : submitting
                     ? "Starting…"

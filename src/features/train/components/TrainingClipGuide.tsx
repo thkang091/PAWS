@@ -5,9 +5,9 @@ import { accent, border, radius, space, text, type } from "@/constants/design";
 import type { TrainingClipLesson } from "@/features/train/media/doorwayWaitLesson";
 import type { TrainingClipPlayback } from "@/hooks/useTrainingClipPlayback";
 
-const stamp = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
+type GuidePlayback = Pick<TrainingClipPlayback, "time" | "currentCue" | "error" | "seek" | "retry">;
 
-export const TrainingClipGuide = memo(function TrainingClipGuide({ lesson, playback }: { lesson: TrainingClipLesson; playback: TrainingClipPlayback }) {
+export const TrainingClipGuide = memo(function TrainingClipGuide({ lesson, playback }: { lesson: TrainingClipLesson; playback: GuidePlayback }) {
   const scroll = useRef<ScrollView>(null);
   const [rows, setRows] = useState<Record<number, { y: number; height: number }>>({});
   const [viewportHeight, setViewportHeight] = useState(0);
@@ -43,11 +43,11 @@ export const TrainingClipGuide = memo(function TrainingClipGuide({ lesson, playb
         offset.current = nativeEvent.contentOffset.y;
         if (Date.now() > autoUntil.current) holdAutoScroll();
       }}>
-      {cues.map((cue) => <View key={`${lesson.id}-${cue.at}`} onLayout={({ nativeEvent: { layout } }) => {
+      {cues.map((cue, index) => <View key={`${lesson.id}-${cue.at}`} onLayout={({ nativeEvent: { layout } }) => {
         setRows((previous) => previous[cue.at]?.y === layout.y && previous[cue.at]?.height === layout.height ? previous : { ...previous, [cue.at]: { y: layout.y, height: layout.height } });
       }}>
-        <PressScale accessibilityRole="button" accessibilityState={{ selected: activeAt === cue.at }} accessibilityLabel={`${stamp(cue.at)}. ${cue.text}`} onPress={() => { manualUntil.current = 0; playback.seek(cue.at); }} style={[styles.cue, activeAt === cue.at && styles.selected]}>
-          <Text style={styles.timestamp}>{stamp(cue.at)}</Text>
+        <PressScale accessibilityRole="button" accessibilityState={{ selected: activeAt === cue.at }} accessibilityLabel={`${index + 1}. ${cue.text}`} onPress={() => { manualUntil.current = 0; playback.seek(cue.at); }} style={[styles.cue, activeAt === cue.at && styles.selected]}>
+          <Text style={styles.timestamp}>{index + 1}</Text>
           <Text style={[styles.caption, activeAt === cue.at && styles.captionSelected]}>{cue.text}</Text>
         </PressScale>
       </View>)}
@@ -59,15 +59,18 @@ export const TrainingClipGuide = memo(function TrainingClipGuide({ lesson, playb
   && previous.playback.error === next.playback.error
   && previous.playback.seek === next.playback.seek && previous.playback.retry === next.playback.retry);
 
-export function TrainingClipTimeline({ lesson, playback }: { lesson: TrainingClipLesson; playback: TrainingClipPlayback }) {
+export function TrainingClipTimeline({ lesson, playback }: { lesson: TrainingClipLesson; playback: GuidePlayback }) {
   const [trackWidth, setTrackWidth] = useState(1);
-  const seekPosition = (x: number) => playback.seek(Math.max(0, Math.min(1, x / trackWidth)) * lesson.duration);
+  const cues = lesson.steps.flatMap(step => step.cues);
+  const activeIndex = Math.max(0, cues.findIndex(cue => cue.at === playback.currentCue?.at));
+  const seekIndex = (index: number) => { const cue = cues[Math.max(0, Math.min(cues.length - 1, index))]; if (cue) playback.seek(cue.at); };
+  const seekPosition = (x: number) => seekIndex(Math.round(Math.max(0, Math.min(1, x / trackWidth)) * (cues.length - 1)));
   return (
     <View style={styles.meter}>
-      <View testID="training-timeline" style={styles.seekArea} accessible accessibilityRole="adjustable" accessibilityLabel="Video timeline" accessibilityValue={{ min: 0, max: lesson.duration, now: playback.time }} accessibilityActions={[{ name: "increment" }, { name: "decrement" }]} onAccessibilityAction={({ nativeEvent }) => playback.seek(playback.time + (nativeEvent.actionName === "increment" ? 1 : -1))} onLayout={({ nativeEvent }) => setTrackWidth(nativeEvent.layout.width)} onStartShouldSetResponder={() => true} onMoveShouldSetResponder={() => true} onResponderGrant={({ nativeEvent }) => seekPosition(nativeEvent.locationX)} onResponderMove={({ nativeEvent }) => seekPosition(nativeEvent.locationX)}>
-        <View pointerEvents="none" style={styles.track}><View style={[styles.fill, { width: `${Math.min(100, playback.time / lesson.duration * 100)}%` }]} /></View>
+      <View testID="training-timeline" style={styles.seekArea} accessible accessibilityRole="adjustable" accessibilityLabel="Instruction sequence" accessibilityValue={{ min: 1, max: cues.length, now: activeIndex + 1, text: `${activeIndex + 1} of ${cues.length}` }} accessibilityActions={[{ name: "increment" }, { name: "decrement" }]} onAccessibilityAction={({ nativeEvent }) => seekIndex(activeIndex + (nativeEvent.actionName === "increment" ? 1 : -1))} onLayout={({ nativeEvent }) => setTrackWidth(nativeEvent.layout.width)} onStartShouldSetResponder={() => true} onMoveShouldSetResponder={() => true} onResponderRelease={({ nativeEvent }) => seekPosition(nativeEvent.locationX)}>
+        <View pointerEvents="none" style={styles.track}><View style={[styles.fill, { width: `${(activeIndex + 1) / Math.max(1, cues.length) * 100}%` }]} /></View>
       </View>
-      <Text style={styles.remaining}>{stamp(Math.max(0, lesson.duration - playback.time))}</Text>
+      <Text style={styles.remaining}>{activeIndex + 1} / {cues.length}</Text>
     </View>
   );
 }
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
   scriptContent: { paddingBottom: space.xs },
   cue: { flexDirection: "row", alignItems: "flex-start", gap: space.sm, paddingHorizontal: space.md, paddingVertical: 10, minHeight: 48, borderRadius: radius.control },
   selected: { backgroundColor: accent.primary },
-  timestamp: { ...type.caption, lineHeight: 23, color: text.primary, fontVariant: ["tabular-nums"] },
+  timestamp: { ...type.caption, minWidth: 18, textAlign: "center", fontWeight: "600", lineHeight: 23, color: text.primary, fontVariant: ["tabular-nums"] },
   caption: { flex: 1, fontSize: 17, lineHeight: 23, color: text.secondary },
   captionSelected: { color: text.primary, fontWeight: "600" },
   meter: { flexDirection: "row", alignItems: "center", gap: space.sm },

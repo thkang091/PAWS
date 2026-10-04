@@ -73,6 +73,12 @@ Build-time native API keys must be configured separately in EAS if needed.
 - Build 2 succeeded and passed IPA dependency verification (20 binaries, 76
   required `@rpath` references, including embedded ExpoModulesJSI):
   https://expo.dev/accounts/tminjae1124/projects/paws/builds/57213495-5dd2-48e8-9da7-39d1dd5d2a18
+- Build 3 (2026-10-04) adds native WebView for the 1-1 YouTube pilot. Use this
+  build for current source; build 2 lacks `RNCWebViewModule`. The IPA passed the
+  same 20-binary/76-reference check and contains native `RNCWebViewModule` and
+  `RNCWebViewImpl` classes. Install on the registered iPhone, then reconnect to
+  Metro and verify playback:
+  https://expo.dev/accounts/tminjae1124/projects/paws/builds/18920e7a-59e1-4f53-ad45-a884a7e37ba4
 
 Official guide: https://docs.expo.dev/tutorial/eas/ios-development-build-for-devices/
 

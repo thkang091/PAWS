@@ -1,5 +1,5 @@
-// Bundled for the first lesson pilot: works on devices without desktop file paths
-// or a separate Storage upload. Other lessons can use hosted sources later.
+// Historical local pilot mapping. No runtime imports: 1-1 now uses the official
+// YouTube segments in trainingYouTube.ts. Retained only as provenance.
 export const DOORWAY_WAIT_SOURCES: Record<number, number> = {
   1: require("../../../../assets/training/doorway-wait/level-1.mp4"),
   2: require("../../../../assets/training/doorway-wait/level-2.mp4"),
