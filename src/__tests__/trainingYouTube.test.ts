@@ -15,7 +15,7 @@ describe("1-1 original YouTube ranges", () => {
       }
     }
     expect(getTrainingYouTubeSegment("1-2", 1)?.videoId).toBe("5kstTBK0ks8");
-    expect(getTrainingYouTubeSegment("6-5", 5)).toBeNull();
+    expect(getTrainingYouTubeSegment("7-1", 1)).toBeNull();
     expect(getTrainingYouTubeSegment("1-1", 6)).toBeNull();
     expect(getTrainingYouTubeSegment("1-1", null)).toBeNull();
   });
@@ -30,8 +30,11 @@ describe("1-1 original YouTube ranges", () => {
   });
 });
 
-describe("Section 1 montage conversion", () => {
-  test.each(["1-1", "1-2", "1-3", "1-4", "1-5"])("%s covers each level and every cue without gaps or lost examples", skill => {
+const curriculumSkills = [1, 2, 3, 4, 5, 6].flatMap(section =>
+  Array.from({ length: section === 5 ? 3 : 5 }, (_, index) => `${section}-${index + 1}`));
+
+describe("Original YouTube curriculum coverage", () => {
+  test.each(curriculumSkills)("%s covers each level without gaps or misaligned captions", skill => {
     const lessons = getTrainingClipLessons(skill);
     expect(lessons).toHaveLength(5);
     for (const lesson of lessons) {
@@ -58,12 +61,31 @@ describe("Section 1 montage conversion", () => {
   });
   test("source switches map later cues and review positions into their own original", () => {
     const parts = getTrainingYouTubeSegments("1-5", 1);
-    expect(parts.map(part => part.videoId)).toEqual(["yr1olzgidMw", "4wBApkKuEVI", "RsqdKr_vzJY", "U2c5EkytNU0"]);
-    const later = parts[2];
+    expect(parts.map(part => part.videoId)).toEqual(["yr1olzgidMw", "RsqdKr_vzJY"]);
+    const later = parts[1];
     const reviewAt = later.clipStartSeconds! + 1;
-    expect(youtubeSegmentIndexAt(parts, reviewAt)).toBe(2);
+    expect(youtubeSegmentIndexAt(parts, reviewAt)).toBe(1);
     expect(youtubeSourceTime(later, reviewAt)).toBe(43);
     expect(youtubeLocalTime(later, 43)).toBe(reviewAt);
+  });
+  test("a cut inside one acquired clip keeps later captions in the second original interval", () => {
+    const parts = getTrainingYouTubeSegments("6-1", 1);
+    expect(parts).toHaveLength(2);
+    expect(parts[0].startSeconds).toBe(33.3);
+    expect(parts[1].startSeconds).toBe(53.9);
+    expect(parts[1].clipStartSeconds).toBe(5.7);
+    const toyReturn = getTrainingClipLessons("6-1")[0].steps[0].cues[3];
+    expect(youtubeSegmentIndexAt(parts, toyReturn.at)).toBe(1);
+    expect(youtubeSourceTime(parts[1], toyReturn.at)).toBeCloseTo(54.5, 5);
+    expect(youtubeLocalTime(parts[1], 54.5)).toBeCloseTo(toyReturn.at, 5);
+  });
+  test("historical screen-recording timestamps are translated to the original clock", () => {
+    for (const [skill, level] of [["2-1", 5], ["2-4", 2]] as const) {
+      const parts = getTrainingYouTubeSegments(skill, level);
+      const doorway = parts.find(part => part.videoId === "s0gz8sOZsWw")!;
+      expect(doorway).toBeDefined();
+      expect(doorway.startSeconds).toBeCloseTo(113.9667, 3);
+    }
   });
 });
 
@@ -73,6 +95,9 @@ test("bridge ignores unrelated or malformed messages", () => {
   expect(parseYouTubeEvent('{"channel":"paws-youtube","type":"rate","rate":0.75}')).toEqual({ type: "rate", rate: 0.75 });
   expect(parseYouTubeEvent('{"channel":"paws-youtube","type":"rate","rate":0}')).toBeNull();
   expect(parseYouTubeEvent('{"channel":"paws-youtube","type":"ended"}')).toEqual({ type: "ended" });
+  expect(parseYouTubeEvent('{"channel":"paws-youtube","type":"mute","muted":true,"request":4}')).toEqual({ type: "mute", muted: true, request: 4 });
+  expect(parseYouTubeEvent('{"channel":"paws-youtube","type":"mute","muted":"true"}')).toBeNull();
+  expect(parseYouTubeEvent('{"channel":"paws-youtube","type":"ready","request":-1}')).toBeNull();
 });
 
 test.each([false, true])("document with controls=%s preserves cue position, selected rate, end and pause", (showControls) => {
@@ -81,7 +106,10 @@ test.each([false, true])("document with controls=%s preserves cue position, sele
     showControls ? { showControls, playbackRate: 0.75 } : undefined);
   const expectedRate = showControls ? 0.75 : 0.5;
   const script = html.match(/<script>([\s\S]*?)<\/script>/)![1];
-  const player = { cueVideoById: jest.fn(), loadVideoById: jest.fn(), pauseVideo: jest.fn(), destroy: jest.fn(), getCurrentTime: () => 118, getPlayerState: () => 1, getAvailablePlaybackRates: () => [0.25, 0.5, 0.75, 1, 1.5, 2], setPlaybackRate: jest.fn() };
+  let time = 118;
+  const player = { cueVideoById: jest.fn(), loadVideoById: jest.fn(), pauseVideo: jest.fn(), destroy: jest.fn(),
+    mute: jest.fn(), unMute: jest.fn(), isMuted: () => true, getVideoUrl: () => `https://www.youtube.com/watch?v=${segment.videoId}`,
+    getCurrentTime: () => time, getPlayerState: () => 1, getAvailablePlaybackRates: () => [0.25, 0.5, 0.75, 1, 1.5, 2], setPlaybackRate: jest.fn() };
   const events: Record<string, () => void> = {};
   let options: any;
   let tick: () => void = () => {};
@@ -97,6 +125,8 @@ test.each([false, true])("document with controls=%s preserves cue position, sele
   expect(options.playerVars).toMatchObject({ controls: showControls ? 1 : 0, fs: showControls ? 1 : 0, iv_load_policy: 3, autoplay: 0, playsinline: 1 });
   expect(options.playerVars.cc_load_policy).toBeUndefined();
   options.events.onReady();
+  expect(player.mute).toHaveBeenCalledTimes(1);
+  expect(player.unMute).not.toHaveBeenCalled();
   expect(player.cueVideoById).toHaveBeenCalledWith({ videoId: segment.videoId, startSeconds: segment.startSeconds + 1, endSeconds: segment.endSeconds });
   expect(player.loadVideoById).not.toHaveBeenCalled();
   options.events.onStateChange({ data: 5 });
@@ -111,9 +141,10 @@ test.each([false, true])("document with controls=%s preserves cue position, sele
   options.events.onStateChange({ data: 1 });
   expect(player.setPlaybackRate).toHaveBeenLastCalledWith(0.75);
   tick();
-  expect(parseYouTubeEvent(window.ReactNativeWebView.postMessage.mock.calls.at(-1)[0])).toEqual({ type: "time", seconds: 118, state: 1 });
+  expect(parseYouTubeEvent(window.ReactNativeWebView.postMessage.mock.calls.at(-1)[0])).toEqual({ type: "time", seconds: 118, state: 1, request: 0 });
   const endedCount = () => window.ReactNativeWebView.postMessage.mock.calls.filter(
     ([message]: [string]) => parseYouTubeEvent(message)?.type === "ended").length;
+  time = segment.endSeconds;
   options.events.onStateChange({ data: 0 });
   options.events.onStateChange({ data: 0 });
   expect(endedCount()).toBe(1);
@@ -133,6 +164,7 @@ test.each([false, true])("document with controls=%s preserves cue position, sele
   expect(player.pauseVideo).toHaveBeenCalled();
   options.events.onStateChange({ data: 0 });
   expect(endedCount()).toBe(1);
+  window.pawsYouTubeCommand({ type: "play", at: segment.startSeconds });
   options.events.onStateChange({ data: 1 });
   options.events.onStateChange({ data: 0 });
   expect(endedCount()).toBe(2);

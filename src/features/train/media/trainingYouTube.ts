@@ -1,4 +1,6 @@
 import section1 from "./section1YouTube.generated.json";
+import sections2to6 from "./sections2to6YouTube.generated.json";
+import { focusSegments, TRAINING_CLIP_FOCUS } from "./trainingClipFocus";
 
 export type YouTubeSegment = {
   videoId: string;
@@ -35,9 +37,19 @@ export function getTrainingYouTubeSegment(skillCode?: string, level?: number | n
 const courses: Readonly<Record<string, Readonly<Record<number, readonly YouTubeSegment[]>>>> = {
   "1-1": Object.fromEntries(Object.entries(doorwaySegments).map(([level, segment]) => [level, [segment]])),
   ...section1,
+  ...sections2to6,
 };
+const focusedCourses = Object.fromEntries(Object.entries(courses).map(([skill, levels]) => [skill,
+  Object.fromEntries(Object.entries(levels).map(([level, segments]) => [level,
+    focusSegments(segments, TRAINING_CLIP_FOCUS[skill]?.[Number(level)]),
+  ])),
+]));
 const empty: readonly YouTubeSegment[] = [];
 export function getTrainingYouTubeSegments(skillCode?: string, level?: number | null): readonly YouTubeSegment[] {
+  return skillCode && level ? focusedCourses[skillCode]?.[level] ?? empty : empty;
+}
+
+export function getOriginalTrainingYouTubeSegments(skillCode?: string, level?: number | null): readonly YouTubeSegment[] {
   return skillCode && level ? courses[skillCode]?.[level] ?? empty : empty;
 }
 

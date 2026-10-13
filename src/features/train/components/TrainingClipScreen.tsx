@@ -9,12 +9,14 @@ import type { TrainingClipPlayback } from "@/hooks/useTrainingClipPlayback";
 import { TrainingClipGuide, TrainingClipTimeline } from "./TrainingClipGuide";
 import { TrainingFlowButton } from "./flow/TrainingFlowScreen";
 
-export function TrainingClipScreen({ title, lesson, playback, video, minimumVideoHeight, videoActions, sourceLink, navigation,
+export type LessonProgressSlot = ReactNode | ((playbackProgress: number) => ReactNode);
+
+export function TrainingClipScreen({ title, lesson, playback, video, minimumVideoHeight, videoActions, sourceLink, navigation, lessonProgress,
   onClose, onContinue, onReplay, onHelp, continueLabel = "Continue", continueDisabled = false, replayDisabled = false,
   busy = false, error }: {
   title: string; lesson: TrainingClipLesson;
   playback: Pick<TrainingClipPlayback, "time" | "currentCue" | "error" | "seek" | "retry">;
-  video: ReactNode; minimumVideoHeight?: number; videoActions?: ReactNode; sourceLink?: ReactNode; navigation?: ReactNode;
+  video: ReactNode; minimumVideoHeight?: number; videoActions?: ReactNode; sourceLink?: ReactNode; navigation?: ReactNode; lessonProgress?: LessonProgressSlot;
   onClose: () => void; onContinue: () => void; onReplay: () => void; onHelp?: () => void;
   continueLabel?: string; continueDisabled?: boolean; replayDisabled?: boolean; busy?: boolean; error?: string | null;
 }) {
@@ -36,7 +38,9 @@ export function TrainingClipScreen({ title, lesson, playback, video, minimumVide
       {error ? <Text accessibilityLiveRegion="polite" style={styles.error}>{error}</Text> : null}
     </View>
     <View style={[styles.footer, { paddingBottom: insets.bottom + space.lg }]}>
-      <TrainingClipTimeline lesson={lesson} playback={playback} />
+      {typeof lessonProgress === 'function'
+        ? lessonProgress(lesson.duration > 0 ? Math.max(0, Math.min(1, playback.time / lesson.duration)) : 0)
+        : lessonProgress ?? <TrainingClipTimeline lesson={lesson} playback={playback} />}
       <View style={styles.controls}>
         <PressScale accessibilityRole="button" accessibilityLabel="Watch again" disabled={replayDisabled} style={styles.round} onPress={onReplay}><ArrowCounterClockwiseIcon size={24} color={text.primary} /></PressScale>
         <View style={styles.flex}><TrainingFlowButton label={busy ? "Saving…" : continueLabel} disabled={busy || continueDisabled} onPress={onContinue} /></View>

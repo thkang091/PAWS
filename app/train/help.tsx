@@ -25,7 +25,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 import { ArrowRightIcon, XIcon } from "phosphor-react-native";
 
@@ -35,6 +35,8 @@ import { StepRail } from "@/features/train/components/coach/StepRail";
 import { UserBubble } from "@/features/train/components/coach/UserBubble";
 import { CURRENT_LESSON } from "@/features/train/components/currentLesson";
 import { getTrainingClipLessons } from "@/features/train/media/trainingClipLessons";
+import { makeRefresherQuestion } from '@/features/train/rounds/refresherQuestion';
+import { isCoachConversation, recordCoachConversation, type CoachPracticeContext } from '@/services/coachPractice';
 import { PressScale } from "@/components/ui/PressScale";
 import { buildChapters } from "@/constants/trainingChapters";
 import { queryKeys } from "@/constants/queryKeys";
@@ -69,7 +71,9 @@ const DISMISS_DISTANCE = 140;
 const DISMISS_VELOCITY = 0.5;
 
 export default function CoachSheet() {
-  const params = useLocalSearchParams<{ step?: string; state?: string; dayId?: string; skillId?: string; levelId?: string; cardIndex?: string; preview?: string; previewLevel?: string; clip?: string }>();
+  const params = useLocalSearchParams<{ step?: string; state?: string; dayId?: string; skillId?: string; levelId?: string; cardIndex?: string; preview?: string; previewLevel?: string; clip?: string; reinforcement?: string; dogId?: string; roundId?: string; sessionId?: string; reviewAt?: string; skillCode?: string; levelNumber?: string; lessonTitle?: string }>();
+  const queryClient = useQueryClient();
+  const recorded = useRef(false);
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
@@ -168,6 +172,7 @@ export default function CoachSheet() {
     stepIndex,
     struggleStep: chosen,
     sessionState,
+    reinforcement: params.reinforcement === "1",
     dog: dogName ? { name: dogName, breed: dog.data?.breed ?? null, ageYears: dog.data?.ageYears ?? null } : null,
     programme,
   };
@@ -237,14 +242,36 @@ export default function CoachSheet() {
     transform: [{ translateY: (1 - open.value) * sheetHeight + drag.value }],
   }));
 
+  const saveConversation = async (context: CoachPracticeContext) => {
+    try {
+      await recordCoachConversation(context);
+      recorded.current = true;
+      setNotice(null);
+      void queryClient.invalidateQueries({ queryKey: ['trainingRound', context.dogId, context.skillId] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.allTrainingSectionRoadmaps(context.dogId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.dogTrainingOverview(context.dogId) });
+    } catch {
+      setNotice({ text: 'Your reply is here. Saving this practice will retry when you continue.',
+        action: { label: 'Retry saving', run: () => { void saveConversation(context); } } });
+    }
+  };
+
   const reply = async (history: Turn[]) => {
     setBusy(true);
     setFailure(null);
+    // Freeze the lesson context before awaiting a response or leaving the sheet.
+    const conversationClip = realClip ?? (params.skillCode ? getTrainingClipLessons(params.skillCode).find(item => item.levelNumber === Number(params.levelNumber)) : null);
+    const selectedCue = chosen !== null && chosen >= 0 ? conversationClip?.steps[chosen]?.cues[0]?.at : undefined;
+    const at = selectedCue ?? (Number.isFinite(Number(params.reviewAt)) ? Number(params.reviewAt) : 0);
+    const practice: CoachPracticeContext | null = params.dogId && params.skillId && params.roundId && params.sessionId && conversationClip && (levelDetail.data || params.skillCode)
+      ? { dogId: params.dogId, skillId: params.skillId, roundId: params.roundId, sessionId: params.sessionId,
+        question: makeRefresherQuestion(levelDetail.data?.skill.skillCode ?? params.skillCode!, levelDetail.data?.skill.title ?? params.lessonTitle ?? lesson.title, conversationClip, at) } : null;
     const result = await askCoach({ ...brief }, history);
     setBusy(false);
     if (result.state === "ready") {
       void Haptics.selectionAsync();
       setTurns((current) => [...current, { id: nextId(), role: "coach", text: result.text }]);
+      if (!recorded.current && practice && isCoachConversation(history, result)) await saveConversation(practice);
     } else {
       setFailure({
         text:

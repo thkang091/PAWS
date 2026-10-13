@@ -1,13 +1,10 @@
-import { SECTIONS23_ASSETS } from "./sections23Assets.generated";
-import { SECTION4_ASSETS } from "./section4Assets.generated";
-import { SECTION5_ASSETS } from "./section5Assets.generated";
-import { SECTION6_ASSETS } from "./section6Assets.generated";
+type TrainingClipAssets = { source: number; poster: number };
 
-export function getTrainingClipAssets(skillCode?: string, levelNumber?: number | null) {
-  if (!levelNumber) return null;
-  if (skillCode && SECTION5_ASSETS[skillCode]) return SECTION5_ASSETS[skillCode][levelNumber] ?? null;
-  if (skillCode && SECTION6_ASSETS[skillCode]) return SECTION6_ASSETS[skillCode][levelNumber] ?? null;
-  if (skillCode && SECTION4_ASSETS[skillCode]) return SECTION4_ASSETS[skillCode][levelNumber] ?? null;
-  if (skillCode && SECTIONS23_ASSETS[skillCode]) return SECTIONS23_ASSETS[skillCode][levelNumber] ?? null;
-  return null;
+// All acquired curriculum clips now use the official YouTube player. Keep the
+// native-provider interface for legacy callers, without bundling offline MP4s.
+// Historical exports/registries stay on disk for provenance and rollback.
+const nativeClips: Record<string, Record<number, TrainingClipAssets>> = {};
+
+export function getTrainingClipAssets(skillCode?: string, levelNumber?: number | null): TrainingClipAssets | null {
+  return skillCode && levelNumber ? nativeClips[skillCode]?.[levelNumber] ?? null : null;
 }

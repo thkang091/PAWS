@@ -42,7 +42,7 @@ const mapSkillSummary = (row: Record<string, unknown>): TrainingSkillSummary => 
   sortOrder: row.sort_order as number,
 });
 
-const mapSkillProgress = (row: Record<string, unknown>): DogTrainingSkillProgress => ({
+const mapSkillProgress = (row: Record<string, unknown>, needsReinforcement = false): DogTrainingSkillProgress => ({
   skillId: row.skill_id as string,
   status: row.status as DogTrainingSkillProgress["status"],
   currentLevelNumber: row.current_level_number as number,
@@ -52,7 +52,20 @@ const mapSkillProgress = (row: Record<string, unknown>): DogTrainingSkillProgres
   lastPracticedAt: (row.last_practiced_at as string | null) ?? null,
   completedAt: (row.completed_at as string | null) ?? null,
   level5CompletedAt: (row.level5_completed_at as string | null) ?? null,
+  needsReinforcement,
 });
+
+// Read alongside progress so the roadmap and history use the same difficulty
+// condition as the server's round completion / video unlock response.
+const getSkillsNeedingReinforcement = async (dogId: string): Promise<Set<string>> => {
+  const { data, error } = await getClientOrThrow().from("training_level_difficulties")
+    .select("training_levels!inner(skill_id)").eq("dog_id", dogId).is("resolved_at", null);
+  throwIfError(error);
+  return new Set((data ?? []).flatMap(row => {
+    const levels = row.training_levels as unknown as { skill_id: string } | { skill_id: string }[];
+    return (Array.isArray(levels) ? levels : [levels]).map(level => level.skill_id);
+  }));
+};
 
 const mapPreferences = (row: Record<string, unknown>): DogTrainingPreferences => ({
   dogId: row.dog_id as string,
@@ -151,17 +164,18 @@ export const getTrainingSections = async (): Promise<TrainingSection[]> => {
 
 export const getSectionRoadmap = async (dogId: string, sectionId: string): Promise<SectionRoadmap> => {
   const client = getClientOrThrow();
-  const [sectionResult, skillsResult, progressResult] = await Promise.all([
+  const [sectionResult, skillsResult, progressResult, needsReinforcement] = await Promise.all([
     client.from("training_sections").select("*").eq("id", sectionId).single(),
     client.from("training_skills").select("*").eq("section_id", sectionId).order("sort_order", { ascending: true }),
     client.from("dog_training_skill_progress").select("*").eq("dog_id", dogId),
+    getSkillsNeedingReinforcement(dogId),
   ]);
   throwIfError(sectionResult.error);
   throwIfError(skillsResult.error);
   throwIfError(progressResult.error);
 
   const progressBySkillId = new Map(
-    (progressResult.data ?? []).map((row) => [row.skill_id as string, mapSkillProgress(row as Record<string, unknown>)]),
+    (progressResult.data ?? []).map((row) => [row.skill_id as string, mapSkillProgress(row as Record<string, unknown>, needsReinforcement.has(row.skill_id as string))]),
   );
 
   return {
@@ -361,17 +375,18 @@ export const getDueReviews = async (dogId: string): Promise<TrainingReviewAssign
 
 export const getAllSectionRoadmaps = async (dogId: string): Promise<SectionRoadmap[]> => {
   const client = getClientOrThrow();
-  const [sectionsResult, skillsResult, progressResult] = await Promise.all([
+  const [sectionsResult, skillsResult, progressResult, needsReinforcement] = await Promise.all([
     client.from("training_sections").select("*").order("section_number", { ascending: true }),
     client.from("training_skills").select("*").order("sort_order", { ascending: true }),
     client.from("dog_training_skill_progress").select("*").eq("dog_id", dogId),
+    getSkillsNeedingReinforcement(dogId),
   ]);
   throwIfError(sectionsResult.error);
   throwIfError(skillsResult.error);
   throwIfError(progressResult.error);
 
   const progressBySkillId = new Map(
-    (progressResult.data ?? []).map((row) => [row.skill_id as string, mapSkillProgress(row as Record<string, unknown>)]),
+    (progressResult.data ?? []).map((row) => [row.skill_id as string, mapSkillProgress(row as Record<string, unknown>, needsReinforcement.has(row.skill_id as string))]),
   );
   const skillsBySectionId = new Map<string, TrainingSkillSummary[]>();
   for (const row of skillsResult.data ?? []) {
@@ -399,11 +414,11 @@ export type DogTrainingOverviewRow = {
 
 export const getDogTrainingOverview = async (dogId: string): Promise<DogTrainingOverviewRow[]> => {
   const client = getClientOrThrow();
-  const { data, error } = await client
+  const [{ data, error }, needsReinforcement] = await Promise.all([client
     .from("dog_training_skill_progress")
     .select("*, training_skills(*, training_sections(title))")
     .eq("dog_id", dogId)
-    .order("last_practiced_at", { ascending: false, nullsFirst: false });
+    .order("last_practiced_at", { ascending: false, nullsFirst: false }), getSkillsNeedingReinforcement(dogId)]);
   throwIfError(error);
   return (data ?? []).map((row) => {
     const record = row as Record<string, unknown> & {
@@ -412,7 +427,7 @@ export const getDogTrainingOverview = async (dogId: string): Promise<DogTraining
     return {
       skill: mapSkillSummary(record.training_skills),
       sectionTitle: record.training_skills.training_sections.title,
-      progress: mapSkillProgress(record),
+      progress: mapSkillProgress(record, needsReinforcement.has(record.skill_id as string)),
     };
   });
 };

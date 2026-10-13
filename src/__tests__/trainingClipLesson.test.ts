@@ -1,6 +1,7 @@
 import { DOORWAY_WAIT_LESSONS, clipCueAt, getDoorwayWaitLesson, stepPlaybackRange } from "../features/train/media/doorwayWaitLesson";
 import { FURNITURE_BOUNDARY_LESSONS } from "../features/train/media/furnitureBoundaryLesson";
 import { getTrainingClipLesson } from "../features/train/media/trainingClipLessons";
+import { TRAINING_CLIP_FOCUS } from "../features/train/media/trainingClipFocus";
 import basicRulesLessons from "../features/train/media/basicRulesLessons.generated.json";
 import sections23Lessons from "../features/train/media/sections23Lessons.generated.json";
 import sections23Coverage from "../features/train/media/sections23Coverage.generated.json";
@@ -38,14 +39,22 @@ describe("doorway wait instructional clips", () => {
 
   test.each(Object.entries(basicRulesLessons))("%s connects exactly five distinct Levels", (skill, lessons) => {
     expect(lessons.map(lesson => lesson.levelNumber)).toEqual([1, 2, 3, 4, 5]);
-    lessons.forEach(lesson => expect(getTrainingClipLesson(skill, "level", lesson.levelNumber)).toBe(lesson));
+    lessons.forEach(lesson => {
+      const connected = getTrainingClipLesson(skill, "level", lesson.levelNumber);
+      expect(connected).toMatchObject({ id: lesson.id, levelNumber: lesson.levelNumber });
+      if (!TRAINING_CLIP_FOCUS[skill]?.[lesson.levelNumber]) expect(connected).toBe(lesson);
+    });
     expect(getTrainingClipLesson(skill, "level", 6)).toBeNull();
     expect(getTrainingClipLesson(skill, "checkpoint", null)).toBeNull();
   });
 
   test.each(Object.entries({ ...sections23Lessons, ...section4Lessons, ...section5Lessons, ...section6Lessons }))("%s connects only reviewed Levels", (skill, lessons) => {
     expect(lessons.map(lesson => lesson.levelNumber)).toEqual([1, 2, 3, 4, 5]);
-    lessons.forEach(lesson => expect(getTrainingClipLesson(skill, "level", lesson.levelNumber)).toBe(lesson));
+    lessons.forEach(lesson => {
+      const connected = getTrainingClipLesson(skill, "level", lesson.levelNumber);
+      expect(connected).toMatchObject({ id: lesson.id, levelNumber: lesson.levelNumber });
+      if (!TRAINING_CLIP_FOCUS[skill]?.[lesson.levelNumber]) expect(connected).toBe(lesson);
+    });
     expect(new Set(lessons.map(lesson => lesson.levelNumber)).size).toBe(lessons.length);
     expect(getTrainingClipLesson(skill, "checkpoint", null)).toBeNull();
     expect(getTrainingClipLesson(skill, "level", 6)).toBeNull();
@@ -67,14 +76,16 @@ describe("doorway wait instructional clips", () => {
     }
   });
 
-  test("Section 5 stays under 30 seconds, with three short recovery examples only in 5-2 L5", () => {
+  test("Section 5 stays within 18 source seconds, with two recovery examples in 5-2 L5", () => {
     for (const [skill, lessons] of Object.entries(section5Lessons)) {
-      for (const lesson of lessons) {
-        expect(getTrainingClipLesson(skill, 'level', lesson.levelNumber)).toBe(lesson);
-        expect(lesson.steps).toHaveLength(skill === '5-2' && lesson.levelNumber === 5 ? 3 : 1);
-        expect(lesson.duration / 0.6).toBeLessThanOrEqual(30);
+      for (const original of lessons) {
+        const lesson = getTrainingClipLesson(skill, 'level', original.levelNumber)!;
+        expect(lesson.id).toBe(original.id);
+        expect(lesson.steps).toHaveLength(skill === '5-2' && lesson.levelNumber === 5 ? 2 : 1);
+        expect(lesson.duration).toBeLessThanOrEqual(18);
       }
     }
+    // Historical acquisition coverage keeps all three original recovery clips.
     for (const [skill, course] of Object.entries(section5Coverage.courses)) {
       for (const level of course.levels) {
         expect(level.sources).toHaveLength(skill === '5-2' && level.levelNumber === 5 ? 3 : 1);

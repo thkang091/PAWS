@@ -13,6 +13,7 @@ import { TopicPicker } from "@/features/train/components/TopicPicker";
 import { TopicTrail, type TrailStep } from "@/features/train/components/TopicTrail";
 import { GardenBackdrop } from "@/features/train/components/GardenBackdrop";
 import { EnergySheet } from "@/features/train/components/EnergySheet";
+import { areLessonVideosUnlocked } from "@/features/train/media/lessonVideoUnlock";
 import { PressScale } from "@/components/ui/PressScale";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { accent, bg, border, icon, layout, motion, radius, scene, space, text, type } from "@/constants/design";
@@ -40,7 +41,7 @@ type ShelfTopic = TrainingTopic & {
 const curriculumStepsFor = (roadmap: SectionRoadmap): { steps: TrailStep[]; skillIds: string[]; done: number } => {
   let sawCurrent = false;
   const steps = roadmap.nodes.map((node) => {
-    const isDone = Boolean(node.progress?.level5CompletedAt || node.progress?.checkpointStatus === "passed");
+    const isDone = areLessonVideosUnlocked(node.progress);
     const state: TrailStep["state"] = isDone ? "done" : !sawCurrent ? "current" : "available";
     if (!isDone && !sawCurrent) sawCurrent = true;
     return { id: node.skill.id, title: node.skill.title, state };

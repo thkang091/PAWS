@@ -1,0 +1,2195 @@
+{
+  "description": "Existing Sections 2–6 footage mapped to official original-video time. No curriculum or caption edits.",
+  "verifiedOn": "2026-10-04",
+  "checkpoint": "ec5718f2bbdc13ed8c0f30ef1f636716c129a2e2",
+  "metadataCheck": "All 59 original videos returned HTTP 200 from YouTube oEmbed; titles and channels are from that response. This alone does not prove embedding/playback availability.",
+  "frameCheck": "83 acquired clips compared to previously retained originals, 3 samples per interval at 30fps / 48x27 grayscale. Other 23 use acquisition records with original timestamps.",
+  "sources": {
+    "2-1/C01": {
+      "file": "2-1/v2/clips/PAWS_2-1_C01_Marker_then_reward_Zak_v2.mp4",
+      "sha256": "3f3ab418a664c4435418bfad12b2b549c8913daea876e9145314f5c70520d091",
+      "frames": 170,
+      "videoId": "XrORQkNe2lM",
+      "channel": "Zak George",
+      "title": "How To Quickly Train Any Dog With 1 word (and it isn’t “No”)",
+      "ranges": [
+        [
+          186.75,
+          192.4
+        ]
+      ],
+      "timingRecord": "Actual/2-1/v2/source_list.csv",
+      "timeBasis": "YouTube original seconds"
+    },
+    "2-1/C02": {
+      "file": "2-1/v2/clips/PAWS_2-1_C02_Mark_a_glance_Zak_v2.mp4",
+      "sha256": "6086eac3d2f6af2200855ff38bf630370eb9498f7536c9ed6af0297df629dd23",
+      "frames": 228,
+      "videoId": "XrORQkNe2lM",
+      "channel": "Zak George",
+      "title": "How To Quickly Train Any Dog With 1 word (and it isn’t “No”)",
+      "ranges": [
+        [
+          145.5,
+          153.1
+        ]
+      ],
+      "timingRecord": "Actual/2-1/v2/source_list.csv",
+      "timeBasis": "YouTube original seconds"
+    },
+    "2-1/C03": {
+      "file": "2-1/v2/clips/PAWS_2-1_C03_Hidden_reward_Pupford_v2.mp4",
+      "sha256": "ff8e2433f11f039b0bb02e26ec69bb0d4e7eab7da52280449f7321cbeb100e15",
+      "frames": 264,
+      "videoId": "9Gz2AbN6r4o",
+      "channel": "Pupford",
+      "title": "Train Your Dog to Focus & Hand Target + Puppy Socialization (Train Your Dog w/Me Series Week 1 Pt 2)",
+      "ranges": [
+        [
+          212.6,
+          221.4
+        ]
+      ],
+      "timingRecord": "Actual/2-1/v2/source_list.csv",
+      "timeBasis": "YouTube original seconds",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.13
+      }
+    },
+    "2-1/C04": {
+      "file": "2-1/v2/clips/PAWS_2-1_C04_Leave_object_Zak_v2.mp4",
+      "sha256": "e10b3003addfb399384197d714d2f6959eeb6efafcfe22fb96033f76b02ea865",
+      "frames": 165,
+      "videoId": "4V6k4sD_Rak",
+      "channel": "Zak George",
+      "title": "How to Get Your Dog to Stop Doing ANYTHING",
+      "ranges": [
+        [
+          342.35,
+          347.85
+        ]
+      ],
+      "timingRecord": "Actual/2-1/v2/source_list.csv",
+      "timeBasis": "YouTube original seconds"
+    },
+    "2-1/C05": {
+      "file": "2-1/v2/clips/PAWS_2-1_C05_Door_routine_and_release_Pupford_v2.mp4",
+      "sha256": "8b3ddab1b65ff8e359bfba657a9affeda950859e5bdf39229c545e01c5cc958f",
+      "frames": 252,
+      "videoId": "s0gz8sOZsWw",
+      "channel": "Pupford",
+      "title": "How to STOP Your Dog From Running Out the Front Door",
+      "ranges": [
+        [
+          113.9667,
+          122.3667
+        ]
+      ],
+      "timingRecord": "Actual/2-1/v2/source_list.csv",
+      "timeBasis": "YouTube original; frame matched from historical recording",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.891
+      }
+    },
+    "2-2/C01": {
+      "file": "2-2/clips/PAWS_2-2_C01_Toy_pause_and_resume_Pupford_v1.mp4",
+      "sha256": "f7c9568a09e0109d557096c10a42b1e43f271f029015710f759c37cc27a78a74",
+      "frames": 327,
+      "videoId": "PX_c5jJELQ0",
+      "channel": "Pupford",
+      "title": "How to Use a Flirt Pole with Puppies & Dogs for Exercise",
+      "ranges": [
+        [
+          42.4,
+          53.3
+        ]
+      ],
+      "timingRecord": "Actual/2-2/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.686
+      }
+    },
+    "2-2/C02": {
+      "file": "2-2/clips/PAWS_2-2_C02_Treat_hand_pause_Zak_v1.mp4",
+      "sha256": "054d82cdca6881f6fa7f93178670ed8cea3801faf4983029fe01636cd906bb89",
+      "frames": 200,
+      "videoId": "FG9xSgN86BM",
+      "channel": "Zak George",
+      "title": "How to Teach The First 7 Things To Your Dog: Sit, Leave it, Come, Leash walking, Name...)",
+      "ranges": [
+        [
+          201.9,
+          208.55
+        ]
+      ],
+      "timingRecord": "Actual/2-2/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-2/C03": {
+      "file": "2-2/clips/PAWS_2-2_C03_Drop_sit_resume_Pupford_v1.mp4",
+      "sha256": "88c3db0471e3a8c678a79487f75d683a0f91f46bdc6f4cf2ac9b8a8169c48b82",
+      "frames": 207,
+      "videoId": "PX_c5jJELQ0",
+      "channel": "Pupford",
+      "title": "How to Use a Flirt Pole with Puppies & Dogs for Exercise",
+      "ranges": [
+        [
+          35.5,
+          42.4
+        ]
+      ],
+      "timingRecord": "Actual/2-2/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.664
+      }
+    },
+    "2-2/C04": {
+      "file": "2-2/clips/PAWS_2-2_C04_Indoor_boundary_pause_resume_Zak_v1.mp4",
+      "sha256": "88352de3cfdb15629e4c2eb7501d4cb64947c23c22581418d372f55cf9156303",
+      "frames": 327,
+      "videoId": "4wBApkKuEVI",
+      "channel": "Zak George",
+      "title": "NEW PUPPY SURVIVAL GUIDE: How to Train ANY Dog to STOP Barking, Calm Down & Stay! (EP: 7)",
+      "ranges": [
+        [
+          309.5,
+          320.4
+        ]
+      ],
+      "timingRecord": "Actual/2-2/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.432
+      }
+    },
+    "2-3/C01": {
+      "file": "2-3/clips/PAWS_2-3_C01_Yes_then_treat_Zak_v1.mp4",
+      "sha256": "f2441872b039ea102800763f592f2ffab340f4760b109a0c3cfeab85b852f895",
+      "frames": 104,
+      "videoId": "FG9xSgN86BM",
+      "channel": "Zak George",
+      "title": "How to Teach The First 7 Things To Your Dog: Sit, Leave it, Come, Leash walking, Name...)",
+      "ranges": [
+        [
+          205.1,
+          208.566667
+        ]
+      ],
+      "timingRecord": "Actual/2-3/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-3/C02": {
+      "file": "2-3/clips/PAWS_2-3_C02_This_way_toy_redirect_Zak_v1.mp4",
+      "sha256": "2eff4e12793974d9920a656290abb21e4064c597a3e555bdf98672f235e72e9d",
+      "frames": 153,
+      "videoId": "grHN_MIexVo",
+      "channel": "Zak George",
+      "title": "Train Your Dog to Heel in 1 Day - NO LEASH REQUIRED!",
+      "ranges": [
+        [
+          320.04,
+          325.14
+        ]
+      ],
+      "timingRecord": "Actual/2-3/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-3/C03": {
+      "file": "2-3/clips/PAWS_2-3_C03_Distant_distraction_turn_AniEd_v1.mp4",
+      "sha256": "5aa8d6dd77d314d72c78ea69bb6f756e72659310ebaea2d4b67816d485cef271",
+      "frames": 306,
+      "videoId": "dymTpe5_ExU",
+      "channel": "AniEd Ireland",
+      "title": "AniEd DaySchool: \"this way\" with distractions with Jessie the Lab",
+      "ranges": [
+        [
+          155,
+          165.2
+        ]
+      ],
+      "timingRecord": "Actual/2-3/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-3/C04": {
+      "file": "2-3/clips/PAWS_2-3_C04_Both_words_walking_play_Zak_v1.mp4",
+      "sha256": "14f0e0341aca91cfbfd5c5ddf5b12a4facd0ab4c75310ed4985c6bd450fc6b3f",
+      "frames": 565,
+      "videoId": "grHN_MIexVo",
+      "channel": "Zak George",
+      "title": "Train Your Dog to Heel in 1 Day - NO LEASH REQUIRED!",
+      "ranges": [
+        [
+          306.3,
+          325.133333
+        ]
+      ],
+      "timingRecord": "Actual/2-3/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-4/C01": {
+      "file": "2-4/clips/PAWS_2-4_C01_Repeat_attention_rewards_Zak_v1.mp4",
+      "sha256": "c2c0431192d4617e05dc95f2907a2580671fca1c10dea0b4f09c1f9595a4af58",
+      "frames": 337,
+      "videoId": "PHmkK4QA8gI",
+      "channel": "Zak George",
+      "title": "How to Train ANY Dog to Pay Attention in 2 Seconds",
+      "ranges": [
+        [
+          87.06700000000001,
+          98.3
+        ]
+      ],
+      "timingRecord": "Actual/2-4/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-4/C02": {
+      "file": "2-4/clips/PAWS_2-4_C02_Reward_in_place_and_release_Pupford_v1.mp4",
+      "sha256": "d142d01f082f75db5e07bc25245a53137e8ad6c8b12377c629438d0c6b0a0417",
+      "frames": 240,
+      "videoId": "s0gz8sOZsWw",
+      "channel": "Pupford",
+      "title": "How to STOP Your Dog From Running Out the Front Door",
+      "ranges": [
+        [
+          113.9667,
+          121.9667
+        ]
+      ],
+      "timingRecord": "Actual/2-4/source_list.csv",
+      "timeBasis": "YouTube original; frame matched from historical recording",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.793
+      }
+    },
+    "2-4/C03": {
+      "file": "2-4/clips/PAWS_2-4_C03_Hidden_food_after_attention_Pupford_v1.mp4",
+      "sha256": "fbc6bf51dd2e2766a2330f27860dd7b2b7c74b41279c6320b789a36466eff274",
+      "frames": 264,
+      "videoId": "9Gz2AbN6r4o",
+      "channel": "Pupford",
+      "title": "Train Your Dog to Focus & Hand Target + Puppy Socialization (Train Your Dog w/Me Series Week 1 Pt 2)",
+      "ranges": [
+        [
+          212.6,
+          221.4
+        ]
+      ],
+      "timingRecord": "Actual/2-4/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.13
+      }
+    },
+    "2-4/C04": {
+      "file": "2-4/clips/PAWS_2-4_C04_Sit_then_food_Simpawtico_v1.mp4",
+      "sha256": "9281d735dbb4c3bc7fde9e7b358bbfa0a287aa8055b869d9a37a6a0bbe3b2e29",
+      "frames": 159,
+      "videoId": "yZ74wVgoEzY",
+      "channel": "Simpawtico Dog Training",
+      "title": "How to Phase Out Treats and Fade Lures - Get Your Dog to Listen",
+      "ranges": [
+        [
+          108.4,
+          113.7
+        ]
+      ],
+      "timingRecord": "Actual/2-4/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-4/C05": {
+      "file": "2-4/clips/PAWS_2-4_C05_Sit_then_petting_Simpawtico_v1.mp4",
+      "sha256": "e9de76c2d5da515aa35ba511e5662a43d5b0bc945739082762881448312e654d",
+      "frames": 171,
+      "videoId": "yZ74wVgoEzY",
+      "channel": "Simpawtico Dog Training",
+      "title": "How to Phase Out Treats and Fade Lures - Get Your Dog to Listen",
+      "ranges": [
+        [
+          309,
+          314.7
+        ]
+      ],
+      "timingRecord": "Actual/2-4/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-4/C06": {
+      "file": "2-4/clips/PAWS_2-4_C06_Sit_then_short_toy_play_Zak_v1.mp4",
+      "sha256": "b5e43a8c3979632e8ee149034412b5ba4e398ac46c7d4df74b377caaf594b9db",
+      "frames": 315,
+      "videoId": "gDnJ7dwnSwo",
+      "channel": "Zak George",
+      "title": "How to Reward your Dog with TOYS Instead of Food!",
+      "ranges": [
+        [
+          105.6,
+          116.1
+        ]
+      ],
+      "timingRecord": "Actual/2-4/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-5/C01": {
+      "file": "2-5/clips/PAWS_2-5_C01_Pause_toy_and_wait_Pupford_v1.mp4",
+      "sha256": "572b76e2e66e240ef2506bedb09773cc5959b6d27e9da890c63e5e4535ee7ac8",
+      "frames": 327,
+      "videoId": "PX_c5jJELQ0",
+      "channel": "Pupford",
+      "title": "How to Use a Flirt Pole with Puppies & Dogs for Exercise",
+      "ranges": [
+        [
+          42.4,
+          53.3
+        ]
+      ],
+      "timingRecord": "Actual/2-5/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.686
+      }
+    },
+    "2-5/C02": {
+      "file": "2-5/clips/PAWS_2-5_C02_Still_ball_attention_and_reward_Zak_v1.mp4",
+      "sha256": "c6e0bd802fcd4181bc914528f50326d074890b266c0523a9bedfe2570f923fb7",
+      "frames": 432,
+      "videoId": "4wBApkKuEVI",
+      "channel": "Zak George",
+      "title": "NEW PUPPY SURVIVAL GUIDE: How to Train ANY Dog to STOP Barking, Calm Down & Stay! (EP: 7)",
+      "ranges": [
+        [
+          579.2,
+          593.6
+        ]
+      ],
+      "timingRecord": "Actual/2-5/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.366
+      }
+    },
+    "2-5/C03": {
+      "file": "2-5/clips/PAWS_2-5_C03_Leave_shoes_and_switch_to_chew_Zak_v1.mp4",
+      "sha256": "9ae69b2147623b4a9ae4471c1620e86234451e2806d9a147b88ab660a4fa60aa",
+      "frames": 1071,
+      "videoId": "4V6k4sD_Rak",
+      "channel": "Zak George",
+      "title": "How to Get Your Dog to Stop Doing ANYTHING",
+      "ranges": [
+        [
+          128.8,
+          164.5
+        ]
+      ],
+      "timingRecord": "Actual/2-5/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "2-5/C04": {
+      "file": "2-5/clips/PAWS_2-5_C04_Reduce_motion_and_retry_Zak_v1.mp4",
+      "sha256": "6d666460e5973a636a0bcb3aa31aeb3c5d8a639f2faaf55f476a9230cefa7b69",
+      "frames": 483,
+      "videoId": "4wBApkKuEVI",
+      "channel": "Zak George",
+      "title": "NEW PUPPY SURVIVAL GUIDE: How to Train ANY Dog to STOP Barking, Calm Down & Stay! (EP: 7)",
+      "ranges": [
+        [
+          628.1,
+          644.2
+        ]
+      ],
+      "timingRecord": "Actual/2-5/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.293
+      }
+    },
+    "2-5/C05": {
+      "file": "2-5/clips/PAWS_2-5_C05_Shorter_stay_reset_and_all_done_Zak_v1.mp4",
+      "sha256": "67f61d5cf79dcefa87ac3f96c774612df7cdca9dc85c77a3ce6e4e6caa63a6aa",
+      "frames": 900,
+      "videoId": "4wBApkKuEVI",
+      "channel": "Zak George",
+      "title": "NEW PUPPY SURVIVAL GUIDE: How to Train ANY Dog to STOP Barking, Calm Down & Stay! (EP: 7)",
+      "ranges": [
+        [
+          473.5,
+          503.5
+        ]
+      ],
+      "timingRecord": "Actual/2-5/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.335
+      }
+    },
+    "3-1/01": {
+      "file": "3-1/PAWS_3-1_01_Shoulder_Touch.mp4",
+      "sha256": "d7a07a4e12408babc2204fb9995582e64d3d42d8ff35d5083ead74288a602a49",
+      "frames": 366,
+      "videoId": "cwJEiyZvzZk",
+      "channel": "Terrie Hayward",
+      "title": "Dog Nail Trims Without Drama: Teach Calm Paw Handling Force Free",
+      "ranges": [
+        [
+          85,
+          97.2
+        ]
+      ],
+      "timingRecord": "work/replacement31/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.129
+      }
+    },
+    "3-1/02": {
+      "file": "3-1/PAWS_3-1_02_Back_and_Neck_Touch.mp4",
+      "sha256": "15232e8106f142672866e81a1066d337302b6e53394ec65483faf78a695f712e",
+      "frames": 248,
+      "videoId": "AoM9tis3t2c",
+      "channel": "Kikopup",
+      "title": "Handling and Grooming for PUPPIES - Step by Step Guide",
+      "ranges": [
+        [
+          155.4,
+          159.6
+        ],
+        [
+          163.2,
+          167.3
+        ]
+      ],
+      "timingRecord": "work/replacement31/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 6,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.115
+      }
+    },
+    "3-1/03": {
+      "file": "3-1/PAWS_3-1_03_Chest_and_Shoulder_Touch.mp4",
+      "sha256": "5c02e5b05250e035f5716db43399baef51f5b7a24b28c93b61f4b9bc3796bcf6",
+      "frames": 424,
+      "videoId": "oE9LRDvE4Vo",
+      "channel": "The Social Pup",
+      "title": "Touch and Treat",
+      "ranges": [
+        [
+          11.05,
+          25.2
+        ]
+      ],
+      "timingRecord": "work/replacement31/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.09
+      }
+    },
+    "3-1/04": {
+      "file": "3-5 - need review/PAWS_3-5_04_Familiar_Trainer_Brief_Back_Stroke_Pupford.mp4",
+      "sha256": "057df4b2bddb970505197cb9d63b2ef5c2abb5c420b44ec6d644def0147e1e19",
+      "frames": 121,
+      "videoId": "9Qk4UFM0LDU",
+      "channel": "Pupford",
+      "title": "Teach Your Dog to Wait AND to Come When Called!  [Week 3 Train Your Dog With Me Series]",
+      "ranges": [
+        [
+          345.45,
+          349.5
+        ]
+      ],
+      "timingRecord": "work/touch_additions/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.137
+      }
+    },
+    "3-2/01": {
+      "file": "3-2/PAWS_3-2_01_Leg_to_Paw_Touch.mp4",
+      "sha256": "f012ca83d539b5cbad7354258444ce5e175a52d887ba50e4a35439e00e69ae38",
+      "frames": 172,
+      "videoId": "cwJEiyZvzZk",
+      "channel": "Terrie Hayward",
+      "title": "Dog Nail Trims Without Drama: Teach Calm Paw Handling Force Free",
+      "ranges": [
+        [
+          148.25,
+          154
+        ]
+      ],
+      "timingRecord": "work/new32/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.165
+      }
+    },
+    "3-2/02": {
+      "file": "3-2/PAWS_3-2_02_Paw_Top_Touch.mp4",
+      "sha256": "c7a2ec8847e9def3538734ad9f4388aef0e912575cb74a0e18cec580178eac56",
+      "frames": 143,
+      "videoId": "cwJEiyZvzZk",
+      "channel": "Terrie Hayward",
+      "title": "Dog Nail Trims Without Drama: Teach Calm Paw Handling Force Free",
+      "ranges": [
+        [
+          235,
+          239.8
+        ]
+      ],
+      "timingRecord": "work/new32/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.113
+      }
+    },
+    "3-2/03": {
+      "file": "3-2/PAWS_3-2_03_Offered_Paw_Palm_Contact.mp4",
+      "sha256": "0b20c144f63e387de5c7c193866bb74662f822866fcfd1592fa3f573f5119b9b",
+      "frames": 144,
+      "videoId": "DwuDEzWIovA",
+      "channel": "Cooperative Care with Deb Jones",
+      "title": "Cooperative Care with Deb Jones - General Body Handling: Zen Klimb zen bowl foot and leg handling",
+      "ranges": [
+        [
+          37,
+          41.8
+        ]
+      ],
+      "timingRecord": "work/new32/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.139
+      }
+    },
+    "3-2/04": {
+      "file": "3-2/PAWS_3-2_04_Toe_and_Nail_Touch.mp4",
+      "sha256": "2dad44b3ec36408d4d1a7c31643a928d69ca072db810a861bf4ce25d6dd1a989",
+      "frames": 226,
+      "videoId": "koOCGuRFF0I",
+      "channel": "Zak George",
+      "title": "My Puppy’s First Bath, Nail Trimming & More! (New Series: The Dog Training Experience Ep. 7)",
+      "ranges": [
+        [
+          67.25,
+          71.15
+        ],
+        [
+          81.65,
+          85.3
+        ]
+      ],
+      "timingRecord": "work/new32/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 6,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.23
+      }
+    },
+    "3-2/05": {
+      "file": "3-2/PAWS_3-2_05_Tool_Sight_and_Sound.mp4",
+      "sha256": "ef7967a7be6eec37e288de14391153c12787f850c837822bf7f8344049364cc2",
+      "frames": 317,
+      "videoId": "5zEC7ZwoXpM",
+      "channel": "Zak George",
+      "title": "How to Stop 3 Annoying Puppy Habits! PLUS Crate Training, Nail Trimming and MORE (Ep12)",
+      "ranges": [
+        [
+          925.5,
+          936.1
+        ]
+      ],
+      "timingRecord": "work/new32/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.275
+      }
+    },
+    "3-2/06": {
+      "file": "3-2/PAWS_3-2_06_Tool_Touch_Without_Cutting.mp4",
+      "sha256": "3738b8f878cc44e58eb5a40ae6787857c74713e47f0bf014c8255052f23e446e",
+      "frames": 127,
+      "videoId": "koOCGuRFF0I",
+      "channel": "Zak George",
+      "title": "My Puppy’s First Bath, Nail Trimming & More! (New Series: The Dog Training Experience Ep. 7)",
+      "ranges": [
+        [
+          130.2,
+          134.45
+        ]
+      ],
+      "timingRecord": "work/new32/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.235
+      }
+    },
+    "3-3/01": {
+      "file": "3-3/PAWS_3-3_01_Outer_Ear_Touch.mp4",
+      "sha256": "9f7a9f5daafbbdd9e741a95b2df74bf8520c9e59c39eb9c1ebbe2601b9db4539",
+      "frames": 95,
+      "videoId": "fEVVeKv5VCo",
+      "channel": "Benevolent Beasts | Toronto Dog Trainer",
+      "title": "Teach your dog to enjoy body handling",
+      "ranges": [
+        [
+          31.65,
+          34.85
+        ]
+      ],
+      "timingRecord": "work/new33/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.127
+      }
+    },
+    "3-3/02": {
+      "file": "3-3/PAWS_3-3_02_Cheek_Touch.mp4",
+      "sha256": "eb7204d1c3b22ca30663e647df199649df60013c8759e7b806ec2583f4107fff",
+      "frames": 181,
+      "videoId": "U7Z5S1CNMXE",
+      "channel": "Cooperative Care with Deb Jones",
+      "title": "Cooperative Care with Deb Jones - Handling the Head: Pixel head down mouth handling",
+      "ranges": [
+        [
+          59.25,
+          65.3
+        ]
+      ],
+      "timingRecord": "work/new33/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.151
+      }
+    },
+    "3-3/03": {
+      "file": "3-3/PAWS_3-3_03_Outer_Lip_Touch.mp4",
+      "sha256": "940e5538d468fa81cdcbe3ae2ed9089c23e1e213d8da76ec7af24e94bf8192bc",
+      "frames": 224,
+      "videoId": "pdmX3xK1p58",
+      "channel": "Carol Milner",
+      "title": "Preparation for tooth brush - Sweep 090618",
+      "ranges": [
+        [
+          92.4,
+          99.85
+        ]
+      ],
+      "timingRecord": "work/new33/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.106
+      }
+    },
+    "3-3/04": {
+      "file": "3-3/PAWS_3-3_04_External_Lip_Lift.mp4",
+      "sha256": "454f0d28ca4e177c94440737d0c4c7ab3ebeead3a58e9230894971045b5c3c01",
+      "frames": 250,
+      "videoId": "u3qcRiu-0jE",
+      "channel": "Cooperative Care with Deb Jones",
+      "title": "Cooperative Care with Deb Jones - Handling the Head: Helo pillow chin rest muzzle lip lift gel",
+      "ranges": [
+        [
+          95.75,
+          104.1
+        ]
+      ],
+      "timingRecord": "work/new33/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.184
+      }
+    },
+    "3-3/05": {
+      "file": "3-3/PAWS_3-3_05_Rear_Side_Gentle_Stroke.mp4",
+      "sha256": "903b71b808d1c38b34c7560c0dec1f94280bde9f7722d0a573fda5cd01f4eb54",
+      "frames": 307,
+      "videoId": "8kFdDEsEWk4",
+      "channel": "From Dusk Till Dog",
+      "title": "Cooperative Care Dog Training for Vet Visits & Grooming",
+      "ranges": [
+        [
+          83.75,
+          94
+        ]
+      ],
+      "timingRecord": "work/new33/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.144
+      }
+    },
+    "3-4/01": {
+      "file": "3-4/PAWS_3-4_01_Dry_Mat_Entry_Reward_Release.mp4",
+      "sha256": "92a1ce5d6ed5f8e4323e74edfb88f1b9bad4ef382c4fc7d5bed9f0b667a9eb16",
+      "frames": 186,
+      "videoId": "QF9e_A_8v0c",
+      "channel": "Pupford",
+      "title": "Teach Dog to Go to Place or Mat",
+      "ranges": [
+        [
+          58.4,
+          64.6
+        ]
+      ],
+      "timingRecord": "work/new34/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.12
+      }
+    },
+    "3-4/02": {
+      "file": "3-4/PAWS_3-4_02_Dry_Mat_Small_Shift.mp4",
+      "sha256": "3a0aa8b402e60c54e0ad9737078bf8773ae5f2b5de16989f75f861b63e06994b",
+      "frames": 222,
+      "videoId": "QF9e_A_8v0c",
+      "channel": "Pupford",
+      "title": "Teach Dog to Go to Place or Mat",
+      "ranges": [
+        [
+          232.4,
+          239.8
+        ]
+      ],
+      "timingRecord": "work/new34/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.134
+      }
+    },
+    "3-4/03": {
+      "file": "3-4/PAWS_3-4_03_Distant_Water_Cue_Reward.mp4",
+      "sha256": "a17bf2b46b40a7de898f39aa2199f19489970a348248ca3a1bff778ce0e618ae",
+      "frames": 569,
+      "videoId": "ISEA9B95mkw",
+      "channel": "Zak George",
+      "title": "Episode 7: How to Train a Dog to NOT Hate a Bath",
+      "ranges": [
+        [
+          138.25,
+          157.25
+        ]
+      ],
+      "timingRecord": "work/new34/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.157
+      }
+    },
+    "3-4/04": {
+      "file": "3-4/PAWS_3-4_04_Damp_Cloth_Gentle_Strokes.mp4",
+      "sha256": "c8f9cbff762ad718266b256e2640b13c7483bbc1684846fbc33461cb907d2555",
+      "frames": 326,
+      "videoId": "5b45wihv3co",
+      "channel": "Zak George",
+      "title": "How To NOT Totally Screw Up Your Puppy’s First Bath! (EP 15)",
+      "ranges": [
+        [
+          936.8,
+          947.65
+        ]
+      ],
+      "timingRecord": "work/new34/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.307
+      }
+    },
+    "3-4/05": {
+      "file": "3-4/PAWS_3-4_05_Brief_Towel_Side_Contact.mp4",
+      "sha256": "e385bf9cb82c3e0740dc9e89c2c3c9bcf7e41a294d6b84abc25ce9918eee4b77",
+      "frames": 143,
+      "videoId": "rWjjmE8uo0k",
+      "channel": "Polite Paws",
+      "title": "Introduction to towel drying your dog",
+      "ranges": [
+        [
+          19.25,
+          24
+        ]
+      ],
+      "timingRecord": "work/new34/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.105
+      }
+    },
+    "3-5/01": {
+      "file": "3-5 - need review/PAWS_3-5_01_Approach_Familiar_Trainer_and_Low_Reward.mp4",
+      "sha256": "b5814bc8a7ed99ccf3e5f035c23212d13d215557ecd11db8ab6b301f88a39121",
+      "frames": 303,
+      "videoId": "OpACzloijlU",
+      "channel": "Pupford",
+      "title": "Teach Lay Down & Introduce Your Dog to New Objects & Sounds [Week 2 Train Your Dog With Me Series]",
+      "ranges": [
+        [
+          58,
+          68.1
+        ]
+      ],
+      "timingRecord": "work/replacement35/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.147
+      }
+    },
+    "3-5/04": {
+      "file": "3-5 - need review/PAWS_3-5_04_Familiar_Trainer_Brief_Back_Stroke_Pupford.mp4",
+      "sha256": "057df4b2bddb970505197cb9d63b2ef5c2abb5c420b44ec6d644def0147e1e19",
+      "frames": 121,
+      "videoId": "9Qk4UFM0LDU",
+      "channel": "Pupford",
+      "title": "Teach Your Dog to Wait AND to Come When Called!  [Week 3 Train Your Dog With Me Series]",
+      "ranges": [
+        [
+          345.45,
+          349.5
+        ]
+      ],
+      "timingRecord": "work/touch_additions/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.137
+      }
+    },
+    "3-5/05": {
+      "file": "3-5 - need review/PAWS_3-5_05_Lv4_Collar_Outside_Touch_and_Withdrawal_KirstysPaws.mp4",
+      "sha256": "609927551f14919f1d0bbbc3f83489377aaf2570b464ffbe8ed9a463f9066295",
+      "frames": 167,
+      "videoId": "nuG-wRDRM3s",
+      "channel": "Kirsty's Paws Dog Training",
+      "title": "Collar Touches",
+      "ranges": [
+        [
+          19.45,
+          25.05
+        ]
+      ],
+      "timingRecord": "work/new35l4/curriculum_bindings.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.12
+      }
+    },
+    "3-5/02": {
+      "file": "3-5 - need review/PAWS_3-5_02_Familiar_Trainer_Back_Strokes_and_Free_Exit.mp4",
+      "sha256": "2ce7ea8a4a5f172c0ae9b56f98e7762fb1c6e5b67b49501a0e7cb08551745e57",
+      "frames": 186,
+      "videoId": "OpACzloijlU",
+      "channel": "Pupford",
+      "title": "Teach Lay Down & Introduce Your Dog to New Objects & Sounds [Week 2 Train Your Dog With Me Series]",
+      "ranges": [
+        [
+          1640,
+          1646.2
+        ]
+      ],
+      "timingRecord": "work/replacement35/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.157
+      }
+    },
+    "4-1/C01": {
+      "file": "4-1/clips/PAWS_4-1_C01_Name_once_and_wait_Zak_v1.mp4",
+      "sha256": "b66e4af0fdedb0893535db9f456750185ea8d04e37bf847c27e8378393b0c1a0",
+      "frames": 425,
+      "videoId": "FG9xSgN86BM",
+      "channel": "Zak George",
+      "title": "How to Teach The First 7 Things To Your Dog: Sit, Leave it, Come, Leash walking, Name...)",
+      "ranges": [
+        [
+          571.067,
+          585.233
+        ]
+      ],
+      "timingRecord": "Actual/4-1/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "4-1/C02": {
+      "file": "4-1/clips/PAWS_4-1_C02_Short_indoor_distance_Zak_v1.mp4",
+      "sha256": "2d4e4e2656ef856a806352d68e04ac8c143c0a3fc05ec4e668db10f2497d17c3",
+      "frames": 278,
+      "videoId": "kGbYT5zMRVk",
+      "channel": "Zak George",
+      "title": "NEW PUPPY SURVIVAL GUIDE: The FIRST Things to Teach Your NEW PUPPY! (EP: 3)",
+      "ranges": [
+        [
+          1143.9,
+          1153.167
+        ]
+      ],
+      "timingRecord": "Actual/4-1/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.205
+      }
+    },
+    "4-1/C03": {
+      "file": "4-1/clips/PAWS_4-1_C03_Turn_from_mild_person_distraction_Pupford_v1.mp4",
+      "sha256": "d895318c7054c1d6eaa807add3ed72e4ea9eb2ef911a81b21a008e7094fec184",
+      "frames": 129,
+      "videoId": "9Gz2AbN6r4o",
+      "channel": "Pupford",
+      "title": "Train Your Dog to Focus & Hand Target + Puppy Socialization (Train Your Dog w/Me Series Week 1 Pt 2)",
+      "ranges": [
+        [
+          295.5,
+          299.8
+        ]
+      ],
+      "timingRecord": "Actual/4-1/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.183
+      }
+    },
+    "4-1/C04": {
+      "file": "4-1/clips/PAWS_4-1_C04_Open_indoor_doorway_response_Zak_v1.mp4",
+      "sha256": "557d57c0dcb4f7d0c513d47fe6ce40aafadeeb7302e434cc352e3fdb2192092a",
+      "frames": 327,
+      "videoId": "kGbYT5zMRVk",
+      "channel": "Zak George",
+      "title": "NEW PUPPY SURVIVAL GUIDE: The FIRST Things to Teach Your NEW PUPPY! (EP: 3)",
+      "ranges": [
+        [
+          1157.6,
+          1168.5
+        ]
+      ],
+      "timingRecord": "Actual/4-1/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.204
+      }
+    },
+    "4-1/C05": {
+      "file": "4-1/clips/PAWS_4-1_C05_Outdoor_name_orientation_Battersea_v1.mp4",
+      "sha256": "9c7b5af2a450a7be9129796e4514ee8638d5f86f485dd2840a05516aab6bb90e",
+      "frames": 279,
+      "videoId": "SgoCQOfqNHE",
+      "channel": "Battersea Dogs and Cats Home",
+      "title": "How to Teach Your Dog Their Name | The Battersea Way",
+      "ranges": [
+        [
+          91.4,
+          100.7
+        ]
+      ],
+      "timingRecord": "Actual/4-1/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "4-2/C01": {
+      "file": "4-2/clips/PAWS_4-2_C01_stationary_object_look_back_reward_v1.mp4",
+      "sha256": "80f0bdb9bebf410541f178ce650e40c3a29cfd80b7bdefeeb3c8ec9e06588463",
+      "frames": 285,
+      "videoId": "pqIaS5cWauU",
+      "channel": "Kimberly Palermo",
+      "title": "LAT Neutral Object Steps",
+      "ranges": [
+        [
+          59.8,
+          69.3
+        ]
+      ],
+      "timingRecord": "Actual/4-2/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "4-2/C02": {
+      "file": "4-2/clips/PAWS_4-2_C02_small_object_movement_pause_reward_v1.mp4",
+      "sha256": "0f03b1c8d61479d816be7841e70e77f552e6d3a16abc80930588c33c53302e0b",
+      "frames": 300,
+      "videoId": "OpACzloijlU",
+      "channel": "Pupford",
+      "title": "Teach Lay Down & Introduce Your Dog to New Objects & Sounds [Week 2 Train Your Dog With Me Series]",
+      "ranges": [
+        [
+          1257.533,
+          1267.533
+        ]
+      ],
+      "timingRecord": "Actual/4-2/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.144
+      }
+    },
+    "4-2/C03": {
+      "file": "4-2/clips/PAWS_4-2_C03_distant_adult_look_disengage_reward_v1.mp4",
+      "sha256": "eca575bd0c6282baeb56c5f1655c1fa06fd87623dd4463e7614a80c7a590fb92",
+      "frames": 327,
+      "videoId": "zu9wr1Pdab0",
+      "channel": "DGP Dog Behavior Videos",
+      "title": "Using the Engage Disengage Game to Stop Roscoe From Barking at Strangers.",
+      "ranges": [
+        [
+          294.367,
+          305.267
+        ]
+      ],
+      "timingRecord": "Actual/4-2/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "4-2/C04": {
+      "file": "4-2/clips/PAWS_4-2_C04_distant_dog_look_back_reward_v1.mp4",
+      "sha256": "da193103dd74bc895411f4362781f9ed76f1147536b5e680c5b7434811691de3",
+      "frames": 318,
+      "videoId": "GTi71Je1g_I",
+      "channel": "Zak George",
+      "title": "How to Train Your Dog to STOP BARKING at EVERYTHING That Moves!!",
+      "ranges": [
+        [
+          731.9,
+          742.5
+        ]
+      ],
+      "timingRecord": "Actual/4-2/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "4-2/C06": {
+      "file": "4-2/clips/PAWS_4-2_C06_visual_trigger_reward_increase_distance_v1.mp4",
+      "sha256": "902413f4772fb5c96899bf60fedaec8b96f01d0c765c1378bcc89eea022fd0d6",
+      "frames": 456,
+      "videoId": "GTi71Je1g_I",
+      "channel": "Zak George",
+      "title": "How to Train Your Dog to STOP BARKING at EVERYTHING That Moves!!",
+      "ranges": [
+        [
+          378.5,
+          393.7
+        ]
+      ],
+      "timingRecord": "Actual/4-2/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "4-2/C05": {
+      "file": "4-2/clips/PAWS_4-2_C05_park_visual_trigger_check_in_reward_v1.mp4",
+      "sha256": "eb20508fa57e31f6e50de1326bdcc65fdeb6933d85fb99235cd259f20e2700fd",
+      "frames": 367,
+      "videoId": "PX0t8yosJyk",
+      "channel": "Pupford",
+      "title": "Engage Disengage Game – Reduce Your Dog's Reactivity!",
+      "ranges": [
+        [
+          117.8,
+          130.033
+        ]
+      ],
+      "timingRecord": "Actual/4-2/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "4-3/C01": {
+      "file": "4-3/clips/PAWS_4-3_C01_soft_recorded_wind_notice_reward_v1.mp4",
+      "sha256": "9c15750d8d9d91635882c6694226cd15da1ea4320a8b9bcaaf2d61d74c707419",
+      "frames": 284,
+      "videoId": "9Gz2AbN6r4o",
+      "channel": "Pupford",
+      "title": "Train Your Dog to Focus & Hand Target + Puppy Socialization (Train Your Dog w/Me Series Week 1 Pt 2)",
+      "ranges": [
+        [
+          1825.967,
+          1835.433
+        ]
+      ],
+      "timingRecord": "Actual/4-3/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.107
+      }
+    },
+    "4-3/C02": {
+      "file": "4-3/clips/PAWS_4-3_C02_brief_recorded_vacuum_guardian_reward_v1.mp4",
+      "sha256": "54e433f847b0911ea1fdcb4446ee4edd93603b416d5085f08ae876c6a0f4e4c6",
+      "frames": 214,
+      "videoId": "OpACzloijlU",
+      "channel": "Pupford",
+      "title": "Teach Lay Down & Introduce Your Dog to New Objects & Sounds [Week 2 Train Your Dog With Me Series]",
+      "ranges": [
+        [
+          1324.5,
+          1331.633
+        ]
+      ],
+      "timingRecord": "Actual/4-3/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.154
+      }
+    },
+    "4-3/C03": {
+      "file": "4-3/clips/PAWS_4-3_C03_recorded_doorbell_turn_back_reward_v1.mp4",
+      "sha256": "edf1b07c609e94f4035f3aab3d19cc12619178af1e8ea6b1d958457f30cfa093",
+      "frames": 195,
+      "videoId": "bpzvqN9JNUA",
+      "channel": "Kikopup",
+      "title": "Stop barking at the door - Dog Training",
+      "ranges": [
+        [
+          206,
+          212.5
+        ]
+      ],
+      "timingRecord": "Actual/4-3/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.122
+      }
+    },
+    "4-3/C04": {
+      "file": "4-3/clips/PAWS_4-3_C04_distant_keys_sound_resting_place_reward_v1.mp4",
+      "sha256": "67ec5652f5da86b6ceb8ee1c4a6d18295e08c2fab311e310c1ffad8980f71843",
+      "frames": 221,
+      "videoId": "vhc2jlc6dmc",
+      "channel": "Kikopup",
+      "title": "Stop Barking at Noises - Professional Dog Training",
+      "ranges": [
+        [
+          868.533,
+          875.9
+        ]
+      ],
+      "timingRecord": "Actual/4-3/source_list.csv",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.537
+      }
+    },
+    "4-3/08": {
+      "file": "4-3/clips/PAWS_4-3_08_Knock_Walk_Away_Together_and_Reward_Zak.mp4",
+      "sha256": "acdfca5b1b57b59af308ed782b173a7da393ddb8c42054f85670c10d7fd9d591",
+      "frames": 266,
+      "videoId": "HZxjAk8t4Jw",
+      "channel": "Zak George",
+      "title": "How To Easily STOP Barking And Jumping",
+      "ranges": [
+        [
+          410.7,
+          419.55
+        ]
+      ],
+      "timingRecord": "work/finish4352/4-3_clip_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.222
+      }
+    },
+    "4-3/C06": {
+      "file": "4-3/clips/PAWS_4-3_C06_natural_neighbor_sound_reorient_on_sofa_v1.mp4",
+      "sha256": "d9b17fbfd7477f10308ae7d5ba27721071e612c17d4711e9e40703bbcad9fff6",
+      "frames": 369,
+      "videoId": "qPpEpQXTQb4",
+      "channel": "Kikopup",
+      "title": "Train your puppy to be CALM and QUIET when they hear BARKING DOGS",
+      "ranges": [
+        [
+          21,
+          33.3
+        ]
+      ],
+      "timingRecord": "Actual/4-3/source_list.csv",
+      "timeBasis": "YouTube original"
+    },
+    "4-4/01": {
+      "file": "4-4/PAWS_4-4_01_Enter_Resting_Mat_and_Reward.mp4",
+      "sha256": "1cc43a5136dcf25eda3c829265babe8a8f226b0b2310f5da48d566f70c7579a1",
+      "frames": 267,
+      "videoId": "gRW1PVHeQhY",
+      "channel": "Zak George",
+      "title": "4 Annoying Dog Habits you can Stop with a Simple Crate Pad",
+      "ranges": [
+        [
+          241.8,
+          250.7
+        ]
+      ],
+      "timingRecord": "work/new44/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.171
+      }
+    },
+    "4-4/02": {
+      "file": "4-4/PAWS_4-4_02_One_Step_Return_Pause_Reward.mp4",
+      "sha256": "9d1fd3c849d2c8a97aa97cbfa55809f4cb76d058ff918b16d7a70e7eedfd3d05",
+      "frames": 222,
+      "videoId": "QF9e_A_8v0c",
+      "channel": "Pupford",
+      "title": "Teach Dog to Go to Place or Mat",
+      "ranges": [
+        [
+          232.4,
+          239.8
+        ]
+      ],
+      "timingRecord": "work/new44/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.127
+      }
+    },
+    "4-4/03": {
+      "file": "4-4/PAWS_4-4_03_Short_Distance_Return_Reward.mp4",
+      "sha256": "2a6c4043a9ffb973a1cdcd6f89988308f3f5ad5121a98d97ac1fce27fb57607a",
+      "frames": 229,
+      "videoId": "JFHcE72GvUU",
+      "channel": "Pupford",
+      "title": "Teach Your Dog the \"Place\" Cue  – A Simple Guide",
+      "ranges": [
+        [
+          246.75,
+          254.4
+        ]
+      ],
+      "timingRecord": "work/new44/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.131
+      }
+    },
+    "4-4/06": {
+      "file": "4-4/PAWS_4-4_06_Empty_Hand_Cue_Pause_and_Release.mp4",
+      "sha256": "2dfac3d7101a73be966cec55ab4f55c7daf5f038187e736b31bae77e3131060b",
+      "frames": 462,
+      "videoId": "QF9e_A_8v0c",
+      "channel": "Pupford",
+      "title": "Teach Dog to Go to Place or Mat",
+      "ranges": [
+        [
+          174.3,
+          189.7
+        ]
+      ],
+      "timingRecord": "work/new44/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.149
+      }
+    },
+    "4-4/05": {
+      "file": "4-4/PAWS_4-4_05_Small_Drawer_Action_and_Reward.mp4",
+      "sha256": "6992124fb33e81f4ff1b5e3997ca42d0b9672aaf454b9d6e0e65737b58809d80",
+      "frames": 275,
+      "videoId": "2O0T7FijIEE",
+      "channel": "Dogkind",
+      "title": "Mat Training Part 2! Adding distractions",
+      "ranges": [
+        [
+          617.1,
+          626.25
+        ]
+      ],
+      "timingRecord": "work/new44/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.121
+      }
+    },
+    "4-4/04": {
+      "file": "4-4/PAWS_4-4_04_Nearby_Walk_Return_Reward.mp4",
+      "sha256": "6193d544913579c934707dec864c81cc49bc7861e01f17ef41db0c88e3b09294",
+      "frames": 305,
+      "videoId": "JFHcE72GvUU",
+      "channel": "Pupford",
+      "title": "Teach Your Dog the \"Place\" Cue  – A Simple Guide",
+      "ranges": [
+        [
+          263.1,
+          273.3
+        ]
+      ],
+      "timingRecord": "work/new44/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.116
+      }
+    },
+    "4-4/07": {
+      "file": "4-4/PAWS_4-4_07_Choose_Bed_While_Guardian_Reads.mp4",
+      "sha256": "4935ed66780bfdc6925126e2adbc9cbd5111407ed1879446bf39c2a732de2c3d",
+      "frames": 606,
+      "videoId": "2O0T7FijIEE",
+      "channel": "Dogkind",
+      "title": "Mat Training Part 2! Adding distractions",
+      "ranges": [
+        [
+          649,
+          669.2
+        ]
+      ],
+      "timingRecord": "work/new44/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.144
+      }
+    },
+    "4-5/01": {
+      "file": "4-5/PAWS_4-5_01_Go_to_Starting_Spot_Pause_and_Release.mp4",
+      "sha256": "b409cbd9808bb0f6f1eb39e674525ac55fa3de2b245218cd8a855c9b505c0e09",
+      "frames": 288,
+      "videoId": "s0gz8sOZsWw",
+      "channel": "Pupford",
+      "title": "How to STOP Your Dog From Running Out the Front Door",
+      "ranges": [
+        [
+          38.4,
+          48
+        ]
+      ],
+      "timingRecord": "work/new45/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.12
+      }
+    },
+    "4-5/02": {
+      "file": "4-5/PAWS_4-5_02_Brief_Cue_Arrival_and_Reward.mp4",
+      "sha256": "cf37d1866696e353bd63b8f764121008c0a50470e9bfcb04a373db7d7ca7a7cf",
+      "frames": 178,
+      "videoId": "s0gz8sOZsWw",
+      "channel": "Pupford",
+      "title": "How to STOP Your Dog From Running Out the Front Door",
+      "ranges": [
+        [
+          66.1,
+          72.02
+        ]
+      ],
+      "timingRecord": "work/new45/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.13
+      }
+    },
+    "4-5/04": {
+      "file": "4-5/PAWS_4-5_04_Start_Spot_to_Walk_Departure.mp4",
+      "sha256": "91408838754351eac94472f83b66b68645efa1f9d76a254c4663fa83894be239",
+      "frames": 218,
+      "videoId": "s0gz8sOZsWw",
+      "channel": "Pupford",
+      "title": "How to STOP Your Dog From Running Out the Front Door",
+      "ranges": [
+        [
+          181.85,
+          189.15
+        ]
+      ],
+      "timingRecord": "work/new45/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.114
+      }
+    },
+    "4-5/03": {
+      "file": "4-5/PAWS_4-5_03_Same_Start_From_Other_Side.mp4",
+      "sha256": "2d02a2656c4dd33e8997ee2d00d3814a5a36f3db234e3e915a13e143293a07fc",
+      "frames": 164,
+      "videoId": "s0gz8sOZsWw",
+      "channel": "Pupford",
+      "title": "How to STOP Your Dog From Running Out the Front Door",
+      "ranges": [
+        [
+          50.05,
+          55.55
+        ]
+      ],
+      "timingRecord": "work/new45/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.103
+      }
+    },
+    "5-1/02": {
+      "file": "5-1/PAWS_5-1_02_Follow_Indoor_Route_Pause_and_Reward.mp4",
+      "sha256": "5f463d0f010a16a60a76d947a6eca5242f31fa66847ba881256a078b77e9edbf",
+      "frames": 205,
+      "videoId": "BMC7PcE2BvE",
+      "channel": "랜선 볶음이",
+      "title": "강아지 배변장소 바꾸는 법(feat.배변판 훈련)",
+      "ranges": [
+        [
+          100.45,
+          107.3
+        ]
+      ],
+      "timingRecord": "work/new51/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.13
+      }
+    },
+    "5-1/05": {
+      "file": "assets/training/sources/section5/indoor-potty-and-reward.mp4",
+      "sha256": "82cf17fdd8bd3a913bcccc239bb4292214476aa5e0ae8cd032849cbd4d63ac9b",
+      "frames": 285,
+      "videoId": "AVCV8k3xvGY",
+      "channel": "Zak George",
+      "title": "How to Indoor Potty Train your Dog with the Potty Training Puppy Apartment",
+      "ranges": [
+        [
+          281,
+          290.5
+        ]
+      ],
+      "timingRecord": "scripts/training-section5-sources.json",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.263
+      }
+    },
+    "5-1/03": {
+      "file": "5-1/PAWS_5-1_03_Same_Potty_Area_From_Another_Start.mp4",
+      "sha256": "737b08364115b1740e2c2d637fd619d0e940af7968fbfad8aa6b35f4d08cf314",
+      "frames": 174,
+      "videoId": "BMC7PcE2BvE",
+      "channel": "랜선 볶음이",
+      "title": "강아지 배변장소 바꾸는 법(feat.배변판 훈련)",
+      "ranges": [
+        [
+          134.65,
+          140.45
+        ]
+      ],
+      "timingRecord": "work/new51/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.138
+      }
+    },
+    "5-2/07": {
+      "file": "assets/training/sources/section5/notice-an-accident.mp4",
+      "sha256": "a3f31df7ae735b9b0d437cf83210029e6b972b44e272563ba4a2caa0704c550f",
+      "frames": 68,
+      "videoId": "t68E7g4D4dU",
+      "channel": "Zak George",
+      "title": "How I Finally Conquered Potty Training! My TOUGHEST HOUSE TRAINING CASE YET!",
+      "ranges": [
+        [
+          115.05,
+          117.3
+        ]
+      ],
+      "timingRecord": "scripts/training-section5-sources.json",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.381
+      }
+    },
+    "5-2/03": {
+      "file": "5-2/PAWS_5-2_03_Wipe_the_Floor_and_Lift_the_Cloth.mp4",
+      "sha256": "bb9e5325694291851a16300725597c2199d757073190235911b1ca40d14e4255",
+      "frames": 337,
+      "videoId": "ijT16-8BPNQ",
+      "channel": "Samy & the Snow Dogs",
+      "title": "How I Clean Up Potty Accident Messes (Foster Dog Update)",
+      "ranges": [
+        [
+          138.2,
+          149.42
+        ]
+      ],
+      "timingRecord": "work/finish_section5/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 1.022
+      }
+    },
+    "5-2/04": {
+      "file": "5-2/PAWS_5-2_04_Write_a_Potty_Log.mp4",
+      "sha256": "c86d8d3fb1ae32879f6573e46ca4e18ded8702c81bc4dd2fbfd149abf36da75c",
+      "frames": 281,
+      "videoId": "K5gCY0uMFp0",
+      "channel": "Happy With Dogs",
+      "title": "Potty Training SECRETS",
+      "ranges": [
+        [
+          155.9,
+          165.3
+        ]
+      ],
+      "timingRecord": "work/finish_section5/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.152
+      },
+      "historicalTransform": "transpose=2; frame check reverses the historical rotation; official playback retains original orientation"
+    },
+    "5-2/10": {
+      "file": "5-2/PAWS_5-2_06_Use_the_Familiar_Indoor_Potty_Route.mp4",
+      "sha256": "5f463d0f010a16a60a76d947a6eca5242f31fa66847ba881256a078b77e9edbf",
+      "frames": 205,
+      "videoId": "BMC7PcE2BvE",
+      "channel": "랜선 볶음이",
+      "title": "강아지 배변장소 바꾸는 법(feat.배변판 훈련)",
+      "ranges": [
+        [
+          100.45,
+          107.3
+        ]
+      ],
+      "timingRecord": "work/finish_section5/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.13
+      }
+    },
+    "5-2/08": {
+      "file": "assets/training/sources/section5/recovery-clean.mp4",
+      "sha256": "9e24e4e3340ca56c5f7d6929e11962e02308ea620c78dfe451535694a8a9a242",
+      "frames": 120,
+      "videoId": "ijT16-8BPNQ",
+      "channel": "Samy & the Snow Dogs",
+      "title": "How I Clean Up Potty Accident Messes (Foster Dog Update)",
+      "ranges": [
+        [
+          145.4,
+          149.4
+        ]
+      ],
+      "timingRecord": "scripts/training-section5-sources.json",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.324
+      }
+    },
+    "5-2/09": {
+      "file": "assets/training/sources/section5/recovery-record.mp4",
+      "sha256": "07ad1400ddeae9868ebf91d5f1e00f04c1f3c4eec1fd266bb818223761fc8e2c",
+      "frames": 120,
+      "videoId": "K5gCY0uMFp0",
+      "channel": "Happy With Dogs",
+      "title": "Potty Training SECRETS",
+      "ranges": [
+        [
+          157.9,
+          161.9
+        ]
+      ],
+      "timingRecord": "scripts/training-section5-sources.json",
+      "timeBasis": "YouTube original",
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.276
+      },
+      "historicalTransform": "transpose=2; frame check reverses the historical rotation; official playback retains original orientation"
+    },
+    "5-3/01": {
+      "file": "5-3/PAWS_5-3_01_Outdoor_Route_Wait_Reward_and_Continue.mp4",
+      "sha256": "a4857713de0d16b2728960f2e7dbd213f044d180b361bb231f8fec10316656e7",
+      "frames": 479,
+      "videoId": "gZ0XEr4DGfs",
+      "channel": "Kikopup",
+      "title": "Housetraining 101",
+      "ranges": [
+        [
+          203.9,
+          219.85
+        ]
+      ],
+      "timingRecord": "work/finish_section5/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.171
+      }
+    },
+    "5-3/02": {
+      "file": "5-3/PAWS_5-3_02_Wait_for_Completion_then_Praise_Zak.mp4",
+      "sha256": "5c95e88901eb4869e92aff4deafcb2601335f145688391ce52b031e842c1c41c",
+      "frames": 295,
+      "videoId": "7vOXWCewEYM",
+      "channel": "Zak George",
+      "title": "How to Potty Train your Puppy EASILY! Everything you need to know!",
+      "ranges": [
+        [
+          390,
+          399.85
+        ]
+      ],
+      "timingRecord": "work/finish_section5/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.239
+      }
+    },
+    "5-3/03": {
+      "file": "5-3/PAWS_5-3_03_Allow_Quiet_Sniffing_on_Leash_Pupford.mp4",
+      "sha256": "e5da9c5101c42751db8fa64d46a8b56c78bac2f5b76c2a958900f3ac8399cfe0",
+      "frames": 485,
+      "videoId": "5WMl5lYC7j8",
+      "channel": "Pupford",
+      "title": "Puppy Potty Training – Dog Training POV Series with  @thedoggiedojo",
+      "ranges": [
+        [
+          182.95,
+          199.15
+        ]
+      ],
+      "timingRecord": "work/finish_section5/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.181
+      }
+    },
+    "5-3/04": {
+      "file": "5-3/PAWS_5-3_04_Move_Away_From_Distant_Distractions_Zak.mp4",
+      "sha256": "ce2b1aecce173c7e2c6385133f3320dd1f799d2e43b1cd13826009ad92c58618",
+      "frames": 456,
+      "videoId": "GTi71Je1g_I",
+      "channel": "Zak George",
+      "title": "How to Train Your Dog to STOP BARKING at EVERYTHING That Moves!!",
+      "ranges": [
+        [
+          378.5,
+          393.7
+        ]
+      ],
+      "timingRecord": "work/finish_section5/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true
+    },
+    "6-1/01": {
+      "file": "6-1/PAWS_6-1_01_Treat_Trade_and_Toy_Return.mp4",
+      "sha256": "3420bd737c9fcbe7a5ceb97cd50c0f150f557a1a2f49c66093e082bf4e6bcd7b",
+      "frames": 273,
+      "videoId": "gZvkyAFi7tc",
+      "channel": "Kikopup",
+      "title": "How to train DROP IT",
+      "ranges": [
+        [
+          33.3,
+          39
+        ],
+        [
+          53.9,
+          57.3
+        ]
+      ],
+      "timingRecord": "work/new61/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 6,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 1.34
+      }
+    },
+    "6-1/02": {
+      "file": "6-1/PAWS_6-1_02_Drop_Cue_Trade_and_Return.mp4",
+      "sha256": "a243b0f3d25ee27a9cb1049e7f478f1fa9e57eacb2dd318b73b46504dee82120",
+      "frames": 218,
+      "videoId": "gZvkyAFi7tc",
+      "channel": "Kikopup",
+      "title": "How to train DROP IT",
+      "ranges": [
+        [
+          88.34,
+          95.6
+        ]
+      ],
+      "timingRecord": "work/new61/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.121
+      }
+    },
+    "6-1/03": {
+      "file": "6-1/PAWS_6-1_03_Release_First_Toy_Take_Second.mp4",
+      "sha256": "3dc1eff254ea03b3de29fe3a510c64737adbda4c78db6e2fef5f7753173084be",
+      "frames": 341,
+      "videoId": "StNobBO8KRA",
+      "channel": "Summit Dog Training",
+      "title": "Teaching Tug & Drop It with Two Toys - for Self-Control & Fun!",
+      "ranges": [
+        [
+          110.3,
+          121.65
+        ]
+      ],
+      "timingRecord": "work/new61/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.147
+      }
+    },
+    "6-1/04": {
+      "file": "6-1/PAWS_6-1_04_Drop_During_Play_and_Resume.mp4",
+      "sha256": "dcc71209bd63788c2ee73bc617f5258a4c8c86ec7fdbd3c12b28b90a7cc2899e",
+      "frames": 163,
+      "videoId": "E1PmzjSNEx4",
+      "channel": "Zak George",
+      "title": "3 Easy Things to Teach Any Dog That Most People Think Are Hard (Teeth brushing, let go of toys...)",
+      "ranges": [
+        [
+          341.64,
+          347.06
+        ]
+      ],
+      "timingRecord": "work/new61/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.264
+      }
+    },
+    "6-2/01": {
+      "file": "6-2/PAWS_6-2_01_Choose_Toy_Before_Play.mp4",
+      "sha256": "3065e684aea29bb6c7c2eb0796f1f2bda74d0e4fc9ac5eb7ec16e6cbbaed421e",
+      "frames": 261,
+      "videoId": "LLZ2jNO5LQM",
+      "channel": "Zak George",
+      "title": "How to Train a PUPPY to STOP BITING",
+      "ranges": [
+        [
+          198.55,
+          207.25
+        ]
+      ],
+      "timingRecord": "work/new62/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.0,
+        "maxMeanPixelError255": 0.146
+      }
+    },
+    "6-2/02": {
+      "file": "6-2/PAWS_6-2_02_Stop_Toy_Movement_Calmly.mp4",
+      "sha256": "f85829eef2767d7285bc3b95f455644417685e857f353667862c70e0d7a8f1db",
+      "frames": 128,
+      "videoId": "_afpSZlHw5g",
+      "channel": "Kikopup",
+      "title": "TROUBLESHOOTING for training a dog to DROP a TOY",
+      "ranges": [
+        [
+          480.5,
+          484.75
+        ]
+      ],
+      "timingRecord": "work/new62/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.133
+      }
+    },
+    "6-2/03": {
+      "file": "6-2/PAWS_6-2_03_Calm_Pause_Toy_Choice_and_Resume.mp4",
+      "sha256": "423098fb2dd01126aafca6a548cb2f65de7b62bb03bc5652389fdccbf0983423",
+      "frames": 109,
+      "videoId": "b4g1Ep4BN94",
+      "channel": "Pupford",
+      "title": "Does Tug Cause Aggression in Dogs? With Emily Fitzpatrick, VSA, CDT",
+      "ranges": [
+        [
+          330.45,
+          334.1
+        ]
+      ],
+      "timingRecord": "work/new62/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.155
+      }
+    },
+    "6-3/01": {
+      "file": "6-3/PAWS_6-3_01_Provide_Chew_in_Managed_Space.mp4",
+      "sha256": "ccb7b1e4848b68eb2c00d172f2e16169f45f90ea5e75a1faa2bf4d4c98998871",
+      "frames": 432,
+      "videoId": "wlzp3ewCHKg",
+      "channel": "Zak George",
+      "title": "NEW PUPPY SURVIVAL GUIDE: How to EASILY STOP These 4 Puppy Problems NOW! (Ep 6)",
+      "ranges": [
+        [
+          677.5,
+          691.9
+        ]
+      ],
+      "timingRecord": "work/new63/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.201
+      }
+    },
+    "6-3/02": {
+      "file": "6-3/PAWS_6-3_02_Redirect_From_Item_to_Toy.mp4",
+      "sha256": "d492c3e6da4852ff15afb8ed2a7407b4bbed49a4b853fc4963709fb72a6012af",
+      "frames": 402,
+      "videoId": "nUKEloF-cEI",
+      "channel": "Pupford",
+      "title": "Teach Your Dog to Leave Holiday Decorations Alone",
+      "ranges": [
+        [
+          184.3,
+          197.72
+        ]
+      ],
+      "timingRecord": "work/new63/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.146
+      }
+    },
+    "6-3/03": {
+      "file": "6-3/PAWS_6-3_03_Chew_During_Calm_Movement.mp4",
+      "sha256": "569e3a6cbc66bc0c42e174ab2df772741c112c8d4ba4484803f6b7254a1be9e6",
+      "frames": 269,
+      "videoId": "wlzp3ewCHKg",
+      "channel": "Zak George",
+      "title": "NEW PUPPY SURVIVAL GUIDE: How to EASILY STOP These 4 Puppy Problems NOW! (Ep 6)",
+      "ranges": [
+        [
+          699.08,
+          708.08
+        ]
+      ],
+      "timingRecord": "work/new63/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.237
+      }
+    },
+    "6-4/01": {
+      "file": "6-4/PAWS_6-4_01_Quiet_Pause_and_Reward.mp4",
+      "sha256": "d17eb37039ce9257bba0aa54cc7be453b4ea3b6a9f28c2b34a83369f068ca4e0",
+      "frames": 133,
+      "videoId": "4wBApkKuEVI",
+      "channel": "Zak George",
+      "title": "NEW PUPPY SURVIVAL GUIDE: How to Train ANY Dog to STOP Barking, Calm Down & Stay! (EP: 7)",
+      "ranges": [
+        [
+          802.98,
+          807.43
+        ]
+      ],
+      "timingRecord": "work/new64/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.171
+      }
+    },
+    "6-4/02": {
+      "file": "6-4/PAWS_6-4_02_Stop_Toy_Movement.mp4",
+      "sha256": "f85829eef2767d7285bc3b95f455644417685e857f353667862c70e0d7a8f1db",
+      "frames": 128,
+      "videoId": "_afpSZlHw5g",
+      "channel": "Kikopup",
+      "title": "TROUBLESHOOTING for training a dog to DROP a TOY",
+      "ranges": [
+        [
+          480.5,
+          484.75
+        ]
+      ],
+      "timingRecord": "work/new64/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.133
+      }
+    },
+    "6-4/03": {
+      "file": "6-4/PAWS_6-4_03_Quiet_Toy_Choice_and_Play.mp4",
+      "sha256": "423098fb2dd01126aafca6a548cb2f65de7b62bb03bc5652389fdccbf0983423",
+      "frames": 109,
+      "videoId": "b4g1Ep4BN94",
+      "channel": "Pupford",
+      "title": "Does Tug Cause Aggression in Dogs? With Emily Fitzpatrick, VSA, CDT",
+      "ranges": [
+        [
+          330.45,
+          334.1
+        ]
+      ],
+      "timingRecord": "work/new64/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.155
+      }
+    },
+    "6-5/01": {
+      "file": "6-5/PAWS_6-5_01_Notice_Turn_Back_and_Reward.mp4",
+      "sha256": "b1c3e4addb3fa0fd7a46fd212f625fbe93d4e7c84eeb221dfd81d7377efb484b",
+      "frames": 106,
+      "videoId": "bpzvqN9JNUA",
+      "channel": "Kikopup",
+      "title": "Stop barking at the door - Dog Training",
+      "ranges": [
+        [
+          183.98,
+          187.5
+        ]
+      ],
+      "timingRecord": "work/new65/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.148
+      }
+    },
+    "6-5/02": {
+      "file": "6-5/PAWS_6-5_02_Practice_the_Resting_Space_Route.mp4",
+      "sha256": "87d73e450fe56f89ebf480cb33b4e8adb98d0b6755e4ba6da00fc5722c4aa473",
+      "frames": 267,
+      "videoId": "gRW1PVHeQhY",
+      "channel": "Zak George",
+      "title": "4 Annoying Dog Habits you can Stop with a Simple Crate Pad",
+      "ranges": [
+        [
+          241.8,
+          250.7
+        ]
+      ],
+      "timingRecord": "work/new65/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.171
+      }
+    },
+    "6-5/03": {
+      "file": "6-5/PAWS_6-5_03_Knock_Move_Away_to_Mat_and_Reward.mp4",
+      "sha256": "acdfca5b1b57b59af308ed782b173a7da393ddb8c42054f85670c10d7fd9d591",
+      "frames": 266,
+      "videoId": "HZxjAk8t4Jw",
+      "channel": "Zak George",
+      "title": "How To Easily STOP Barking And Jumping",
+      "ranges": [
+        [
+          410.7,
+          419.55
+        ]
+      ],
+      "timingRecord": "work/new65/internal_edit_record.json",
+      "timeBasis": "YouTube original",
+      "matchesAcquisitionHash": true,
+      "frameCheck": {
+        "samples": 3,
+        "maxTimingErrorSeconds": 0.033,
+        "maxMeanPixelError255": 0.222
+      }
+    },
+    "6-5/04": {
+      "file": "4-3/clips/PAWS_4-3_C06_natural_neighbor_sound_reorient_on_sofa_v1.mp4",
+      "sha256": "d9b17fbfd7477f10308ae7d5ba27721071e612c17d4711e9e40703bbcad9fff6",
+      "frames": 369,
+      "videoId": "qPpEpQXTQb4",
+      "channel": "Kikopup",
+      "title": "Train your puppy to be CALM and QUIET when they hear BARKING DOGS",
+      "ranges": [
+        [
+          21,
+          33.3
+        ]
+      ],
+      "timingRecord": "Actual/4-3/source_list.csv",
+      "timeBasis": "YouTube original"
+    }
+  }
+}

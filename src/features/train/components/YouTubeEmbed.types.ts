@@ -6,6 +6,8 @@ export type YouTubeEmbedProps = {
   initialAt: number;
   showControls?: boolean;
   playbackRate?: number;
+  muted?: boolean;
+  title?: string;
   command: YouTubeCommand | null;
   onEvent: (event: YouTubeEvent) => void;
 };

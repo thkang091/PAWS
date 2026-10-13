@@ -63,7 +63,7 @@ function TrainingFlowPreview() {
   switch (screen) {
     case "prepare": content = <PreparationPreview round={round} onClose={gallery} onStart={() => setScreen(questions.length ? "quiz" : "practice")} />; break;
     case "quiz": content = <TrainingReviewQuiz key={run} questions={questions} onClose={gallery} onWatch={setReviewClip} onComplete={() => { setLevel(round === 1 ? 1 : 3); setScreen("practice"); }} />; break;
-    case "practice": content = <TrainingPracticePreview key={`${run}-${level}`} level={level} onClose={gallery} onContinue={continuePractice} onStruggle={concept => setStruggles(previous => previous.includes(concept) ? previous : [...previous, concept])} />; break;
+    case "practice": content = <TrainingPracticePreview key={`${run}-${level}`} level={level} practiceLevels={round === 1 ? [1, 2, 3] : [3, 4, 5]} onClose={gallery} onContinue={continuePractice} onStruggle={concept => setStruggles(previous => previous.includes(concept) ? previous : [...previous, concept])} />; break;
     case "sessionComplete": content = <TrainingRoundComplete lessonTitle={PREVIEW_LESSON.title} onClose={gallery} />; break;
     case "lessonComplete": content = <TrainingRoundComplete lessonTitle={PREVIEW_LESSON.title} lessonComplete onClose={gallery} onViewVideos={() => setScreen("library")} />; break;
     case "library": content = <UnlockedLessonVideos skillCode={PREVIEW_LESSON.code} title={PREVIEW_LESSON.title} onClose={gallery} />; break;

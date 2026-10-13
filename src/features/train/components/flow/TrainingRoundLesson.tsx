@@ -16,9 +16,10 @@ import { TrainingReviewQuiz } from "./TrainingReviewQuiz";
 import { TrainingPracticeClip } from "./TrainingPracticeClip";
 import { TrainingRoundComplete } from "./TrainingRoundComplete";
 import { TrainingFlowButton } from "./TrainingFlowScreen";
+import { LessonProgressBar } from '../LessonProgressBar';
+import { getRoundPracticeAccess, nextVisitedPractice } from '../../rounds/lessonNavigation';
 import { getAllSectionRoadmaps, getTrainingLevelDetail, getTrainingPreparation } from "@/services/trainingCurriculumService";
 import { newRoundKey, trainingRoundAction, type RoundAction, type RoundQuestion, type TrainingRoundContext } from "@/services/trainingRoundService";
-import { makeRefresherQuestion } from "../../rounds/refresherQuestion";
 import { getTrainingClipLessons } from "../../media/trainingClipLessons";
 import { getTrainingClipAssets } from "../../media/trainingClipAssets";
 import { prepareTrainingClip } from "../../media/prepareTrainingClip";
@@ -31,6 +32,7 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
   const [preparing, setPreparing] = useState(true);
   const [library, setLibrary] = useState(false);
   const [watch, setWatch] = useState<RoundQuestion | null>(null);
+  const [browsing, setBrowsing] = useState<{ sessionId: string; level: number } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const pending = useRef(false);
@@ -40,6 +42,7 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
   const { height } = useWindowDimensions();
   const collapse = useSharedValue(0);
   const paid = Boolean(context.round || context.canResume);
+  const needsReinforcement = Boolean(context.difficultLevelIds?.length);
   const needsProgress = preparing && !paid && !context.unlocked;
   const lessonStarted = useQuery({
     queryKey: queryKeys.allTrainingSectionRoadmaps(dogId),
@@ -54,6 +57,13 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
   const code = skill?.skillCode ?? "";
   const clips = getTrainingClipLessons(code);
   const clip = clips.find(item => item.levelNumber === level.data?.levelNumber);
+  const viewedLevel = browsing?.sessionId === context.session?.id ? browsing?.level : undefined;
+  const displayedClip = clips.find(item => item.levelNumber === viewedLevel) ?? clip;
+  const access = getRoundPracticeAccess(
+    context.round?.practice_level_ids ?? [context.levelId],
+    context.round?.practice_cursor ?? 0,
+    context.lessonAccess ?? [],
+  );
   const source = getTrainingClipAssets(code, clip?.levelNumber)?.source;
   // Download during preparation/quiz. The existing player also handles loading
   // and retry, so slow media never advances or consumes an extra round.
@@ -91,7 +101,7 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
     if (showVideos) { setPreparing(false); setLibrary(true); } else close();
   };
   const start = async () => {
-    if (context.unlocked) { await acknowledge(true); return; }
+    if (context.unlocked && !needsReinforcement && !context.round) { await acknowledge(true); return; }
     const result = await act("start", { key: startKey.current });
     if (result) setPreparing(false);
   };
@@ -107,20 +117,33 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
     onAnswer={answer => { void act("answer",answer); }}
     onAdvance={() => { void act("advance_quiz", { cursor: context.round!.quiz_cursor }); }}
     onComplete={() => {}} onClose={close} onWatch={question => setWatch(question as RoundQuestion)} />;
-  if (!preparing && context.round?.status === "completed") return <TrainingRoundComplete lessonTitle={skill.title} lessonComplete={context.unlocked}
+  if (!preparing && context.round?.status === "completed") return <TrainingRoundComplete lessonTitle={skill.title} lessonComplete={context.unlocked} needsReinforcement={needsReinforcement}
     busy={busy} error={error} onClose={() => { void acknowledge(); }} onViewVideos={() => { void acknowledge(true); }} />;
-  if (!preparing && context.session) return <TrainingPracticeClip key={context.session.id} skillCode={code} title={skill.title} level={clip.levelNumber}
+  if (!preparing && context.session && displayedClip) return <TrainingPracticeClip key={`${context.session.id}:${displayedClip.levelNumber}`} skillCode={code} title={skill.title} level={displayedClip.levelNumber}
     sessionId={context.session.id} busy={busy} error={error} onClose={close}
-    onContinue={() => { void act("continue"); }}
+    allowSkip={displayedClip.levelNumber !== clip.levelNumber}
+    lessonProgress={access.length ? progress => <LessonProgressBar playbackProgress={progress} current={displayedClip.levelNumber} disabled={busy}
+      items={access.map(item => ({ ...item, title: clips.find(c => c.levelNumber === item.levelNumber)?.steps[0].title ?? skill.title }))}
+      onSelect={selected => {
+        if (access.some(item => item.levelNumber === selected && item.visited)) setBrowsing({ sessionId: context.session!.id, level: selected });
+      }} /> : undefined}
+    onContinue={() => {
+      if (displayedClip.levelNumber !== clip.levelNumber) {
+        setBrowsing({ sessionId: context.session!.id, level: nextVisitedPractice(displayedClip.levelNumber, clip.levelNumber, access) });
+      } else void act("continue");
+    }}
     onHelp={(at, step) => {
-      const question = makeRefresherQuestion(code,skill.title,clip,at);
-      void act("help", { question }).then(result => {
-        if (result) router.push({ pathname:"/train/help", params:{ skillId, levelId: context.levelId, step: String(step), clip: "1", state:"live" } });
-      });
+      // Opening Coach is navigation only. A real reply records reinforcement.
+      router.push({ pathname:"/train/help", params:{ dogId, skillId,
+        roundId: context.round!.id, sessionId: context.session!.id, reviewAt: String(at),
+        skillCode: code, levelNumber: String(displayedClip.levelNumber), lessonTitle: skill.title,
+        levelId: access.find(item => item.levelNumber === displayedClip.levelNumber)?.levelId ?? context.levelId,
+        step: String(step), clip: "1", state:"live", reinforcement: "1" } });
     }} />;
 
-  const unavailable = !context.unlocked && !paid && context.energy.remaining === 0;
-  const sessionLabel = paid || lessonStarted.data ? "Continue session" : "Start session";
+  const libraryOnly = context.unlocked && !needsReinforcement && !context.round;
+  const unavailable = !libraryOnly && !paid && context.energy.remaining === 0;
+  const sessionLabel = paid || context.unlocked || lessonStarted.data ? "Continue session" : "Start session";
   const startLabel = paid ? sessionLabel : `${sessionLabel} · 1 Energy`;
   return <View style={styles.screen}>
     <ScrollView contentContainerStyle={styles.preparation}>
@@ -136,7 +159,8 @@ export function TrainingRoundLesson({ dogId, skillId, initial }: { dogId: string
     </ScrollView>
     <PressScale accessibilityRole="button" accessibilityLabel="Close" style={[styles.close,{top:insets.top+space.sm}]} onPress={close}><XIcon size={24} color={text.inverse} /></PressScale>
     <View style={[styles.footer,{paddingBottom:insets.bottom+space.lg}]}>
-      <TrainingFlowButton label={busy ? "Preparing…" : context.unlocked ? "Watch lesson videos" : unavailable ? "No Energy left today" : startLabel} disabled={busy || unavailable} onPress={() => { void start(); }} />
+      <TrainingFlowButton label={busy ? "Preparing…" : libraryOnly ? "Watch lesson videos" : unavailable ? "No Energy left today" : startLabel} disabled={busy || unavailable} onPress={() => { void start(); }} />
+      {context.unlocked && !libraryOnly ? <TrainingFlowButton label="Watch lesson videos" secondary disabled={busy} onPress={() => { setPreparing(false); setLibrary(true); }} /> : null}
       {context.round?.status === "active" ? <TrainingFlowButton label="End this session" secondary disabled={busy} onPress={() => { void act("end").then(result => { if (result) close(); }); }} /> : null}
     </View>
   </View>;

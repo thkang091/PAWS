@@ -1,18 +1,20 @@
+import { useMemo } from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PressScale } from "@/components/ui/PressScale";
 import { accent, bg, layout, radius, space, text, type } from "@/constants/design";
 import { useYouTubeTrainingPlayback } from "@/hooks/useYouTubeTrainingPlayback";
-import { getTrainingClipLessons } from "../media/trainingClipLessons";
+import { getTrainingClipLessons, getTrainingReviewClip } from "../media/trainingClipLessons";
 import { getTrainingYouTubeSegments, youtubeWatchUrl } from "../media/trainingYouTube";
 import { YouTubeEmbed } from "./YouTubeEmbed";
-import { TrainingClipScreen } from "./TrainingClipScreen";
+import { TrainingClipScreen, type LessonProgressSlot } from "./TrainingClipScreen";
 import { YouTubeControlsButton } from "./YouTubeControlsButton";
 
 export type YouTubeTrainingClipProps = {
   skillCode: string; title: string; level: number; onContinue: () => void; onClose: () => void;
   sessionId?: string; onHelp?: (at: number, step: number) => void; reviewAt?: number; busy?: boolean; error?: string | null;
   continueLabel?: string; onLevelChange?: (level: number) => void;
+  lessonProgress?: LessonProgressSlot;
 };
 
 // Only playback differs from MP4. Both providers render the same lesson screen.
@@ -21,17 +23,18 @@ export function YouTubeTrainingClip(props: YouTubeTrainingClipProps) {
 }
 
 function YouTubeTrainingClipContent({ skillCode, title, level, sessionId, onContinue, onClose, onHelp, reviewAt,
-  busy = false, error: actionError, continueLabel, onLevelChange }: YouTubeTrainingClipProps) {
-  const lesson = getTrainingClipLessons(skillCode).find(item => item.levelNumber === level)!;
-  const segments = getTrainingYouTubeSegments(skillCode, level);
-  const playback = useYouTubeTrainingPlayback(lesson, segments, true, reviewAt, sessionId);
+  busy = false, error: actionError, continueLabel, onLevelChange, lessonProgress }: YouTubeTrainingClipProps) {
+  const review = useMemo(() => reviewAt === undefined ? null : getTrainingReviewClip(skillCode, level, reviewAt), [skillCode, level, reviewAt]);
+  const lesson = review?.lesson ?? getTrainingClipLessons(skillCode).find(item => item.levelNumber === level)!;
+  const segments = review?.segments ?? getTrainingYouTubeSegments(skillCode, level);
+  const playback = useYouTubeTrainingPlayback(lesson, segments, true, review?.at ?? reviewAt, sessionId);
   const segment = playback.segment!;
   const insets = useSafeAreaInsets();
   // Reserve space INSIDE the original dark video stage for its existing close
   // button and overlapping sheet. Neither may cover the official player.
   const playerTop = insets.top + space.sm + 44;
   const leave = (action: () => void) => { playback.pause(); action(); };
-  return <TrainingClipScreen title={title} lesson={lesson} playback={playback}
+  return <TrainingClipScreen title={title} lesson={lesson} playback={playback} lessonProgress={lessonProgress}
     minimumVideoHeight={playerTop + 200 + space.sm}
     videoActions={<YouTubeControlsButton expanded={playback.showControls} onPress={playback.toggleControls} />}
     video={<View style={{ flex: 1, paddingTop: playerTop, paddingBottom: space.sm }}>

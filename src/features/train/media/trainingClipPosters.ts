@@ -1,6 +1,6 @@
-import { getTrainingClipAssets } from "./trainingClipAssets";
+import { TRAINING_YOUTUBE_POSTERS } from "./trainingYouTubePosters.generated";
 
-// Artwork only: Section 1 MP4s are deliberately not imported.
+// Artwork only: migrated lessons never import the historical MP4 registries.
 const posters: Record<string, Record<number, number>> = {
   "1-1": {
     1: require("../../../../assets/training/doorway-wait/level-1.jpg"),
@@ -37,10 +37,11 @@ const posters: Record<string, Record<number, number>> = {
     4: require("../../../../assets/training/quiet-moments/level-4.jpg"),
     5: require("../../../../assets/training/quiet-moments/level-5.jpg"),
   },
+  ...TRAINING_YOUTUBE_POSTERS,
 };
 
 export function getTrainingClipPoster(skillCode?: string, level?: number | null) {
-  return skillCode && level ? posters[skillCode]?.[level] ?? getTrainingClipAssets(skillCode, level)?.poster : undefined;
+  return skillCode && level ? posters[skillCode]?.[level] : undefined;
 }
 
 // Focal positions were chosen from the actual preparation frames (dog faces/bodies).

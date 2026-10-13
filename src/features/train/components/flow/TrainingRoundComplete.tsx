@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
-import { LockOpenIcon } from "phosphor-react-native";
-import { CelebratingPawsDog } from "./CelebratingPawsDog";
+import { LessonConfetti } from "./LessonConfetti";
 import { TrainingFlowButton, TrainingFlowScreen } from "./TrainingFlowScreen";
 import { accent, radius, space, text, type } from "@/constants/design";
 
-export function TrainingRoundComplete({ lessonTitle, lessonComplete = false, onClose, onViewVideos, busy = false, error }: {
+export function TrainingRoundComplete({ lessonTitle, lessonComplete = false, needsReinforcement = false, onClose, onViewVideos, busy = false, error }: {
   lessonTitle: string;
   lessonComplete?: boolean;
+  needsReinforcement?: boolean;
   onClose: () => void;
   onViewVideos?: () => void;
   busy?: boolean;
@@ -15,24 +15,23 @@ export function TrainingRoundComplete({ lessonTitle, lessonComplete = false, onC
 }) {
   const reduceMotion = useReducedMotion();
 
-  return <TrainingFlowScreen label={lessonTitle} centered onClose={onClose} footer={<>
+  return <View style={styles.screen}><TrainingFlowScreen label={lessonTitle} centered onClose={onClose} footer={<>
     <TrainingFlowButton label={busy ? "Saving…" : "Continue"} disabled={busy} onPress={onClose} />
     {lessonComplete && onViewVideos ? <TrainingFlowButton label="Rewatch lesson" disabled={busy} onPress={onViewVideos} secondary /> : null}
   </>}>
     <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(200)} style={styles.celebration}>
-      <CelebratingPawsDog />
       <Text accessibilityRole="header" style={styles.title}>{lessonComplete ? "You did it!" : "Nice work,\nboth of you!"}</Text>
-      <Text style={styles.copy}>{lessonComplete ? "You've finished this lesson together." : "A good moment to pause.\nWe'll pick up here next time."}</Text>
+      <Text style={styles.copy}>{lessonComplete ? "You've finished this lesson together." : needsReinforcement ? "A good moment to PAWSE.\nWe'll revisit the tricky parts next time." : "A good moment to PAWSE.\nWe'll pick up here next time."}</Text>
       {lessonComplete ? <View style={styles.unlocked}>
-        <LockOpenIcon size={22} color={text.primary} />
         <View style={styles.unlockCopy}><Text style={styles.unlockTitle}>All lesson videos unlocked</Text><Text style={styles.unlockDetail}>Rewatch whenever you need.</Text></View>
       </View> : null}
       {error ? <Text style={styles.error} accessibilityLiveRegion="polite">{error}</Text> : null}
     </Animated.View>
-  </TrainingFlowScreen>;
+  </TrainingFlowScreen>{lessonComplete ? <LessonConfetti /> : null}</View>;
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1 },
   celebration: { alignItems: "center", gap: space.lg, paddingVertical: space.md },
   error: { ...type.supporting, color: "#B3261E" },
   title: { ...type.pageTitle, color: text.primary, textAlign: "center" },

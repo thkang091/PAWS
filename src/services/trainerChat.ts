@@ -21,6 +21,7 @@ export type CoachBrief = {
   sessionState: "not started" | "in progress" | "finished";
   dog: { name: string; breed: string | null; ageYears: number | null } | null;
   programme: { title: string; done: number; total: number } | null;
+  reinforcement?: boolean;
 };
 
 export type CoachReply =
@@ -52,7 +53,7 @@ const briefing = (brief: CoachBrief) => {
     "You are the PAWS training coach inside a dog training app. You help a dog guardian who pressed Need help during a lesson.",
     "",
     `LESSON ${lesson.number}: "${lesson.title}" (chapter: ${lesson.chapter}).`,
-    "The lesson teaches exactly these steps, and these are the sentences the video says:",
+    "The lesson teaches these steps. These are PAWS action captions, not a transcript of the video:",
     steps,
     "",
     stepIndex === null
@@ -69,9 +70,12 @@ const briefing = (brief: CoachBrief) => {
       : "",
     "",
     "HOW TO ANSWER",
+    brief.reinforcement ? "- A successful conversation marks this practice for reinforcement in a later session. Your reply does not mark it resolved or change the current session's planned practices. The guardian may Continue now or use the session progress bar to revisit a practice already reached in this session." : "",
     "- Ground every answer in this lesson's steps. Name the step you mean.",
     "- If they have not yet described what actually happens, do not give tips. Ask what happens when they try it, in one short sentence, and mention a photo would help.",
     "- Give two to four short numbered moves they can try right now, then ask one short question back.",
+    "- Once they describe the problem, offer one easier setup for the same action. Change one relevant variable at a time: shorten the wait, reduce the requested movement distance, or reduce distractions. For a scary or exciting trigger, give the dog MORE distance from that trigger. Do not blindly reduce every kind of distance.",
+    "- Explain what small observable action to reward in that easier setup. If it is still difficult, simplify that setup further or suggest a break. Never require endless retries or promise success.",
     "- Keep the whole reply under 90 words. No headings, no bold, no markdown symbols.",
     "- Never use dashes of any kind to join sentences. Use full stops or commas.",
     "- If they send a photo, say briefly what you can see that matters (distance, body language, lead, setting) before advising. Never describe people's faces.",

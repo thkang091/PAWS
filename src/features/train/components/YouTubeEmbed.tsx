@@ -18,17 +18,17 @@ function MissingWebView({ onEvent }: Pick<YouTubeEmbedProps, "onEvent">) {
   </View>;
 }
 
-function NativeYouTubeEmbed({ segment, initialAt, command, onEvent, WebView, showControls, playbackRate }: YouTubeEmbedProps & {
+function NativeYouTubeEmbed({ segment, initialAt, command, onEvent, WebView, showControls, playbackRate, muted, title }: YouTubeEmbedProps & {
   WebView: NonNullable<ReturnType<typeof loadNativeWebView>>;
 }) {
   const webview = useRef<WebViewInstance>(null);
   const appId = Platform.OS === "ios" ? Constants.expoConfig?.ios?.bundleIdentifier : Constants.expoConfig?.android?.package;
   const origin = `https://${appId?.toLowerCase()}`;
-  const source = useMemo(() => ({ html: youtubePlayerHtml(segment, origin, initialAt, { showControls, playbackRate }), baseUrl: `${origin}/` }), [segment, origin, initialAt, showControls, playbackRate]);
+  const source = useMemo(() => ({ html: youtubePlayerHtml(segment, origin, initialAt, { showControls, playbackRate, muted }), baseUrl: `${origin}/` }), [segment, origin, initialAt, showControls, playbackRate, muted]);
   useEffect(() => {
     if (command) webview.current?.injectJavaScript(`window.pawsYouTubeCommand && window.pawsYouTubeCommand(${JSON.stringify(command)});true;`);
   }, [command]);
-  return <WebView ref={webview} source={source} style={{ flex: 1, backgroundColor: "#141414" }}
+  return <WebView ref={webview} source={source} accessibilityLabel={title} style={{ flex: 1, backgroundColor: "#141414" }}
     // Autoplay stays off in the IFrame API. Allow the user's PAWS replay/cue
     // button to initiate playback across the native-to-WebView bridge.
     originWhitelist={["*"]} allowsInlineMediaPlayback allowsFullscreenVideo mediaPlaybackRequiresUserAction={false}

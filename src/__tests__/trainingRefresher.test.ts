@@ -1,5 +1,5 @@
 import { makeRefresherQuestion } from '../features/train/rounds/refresherQuestion';
-import { getTrainingClipLessons } from '../features/train/media/trainingClipLessons';
+import { getTrainingClipLessons, getTrainingReviewClip } from '../features/train/media/trainingClipLessons';
 const codes = Array.from({length:6},(_,i)=>Array.from({length:5},(_,j)=>`${i+1}-${j+1}`)).flat();
 test('every available clip cue yields a targeted, seekable refresher with one correct answer', () => {
   let count=0;
@@ -8,8 +8,10 @@ test('every available clip cue yields a targeted, seekable refresher with one co
       const q=makeRefresherQuestion(code,'Lesson',clip,cue.at);
       expect(q.options.find(o=>o.id===q.correctOptionId)?.label).toBe(cue.text);
       expect(new Set(q.options.map(o=>o.label)).size).toBe(3);
-      expect(q.cueAt).toBe(cue.at);
-      expect(q.cueAt).toBeLessThan(clip.duration);
+      expect(q.cueAt).toBe(cue.reviewAt ?? cue.at);
+      const review = getTrainingReviewClip(code, clip.levelNumber, q.cueAt!)!;
+      expect(review.at).toBeGreaterThanOrEqual(0);
+      expect(review.at).toBeLessThan(review.lesson.duration);
       expect(q.prompt).toContain(step.title);
       expect(q.prompt).not.toMatch(/Level\s*\d|L[1-5]\b/);
       count++;

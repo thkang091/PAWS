@@ -1,4 +1,8 @@
-export type TrainingClipCue = { at: number; text: string };
+export type TrainingClipCue = {
+  at: number; text: string;
+  // Stable caption identity/clock used by persisted review questions.
+  reviewIndex?: number; reviewAt?: number;
+};
 export type TrainingClipStep = { title: string; cues: readonly TrainingClipCue[] };
 export type TrainingClipLesson = {
   id: string;

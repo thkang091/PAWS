@@ -3,7 +3,7 @@ import { TrainingClipVideo } from "../TrainingClipVideo";
 import { getTrainingClipAssets } from "@/features/train/media/trainingClipAssets";
 import { getTrainingClipLessons } from "@/features/train/media/trainingClipLessons";
 import { useTrainingClipPlayback } from "@/hooks/useTrainingClipPlayback";
-import { TrainingClipScreen } from "../TrainingClipScreen";
+import { TrainingClipScreen, type LessonProgressSlot } from "../TrainingClipScreen";
 import { prepareTrainingClip } from "@/features/train/media/prepareTrainingClip";
 import { YouTubeTrainingClip } from "../YouTubeTrainingClip";
 import { getTrainingYouTubeSegment } from "../../media/trainingYouTube";
@@ -13,11 +13,12 @@ export function TrainingPracticeClip(props: Parameters<typeof NativeTrainingPrac
   return <NativeTrainingPracticeClip {...props} />;
 }
 
-function NativeTrainingPracticeClip({ skillCode, title, sessionId, level, onContinue, onClose, onHelp, reviewAt, busy = false, error, continueLabel, allowSkip = false }: {
+function NativeTrainingPracticeClip({ skillCode, title, sessionId, level, onContinue, onClose, onHelp, reviewAt, busy = false, error, continueLabel, allowSkip = false, lessonProgress }: {
   skillCode: string; title: string; sessionId?: string;
   level: number; onContinue: () => void; onClose: () => void;
   onHelp?: (at: number, step: number) => void; reviewAt?: number;
   busy?: boolean; error?: string | null; continueLabel?: string; allowSkip?: boolean;
+  lessonProgress?: LessonProgressSlot;
 }) {
   const lesson = getTrainingClipLessons(skillCode).find(item => item.levelNumber === level)!;
   const assets = getTrainingClipAssets(skillCode, level)!;
@@ -39,7 +40,7 @@ function NativeTrainingPracticeClip({ skillCode, title, sessionId, level, onCont
     playback.pause();
     onHelp?.(playback.time, playback.currentCue?.stepIndex ?? 0);
   };
-  return <TrainingClipScreen title={title} lesson={lesson} playback={playback}
+  return <TrainingClipScreen title={title} lesson={lesson} playback={playback} lessonProgress={lessonProgress}
     video={<TrainingClipVideo playback={playback} poster={assets.poster} />}
     onClose={() => leave(onClose)} onContinue={() => leave(onContinue)} onReplay={playback.playWhole}
     onHelp={onHelp ? openCoach : undefined} busy={busy} error={error}

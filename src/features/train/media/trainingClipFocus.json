@@ -1,0 +1,30 @@
+{
+  "1-4": {
+    "2": { "groups": [[0]], "reason": "One route-and-pause example; remove the second arrival and separate release." },
+    "3": { "groups": [[1]], "reason": "Focus on waiting for elimination and rewarding afterward.", "stepTitles": { "1": "Wait, then reward" }, "captions": { "2": "Wait quietly during the potty break." } },
+    "4": { "groups": [[0], [2, 3]], "reason": "Morning preparation plus one continuous outdoor route-and-reward example.", "captions": { "4": "Another example: open the door calmly and head outside." } },
+    "5": { "groups": [[1, 2]], "reason": "Keep the continuous route, quiet observation and reward; omit the repeated morning and return examples." }
+  },
+  "1-5": {
+    "1": { "groups": [[0], [2]], "reason": "Reward natural calm, then introduce the quiet cue. Remove duplicate calm and unrelated release examples.", "captions": { "4": "Another example: while your dog is quiet, say the quiet cue once." } },
+    "2": { "groups": [[1]], "reason": "One clear quiet-cue response and reward.", "stepTitles": { "1": "Respond to the quiet cue" }, "captions": { "2": "Say the quiet cue once, then wait." } },
+    "3": { "groups": [[0, 2]], "reason": "One continuous mat demonstration instead of switching to a different dog and back." },
+    "4": { "groups": [[0], [1]], "reason": "A small-distraction example and a separate quiet response; remove repeated mat and release footage." },
+    "5": { "groups": [[0]], "reason": "Focus on the real home/window context and return to the guardian." }
+  },
+  "2-4": {
+    "4": { "groups": [[0], [2]], "reason": "Compare food and toy rewards; omit the third petting example." }
+  },
+  "5-2": {
+    "5": { "groups": [[0], [1]], "reason": "Clean, then record and plan. The route demonstration is already covered in Level 4.", "captions": { "1": "Another example: note what happened to plan the next potty opportunity." }, "coverageNote": "Two separate examples show cleanup and a potty log, not one continuous event. Use the log to plan the next opportunity; the familiar route is practised in Level 4. Safe cleaner use and planning remain practice instructions." }
+  },
+  "6-2": {
+    "4": { "groups": [[1], [2]], "reason": "Focus on pausing the toy and resuming after calm; remove the repeated introduction.", "captions": { "4": "Practise with gentle, small toy movements." } }
+  },
+  "6-3": {
+    "5": { "groups": [[0], [1]], "reason": "Prepare the space and redirect to the approved activity. Mild movement already has its own Level 4 demonstration." }
+  },
+  "6-4": {
+    "4": { "groups": [[0], [2]], "reason": "Focus on quiet receiving food or play; omit the toy-pause example already covered earlier.", "coverageNote": "Food and toy rewards are separate demonstrations. No continuous reduction-of-food trial or barking-to-pause event is claimed." }
+  }
+}

@@ -15,16 +15,17 @@ export function makeRefresherQuestion(skillCode: string, title: string, lesson: 
   const index = cues.reduce((last, cue, position) => cue.at <= at ? position : last, 0);
   const cue = cues[index];
   if (!cue) throw new Error("This clip has no reviewable instructions.");
-  const concept = `${skillCode}:${lesson.levelNumber}:${index}`;
-  const wrong = mistakes[(lesson.levelNumber + index) % mistakes.length];
+  const reviewIndex = cue.reviewIndex ?? index;
+  const concept = `${skillCode}:${lesson.levelNumber}:${reviewIndex}`;
+  const wrong = mistakes[(lesson.levelNumber + reviewIndex) % mistakes.length];
   const labels = [cue.text, ...wrong];
   // Rotate correct positions; correctness is not inferred from option order.
-  const rotation = (lesson.levelNumber + index) % 3;
+  const rotation = (lesson.levelNumber + reviewIndex) % 3;
   const options = labels.map((label, position) => ({ id: String(position), label }));
   return {
     id: `caption-v1:${concept}`, skillCode, lessonTitle: title, level: lesson.levelNumber,
     concept, prompt: `For “${cue.title}”, which action matches the demonstration?`,
     options: [...options.slice(rotation), ...options.slice(0, rotation)], correctOptionId: "0",
-    explanation: cue.text, cueAt: cue.at,
+    explanation: cue.text, cueAt: cue.reviewAt ?? cue.at,
   };
 }

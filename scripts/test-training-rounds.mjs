@@ -51,9 +51,24 @@ try {
     insert into training_energy_ledger(dog_id,effective_local_day,delta,reason) values('${upgradeDog}',current_date,-1,'old-round');`);
   await db.exec(await readFile(new URL('../supabase/migrations/20261003151409_training_three_clip_rounds.sql',import.meta.url),'utf8'));
   await db.exec(await readFile(new URL('../supabase/migrations/20261003154551_training_two_question_review_quiz.sql',import.meta.url),'utf8'));
+  const userStateBeforeFocus = (await db.query(`select
+    (select count(*)::int from training_sessions) sessions,
+    (select count(*)::int from training_rounds) rounds,
+    (select sum(delta)::int from training_energy_ledger) energy`)).rows;
+  await db.exec(await readFile(new URL('../supabase/migrations/20261006151617_focus_training_review_captions.sql',import.meta.url),'utf8'));
+  eq((await db.query('select count(*)::int n from training_private.training_review_captions')).rows[0].n,650,'focused catalog removes only discarded captions');
+  eq((await db.query(`select cue_index, cue_at::float8 from training_private.training_review_captions
+    where skill_code='1-5' and level_number=2 order by cue_index`)).rows,
+    [{cue_index:2,cue_at:3.366667},{cue_index:3,cue_at:5.866667}], 'focused captions retain historical review identities');
+  eq((await db.query(`select (select count(*)::int from training_sessions) sessions,
+    (select count(*)::int from training_rounds) rounds,
+    (select sum(delta)::int from training_energy_ledger) energy`)).rows,
+    userStateBeforeFocus, 'caption curation leaves user sessions, rounds and Energy unchanged');
   eq((await db.query("select end_level from training_rounds where idempotency_key='old-active'")).rows[0].end_level,3,'upgrade extends only unfinished first round');
   eq((await db.query("select end_level from training_rounds where idempotency_key='old-completed'")).rows[0].end_level,2,'historical completion unchanged');
   eq((await db.query('select sum(delta)::int n from training_energy_ledger where dog_id=$1',[upgradeDog])).rows[0].n,-1,'upgrade does not charge Energy');
+  await db.exec(await readFile(new URL('../supabase/migrations/20261006160432_training_difficult_practice_navigation.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/20261006164320_gate_training_unlock_on_difficulties.sql',import.meta.url),'utf8'));
   await db.exec(`grant select on all tables in schema public to authenticated;
     set role authenticated;
     select set_config('request.jwt.claim.sub','${uid}',false);`);
@@ -73,14 +88,19 @@ try {
   };
   let r = await action('get'); eq(r.round,null,'read does not create'); eq(r.energy.remaining,3,'initial energy');
   r = await action('start',{key:'round-a'}); const first=payload(r);
+  eq(r.lessonAccess.filter(item=>item.visited).map(item=>item.levelNumber),[1],'only visited practice is navigable');
   eq(r.round.phase,'practice','no arbitrary quiz'); eq(r.energy.remaining,2,'one charge');
   eq((await action('start',{key:'different-retry'})).round.id,r.round.id,'reconnect adopts paid round');
   const question = n => ({id:`caption-v1:1-1:1:${n}`,concept:`1-1:1:${n}`,skillCode:'1-1',lessonTitle:'Wait at the Door',level:1,prompt:'What next?',options:[{id:'0',label:'Wait'},{id:'1',label:'Rush'},{id:'2',label:'Repeat'}],correctOptionId:'0',explanation:'Wait',cueAt:n});
   for(let i=0;i<4;i++) await action('help',{...first,question:question(i)});
   await action('help',{...first,question:question(0)});
   eq((await db.query('select count(*)::int n from training_struggles')).rows[0].n,4,'help retry deduplicates');
+  eq((await db.query('select help_count from training_level_difficulties where dog_id=$1',[dog])).rows[0].help_count,1,'repeated help in one round is one difficulty occurrence');
+  await reject(()=>action('help',{...first,question:{...question(0),level:5}}),/Practice not visited/);
+  await reject(()=>action('help',{...first,question:{...question(0),skillCode:'1-2'}}),/Invalid review question/);
   eq((await action('get')).session.status,'active','help cannot fail/finalize practice');
   r=await action('continue',first); eq(r.energy.remaining,2,'next step free');
+  eq(r.difficultLevelIds.length,1,'Continue keeps same-round difficulty pending');
   eq((await action('continue',first)).session.id,r.session.id,'retry cannot complete next step');
   eq((await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n,1,'single success report');
   await reject(() => db.query('select continue_training_session($1,current_date)',[first.sessionId]),/current training round/);
@@ -89,11 +109,11 @@ try {
   eq((await action('start',{key:'resume-third'})).session.id,r.session.id,'resume retains current third clip');
   r=await action('continue',payload(r)); eq(r.round.status,'completed','three steps end first round');
   eq(r.energy.remaining,2,'all three clips cost one Energy');
-  const originalThird = (await db.query('select to_jsonb(p) p from dog_training_level_progress p where dog_id=$1 and level_id=$2',[dog,r.levelId])).rows[0].p;
+  const originalRecap = (await db.query('select to_jsonb(p) p from dog_training_level_progress p where dog_id=$1 and level_id=(select level_id from training_sessions where id=$2)',[dog,first.sessionId])).rows[0].p;
   eq(r.unlocked,false,'not yet unlocked'); eq((await action('start',{key:'not-yet-acked'})).round.id,r.round.id,'lost completion stays visible');
   const done=payload(r); await action('ack',done); await action('ack',done);
   r=await action('start',{key:'round-b'}); eq(r.energy.remaining,1,'second round charge');
-  eq(await levelNumber(r),3,'second paid round repeats third clip');
+  eq(await levelNumber(r),1,'second paid round starts with difficult practice');
   eq(r.session.session_type,'review','overlap is a recap session');
   eq(r.round.phase,'quiz','struggles become next paid review quiz'); eq(r.round.review_items.length,2,'quiz has exactly two questions');
   eq(r.round.review_items.every(item=>item.eventId!==null),true,'struggles take priority over fallback');
@@ -111,13 +131,15 @@ try {
     r=await action('advance_quiz',{...payload(r),cursor:i});
   }
   eq(r.round.phase,'practice','quiz finishes into paid practice');
+  eq(r.difficultLevelIds.length,1,'quiz answers never resolve physical difficulty');
   eq(r.energy.remaining,1,'quiz no extra energy');
   eq((await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n,3,'quiz answers not skill successes');
   const recapPayload=payload(r), recapLevel=r.levelId;
   r=await action('continue',recapPayload); eq(await levelNumber(r),4,'recap continues into fourth clip');
+  eq(r.difficultLevelIds.length,0,'later successful practice without Help resolves difficulty');
   eq((await action('continue',recapPayload)).session.id,r.session.id,'recap retry cannot complete successor');
   eq((await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n,3,'recap creates no duplicate success report');
-  eq((await db.query('select to_jsonb(p) p from dog_training_level_progress p where dog_id=$1 and level_id=$2',[dog,recapLevel])).rows[0].p,originalThird,'recap preserves original progress and success timestamp');
+  eq((await db.query('select to_jsonb(p) p from dog_training_level_progress p where dog_id=$1 and level_id=$2',[dog,recapLevel])).rows[0].p,originalRecap,'recap preserves original progress and success timestamp');
   r=await action('continue',payload(r)); eq(await levelNumber(r),5,'second round includes fifth clip');
   eq(r.round.status,'active','second round still needs third clip');
   r=await action('continue',payload(r));
@@ -195,10 +217,146 @@ try {
   eq(r.round.review_items.length,2,'single-caption completed clip still supports two questions');
   eq(r.round.review_items.every(item=>item.question.skillCode==='5-2' && item.question.level===1 && item.question.cueAt===0),true,'short-clip questions seek the studied moment');
   eq(new Set(r.round.review_items.map(item=>item.question.concept)).size,2,'short-clip concepts differ');
+  // Browsing is client-only. Help can refer to an earlier visited level, while
+  // the paid queue, rewards and highest progress remain authoritative here.
+  const difficultDog='20000000-0000-0000-0000-000000000006';
+  await db.exec('reset role');
+  await db.query('insert into dogs values($1,$2)',[difficultDog,uid]);
+  await db.query('insert into dog_training_preferences(dog_id,daily_energy_base) values($1,4)',[difficultDog]);
+  await db.exec('set role authenticated');
+  let d=await action('start',{key:'difficult-first'},difficultDog);
+  const originalFirstId=d.levelId;
+  d=await action('continue',payload(d),difficultDog);
+  const hardSecondId=d.levelId;
+  const secondQuestion={...question(0),level:2,id:'caption-v1:1-1:2:0',concept:'1-1:2:0'};
+  d=await action('help',{...payload(d),question:secondQuestion},difficultDog);
+  d=await action('continue',payload(d),difficultDog);
+  const thirdSession=d.session.id;
+  d=await action('help',{...payload(d),question:question(0)},difficultDog);
+  eq(d.session.id,thirdSession,'Help from an earlier video keeps current session');
+  eq(await levelNumber(d),3,'browsed Help does not move current practice');
+  eq(d.lessonAccess.filter(a=>a.visited).map(a=>a.levelNumber),[1,2,3],'bar exposes reached steps only');
+  eq(d.lessonAccess.filter(a=>a.completed).map(a=>a.levelNumber),[1,2],'bar retains completed range');
+  eq(new Set(d.difficultLevelIds),new Set([originalFirstId,hardSecondId]),'browsed difficulty belongs to the actual viewed level');
+  d=await action('continue',payload(d),difficultDog);
+  eq(d.round.status,'completed','difficulty never blocks current round completion');
+  await action('ack',payload(d),difficultDog);
+  d=await action('start',{key:'difficult-second'},difficultDog);
+  eq(await levelNumber(d),1,'unpractised difficulty is first in the next round');
+  eq(d.round.practice_level_ids.length,3,'reinforcement occupies one of three slots');
+  eq(new Set(d.round.practice_level_ids).size,3,'three planned practices are distinct');
+  d=await finishQuiz(d,difficultDog);
+  eq(d.difficultLevelIds.length,2,'all correct quiz answers leave both practice difficulties pending');
+  d=await action('help',{...payload(d),question:question(0)},difficultDog);
+  await action('help',{...payload(d),question:question(0)},difficultDog);
+  eq((await db.query('select help_count from training_level_difficulties where dog_id=$1 and level_id=$2',[difficultDog,originalFirstId])).rows[0].help_count,2,'count independent difficult rounds, not duplicate taps');
+  d=await action('continue',payload(d),difficultDog);
+  eq(d.difficultLevelIds.includes(originalFirstId),true,'repeated difficulty survives Continue');
+  eq(await levelNumber(d),4,'after targeted reinforcement continue with unfinished material');
+  d=await action('help',{...payload(d),question:secondQuestion},difficultDog);
+  d=await action('continue',payload(d),difficultDog);
+  d=await action('continue',payload(d),difficultDog);
+  eq(d.round.status,'completed','mixed reinforcement and new steps complete normally');
+  eq(d.unlocked,false,'finishing two rounds and L5 does not unlock pending difficulties');
+  eq((await action('get',{},difficultDog)).unlocked,false,'reopening cannot bypass the difficulty gate');
+  eq(d.difficultLevelIds.length,2,'pending difficulties survive the final level');
+  const progressBeforeRevisit=(await db.query('select to_jsonb(p) p from dog_training_level_progress p where dog_id=$1 order by level_id',[difficultDog])).rows;
+  const reportsBeforeRevisit=(await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n;
+  await action('ack',payload(d),difficultDog);
+  d=await action('start',{key:'difficult-after-l5'},difficultDog);
+  eq(d.energy.remaining,1,'new reinforcement round spends exactly one Energy');
+  eq(d.unlocked,false,'pending lesson starts reinforcement rather than the library');
+  eq(await levelNumber(d),2,'older unreinforced practice gets its turn');
+  const stablePlan=d.round.practice_level_ids;
+  eq((await action('start',{key:'resume-difficult'},difficultDog)).round.practice_level_ids,stablePlan,'resume retains paid reinforcement order');
+  d=await finishQuiz(d,difficultDog);
+  eq(d.difficultLevelIds.length,2,'quiz still does not clear difficult status after L5');
+  eq(d.unlocked,false,'two correct review answers cannot unlock physical difficulty');
+  const reinforcePayload=payload(d);
+  d=await action('continue',reinforcePayload,difficultDog);
+  eq(d.difficultLevelIds.includes(hardSecondId),false,'later practice without Help clears that level only');
+  eq(d.difficultLevelIds.includes(originalFirstId),true,'another unresolved level remains');
+  eq(d.unlocked,false,'resolving only one difficulty does not unlock videos');
+  eq((await action('continue',reinforcePayload,difficultDog)).session.id,d.session.id,'replayed Continue does not settle a new queue position');
+  d=await action('help',{...payload(d),question:question(0)},difficultDog);
+  d=await action('continue',payload(d),difficultDog);
+  d=await action('continue',payload(d),difficultDog);
+  eq(d.round.status,'completed','third round ends despite repeated difficulty');
+  eq(d.unlocked,false,'three rounds still cannot bypass repeated Help');
+  eq(d.difficultLevelIds,[originalFirstId],'the repeated difficult practice stays pending');
+  await action('ack',payload(d),difficultDog);
+  d=await action('start',{key:'fourth-reinforcement'},difficultDog);
+  eq(await levelNumber(d),1,'fourth round starts with the remaining difficulty');
+  eq(d.energy.remaining,0,'four rounds spend four Energy total');
+  d=await finishQuiz(d,difficultDog);
+  eq(d.unlocked,false,'quiz never substitutes for the fourth practice attempt');
+  for(let i=0;i<3;i++) d=await action('continue',payload(d),difficultDog);
+  eq(d.difficultLevelIds,[],'successful later practices resolve pending difficulty');
+  eq(d.round.status,'completed','three reinforcement practices complete once');
+  eq(d.unlocked,true,'library unlocks only when all pending difficulties are resolved');
+  eq((await db.query('select count(*)::int n from training_attempt_reports')).rows[0].n,reportsBeforeRevisit,'revisits do not manufacture rewards');
+  eq((await db.query('select to_jsonb(p) p from dog_training_level_progress p where dog_id=$1 order by level_id',[difficultDog])).rows,progressBeforeRevisit,'revisits preserve all original successful progress');
+  await action('ack',payload(d),difficultDog);
+  d=await action('start',{key:'finished-library'},difficultDog);
+  eq(d.round,null,'completed lesson with no difficulties returns to free library');
+  eq(d.energy.remaining,0,'library remains available at zero Energy');
+  // Regression: after L5, an unresolved L4 creates [4,1,2]. The old fixed
+  // end_level whitelist rejected that valid plan before any round could start.
+  const levelFourDog='20000000-0000-0000-0000-000000000007';
+  await db.exec('reset role');
+  await db.query('insert into dogs values($1,$2)',[levelFourDog,uid]);
+  await db.exec('set role authenticated');
+  let four=await action('start',{key:'four-first'},levelFourDog);
+  for(let i=0;i<3;i++) four=await action('continue',payload(four),levelFourDog);
+  await action('ack',payload(four),levelFourDog);
+  four=await finishQuiz(await action('start',{key:'four-second'},levelFourDog),levelFourDog);
+  four=await action('continue',payload(four),levelFourDog);
+  eq(await levelNumber(four),4,'regression reaches L4 before Help');
+  const fourthQuestion={...question(0),level:4,id:'caption-v1:1-1:4:0',concept:'1-1:4:0'};
+  four=await action('help',{...payload(four),question:fourthQuestion},levelFourDog);
+  four=await action('continue',payload(four),levelFourDog);
+  four=await action('continue',payload(four),levelFourDog);
+  eq(four.unlocked,false,'L4 difficulty remains after finishing L5');
+  await action('ack',payload(four),levelFourDog);
+  const regressionState=async()=> (await db.query(`select
+    (select jsonb_agg(to_jsonb(r) order by r.id) from training_rounds r where dog_id=$1) rounds,
+    (select jsonb_agg(to_jsonb(s) order by s.id) from training_sessions s where dog_id=$1) sessions,
+    (select jsonb_agg(to_jsonb(p) order by p.level_id) from dog_training_level_progress p where dog_id=$1) progress,
+    (select jsonb_agg(to_jsonb(e) order by e.id) from training_energy_ledger e where dog_id=$1) energy`,[levelFourDog])).rows;
+  const beforeEndLevelFix=await regressionState();
+  await reject(()=>action('start',{key:'four-reinforcement'},levelFourDog),/training_rounds_end_level_check/);
+  eq(await regressionState(),beforeEndLevelFix,'failed start rolls back sessions, progress and Energy');
+  await db.exec('reset role');
+  await db.exec(await readFile(new URL('../supabase/migrations/20261012181639_training_round_adaptive_end_level.sql',import.meta.url),'utf8'));
+  for(const invalid of [0,6]) await reject(()=>db.query('update training_rounds set end_level=$1 where dog_id=$2',[invalid,levelFourDog]),/training_rounds_end_level_check/);
+  await db.exec('set role authenticated');
+  eq(await regressionState(),beforeEndLevelFix,'constraint migration changes no existing user records');
+  eq((await db.query("select end_level from training_rounds where idempotency_key='old-completed'")).rows[0].end_level,2,'constraint fix preserves historical level-2 completion');
+  four=await action('start',{key:'four-reinforcement'},levelFourDog);
+  eq(four.round.end_level,4,'adaptive round accepts highest planned L4');
+  eq((await db.query('select l.level_number from unnest($1::uuid[]) with ordinality u(id,n) join training_levels l on l.id=u.id order by u.n',[four.round.practice_level_ids])).rows.map(l=>l.level_number),[4,1,2],'reinforcement order remains L4 then L1 then L2');
+  eq(four.energy.remaining,0,'third round charges exactly one Energy');
+  eq((await action('start',{key:'four-reinforcement'},levelFourDog)).round.id,four.round.id,'retry returns the same paid round at zero Energy');
+  four=await finishQuiz(four,levelFourDog);
+  const firstFourPayload=payload(four);
+  four=await action('continue',firstFourPayload,levelFourDog);
+  eq(await levelNumber(four),1,'Continue at L4 advances by queue rather than end_level');
+  eq(four.round.status,'active','highest-level practice does not finish the round early');
+  eq((await action('continue',firstFourPayload,levelFourDog)).session.id,four.session.id,'duplicate Continue does not skip L1');
+  four=await action('continue',payload(four),levelFourDog);
+  eq(await levelNumber(four),2,'second Continue reaches L2');
+  four=await action('continue',payload(four),levelFourDog);
+  eq(four.round.status,'completed','L4 reinforcement round completes after all three practices');
+  eq(four.unlocked,true,'successful reinforcement unlocks the lesson');
+  eq(four.energy.remaining,0,'Continue never double charges Energy');
+  eq((await regressionState())[0].progress,beforeEndLevelFix[0].progress,'reinforcement preserves original successful progress');
+  await reject(()=>db.exec('update training_level_difficulties set resolved_at=now()'),/permission denied/);
+  await reject(()=>db.query('select training_private.training_practice_plan($1,$2,1)',[dog,skill]),/permission denied/);
   await reject(()=>db.query('select training_round_action($1,$2,$3,current_date+10,$4)',[dog,skill,'get','{}']),/Invalid local date/);
   await db.query("select set_config('request.jwt.claim.sub',$1,false)",[other]);
   await reject(()=>action('get'),/Dog not found/);
   eq((await db.query('select count(*)::int n from training_rounds')).rows[0].n,0,'RLS other owner sees none');
+  eq((await db.query('select count(*)::int n from training_level_difficulties')).rows[0].n,0,'RLS hides another dog difficulty records');
   await reject(()=>db.exec("update training_rounds set phase='complete'"),/permission denied/);
   await reject(()=>db.exec('select * from training_private.training_review_captions'),/permission denied/);
   await reject(()=>db.query('select training_private.select_training_review_items($1)',[dog]),/permission denied/);
