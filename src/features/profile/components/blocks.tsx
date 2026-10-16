@@ -10,7 +10,7 @@ import { CaretDownIcon } from "phosphor-react-native";
 
 import { PressScale } from "@/components/ui/PressScale";
 import { Panel, PanelChips, PanelRow } from "@/features/profile/components/ProfilePanels";
-import type { Block, StateKey } from "@/constants/profileRecord";
+import { NOT_ADDED, type Block, type StateKey } from "@/constants/profileRecord";
 import {
   accent,
   bg,
@@ -89,8 +89,13 @@ const BlockView = ({
                 label={row[0]}
                 value={row[1]}
                 order={index}
-                editing={editing}
-                onPress={editing && onEditField ? () => onEditField(row[0], row[1]) : undefined}
+                editing={editing && !block.locked?.includes(row[0])}
+                // Unanswered questions open their editor straight away; answered ones once Edit is on.
+                onPress={
+                  onEditField && !block.locked?.includes(row[0]) && (editing || row[1] === NOT_ADDED)
+                    ? () => onEditField(row[0], row[1])
+                    : undefined
+                }
               />
             ))
           }
@@ -118,7 +123,14 @@ const BlockView = ({
         <Collapsible count={block.rows.length} limit={block.collapseAfter}>
           {(shown) =>
             block.rows.slice(0, shown).map((row, index) => (
-              <PanelRow key={row.title} label={row.title} sub={row.meta} value={row.trailing} order={index} />
+              <PanelRow
+                key={`${row.title}-${index}`}
+                label={row.title}
+                sub={row.meta || undefined}
+                value={row.trailing}
+                order={index}
+                onPress={row.href ? () => router.push(row.href as never) : undefined}
+              />
             ))
           }
         </Collapsible>

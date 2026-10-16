@@ -1,4 +1,4 @@
-import Constants from "expo-constants";
+import { callGemini, geminiAvailable } from "@/services/geminiProxy";
 
 export type ChatImage = { base64: string; mimeType: string; uri: string };
 
@@ -21,6 +21,8 @@ export type CoachBrief = {
   sessionState: "not started" | "in progress" | "finished";
   dog: { name: string; breed: string | null; ageYears: number | null } | null;
   programme: { title: string; done: number; total: number } | null;
+  /** The dog's full profile (temperament, what motivates them, triggers, health). */
+  profile?: string;
 };
 
 export type CoachReply =
@@ -29,11 +31,8 @@ export type CoachReply =
   | { state: "failed"; detail: string }
   | { state: "unconfigured" };
 
-const KEY =
-  (Constants.expoConfig?.extra as { geminiApiKey?: string | null } | undefined)
-    ?.geminiApiKey ?? null;
-
-export const coachConfigured = typeof KEY === "string" && KEY.length > 0;
+// Gemini runs behind the `gemini` edge function; the key never ships in the app.
+export const coachConfigured = geminiAvailable;
 
 const PRIMARY = "gemini-2.5-flash";
 const FALLBACK = "gemini-flash-latest";
@@ -51,6 +50,7 @@ const briefing = (brief: CoachBrief) => {
   return [
     "You are the PAWS training coach inside a dog training app. You help a dog guardian who pressed Need help during a lesson.",
     "",
+    brief.profile ? `ABOUT THE DOG (use it: reward with what motivates them, work around their triggers, mind their health):\n${brief.profile}\n` : "",
     `LESSON ${lesson.number}: "${lesson.title}" (chapter: ${lesson.chapter}).`,
     "The lesson teaches exactly these steps, and these are the sentences the video says:",
     steps,
@@ -116,23 +116,7 @@ const toContents = (history: readonly ChatTurn[]) => {
   return merged;
 };
 
-const call = async (model: string, body: object): Promise<Response> => {
-  const abort = new AbortController();
-  const timer = setTimeout(() => abort.abort(), TIMEOUT_MS);
-  try {
-    return await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": KEY as string },
-        body: JSON.stringify(body),
-        signal: abort.signal,
-      },
-    );
-  } finally {
-    clearTimeout(timer);
-  }
-};
+const call = (model: string, body: object): Promise<Response> => callGemini(model, body, TIMEOUT_MS);
 
 export const askCoach = async (
   brief: CoachBrief,

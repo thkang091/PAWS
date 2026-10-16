@@ -10,7 +10,7 @@ import * as Haptics from "expo-haptics";
 import { PressScale } from "@/components/ui/PressScale";
 import { accent, bg, border, motion, radius, space, text, type } from "@/constants/design";
 
-const Chip = ({
+export const Chip = ({
   label,
   selected,
   onPress,

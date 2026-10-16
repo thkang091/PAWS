@@ -38,6 +38,7 @@ import { PressScale } from "@/components/ui/PressScale";
 import { buildChapters } from "@/constants/trainingChapters";
 import { queryKeys } from "@/constants/queryKeys";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
+import { useDogContext } from "@/features/care/intel/useDogContext";
 import { useDogRoadmap } from "@/hooks/useDogRoadmap";
 import { buildCardSequence } from "@/services/lessonCardSequence";
 import { getTrainingLevelDetail, resolveSkillSession } from "@/services/trainingCurriculumService";
@@ -138,6 +139,7 @@ export default function CoachSheet() {
     turnsRef.current = value;
     setTurnsState(value);
   };
+  const context = useDogContext();
   const [busy, setBusy] = useState(false);
   const [failure, setFailure] = useState<Failure | null>(null);
   const [notice, setNotice] = useState<{ text: string; action?: { label: string; run: () => void } } | null>(null);
@@ -157,6 +159,7 @@ export default function CoachSheet() {
     sessionState,
     dog: dogName ? { name: dogName, breed: dog.data?.breed ?? null, ageYears: dog.data?.ageYears ?? null } : null,
     programme,
+    profile: context.brief,
   };
 
   const scrollRef = useRef<ScrollView>(null);
@@ -236,7 +239,7 @@ export default function CoachSheet() {
       setFailure({
         text:
           result.state === "unconfigured"
-            ? "Your coach needs a Gemini key in this build."
+            ? "Your coach is not available right now. Try again soon."
             : result.state === "offline"
               ? "Could not reach your coach. Check the connection."
               : "Your coach could not answer that one.",
@@ -303,7 +306,7 @@ export default function CoachSheet() {
           heard.state === "silent"
             ? "Did not catch that. Try again a little closer to the phone."
             : heard.state === "unconfigured"
-              ? "Voice needs a Gemini key in this build."
+              ? "Voice is not available right now."
               : "Could not send that voice note. Check the connection.",
       });
       return;

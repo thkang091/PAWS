@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { queryKeys } from "@/constants/queryKeys";
-import {
+import { removeCareRoutine,
+  addCareRoutine,
   completeCareRoutine,
   deleteCareEvent,
   getCareEvents,
@@ -61,6 +62,27 @@ export const useSaveCareRoutineSetup = (dogId: string) => {
 
   return useMutation({
     mutationFn: (routineDrafts: CareRoutineDraft[]) => saveCareRoutineSetup(dogId, routineDrafts),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.careRoutines(dogId) });
+    },
+  });
+};
+
+export const useAddCareRoutine = (dogId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (draft: { title: string; description: string; iconKey: string; reminderTime: string | null }) => addCareRoutine(dogId, draft),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.careRoutines(dogId) });
+    },
+  });
+};
+
+export const useRemoveCareRoutine = (dogId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (routineId: string) => removeCareRoutine(routineId),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.careRoutines(dogId) });
     },

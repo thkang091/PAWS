@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AppState, StyleSheet, Text, View, type ScrollView } from "react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { StyleSheet, Text, View, type ScrollView } from "react-native";
 import Animated, {
   FadeIn,
   FadeInDown,
@@ -14,19 +14,26 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import {
-  BellIcon,
+  CameraIcon,
+  CheckCircleIcon,
+  FirstAidKitIcon,
+  HeartbeatIcon,
+  ScissorsIcon,
+  SyringeIcon,
   BowlFoodIcon,
   ForkKnifeIcon,
   CaretLeftIcon,
   CaretRightIcon,
   ClockCounterClockwiseIcon,
   HeartIcon,
-  PawPrintIcon,
   PersonSimpleWalkIcon,
+  BugIcon,
+  ToothIcon,
+  StethoscopeIcon,
   PlusIcon,
 } from "phosphor-react-native";
 
@@ -38,24 +45,31 @@ import { useHealthOverview } from "@/hooks/useHealthOverview";
 import { AppointmentCard } from "@/features/care/components/AppointmentCard";
 import { VaccineDueCard } from "@/features/care/components/VaccineDueCard";
 import { VaccineGate } from "@/features/care/components/VaccineGate";
-import { CareDog } from "@/features/care/components/CareDog";
 import { CareSetupFlow } from "@/features/care/components/CareSetupFlow";
-import { WeekStrip } from "@/features/care/components/WeekStrip";
+import { CareCalendar, dayKeyOf, type MarkKind } from "@/features/care/components/CareCalendar";
+import { CareAgenda, type AgendaEvent } from "@/features/care/components/CareAgenda";
+import { FocusCard, type Focus } from "@/features/care/components/FocusCard";
+import { untilLabel } from "@/features/care/components/todayCare";
+import { useGroomingLogs, useVaccinations } from "@/hooks/useCareHealth";
+import { isRoutine, occursOn, repeatLabel, usePlannedWalks } from "@/features/care/state/plannedWalks";
 import { TodayCareList } from "@/features/care/components/TodayCareList";
-import { CheckInGate } from "@/features/care/components/CheckInGate";
-import { DailyHealthCheckSheet } from "@/features/care/components/DailyHealthCheckSheet";
+import { requestCheckIn } from "@/features/care/components/CheckInLock";
+import { CARE_LABEL, MOBILITY_NOUN, dueFor, kindsFor } from "@/features/care/intel/careIntel";
+import { useCareIntel } from "@/features/care/intel/useCareIntel";
 import { minutesOf } from "@/features/care/components/careSetupAnswers";
-import { useCheckInHistory, useCheckInSettings, useTodayCheckIn, type Appetite } from "@/features/care/state/dailyCheckIn";
-import { nowMinutes, useNow, useTodayCare, type TodayItem } from "@/features/care/components/todayCare";
+import type { Appetite } from "@/features/care/state/dailyCheckIn";
+import { nowMinutes, useNow } from "@/features/care/components/todayCare";
 import { prettyTime, type AreaKey } from "@/features/care/components/careSetupAnswers";
-import { requestNotificationPermissions, syncCareReminders, syncCheckInReminders } from "@/services/notificationService";
+import { syncCareReminders } from "@/services/notificationService";
+import { KeepingUp, useKeepingUpNews } from "@/features/care/components/KeepingUp";
+import { useCareDay } from "@/features/care/state/useCareDay";
+import { NewsPager, type NewsPage } from "@/features/care/components/NewsPager";
+import { CareLocked, useCareLocked } from "@/features/care/components/CareLocked";
 import { PawsMark } from "@/features/welcome/components/PawsMark";
 import { PressScale } from "@/components/ui/PressScale";
-import { useCareRoutineCompletions, useCareRoutines } from "@/hooks/useCareEvents";
 import { useCareProfile, useExerciseLogsBetween, useTodayExerciseLogs } from "@/hooks/useCareHealth";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import {
-  toggleReminder,
   useCareAppointment,
   useCareAreas,
   useCareOnboarding,
@@ -84,9 +98,6 @@ type Detail = "activity" | "health" | "feed";
 const isoDate = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-const greetingFor = (hour: number) =>
-  hour < 12 ? "Good morning," : hour < 18 ? "Good afternoon," : "Good evening,";
-
 const weekAround = (today: Date) => {
   const monday = new Date(today);
   monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
@@ -97,9 +108,27 @@ const weekAround = (today: Date) => {
   });
 };
 
+/** The one red on Care home: the first-aid icon, so it is findable at a glance without shouting. */
+const SOS = "#C2412D";
+
 export default function CareTabScreen() {
   const onboarding = useCareOnboarding();
   const [revealing, setRevealing] = useState(false);
+  const locked = useCareLocked();
+  const dog = useCurrentDog();
+
+  // Unlocking plays the same reveal as finishing setup, so Care visibly opens back up.
+  const wasLocked = useRef(locked);
+  useEffect(() => {
+    if (wasLocked.current && !locked) {
+      setRevealing(true);
+      const id = setTimeout(() => setRevealing(false), motion.duration.reveal);
+      wasLocked.current = locked;
+      return () => clearTimeout(id);
+    }
+    wasLocked.current = locked;
+    return undefined;
+  }, [locked]);
 
   if (!onboarding.hydrated) return <View style={styles.screen} />;
 
@@ -115,7 +144,11 @@ export default function CareTabScreen() {
     );
   }
 
-  return <CareTab revealing={revealing} />;
+  // A missed check-in shuts Care until it is caught up.
+  if (locked) return <CareLocked name={dog.data?.name ?? "your dog"} bottomInset={TAB_CLEARANCE} />;
+
+  // The first frame after unlocking already counts as revealing, so CareTab mounts with its entrance.
+  return <CareTab revealing={revealing || wasLocked.current} />;
 }
 
 function CareTab({ revealing }: { revealing: boolean }) {
@@ -124,76 +157,38 @@ function CareTab({ revealing }: { revealing: boolean }) {
   const dog = useCurrentDog();
   const dogId = dog.data?.id ?? "";
 
-  const today = useMemo(() => new Date(), []);
+  // Follows the clock across midnight: a tab left open overnight must move to the new day (and the new week).
+  const clock = useNow();
+  const dayStamp = isoDate(clock);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const today = useMemo(() => new Date(), [dayStamp]);
   const todayIso = isoDate(today);
   const week = useMemo(() => weekAround(today), [today]);
 
   const [selectedDay, setSelectedDay] = useState(today.getDay());
   const [scope, setScope] = useState<ActivityScope>("weekly");
 
-  const routines = useCareRoutines(dogId);
-  const completions = useCareRoutineCompletions(dogId, todayIso);
   const exercise = useTodayExerciseLogs(dogId);
-
-  const doneIds = useMemo(
-    () => new Set((completions.data ?? []).map((c) => c.routineId)),
-    [completions.data],
-  );
-
-  const { choice } = useCareOnboarding();
   const areas = useCareAreas();
   const muted = useMutedReminders();
-  const clock = useNow();
   const minuteNow = nowMinutes(clock);
 
-  const routineItems = useTodayCare(routines.data, doneIds, choice);
-  const checkIn = useCheckInSettings();
-  const { entry: checkInEntry } = useTodayCheckIn();
-  const todayItems = useMemo<TodayItem[]>(() => {
-    if (!checkIn.enabled) return routineItems;
-    const item: TodayItem = {
-      key: "checkin",
-      routineId: null,
-      iconKey: "heartbeat",
-      title: "Check-in",
-      detail: checkInEntry ? "Answered today" : "About a minute",
-      time: checkIn.time,
-      done: Boolean(checkInEntry),
-    };
-    return [...routineItems, item].sort((a, b) =>
-      a.time && b.time ? minutesOf(a.time) - minutesOf(b.time) : a.time ? -1 : b.time ? 1 : 0,
-    );
-  }, [routineItems, checkIn.enabled, checkIn.time, checkInEntry]);
+  // The same list the schedule shows: routines, walks, meals, medicine and the check-in, with what is done.
+  const { choice, checkIn, checkInEntry, todayItems, items: listItems, toggle: onToggleItem } = useCareDay(dogId, todayIso);
 
-  const [checkInOpen, setCheckInOpen] = useState(false);
-  const [firstAnswer, setFirstAnswer] = useState<Appetite | null>(null);
-  const [laterThisVisit, setLaterThisVisit] = useState(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      setLaterThisVisit(false);
-    }, []),
-  );
-
-  useEffect(() => {
-    const sub = AppState.addEventListener("change", (next) => {
-      if (next === "active") setLaterThisVisit(false);
-    });
-    return () => sub.remove();
-  }, []);
   const [setupArea, setSetupArea] = useState<AreaKey | null>(null);
 
   const activeToday = (exercise.data ?? []).length > 0;
-  const fed = todayItems.some((item) => item.iconKey === "bowl-mix" && item.done);
+  const fed = listItems.some((item) => item.iconKey === "bowl-mix" && item.done);
 
-  const reminderSignature = todayItems
-    .filter((item) => item.key !== "checkin" && item.time && !muted.includes(item.key))
+  const reminderSignature = listItems
+    .filter((item) => item.key !== "checkin" && item.time && !item.done && !muted.includes(item.key))
     .map((item) => `${item.key}@${item.time}`)
     .join("|");
 
   useEffect(() => {
-    const reminders = todayItems
-      .filter((item) => item.key !== "checkin" && item.time && !muted.includes(item.key))
+    const reminders = listItems
+      .filter((item) => item.key !== "checkin" && item.time && !item.done && !muted.includes(item.key))
       .map((item) => ({
         key: item.key,
         title: item.title,
@@ -204,29 +199,9 @@ function CareTab({ revealing }: { revealing: boolean }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reminderSignature, dog.data?.name]);
 
-  const checkInHistory = useCheckInHistory();
-  const answeredSignature = checkInHistory.map((entry) => entry.date).join("|");
-  const checkInMuted = muted.includes("checkin");
-
-  useEffect(() => {
-    if (!checkIn.hydrated) return;
-    void syncCheckInReminders({
-      enabled: checkIn.enabled && !checkInMuted,
-      time: checkIn.time,
-      answeredDates: checkInHistory.map((entry) => entry.date),
-      dogName: dog.data?.name ?? "your dog",
-    }).catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkIn.hydrated, checkIn.enabled, checkIn.time, checkInMuted, answeredSignature, dog.data?.name]);
-
   const openSetup = (area: AreaKey) => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setSetupArea(area);
-  };
-
-  const onToggleReminder = (key: string, turningOn: boolean) => {
-    toggleReminder(key);
-    if (turningOn) void requestNotificationPermissions().catch(() => false);
   };
 
   const [phase, setPhase] = useState<Phase>("care");
@@ -243,6 +218,7 @@ function CareTab({ revealing }: { revealing: boolean }) {
   const stripAway = useSharedValue(0);
   const stripHeight = useSharedValue(0);
 
+  // At rest the brief sizes itself (it changes through the day); only while sweeping away does it take a set height.
   const heroStyle = useAnimatedStyle(() => ({
     height: heroHeight.value * (1 - open.value),
     opacity: 1 - Math.min(1, open.value * 1.7),
@@ -250,7 +226,8 @@ function CareTab({ revealing }: { revealing: boolean }) {
   }));
 
   const stripStyle = useAnimatedStyle(() => ({
-    height: stripHeight.value * (1 - stripAway.value),
+    // At rest the calendar folds open freely; only the sweep away needs a fixed height to collapse from.
+    maxHeight: stripAway.value === 0 ? 100000 : stripHeight.value * (1 - stripAway.value),
     opacity: 1 - Math.min(1, stripAway.value * 1.7),
     transform: [{ translateY: -stripAway.value * 10 }],
   }));
@@ -283,7 +260,8 @@ function CareTab({ revealing }: { revealing: boolean }) {
 
       const timing = { duration: motion.duration.reveal, easing: motion.easing.out };
       open.value = reduceMotion ? (toDetail ? 1 : 0) : withTiming(toDetail ? 1 : 0, timing);
-      const away = to === "health" || to === "feed" ? 1 : 0;
+      // Every detail (Activity included) has its own date controls, so the week strip steps aside.
+      const away = to === "care" ? 0 : 1;
       stripAway.value = reduceMotion ? away : withTiming(away, timing);
 
       timers.current.push(
@@ -316,28 +294,252 @@ function CareTab({ revealing }: { revealing: boolean }) {
   );
   const goalMinutes =
     careProfile.data?.dailyExerciseGoalMinutes ?? choice?.exerciseMinutes ?? 60;
-  const todayIndex = week.findIndex((d) => isoDate(d) === todayIso);
+  const todayKey = dayKeyOf(clock);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [calDay, setCalDay] = useState(todayKey);
+  const plannedWalks = usePlannedWalks();
+  const intel = useCareIntel();
+  const vaccinations = useVaccinations(dogId);
+  const grooming = useGroomingLogs(dogId);
+  const dogName = dog.data?.name ?? "your dog";
 
-  const gateOn =
-    checkIn.hydrated &&
-    checkIn.enabled &&
-    !checkInEntry &&
-    minuteNow >= minutesOf(checkIn.time) &&
-    !laterThisVisit &&
-    !setupArea &&
-    !(duty && !duty.deferred);
+  // This week's rings: minutes walked each day against the daily goal, up to today.
+  const rings = useMemo(() => {
+    const map = new Map<string, { progress: number }>();
+    activity.days.forEach((day) => {
+      const key = dayKeyOf(day.date);
+      if (key <= todayKey) map.set(key, { progress: goalMinutes > 0 ? day.minutes / goalMinutes : 0 });
+    });
+    return map;
+  }, [activity.days, goalMinutes, todayKey]);
 
-  const dimStyle = useAnimatedStyle(
-    () => ({
-      opacity: withTiming(gateOn ? 0.24 : 1, { duration: motion.duration.reveal, easing: motion.easing.out }),
-    }),
-    [gateOn],
-  );
+  // Everything with a date that a guardian would want on a calendar.
+  const agenda = useMemo<AgendaEvent[]>(() => {
+    const events: AgendaEvent[] = [];
+    const walkEvent = (walk: (typeof plannedWalks)[number], dayKey: string, routine: boolean): AgendaEvent => ({
+      id: routine ? `walk-${walk.id}-${dayKey}` : `walk-${walk.id}`,
+      dayKey,
+      time: walk.time,
+      kind: "walk",
+      routine,
+      title: `${walk.route?.kind === "free" ? "Free walk" : "Walk"}, ${walk.minutes} min`,
+      detail: `${routine ? `${repeatLabel(walk.repeat!)} · ` : ""}${prettyTime(walk.time)}${walk.route && walk.route.kind !== "free" ? ` · ${walk.route.name}` : ""}`,
+      Glyph: PersonSimpleWalkIcon,
+      onPress: () => router.push(`/care/plan-walk?plan=${walk.id}` as never),
+    });
+    // Repeating walks land on every day they repeat, from last week to three months out.
+    const window = Array.from({ length: 98 }, (_, i) => dayKeyOf(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7 + i)));
+    plannedWalks.forEach((walk) => {
+      if (!isRoutine(walk)) events.push(walkEvent(walk, walk.dayKey, false));
+      else window.filter((key) => occursOn(walk, key)).forEach((key) => events.push(walkEvent(walk, key, true)));
+    });
+    // Preventive doses and checks that have a next date.
+    (["parasites", "exams", "dental"] as const).forEach((area) =>
+      kindsFor(area, intel.stage).forEach((careKind) => {
+        const due = dueFor(careKind, intel.log, intel.stage, intel.today);
+        if (!due.next || due.kind === "brushing") return;
+        events.push({
+          id: `care-${careKind}`,
+          dayKey: due.next < intel.today ? intel.today : due.next,
+          kind: "health",
+          title: `${CARE_LABEL[careKind]} ${area === "parasites" ? "dose" : "due"}`,
+          detail: due.next < intel.today ? "Overdue" : area === "parasites" ? "Prevention" : "Check-up",
+          Glyph: area === "parasites" ? BugIcon : StethoscopeIcon,
+          onPress: () => router.push(`/care/log-care?kind=${careKind}` as never),
+        });
+      }),
+    );
+    if (appointment) {
+      events.push({
+        id: "vet",
+        dayKey: appointment.dayKey,
+        time: appointment.time,
+        kind: "vet",
+        title: "Vet visit",
+        detail: `${prettyTime(appointment.time)} · ${appointment.clinic}`,
+        Glyph: FirstAidKitIcon,
+      });
+    }
+    const latestVaccine = new Map<string, NonNullable<typeof vaccinations.data>[number]>();
+    (vaccinations.data ?? []).forEach((shot) => {
+      const seen = latestVaccine.get(shot.vaccineKey);
+      if (!seen || shot.dateGiven > seen.dateGiven) latestVaccine.set(shot.vaccineKey, shot);
+    });
+    latestVaccine.forEach((shot) => {
+      if (!shot.nextDueDate) return;
+      events.push({
+        id: `vaccine-${shot.vaccineKey}`,
+        dayKey: shot.nextDueDate,
+        kind: "health",
+        title: `${shot.vaccineName} due`,
+        detail: "Vaccine",
+        Glyph: SyringeIcon,
+        onPress: () => router.push("/care/vaccinations" as never),
+      });
+    });
+    const latestGroom = new Map<string, NonNullable<typeof grooming.data>[number]>();
+    (grooming.data ?? []).forEach((log) => {
+      const seen = latestGroom.get(log.groomingType);
+      if (!seen || log.doneDate > seen.doneDate) latestGroom.set(log.groomingType, log);
+    });
+    latestGroom.forEach((log) => {
+      if (!log.nextDueDate) return;
+      events.push({
+        id: `groom-${log.groomingType}`,
+        dayKey: log.nextDueDate,
+        title: `${log.groomingType.charAt(0).toUpperCase()}${log.groomingType.slice(1).replace(/_/g, " ")}`,
+        kind: "grooming",
+        detail: "Grooming",
+        Glyph: ScissorsIcon,
+      });
+    });
+    if (duty) {
+      events.push({
+        id: "to-book",
+        dayKey: null,
+        kind: "vet",
+        title: `${duty.label} to book`,
+        detail: "Core vaccines. Find a vet",
+        Glyph: SyringeIcon,
+        onPress: () => router.push("/care/find-vet"),
+      });
+    }
+    return events;
+  }, [plannedWalks, appointment, vaccinations.data, grooming.data, duty, intel, today]);
+  const planMarks = useMemo(() => {
+    const map = new Map<string, MarkKind[]>();
+    agenda.forEach((event) => {
+      if (!event.dayKey) return;
+      const kinds = map.get(event.dayKey) ?? [];
+      if (!kinds.includes(event.kind)) map.set(event.dayKey, [...kinds, event.kind]);
+    });
+    return map;
+  }, [agenda]);
+  const dailyNote = useMemo(() => {
+    const walks = todayItems.filter((item) => item.iconKey === "walk").length;
+    const meals = todayItems.filter((item) => item.iconKey === "bowl-mix").length;
+    const parts = [
+      walks ? `${walks} ${walks === 1 ? "walk" : "walks"}` : null,
+      meals ? `${meals} ${meals === 1 ? "meal" : "meals"}` : null,
+      checkIn.enabled ? "a check-in" : null,
+    ].filter(Boolean) as string[];
+    return parts.length ? parts.join(parts.length > 2 ? ", " : " and ").replace(/, ([^,]*)$/, " and $1") : null;
+  }, [todayItems, checkIn.enabled]);
 
-  const openCheckIn = (appetite: Appetite | null) => {
-    setFirstAnswer(appetite);
-    setCheckInOpen(true);
-  };
+
+  // The single most important thing right now, in priority order.
+  // Everything worth knowing right now, most important first. The first is the hero; the rest are a swipe away.
+  const news = useMemo<Focus[]>(() => {
+    const out: Focus[] = [];
+    const open = listItems.filter((item) => !item.done && item.key !== "checkin");
+    const lateItems = open.filter((item) => item.time && minutesOf(item.time) < minuteNow - 30);
+    const next = open.find((item) => item.time && minutesOf(item.time) >= minuteNow);
+    if (appointment && appointment.dayKey === todayKey) {
+      out.push({ key: "vet", eyebrow: "VET TODAY", title: `${appointment.clinic}`, detail: `At ${prettyTime(appointment.time)}`, Glyph: FirstAidKitIcon });
+    }
+    if (checkIn.enabled && !checkInEntry && minuteNow >= minutesOf(checkIn.time)) {
+      out.push({
+        key: "checkin",
+        eyebrow: "MOST IMPORTANT",
+        title: `Check in on ${dogName}`,
+        detail: "About a minute",
+        Glyph: HeartbeatIcon,
+        action: { label: "Answer", run: () => openCheckIn(null) },
+      });
+    }
+    // Movement that has not settled: Activity shows the trend, Care home raises it.
+    if (intel.mobility.status === "concern") {
+      const streak = intel.mobility.streak;
+      out.push({
+        key: "mobility",
+        eyebrow: "WORTH A LOOK",
+        title: streak && streak.days >= 3 ? `${dogName} has had ${MOBILITY_NOUN[streak.sign]} for ${streak.days} days` : `${dogName} has limped more than once`,
+        detail: "Worth a word with the vet",
+        Glyph: PersonSimpleWalkIcon,
+        action: { label: "Book a visit", run: () => router.push("/care/book-visit") },
+      });
+    }
+    if (duty) {
+      out.push({
+        key: "vaccines",
+        eyebrow: "VACCINES",
+        title: `Book ${duty.label}`,
+        detail: `Keeps ${dogName} protected`,
+        Glyph: SyringeIcon,
+        action: { label: "Find a vet", run: () => router.push("/care/find-vet") },
+      });
+    }
+    // Preventive care that has come due (a dose, an exam, a cleaning), from the care log and life stage.
+    (["parasites", "exams", "dental"] as const)
+      .flatMap((area) => kindsFor(area, intel.stage).map((kind) => ({ area, due: dueFor(kind, intel.log, intel.stage, intel.today) })))
+      .filter(({ due }) => due.status === "due" && due.kind !== "brushing")
+      .slice(0, 2)
+      .forEach((overdue) => {
+        const senior = intel.stage === "senior" && overdue.due.kind === "wellness_exam";
+        out.push({
+          key: `care-${overdue.due.kind}`,
+          eyebrow: "DUE",
+          title: senior ? `${dogName}'s senior wellness exam is due` : `${CARE_LABEL[overdue.due.kind]} is due`,
+          detail: `Last done ${overdue.due.last ? new Date(`${overdue.due.last}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "a while ago"}`,
+          Glyph: overdue.area === "parasites" ? BugIcon : overdue.area === "dental" ? ToothIcon : StethoscopeIcon,
+          action: { label: "Open", run: () => router.push(`/care/preventive?area=${overdue.area}` as never) },
+        });
+      });
+    lateItems.slice(0, 2).forEach((late) =>
+      out.push({
+        key: `late-${late.key}`,
+        eyebrow: `WAS DUE AT ${prettyTime(late.time!).toUpperCase()}`,
+        title: late.title,
+        detail: late.detail,
+        Glyph: late.iconKey === "walk" ? PersonSimpleWalkIcon : late.iconKey === "bowl-mix" ? BowlFoodIcon : CheckCircleIcon,
+        action: late.iconKey === "walk"
+          ? { label: "Start walk", run: () => router.push("/care/plan-walk?mode=now" as never) }
+          : { label: "Mark done", run: () => onToggleItem(late) },
+      }),
+    );
+    if (next) {
+      out.push({
+        key: `next-${next.key}`,
+        eyebrow: `NEXT · ${untilLabel(next.time!, minuteNow).toUpperCase()}`,
+        title: next.title,
+        detail: `${prettyTime(next.time!)} · ${next.detail}`,
+        Glyph: next.iconKey === "walk" ? PersonSimpleWalkIcon : next.iconKey === "bowl-mix" ? BowlFoodIcon : CheckCircleIcon,
+        action: next.iconKey === "walk" ? { label: "Start walk", run: () => router.push("/care/plan-walk?mode=now" as never) } : undefined,
+      });
+    }
+    if (!out.length && listItems.length && open.length === 0) {
+      out.push({ key: "done", eyebrow: "TODAY", title: "All done for today", detail: `${dogName} is well looked after.`, Glyph: CheckCircleIcon });
+    }
+    if (!out.length) {
+      out.push({
+        key: "start",
+        eyebrow: "TODAY",
+        title: `Plan ${dogName}'s next walk`,
+        detail: "Pick a time and a route",
+        Glyph: PersonSimpleWalkIcon,
+        action: { label: "Plan a walk", run: () => router.push("/care/plan-walk" as never) },
+      });
+    }
+    // The first card is always called the most important.
+    out[0] = { ...out[0], eyebrow: out[0].key.startsWith("late-") || out[0].key.startsWith("next-") || out[0].key === "vet" ? out[0].eyebrow : "MOST IMPORTANT" };
+    return out.slice(0, 5);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listItems, minuteNow, appointment, todayKey, checkIn.enabled, checkIn.time, checkInEntry, duty, dogName, intel]);
+  const focus = news[0];
+  const keepingUp = useKeepingUpNews();
+  // The check-in record sits second: right after the one thing to do now, before the rest of the news.
+  const pages = useMemo<NewsPage[]>(() => {
+    const cards: NewsPage[] = news.map((item) => ({
+      key: item.key,
+      label: `${item.eyebrow}. ${item.title}`,
+      node: <FocusCard focus={item} reduceMotion={reduceMotion} art={false} />,
+    }));
+    if (keepingUp) cards.splice(1, 0, { key: "keeping-up", label: keepingUp.label, alert: keepingUp.alert, node: <KeepingUp name={dogName} /> });
+    return cards;
+  }, [news, keepingUp?.label, keepingUp?.alert, dogName, reduceMotion]);
+
+  // The check-in is one full-screen flow wherever it is opened from.
+  const openCheckIn = (_appetite: Appetite | null) => requestCheckIn();
 
   return (
     <Animated.View
@@ -369,21 +571,39 @@ function CareTab({ revealing }: { revealing: boolean }) {
             <Animated.View key="care" entering={fade} style={styles.headerRow}>
               <PawsMark />
               <View style={styles.headerActions}>
+                {/* Emergency is one tap from Care home: in a crisis nobody should have to look for it. */}
                 <PressScale
                   accessibilityRole="button"
-                  accessibilityLabel="Notifications"
+                  accessibilityLabel="Emergency and first aid"
                   style={styles.roundButton}
-                  onPress={() => router.push("/notifications-settings")}
+                  onPress={() => {
+                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    router.push("/care/emergency" as never);
+                  }}
                 >
-                  <BellIcon size={iconSize.nav} color={text.primary} weight="regular" />
+                  <FirstAidKitIcon size={iconSize.nav} color={SOS} weight="fill" />
                 </PressScale>
                 <PressScale
                   accessibilityRole="button"
-                  accessibilityLabel="Profile"
+                  accessibilityLabel="Start a walk"
                   style={styles.roundButton}
-                  onPress={() => router.push("/profile")}
+                  onPress={() => {
+                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    router.push("/care/plan-walk?mode=now" as never);
+                  }}
                 >
-                  <PawPrintIcon size={iconSize.nav} color={text.primary} weight="fill" />
+                  <PersonSimpleWalkIcon size={iconSize.nav} color={text.primary} weight="regular" />
+                </PressScale>
+                <PressScale
+                  accessibilityRole="button"
+                  accessibilityLabel="Check a food with a photo"
+                  style={styles.roundButton}
+                  onPress={() => {
+                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    router.push("/care/food-check?start=camera" as never);
+                  }}
+                >
+                  <CameraIcon size={iconSize.nav} color={text.primary} weight="regular" />
                 </PressScale>
               </View>
             </Animated.View>
@@ -446,7 +666,8 @@ function CareTab({ revealing }: { revealing: boolean }) {
         </View>
 
         <Animated.View
-          style={[styles.heroClip, heroMeasured && heroStyle]}
+          // Only the sweep uses a set height; at rest the card sizes itself, so it can never get stuck squashed.
+          style={[styles.heroClip, heroMeasured && phase !== "care" && heroStyle]}
           pointerEvents={phase === "care" ? "auto" : "none"}
           onLayout={(e) => {
             if (heroMeasured) return;
@@ -454,17 +675,17 @@ function CareTab({ revealing }: { revealing: boolean }) {
             setHeroMeasured(true);
           }}
         >
-          <Animated.View entering={enter(0)} style={styles.hero}>
-            <View style={styles.heroCopy}>
-              <Text style={styles.greeting}>{greetingFor(today.getHours())}</Text>
-              <View style={styles.nameRow}>
-                <Text style={styles.name} numberOfLines={1}>
-                  {dog.data?.name ?? "there"}!
-                </Text>
-                <HeartIcon size={iconSize.standard} color={accent.deep} weight="fill" />
-              </View>
-            </View>
-            <CareDog art="walk" width={HERO_ART} />
+          <Animated.View
+            entering={enter(0)}
+            style={styles.hero}
+            onLayout={(e) => {
+              // The brief grows and shrinks with the day, so keep the collapsing clip in step with it. Measure only at
+              // rest: mid-sweep the clip is shorter than the card and would teach it a squashed height.
+              const height = e.nativeEvent.layout.height;
+              if (height > 0 && open.value === 0) heroHeight.value = height;
+            }}
+          >
+            <NewsPager pages={pages} />
           </Animated.View>
         </Animated.View>
 
@@ -475,28 +696,48 @@ function CareTab({ revealing }: { revealing: boolean }) {
           <Animated.View
             entering={enter(1)}
             layout={settle}
-            style={dimStyle}
-            pointerEvents={gateOn ? "none" : "auto"}
+
             onLayout={(e) => {
               const height = e.nativeEvent.layout.height;
-              if (height <= 0) return;
+              if (height <= 0 || stripAway.value !== 0) return;
               stripHeight.value = height;
               if (!stripMeasured) setStripMeasured(true);
             }}
           >
-            <WeekStrip
-              days={week}
-              selectedIndex={
-                phase === "care"
-                  ? todayIndex
-                  : week.findIndex((d) => d.getDay() === selectedDay)
+            <CareCalendar
+              today={clock}
+              open={calendarOpen && phase === "care"}
+              selectedKey={
+                phase !== "care"
+                  ? dayKeyOf(week.find((d) => d.getDay() === selectedDay) ?? today)
+                  : calendarOpen
+                    ? calDay
+                    : todayKey
               }
-              todayIndex={todayIndex}
-              onSelect={(index) => {
-                void Haptics.selectionAsync();
-                setSelectedDay(week[index].getDay());
-                setScope("daily");
-                if (phase === "care") go("activity");
+              rings={rings}
+              marks={planMarks}
+              onToggle={(next) => {
+                if (phase !== "care") return;
+                setCalDay(todayKey);
+                setCalendarOpen(next);
+              }}
+              onSelect={(date) => {
+                const key = dayKeyOf(date);
+                const inWeek = week.some((d) => dayKeyOf(d) === key);
+                if (phase === "care" && calendarOpen) {
+                  setCalDay(key);
+                  return;
+                }
+                // This week up to today opens that day's walking; a later day opens the calendar on it.
+                if (inWeek && key <= todayKey) {
+                  setSelectedDay(date.getDay());
+                  setScope("daily");
+                  if (phase === "care") go("activity");
+                  return;
+                }
+                if (phase !== "care") return;
+                setCalDay(key);
+                setCalendarOpen(true);
               }}
             />
           </Animated.View>
@@ -508,16 +749,21 @@ function CareTab({ revealing }: { revealing: boolean }) {
               style={[phase === "sweeping" && target === "detail" && styles.leaving, careStyle]}
               pointerEvents={phase === "care" ? "auto" : "none"}
             >
-              {gateOn ? (
-                <CheckInGate
-                  dogName={dog.data?.name ?? "your dog"}
-                  time={checkIn.time}
-                  onAnswer={(appetite) => openCheckIn(appetite)}
-                  onLater={() => setLaterThisVisit(true)}
-                />
-              ) : null}
 
-              <Animated.View style={dimStyle} pointerEvents={gateOn ? "none" : "auto"}>
+              <Animated.View>
+              {calendarOpen ? (
+                <Animated.View key="agenda" entering={fade} style={styles.agenda}>
+                  <CareAgenda
+                    selectedKey={calDay}
+                    todayKey={todayKey}
+                    events={agenda}
+                    dailyNote={dailyNote}
+                    reduceMotion={reduceMotion}
+                    onPlanWalk={(key) => router.push(`/care/plan-walk?day=${key}` as never)}
+                  />
+                </Animated.View>
+              ) : (
+              <Animated.View key="today" entering={fade}>
               <SectionHead title="Health snapshot" />
               <View style={styles.tiles}>
                 <Tile
@@ -564,7 +810,7 @@ function CareTab({ revealing }: { revealing: boolean }) {
                 />
               </View>
 
-              {!appointment && duty?.deferred ? (
+              {!appointment && duty?.deferred && focus.key !== "vaccines" ? (
                 <View style={styles.appointment}>
                   <VaccineDueCard
                     duty={duty}
@@ -607,19 +853,17 @@ function CareTab({ revealing }: { revealing: boolean }) {
                 </PressScale>
               ) : (
                 <TodayCareList
-                  items={todayItems}
+                  items={listItems}
                   now={minuteNow}
-                  nowLabel={prettyTime(
-                    `${String(clock.getHours()).padStart(2, "0")}:${String(clock.getMinutes()).padStart(2, "0")}`,
-                  )}
-                  muted={muted}
                   reduceMotion={reduceMotion}
-                  onToggleReminder={onToggleReminder}
-                  onPressItem={(item) => {
-                    if (item.key === "checkin" && !item.done) openCheckIn(null);
+                  onToggle={onToggleItem}
+                  onOpen={(item) => {
+                    if (item.key === "checkin") openCheckIn(null);
+                    else if (item.iconKey === "walk") router.push("/care/plan-walk?mode=now" as never);
                   }}
-                  startOrder={3}
                 />
+              )}
+              </Animated.View>
               )}
               </Animated.View>
             </Animated.View>
@@ -651,8 +895,7 @@ function CareTab({ revealing }: { revealing: boolean }) {
                     setSelectedDay(dayIndex);
                     setScope("daily");
                   }}
-                  onOpenSchedule={() => router.push("/care/schedule")}
-                  onStartWalk={() => router.push("/care/walk")}
+                  onStartWalk={() => router.push("/care/plan-walk?mode=now" as never)}
                 />
               )}
             </Animated.View>
@@ -683,14 +926,6 @@ function CareTab({ revealing }: { revealing: boolean }) {
         </Animated.View>
       ) : null}
 
-      <DailyHealthCheckSheet
-        open={checkInOpen}
-        initialAppetite={firstAnswer}
-        onClose={() => {
-          setCheckInOpen(false);
-          setLaterThisVisit(true);
-        }}
-      />
 
       {duty && !duty.deferred && !setupArea ? (
         <VaccineGate
@@ -766,7 +1001,6 @@ const Tile = ({
   </PressScale>
 );
 
-const HERO_ART = 148;
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: bg.canvas },
@@ -791,12 +1025,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+  agenda: { marginTop: space.lg },
   heroClip: { overflow: "hidden" },
-  hero: { flexDirection: "row", alignItems: "center", marginTop: space.lg },
-  heroCopy: { flex: 1 },
-  greeting: { ...type.supporting, color: text.secondary },
-  nameRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
-  name: { ...type.hero, color: text.primary, flexShrink: 1 },
+  hero: { paddingTop: space.lg, flexShrink: 0 },
 
   stripClip: { overflow: "hidden" },
 

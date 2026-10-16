@@ -33,9 +33,6 @@ import { ProfileDog } from "@/features/profile/components/ProfileDog";
 import { HEADER_HEIGHT, ScrollHeader } from "@/features/profile/components/ScrollHeader";
 import { SegmentedTabs } from "@/features/profile/components/SegmentedTabs";
 import { PressScale } from "@/components/ui/PressScale";
-import { useCurrentDog } from "@/hooks/useCurrentDog";
-import { useProfileDashboard } from "@/hooks/useProfileDashboard";
-import { useWeightLogs } from "@/hooks/useWeightLogs";
 import {
   bg,
   icon as iconSize,
@@ -45,56 +42,55 @@ import {
   space,
   text,
 } from "@/constants/design";
-import { PROFILE_TABS, bori, findSection, together } from "@/constants/profileRecord";
-
-const formatAge = (birthday: string | null, ageYears: number | null): string => {
-  if (birthday) {
-    const then = new Date(birthday);
-    const now = new Date();
-    let months = (now.getFullYear() - then.getFullYear()) * 12 + (now.getMonth() - then.getMonth());
-    if (now.getDate() < then.getDate()) months -= 1;
-    const years = Math.floor(Math.max(0, months) / 12);
-    const remainder = Math.max(0, months) % 12;
-    if (years === 0) return `${remainder}m`;
-    return remainder === 0 ? `${years}y` : `${years}y ${remainder}m`;
-  }
-  if (ageYears !== null) return `${ageYears}y`;
-  return "Not set";
-};
+import { useProfileData } from "@/features/profile/state/useProfileData";
+import { Understanding } from "@/features/profile/components/Understanding";
+import { ProfileSetupFlow } from "@/features/profile/components/ProfileSetupFlow";
+import { useProfileSets } from "@/features/profile/intel/useProfileSets";
+import { useProfileDraft, useProfileDraftHydrated } from "@/features/profile/state/profileDraft";
 
 const TAB_CLEARANCE = 116;
 const STAGE_BELOW_INSET = 224;
 const SHEET_OVERLAP = 28;
 
-const TAB_KEYS = PROFILE_TABS.map((tab) => tab.key);
+const TAB_KEYS = ["about", "training", "health"];
 
 const DOOR_FOR_FACT: Record<string, string> = { records: "records", vaccines: "health" };
 
+// "Not now" on profile setup holds it off until the app opens again.
+let setupDeferred = false;
+
+/** Profile opens with its setup, like Care, until the questions are answered or setup is finished. */
 export default function ProfileTabScreen() {
+  const sets = useProfileSets();
+  const draft = useProfileDraft();
+  const hydrated = useProfileDraftHydrated();
+  const [deferred, setDeferred] = useState(setupDeferred);
+  const done = draft.isEdited("setup", "done");
+  if (hydrated && sets.dogId && !done && !deferred && sets.answered < sets.total) {
+    return (
+      <ProfileSetupFlow
+        bottomInset={TAB_CLEARANCE - 40}
+        onClose={() => {
+          setupDeferred = true;
+          setDeferred(true);
+        }}
+      />
+    );
+  }
+  return <ProfileHome />;
+}
+
+function ProfileHome() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
 
-  const dog = useCurrentDog();
-  const dogId = dog.data?.id;
-  const weightLogs = useWeightLogs(dogId);
-  const dashboard = useProfileDashboard(dogId);
-
-  const dogName = dog.data?.name ?? bori.name;
-  const named = (value: string) => value.replace(/Bori/g, dogName);
-  const dogBreed = dog.data?.breed ?? bori.breed;
-  const dogTag = dog.data?.dogTag ?? bori.dogTag;
-  const ageLabel = dog.data ? formatAge(dog.data.birthday, dog.data.ageYears) : bori.age;
-  const latestWeight = weightLogs.data?.[0];
-  const weightLabel = latestWeight ? `${latestWeight.weightValue}` : "Not set";
-  const weightUnit = latestWeight?.weightUnit;
-
-  const bondXpPerLevel = 100;
-  const bondLevel = dashboard.data?.level ?? together.bondLevel;
-  const bondXpInLevel = dashboard.data ? dashboard.data.bondXp % bondXpPerLevel : together.bondXpInLevel;
+  const profile = useProfileData();
+  const dogName = profile.name;
+  const latestWeight = profile.weight;
 
   const [tabKey, setTabKey] = useState(TAB_KEYS[0]);
-  const tab = PROFILE_TABS.find((item) => item.key === tabKey) ?? PROFILE_TABS[0];
+  const tab = profile.tabs.find((item) => item.key === tabKey) ?? profile.tabs[0];
   const panel = tab.panel;
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -166,34 +162,43 @@ export default function ProfileTabScreen() {
           <Animated.View entering={enter(0)}>
             <IdentityPanel
               name={dogName}
-              breed={dogBreed?.trim() ? dogBreed : "Meet"}
-              tag={dogTag}
+              breed={profile.breed ?? "Meet"}
+              tag={profile.tag ?? ""}
               onPressBond={() => router.push("/profile/progress")}
               rows={[
-                { key: "age", label: "Age", value: ageLabel },
-                {
-                  key: "weight",
-                  label: "Weight",
-                  value: latestWeight ? `${weightLabel} ${weightUnit}` : "Not set",
-                },
+                { key: "age", label: "Age", value: profile.age ?? "Not added" },
+                { key: "weight", label: "Weight", value: latestWeight ?? "Not added" },
                 {
                   key: "bond",
                   label: "Bond level",
-                  value: String(bondLevel),
-                  steps: { filled: Math.round((bondXpInLevel / bondXpPerLevel) * 5), total: 5 },
+                  value: String(profile.together.level),
+                  steps: { filled: Math.round((profile.together.xpInLevel / profile.together.xpPerLevel) * 5), total: 5 },
                 },
               ]}
             />
           </Animated.View>
 
           <Animated.View entering={enter(2)} style={styles.switch}>
-            <SegmentedTabs options={PROFILE_TABS} value={tabKey} onChange={setTabKey} />
+            <SegmentedTabs options={profile.tabs} value={tabKey} onChange={setTabKey} />
           </Animated.View>
 
           <Animated.View style={styles.panel} layout={settle}>
             <Animated.View key={tabKey} entering={panelEnter}>
+              {tabKey === "about" ? <Understanding /> : null}
+
               {panel.traits ? (
                 <TemperamentHero name={dogName} traits={panel.traits.rows} />
+              ) : null}
+
+              {panel.invite ? (
+                <Panel
+                  tone="butter"
+                  lead="Next step"
+                  title={`${panel.invite.title}.`}
+                  meta={panel.invite.meta}
+                  size="section"
+                  onPress={() => router.push(panel.invite!.href as never)}
+                />
               ) : null}
 
               {panel.spotlight ? (
@@ -259,15 +264,15 @@ export default function ProfileTabScreen() {
                 </Panel>
               ) : null}
 
-              <Panel lead="Explore" title={`${named(panel.tilesTitle)}.`} size="section" tone="butter">
+              <Panel lead="Explore" title={`${panel.tilesTitle}.`} size="section" tone="butter">
                 {tab.doors.flatMap((key) => {
-                  const section = findSection(key);
+                  const section = profile.findSection(key);
                   return section
                     ? [
                         <PanelRow
                           key={key}
                           icon={glyphFor(key)}
-                          label={named(section.title)}
+                          label={section.title}
                           sub={section.summary}
                           onPress={() => router.push(`/profile/${key}`)}
                         />,
@@ -284,7 +289,7 @@ export default function ProfileTabScreen() {
               lead="Account"
               title="Settings."
               size="section"
-              meta="Notifications, account, privacy, sign out"
+              meta="Notifications, account, records, sign out"
               onPress={() => router.push("/profile/settings")}
             />
           </Animated.View>
@@ -310,7 +315,7 @@ export default function ProfileTabScreen() {
         right={
           <PressScale
             accessibilityRole="button"
-            accessibilityLabel={`Edit ${named(tab.headTitle).toLowerCase()}`}
+            accessibilityLabel={`Edit ${tab.headTitle.toLowerCase()}`}
             hitSlop={12}
             style={styles.glyphButton}
             onPress={() => router.push(tab.headHref as never)}

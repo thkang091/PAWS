@@ -182,7 +182,7 @@ export const ProductRail = ({
   if (feed.state !== "ready") {
     const note =
       feed.state === "unconfigured"
-        ? "Live prices need a SerpApi key in this build."
+        ? "Live prices are not available right now."
         : feed.state === "offline"
           ? "No connection to the shops."
           : feed.state === "empty"

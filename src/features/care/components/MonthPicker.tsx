@@ -7,7 +7,6 @@ import { CaretLeftIcon, CaretRightIcon } from "phosphor-react-native";
 import { PressScale } from "@/components/ui/PressScale";
 import {
   accent,
-  bg,
   icon as iconSize,
   motion,
   radius,

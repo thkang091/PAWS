@@ -1,9 +1,9 @@
 import { memo, useEffect, useRef } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from "react-native-maps";
 import { MapPinIcon, TreeIcon } from "phosphor-react-native";
 
-import type { PlannedRoute, Spot } from "@/features/care/walk/routePlanner";
+import { shortPlaceName, type PlannedRoute, type Spot } from "@/features/care/walk/routePlanner";
 import type { LatLng } from "@/features/care/walk/walkRoutes";
 import { accent, bg, radius, text, type } from "@/constants/design";
 
@@ -38,8 +38,12 @@ export const PlannerMap = memo(
         mapRef.current?.animateToRegion({ ...start, latitudeDelta: 0.012, longitudeDelta: 0.012 }, 350);
         return;
       }
+      // A tall sheet can leave almost no map; keep at least a strip open or the fit zooms out to the whole continent.
+      const height = Dimensions.get("window").height;
+      const top = Math.min(120, Math.max(50, (height - bottomInset) * 0.35));
+      const bottom = Math.min(bottomInset + 16, height - top - 100);
       mapRef.current?.fitToCoordinates(points, {
-        edgePadding: { top: 140, right: 48, bottom: bottomInset + 32, left: 48 },
+        edgePadding: { top, right: 48, bottom, left: 48 },
         animated: true,
       });
     }, [selected, start, bottomInset]);
@@ -73,6 +77,18 @@ export const PlannerMap = memo(
             />
           ))}
 
+        {selected && selected.path[0] ? (
+          // Routes snap to the nearest walkable street; a short dotted line keeps the start visibly joined to it.
+          <Polyline
+            key={`${selected.id}-join`}
+            coordinates={[start, selected.path[0]]}
+            strokeColor={text.primary}
+            strokeWidth={3}
+            lineDashPattern={[1, 6]}
+            lineCap="round"
+          />
+        ) : null}
+
         {selected ? (
           <>
             <Polyline key={`${selected.id}-edge`} coordinates={[...selected.path]} strokeColor={text.primary} strokeWidth={9} lineCap="round" lineJoin="round" />
@@ -80,7 +96,7 @@ export const PlannerMap = memo(
           </>
         ) : null}
 
-        {spots.map((spot) => {
+        {spots.slice(0, 4).map((spot) => {
           const on = selected?.via?.latitude === spot.latitude && selected?.via?.longitude === spot.longitude;
           return (
             <Marker
@@ -97,7 +113,7 @@ export const PlannerMap = memo(
                 <View style={[styles.spotChip, on && styles.spotChipOn]}>
                   <TreeIcon size={12} color={on ? text.inverse : text.primary} weight="fill" />
                   <Text style={[styles.spotText, on && styles.spotTextOn]} numberOfLines={1}>
-                    {spot.name}
+                    {shortPlaceName(spot.name)}
                   </Text>
                 </View>
                 <View style={[styles.spotTail, on && styles.spotTailOn]} />

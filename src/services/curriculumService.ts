@@ -285,12 +285,10 @@ export const getCatalogByCategory = async (
   return (data ?? []).map((row) => mapActivity(row as ActivityRow));
 };
 
-import { DEMO_MODE, demoGetRoadmap } from "@/services/demoData";
 
 export const getDogRoadmap = async (
   dogId: string,
 ): Promise<(PersonalizedRoadmap & { days: PersonalizedRoadmapDay[] }) | null> => {
-  if (DEMO_MODE) return demoGetRoadmap();
   const client = getClientOrThrow();
   const { data: roadmapData, error: roadmapError } = await client
     .from("dog_personalized_roadmaps")

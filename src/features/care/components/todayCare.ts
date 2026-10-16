@@ -23,9 +23,7 @@ const walkItems = (choice: CarePlanChoice, times: readonly string[]) =>
   times.map((time, index) => ({
     time,
     title: namedPair(times, index, "Walk", "Morning walk", "Evening walk"),
-    detail: choice.walkRoutes?.[time]
-      ? `${choice.walkRoutes[time].minutes} min · ${choice.walkRoutes[time].name}`
-      : `${Math.round(choice.exerciseMinutes / Math.max(1, times.length))} min`,
+    detail: `${Math.round(choice.exerciseMinutes / Math.max(1, times.length))} min`,
   }));
 
 const mealItems = (choice: CarePlanChoice, times: readonly string[]) =>

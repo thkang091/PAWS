@@ -29,6 +29,12 @@ export type PetFood = {
   brand: string | null;
   imageUrl: string | null;
   kcalPer100g: number | null;
+  /** Label values per 100 g when the product lists them. */
+  protein: number | null;
+  fat: number | null;
+  fiber: number | null;
+  carbs: number | null;
+  moisture: number | null;
 };
 
 export type FoodSearch =
@@ -235,6 +241,10 @@ export const searchPetFoods = async (query: string): Promise<FoodSearch> => {
       if (seen.has(key)) continue;
       seen.add(key);
       const kcal = Number(product.nutriments?.["energy-kcal_100g"]);
+      const per100 = (field: string) => {
+        const value = Number(product.nutriments?.[`${field}_100g`]);
+        return Number.isFinite(value) && value >= 0 && value <= 100 ? Math.round(value * 10) / 10 : null;
+      };
       items.push({
         code,
         kind,
@@ -242,6 +252,11 @@ export const searchPetFoods = async (query: string): Promise<FoodSearch> => {
         brand: brand ? titleCase(brand) : null,
         imageUrl: clean(product.image_front_small_url),
         kcalPer100g: Number.isFinite(kcal) && kcal >= 50 && kcal <= 650 ? Math.round(kcal) : null,
+        protein: per100("proteins"),
+        fat: per100("fat"),
+        fiber: per100("fiber"),
+        carbs: per100("carbohydrates"),
+        moisture: per100("moisture") ?? per100("water"),
       });
     }
 

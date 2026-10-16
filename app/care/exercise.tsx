@@ -4,7 +4,6 @@ import Animated, { FadeIn, LinearTransition, useReducedMotion } from "react-nati
 import { router } from "expo-router";
 import {
   BarbellIcon,
-  ConfettiIcon,
   DropIcon,
   PersonSimpleRunIcon,
   PersonSimpleWalkIcon,
@@ -22,7 +21,6 @@ import { useCurrentDog } from "@/hooks/useCurrentDog";
 import {
   accent,
   bg,
-  border,
   icon as iconSize,
   motion,
   radius,

@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn, FadeInDown, ZoomIn, useReducedMotion } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { CheckIcon } from "phosphor-react-native";
+import { router } from "expo-router";
+import { CheckIcon, PencilSimpleIcon } from "phosphor-react-native";
 
 import { STAT_LABELS, summarize, verdictOf, type StatKey } from "@/features/care/health/checkInSummary";
 import type { DailyCheckIn } from "@/features/care/state/dailyCheckIn";
 import { PressScale } from "@/components/ui/PressScale";
-import { accent, bg, border, motion, radius, space, text, type } from "@/constants/design";
+import { accent, bg, border, motion, radius, scene, space, text, type } from "@/constants/design";
 
 const WEEKDAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const LETTER = ["S", "M", "T", "W", "T", "F", "S"];
@@ -38,7 +39,23 @@ export const DaySummary = ({
       entering={reduceMotion ? undefined : FadeInDown.duration(motion.duration.reveal).easing(motion.easing.out)}
       style={styles.summary}
     >
-      <Text style={styles.summaryTitle}>{isToday ? `How is ${dogName} today?` : `How ${dogName} was on ${dayName(date)}`}</Text>
+      <View style={styles.summaryHead}>
+        <Text style={[styles.summaryTitle, styles.summaryTitleFlex]}>{isToday ? `How is ${dogName} today?` : `How ${dogName} was on ${dayName(date)}`}</Text>
+        <PressScale
+          accessibilityRole="button"
+          accessibilityLabel="Edit this check-in"
+          hitSlop={8}
+          scaleTo={0.94}
+          style={styles.edit}
+          onPress={() => {
+            void Haptics.selectionAsync();
+            router.push(`/care/check-in-edit?date=${entry.date}` as never);
+          }}
+        >
+          <PencilSimpleIcon size={13} color={text.primary} weight="bold" />
+          <Text style={styles.editText}>Edit</Text>
+        </PressScale>
+      </View>
 
       <View style={styles.rows}>
         {stats.map((stat, index) => (
@@ -71,9 +88,37 @@ export const DaySummary = ({
           <Text style={styles.verdictLine}>{verdict.line}</Text>
         </View>
       </View>
+
+      {entry.support && entry.unusual.length ? <SupportCard support={entry.support} reduceMotion={reduceMotion} /> : null}
     </Animated.View>
   );
 };
+
+const LEVEL_LABEL = { home: "Watch at home", call: "Call your vet", urgent: "Go to a vet now" } as const;
+const LEVEL_DOT = { home: scene.sageDeep, call: accent.band, urgent: "#C2412D" } as const;
+
+/** What PAWS suggested when the unusual signs were logged, so the advice is still here the next morning. */
+const SupportCard = ({ support, reduceMotion }: { support: NonNullable<DailyCheckIn["support"]>; reduceMotion: boolean }) => (
+  <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.enter).delay(520)} style={styles.support}>
+    <View style={styles.supportLevel}>
+      <View style={[styles.supportDot, { backgroundColor: LEVEL_DOT[support.level] }]} />
+      <Text style={styles.supportLevelText}>{LEVEL_LABEL[support.level]}</Text>
+    </View>
+    <Text style={styles.supportHeadline}>{support.headline}</Text>
+    <Text style={styles.supportSummary}>{support.summary}</Text>
+    {support.watch.length ? (
+      <View style={styles.supportWatch}>
+        <Text style={styles.supportWatchLabel}>Call sooner if</Text>
+        {support.watch.map((sign) => (
+          <View key={sign} style={styles.supportRow}>
+            <View style={styles.supportFlag} />
+            <Text style={styles.supportRowText}>{sign}</Text>
+          </View>
+        ))}
+      </View>
+    ) : null}
+  </Animated.View>
+);
 
 export const MissedDay = ({ date }: { date: Date }) => (
   <View style={styles.missed}>
@@ -258,6 +303,21 @@ const styles = StyleSheet.create({
   },
   doneWatch: { backgroundColor: text.primary },
   verdictCopy: { flex: 1 },
+  summaryHead: { flexDirection: "row", alignItems: "flex-start", gap: space.md },
+  summaryTitleFlex: { flex: 1 },
+  edit: { flexDirection: "row", alignItems: "center", gap: 4, height: 30, paddingHorizontal: space.md, borderRadius: radius.pill, backgroundColor: bg.subtle },
+  editText: { ...type.caption, fontWeight: "700", color: text.primary },
+  support: { marginTop: space.md, padding: space.lg, borderRadius: radius.card, borderWidth: 1, borderColor: border.soft, backgroundColor: bg.canvas },
+  supportLevel: { flexDirection: "row", alignItems: "center", gap: 6 },
+  supportDot: { width: 8, height: 8, borderRadius: 4 },
+  supportLevelText: { ...type.caption, fontWeight: "600", color: text.secondary },
+  supportHeadline: { ...type.cardTitle, fontWeight: "600", color: text.primary, marginTop: space.sm },
+  supportSummary: { ...type.supporting, color: text.secondary, marginTop: 2 },
+  supportWatch: { marginTop: space.md, gap: 4 },
+  supportWatchLabel: { ...type.caption, fontWeight: "600", color: text.primary },
+  supportRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  supportFlag: { width: 6, height: 6, borderRadius: 3, backgroundColor: accent.band },
+  supportRowText: { ...type.supporting, color: text.primary, flex: 1 },
   verdictTitle: { ...type.cardTitle, fontWeight: "700", color: text.primary },
   verdictLine: { ...type.caption, color: text.secondary, marginTop: 2 },
 

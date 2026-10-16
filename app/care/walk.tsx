@@ -1,72 +1,47 @@
-import { useEffect, useMemo, useState } from "react";
+import { type ComponentType, useEffect, useState } from "react";
 import { Linking, Platform, StyleSheet, Text, View } from "react-native";
-import Animated, {
-  FadeIn,
-  LinearTransition,
-  SlideInDown,
-  useReducedMotion,
-} from "react-native-reanimated";
+import Animated, { FadeIn, LinearTransition, SlideInDown, useReducedMotion } from "react-native-reanimated";
 import { router, useNavigation } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import {
-  ArrowRightIcon,
-  CalendarCheckIcon,
-  CaretLeftIcon,
+  ArrowBendUpLeftIcon,
+  ArrowBendUpRightIcon,
+  ArrowUpIcon,
+  ArrowUpLeftIcon,
+  ArrowUpRightIcon,
+  ArrowUUpLeftIcon,
+  ArrowUUpRightIcon,
   CheckIcon,
-  ClockCounterClockwiseIcon,
+  FlagCheckeredIcon,
   PauseIcon,
   PlayIcon,
+  type IconProps,
 } from "phosphor-react-native";
 
 import { goBack } from "@/features/care/components/DetailShell";
-import { minutesOf, prettyTime } from "@/features/care/components/careSetupAnswers";
 import { HoldToEnd } from "@/features/care/walk/HoldToEnd";
 import { GoogleWalkMap, type MapMode } from "@/features/care/walk/GoogleWalkMap";
 import { useWalkTracker } from "@/features/care/walk/useWalkTracker";
-import {
-  HOME,
-  MOCK_ROUTES,
-  formatClock,
-  formatPace,
-  suggestRoutes,
-  type WalkRoute,
-} from "@/features/care/walk/walkRoutes";
-import { scheduleWalk, useCareOnboarding } from "@/features/care/state/careOnboarding";
+import { formatClock, formatPace, type LatLng, type WalkRoute } from "@/features/care/walk/walkRoutes";
+import { blockLoop, distanceKm, loopVia, walkThrough, type NavStep, type PlannedRoute } from "@/features/care/walk/routePlanner";
+import { useTurnByTurn } from "@/features/care/walk/useTurnByTurn";
+import { logWalkDone } from "@/features/care/state/todayChecks";
+import { takeHandoff, type WalkStart } from "@/features/care/walk/walkHandoff";
 import { PressScale } from "@/components/ui/PressScale";
 import { useCareRoutines, useCompleteCareRoutine } from "@/hooks/useCareEvents";
 import { useLogExercise } from "@/hooks/useCareHealth";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
-import {
-  accent,
-  bg,
-  border,
-  icon as iconSize,
-  layout,
-  motion,
-  radius,
-  space,
-  text,
-  type,
-} from "@/constants/design";
+import { shortPlaceName } from "@/features/care/walk/routePlanner";
+import { accent, bg, border, icon as iconSize, layout, motion, radius, space, text, type } from "@/constants/design";
 
-type Phase = "plan" | "walking" | "done" | "scheduled";
+type Phase = "walking" | "done";
+
+const routeWords = (routeName: string) =>
+  routeName === "Free walk" ? "" : routeName === "Around the block" ? "around the block" : `to ${shortPlaceName(routeName)}`;
 
 const isoDate = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-
-const slotLabel = (minutes: number) =>
-  `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${minutes % 60 === 0 ? "00" : "30"}`;
-
-const upcomingSlots = (now: Date, taken: readonly string[]) => {
-  const start = Math.ceil((now.getHours() * 60 + now.getMinutes() + 20) / 30) * 30;
-  const out: string[] = [];
-  for (let m = Math.max(start, 6 * 60); m <= 22 * 60 + 30 && out.length < 3; m += 30) {
-    const slot = slotLabel(m);
-    if (!taken.includes(slot)) out.push(slot);
-  }
-  return out;
-};
 
 export default function WalkScreen() {
   const insets = useSafeAreaInsets();
@@ -77,54 +52,87 @@ export default function WalkScreen() {
   const dogId = dog.data?.id ?? "";
   const name = dog.data?.name ?? "your dog";
 
-  const { choice } = useCareOnboarding();
-  const [routes, setRoutes] = useState<readonly WalkRoute[]>(MOCK_ROUTES);
-  const [routeId, setRouteId] = useState(MOCK_ROUTES[0].id);
-  const [when, setWhen] = useState<string>("now");
-  const [phase, setPhase] = useState<Phase>("plan");
+  const [chosen, setChosen] = useState<{ route: PlannedRoute; start: WalkStart } | null>(() => takeHandoff());
+  const [phase, setPhase] = useState<Phase>("walking");
   const [paused, setPaused] = useState(false);
   const [saveError, setSaveError] = useState(false);
 
-  const route = routes.find((item) => item.id === routeId) ?? routes[0];
-  const walk = useWalkTracker(route, phase === "walking" && !paused);
+  useEffect(() => {
+    if (!chosen) router.replace("/care/plan-walk?mode=now" as never);
+  }, [chosen]);
+
+  const route: WalkRoute = chosen?.route ?? EMPTY_ROUTE;
+  // A walk set up from somewhere else begins when the phone gets there, so the route and the record match.
+  const fromElsewhere = Boolean(chosen) && chosen!.start.source !== "here";
+  const walk = useWalkTracker(route, Boolean(chosen) && phase === "walking" && !paused, fromElsewhere);
+  const waiting = phase === "walking" && walk.status !== "walking";
+  // Directions only make sense while you are actually on the route.
+  const onRoute = Boolean(walk.position) && route.path.some((point) => distanceKm(point, walk.position!) <= 0.3);
+  const turns = useTurnByTurn(chosen?.route.steps, walk.position, phase === "walking" && !waiting && !paused);
+  const free = chosen?.route.kind === "free";
+
+  // Getting to a start you chose happens inside PAWS: a walking route from where you are to the start, with turns.
+  const [approach, setApproach] = useState<{ path: LatLng[]; steps: NavStep[]; minutes: number } | null>(null);
+  const startPoint = route.path[0] ?? null;
+  useEffect(() => {
+    if (!waiting || !walk.position || !startPoint) return;
+    if (distanceKm(walk.position, startPoint) > APPROACH_MAX_KM) {
+      setApproach(null);
+      return;
+    }
+    // Still on the way we already worked out: keep it rather than asking Google again every step.
+    if (approach && approach.path.some((point) => distanceKm(point, walk.position!) <= 0.06)) return;
+    let live = true;
+    void walkThrough([walk.position, startPoint]).then((found) => {
+      if (live) setApproach(found ? { path: found.path, steps: found.steps, minutes: found.minutes } : null);
+    });
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [waiting, walk.position?.latitude, walk.position?.longitude]);
+  const approachTurns = useTurnByTurn(approach?.steps, walk.position, waiting && Boolean(approach));
+
+  // Started somewhere other than the planned start? Ask once: set it up again from here, or go to the start.
+  const [decision, setDecision] = useState<"keep" | "here" | null>(null);
+  const [replanning, setReplanning] = useState(false);
+  const [replanFailed, setReplanFailed] = useState(false);
+  const offByKm = waiting && walk.status === "away" && walk.position && startPoint ? distanceKm(walk.position, startPoint) : null;
+  const elsewhere = decision === null && offByKm != null && offByKm > ELSEWHERE_KM;
+
+  const setUpFromHere = async () => {
+    if (!chosen || !walk.position || replanning) return;
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setReplanning(true);
+    setReplanFailed(false);
+    const here = walk.position;
+    const planned = chosen.route;
+    // Same walk, new start: the same place as a there-and-back if it is reachable, else a loop of the same length.
+    let next: PlannedRoute | null = null;
+    if (planned.via && planned.kind !== "block") next = await loopVia(here, planned.via, planned.name, planned.kind, planned.id).catch(() => null);
+    if (!next) next = await blockLoop(here, planned.minutes).catch(() => null);
+    setReplanning(false);
+    if (!next) {
+      setReplanFailed(true);
+      return;
+    }
+    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setChosen({ route: next, start: { point: here, label: "Current location", source: "here" } });
+    setApproach(null);
+    setDecision("here");
+    walk.begin();
+  };
+  const farFromStart = waiting && Boolean(walk.position && startPoint) && distanceKm(walk.position!, startPoint!) > APPROACH_MAX_KM;
 
   const logExercise = useLogExercise(dogId);
   const routines = useCareRoutines(dogId);
   const completeRoutine = useCompleteCareRoutine(dogId, isoDate(new Date()));
 
-  const slots = useMemo(
-    () => (choice ? upcomingSlots(new Date(), choice.walkTimes ?? []) : []),
-    [choice],
-  );
-
   useEffect(() => {
-    let live = true;
-    void suggestRoutes(HOME).then((found) => {
-      if (live && found.length > 0) setRoutes(found);
-    });
-    return () => {
-      live = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    navigation.setOptions({ gestureEnabled: phase === "plan" || phase === "scheduled" });
+    navigation.setOptions({ gestureEnabled: phase === "done" });
   }, [navigation, phase]);
 
-  const mode: MapMode = phase === "walking" ? "walking" : phase === "done" ? "done" : "plan";
-
-  const start = () => {
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    setPaused(false);
-    setPhase("walking");
-  };
-
-  const schedule = () => {
-    if (scheduleWalk(when, { name: route.name, minutes: route.minutes })) {
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setPhase("scheduled");
-    }
-  };
+  const mode: MapMode = phase === "walking" ? "walking" : "done";
 
   const save = () => {
     setSaveError(false);
@@ -140,6 +148,7 @@ export default function WalkScreen() {
         onSuccess: () => {
           const walkRoutine = routines.data?.find((item) => item.iconKey === "walk");
           if (walkRoutine) completeRoutine.mutate(walkRoutine.id);
+          logWalkDone();
           void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           goBack("/(tabs)/care");
         },
@@ -158,37 +167,26 @@ export default function WalkScreen() {
   return (
     <View style={styles.screen}>
       <GoogleWalkMap
-        routes={routes}
+        routes={[route]}
         selectedId={route.id}
         mode={mode}
         progress={walk.progress}
         position={walk.position}
         trail={walk.trail}
+        away={waiting}
+        approach={waiting ? approach?.path : undefined}
       />
 
-      {phase === "plan" || phase === "scheduled" ? (
-        <Animated.View
-          entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.enter)}
-          style={[styles.topBar, { top: insets.top + space.sm }]}
-        >
-          <PressScale
-            accessibilityRole="button"
-            accessibilityLabel="Back"
-            style={styles.floatButton}
-            onPress={() => goBack("/(tabs)/care")}
-          >
-            <CaretLeftIcon size={iconSize.nav} color={text.primary} weight="bold" />
-          </PressScale>
-          <PressScale
-            accessibilityRole="button"
-            accessibilityLabel="Past walks"
-            style={styles.floatButton}
-            onPress={() => router.push("/care/exercise")}
-          >
-            <ClockCounterClockwiseIcon size={iconSize.nav} color={text.primary} weight="regular" />
-          </PressScale>
-        </Animated.View>
+      {phase === "walking" && !waiting && !free && onRoute && turns.current ? (
+        <View style={[styles.navWrap, { top: insets.top + space.sm }]} pointerEvents="none">
+          <NavBanner turns={turns} arrive="You are back where you started" />
+        </View>
+      ) : waiting && approach && approachTurns.current ? (
+        <View style={[styles.navWrap, { top: insets.top + space.sm }]} pointerEvents="none">
+          <NavBanner turns={approachTurns} arrive="You are at the start" />
+        </View>
       ) : null}
+
 
       <Animated.View
         entering={
@@ -205,24 +203,33 @@ export default function WalkScreen() {
       >
         <View style={styles.grabber} />
 
-        <Animated.View key={phase} entering={enterContent}>
-          {phase === "plan" ? (
-            <Plan
+        <Animated.View key={elsewhere ? "elsewhere" : waiting ? "away" : phase} entering={enterContent}>
+          {elsewhere && chosen && offByKm != null ? (
+            <Elsewhere
+              startLabel={chosen.start.label}
+              offByKm={offByKm}
+              busy={replanning}
+              failed={replanFailed}
+              onSetUpHere={() => void setUpFromHere()}
+              onKeep={() => {
+                void Haptics.selectionAsync();
+                setDecision("keep");
+              }}
+              onCancel={() => goBack("/(tabs)/care")}
+            />
+          ) : waiting && chosen ? (
+            <HeadToStart
               name={name}
-              routes={routes}
-              route={route}
-              when={when}
-              slots={slots}
-              onRoute={(id) => {
-                void Haptics.selectionAsync();
-                setRouteId(id);
+              startLabel={chosen.start.label}
+              routeName={route.name}
+              locating={walk.status === "locating"}
+              minutesAway={approach?.minutes ?? null}
+              far={farFromStart}
+              onBegin={() => {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                walk.begin();
               }}
-              onWhen={(next) => {
-                void Haptics.selectionAsync();
-                setWhen(next);
-              }}
-              onStart={start}
-              onSchedule={schedule}
+              onCancel={() => goBack("/(tabs)/care")}
             />
           ) : phase === "walking" ? (
             <Walking
@@ -230,7 +237,8 @@ export default function WalkScreen() {
               route={route}
               elapsed={walk.elapsed}
               distanceKm={walk.distanceKm}
-              progress={walk.progress}
+              progress={free ? Math.min(1, walk.elapsed / 60 / Math.max(1, route.minutes)) : walk.progress}
+              free={free}
               locationDenied={walk.permission === "denied" || walk.permission === "unavailable"}
               paused={paused}
               onPause={() => {
@@ -239,28 +247,18 @@ export default function WalkScreen() {
               }}
               onEnd={() => setPhase("done")}
             />
-          ) : phase === "done" ? (
+          ) : (
             <Done
               name={name}
               route={route}
               elapsed={walk.elapsed}
               distanceKm={walk.distanceKm}
               progress={walk.progress}
+              free={free}
               saving={logExercise.isPending}
               error={saveError}
               onSave={save}
               onDiscard={() => goBack("/(tabs)/care")}
-            />
-          ) : (
-            <Scheduled
-              name={name}
-              route={route}
-              time={when}
-              onDone={() => goBack("/(tabs)/care")}
-              onWalkNow={() => {
-                setWhen("now");
-                start();
-              }}
             />
           )}
         </Animated.View>
@@ -277,106 +275,166 @@ const Headline = ({ lead, focus }: { lead: string; focus: string }) => (
   </Text>
 );
 
-const Plan = ({
+const HeadToStart = ({
   name,
-  routes,
-  route,
-  when,
-  slots,
-  onRoute,
-  onWhen,
-  onStart,
-  onSchedule,
+  startLabel,
+  routeName,
+  locating,
+  minutesAway,
+  far,
+  onBegin,
+  onCancel,
 }: {
   name: string;
-  routes: readonly WalkRoute[];
-  route: WalkRoute;
-  when: string;
-  slots: readonly string[];
-  onRoute: (id: string) => void;
-  onWhen: (when: string) => void;
-  onStart: () => void;
-  onSchedule: () => void;
-}) => {
-  const now = when === "now";
-  return (
-    <View>
-      <Animated.View key={route.id} entering={FadeIn.duration(motion.duration.select)}>
-        <Headline lead={`${route.minutes} min with ${name}`} focus={route.name} />
-      </Animated.View>
-
-      <View style={styles.routes} accessibilityRole="radiogroup">
-        {routes.map((item) => {
-          const on = item.id === route.id;
-          return (
-            <PressScale
-              key={item.id}
-              accessibilityRole="radio"
-              accessibilityState={{ selected: on }}
-              accessibilityLabel={`${item.name}, ${item.distanceKm} kilometres, about ${item.minutes} minutes. ${item.note}`}
-              scaleTo={0.96}
-              style={[styles.route, on && styles.routeOn]}
-              onPress={() => onRoute(item.id)}
-            >
-              <Text style={styles.routeKm}>
-                {item.distanceKm}
-                <Text style={styles.routeUnit}> km</Text>
-              </Text>
-              <Text style={styles.routeName} numberOfLines={2}>
-                {item.name}
-              </Text>
-            </PressScale>
-          );
-        })}
-      </View>
-      <Text style={styles.routeNote}>{route.note}</Text>
-
-      {slots.length > 0 ? (
-        <View style={styles.whenRow} accessibilityRole="radiogroup">
-          {["now", ...slots].map((slot) => {
-            const on = slot === when;
-            return (
-              <PressScale
-                key={slot}
-                accessibilityRole="radio"
-                accessibilityState={{ selected: on }}
-                accessibilityLabel={slot === "now" ? "Walk now" : `Schedule for ${prettyTime(slot)}`}
-                scaleTo={0.94}
-                style={[styles.when, on && styles.whenOn]}
-                onPress={() => onWhen(slot)}
-              >
-                <Text style={[styles.whenText, on && styles.whenTextOn]}>
-                  {slot === "now" ? "Now" : prettyTime(slot)}
-                </Text>
-              </PressScale>
-            );
-          })}
-        </View>
-      ) : null}
-
-      <PressScale
-        accessibilityRole="button"
-        accessibilityLabel={now ? `Start the walk on ${route.name}` : `Schedule ${route.name} for ${prettyTime(when)}`}
-        scaleTo={0.97}
-        style={styles.cta}
-        onPress={now ? onStart : onSchedule}
-      >
-        <Animated.View
-          key={now ? "start" : "schedule"}
-          entering={FadeIn.duration(motion.duration.select)}
-          style={styles.ctaInner}
-        >
-          <Text style={styles.ctaText}>{now ? "Start walk" : `Schedule for ${prettyTime(when)}`}</Text>
-          {now ? (
-            <ArrowRightIcon size={iconSize.button} color={text.primary} weight="bold" />
-          ) : (
-            <CalendarCheckIcon size={iconSize.button} color={text.primary} weight="bold" />
-          )}
-        </Animated.View>
-      </PressScale>
+  startLabel: string;
+  routeName: string;
+  locating: boolean;
+  minutesAway: number | null;
+  far: boolean;
+  onBegin: () => void;
+  onCancel: () => void;
+}) => (
+  <View>
+    <View style={styles.status}>
+      <View style={[styles.statusDot, styles.statusDotAway]} />
+      <Text style={styles.statusText} numberOfLines={1}>
+        {locating ? "Finding where you are" : minutesAway ? `Head to the start, about ${minutesAway} min away` : "Head to the start"}
+      </Text>
     </View>
+    <Text style={styles.awayPlace} numberOfLines={2}>
+      {shortPlaceName(startLabel)}
+    </Text>
+    <Text style={styles.awayNote}>
+      {far
+        ? `The walk ${routeWords(routeName)} starts there, which is too far to walk to from here. PAWS starts the clock when you arrive.`
+        : `Follow the dotted line on the map. The walk ${routeWords(routeName)} starts there, and PAWS starts the clock when you arrive.`}
+    </Text>
+    <PressScale
+      accessibilityRole="button"
+      accessibilityLabel={`Start walking ${name} from where you are now`}
+      scaleTo={0.97}
+      style={styles.cta}
+      onPress={onBegin}
+    >
+      <View style={styles.ctaInner}>
+        <Text style={styles.ctaText}>I am here, start now</Text>
+      </View>
+    </PressScale>
+    <PressScale accessibilityRole="button" accessibilityLabel="Cancel this walk" scaleTo={0.96} style={styles.quiet} onPress={onCancel}>
+      <Text style={styles.quietText}>Cancel</Text>
+    </PressScale>
+  </View>
+);
+
+/** Further than this from the planned start when the walk begins, PAWS asks whether to set it up again from here. */
+const ELSEWHERE_KM = 0.4;
+
+const kmText = (km: number) => (km >= 10 ? `${Math.round(km).toLocaleString()} km` : km >= 1 ? `${km.toFixed(1)} km` : `${Math.round(km * 1000 / 10) * 10} m`);
+
+/** The walk was planned from somewhere else: offer to rebuild it from here, or keep it and go to the start. */
+const Elsewhere = ({
+  startLabel,
+  offByKm,
+  busy,
+  failed,
+  onSetUpHere,
+  onKeep,
+  onCancel,
+}: {
+  startLabel: string;
+  offByKm: number;
+  busy: boolean;
+  failed: boolean;
+  onSetUpHere: () => void;
+  onKeep: () => void;
+  onCancel: () => void;
+}) => (
+  <View>
+    <View style={styles.status}>
+      <View style={[styles.statusDot, styles.statusDotAway]} />
+      <Text style={styles.statusText} numberOfLines={1}>
+        You seem to be somewhere else
+      </Text>
+    </View>
+    <Text style={styles.awayPlace} numberOfLines={2}>
+      {`${kmText(offByKm)} from ${shortPlaceName(startLabel)}`}
+    </Text>
+    <Text style={styles.awayNote}>
+      {failed
+        ? "PAWS could not find a walk from here. Head to the planned start, or plan a new walk."
+        : "This walk was set up to start there. Set it up again from where you are now?"}
+    </Text>
+    <PressScale
+      accessibilityRole="button"
+      accessibilityLabel="Set the walk up again from where you are"
+      accessibilityState={{ busy }}
+      scaleTo={0.97}
+      disabled={busy}
+      style={[styles.cta, busy && styles.ctaBusy]}
+      onPress={onSetUpHere}
+    >
+      <View style={styles.ctaInner}>
+        <Text style={styles.ctaText}>{busy ? "Setting up from here..." : "Set up from here"}</Text>
+      </View>
+    </PressScale>
+    <PressScale accessibilityRole="button" accessibilityLabel="Keep the plan and go to the planned start" scaleTo={0.97} style={styles.ctaSecondary} onPress={onKeep}>
+      <Text style={styles.ctaSecondaryText}>Go to the planned start</Text>
+    </PressScale>
+    <PressScale accessibilityRole="button" accessibilityLabel="Cancel this walk" scaleTo={0.96} style={styles.quiet} onPress={onCancel}>
+      <Text style={styles.quietText}>Cancel</Text>
+    </PressScale>
+  </View>
+);
+
+/** Beyond this the start is a drive away, not a walk; PAWS does not draw walking directions to it. */
+const APPROACH_MAX_KM = 5;
+
+const MANEUVER: Record<string, ComponentType<IconProps>> = {
+  TURN_LEFT: ArrowBendUpLeftIcon,
+  TURN_SHARP_LEFT: ArrowBendUpLeftIcon,
+  TURN_RIGHT: ArrowBendUpRightIcon,
+  TURN_SHARP_RIGHT: ArrowBendUpRightIcon,
+  TURN_SLIGHT_LEFT: ArrowUpLeftIcon,
+  FORK_LEFT: ArrowUpLeftIcon,
+  RAMP_LEFT: ArrowUpLeftIcon,
+  TURN_SLIGHT_RIGHT: ArrowUpRightIcon,
+  FORK_RIGHT: ArrowUpRightIcon,
+  RAMP_RIGHT: ArrowUpRightIcon,
+  UTURN_LEFT: ArrowUUpLeftIcon,
+  UTURN_RIGHT: ArrowUUpRightIcon,
+};
+
+const meters = (value: number) => (value >= 1000 ? `${(value / 1000).toFixed(1)} km` : `${Math.max(10, Math.round(value / 10) * 10)} m`);
+
+/** The next turn, big and plain, like a nav app: distance first, then what to do. */
+const NavBanner = ({ turns, arrive }: { turns: ReturnType<typeof useTurnByTurn>; arrive: string }) => {
+  const reduceMotion = useReducedMotion();
+  const next = turns.upcoming;
+  const Glyph = next ? (MANEUVER[next.maneuver] ?? ArrowUpIcon) : FlagCheckeredIcon;
+  const headline = turns.meters === null ? "Now" : `In ${meters(turns.meters)}`;
+  const doing = next ? next.instruction : arrive;
+  return (
+    <Animated.View
+      key={next?.instruction ?? "arrive"}
+      entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.select).withInitialValues({ opacity: 0, transform: [{ translateY: -6 }] })}
+      style={styles.nav}
+      accessibilityRole="alert"
+      accessibilityLabel={`${headline}, ${doing}`}
+    >
+      <View style={styles.navIcon}>
+        <Glyph size={26} color={text.primary} weight="bold" />
+      </View>
+      <View style={styles.navText}>
+        <Text style={styles.navDistance}>{headline}</Text>
+        <Text style={styles.navDo} numberOfLines={2}>
+          {doing}
+        </Text>
+      </View>
+    </Animated.View>
   );
 };
+
+const EMPTY_ROUTE: WalkRoute = { id: "none", name: "", note: "", distanceKm: 0, minutes: 0, path: [] };
 
 const Walking = ({
   name,
@@ -385,6 +443,7 @@ const Walking = ({
   distanceKm,
   progress,
   paused,
+  free,
   locationDenied,
   onPause,
   onEnd,
@@ -395,6 +454,7 @@ const Walking = ({
   distanceKm: number;
   progress: number;
   paused: boolean;
+  free: boolean;
   locationDenied: boolean;
   onPause: () => void;
   onEnd: () => void;
@@ -417,7 +477,7 @@ const Walking = ({
     <View style={styles.status}>
       <View style={[styles.statusDot, paused && styles.statusDotPaused]} />
       <Text style={styles.statusText} numberOfLines={1}>
-        {paused ? `Paused on ${route.name}` : `Walking ${name} on ${route.name}`}
+        {`${paused ? "Paused" : `Walking ${name}`} ${free ? "wherever you go" : routeWords(route.name)}`.trim()}
       </Text>
     </View>
 
@@ -433,7 +493,7 @@ const Walking = ({
       <View style={styles.figureRule} />
       <Figure value={formatPace(elapsed, distanceKm)} unit={distanceKm < 0.02 ? undefined : "/km"} label="Pace" />
       <View style={styles.figureRule} />
-      <Figure value={String(Math.round(progress * 100))} unit="%" label="Of the route" />
+      <Figure value={String(Math.round(progress * 100))} unit="%" label={free ? `Of ${route.minutes} min` : "Of the route"} />
     </View>
 
     <View style={styles.controls}>
@@ -463,6 +523,7 @@ const Done = ({
   elapsed,
   distanceKm,
   progress,
+  free,
   saving,
   error,
   onSave,
@@ -473,6 +534,7 @@ const Done = ({
   elapsed: number;
   distanceKm: number;
   progress: number;
+  free: boolean;
   saving: boolean;
   error: boolean;
   onSave: () => void;
@@ -485,7 +547,7 @@ const Done = ({
     />
 
     <View style={styles.facts}>
-      <Fact label="Route" value={`${route.name}, ${Math.round(progress * 100)}%`} />
+      <Fact label="Route" value={free ? "Free walk, your own way" : `${route.name}, ${Math.round(progress * 100)}%`} />
       <Fact ruled label="Average pace" value={distanceKm < 0.02 ? "Not enough distance" : `${formatPace(elapsed, distanceKm)} per km`} />
     </View>
 
@@ -519,55 +581,6 @@ const Done = ({
     </PressScale>
   </View>
 );
-
-const Scheduled = ({
-  name,
-  route,
-  time,
-  onDone,
-  onWalkNow,
-}: {
-  name: string;
-  route: WalkRoute;
-  time: string;
-  onDone: () => void;
-  onWalkNow: () => void;
-}) => {
-  const minutesAway = minutesOf(time) - (new Date().getHours() * 60 + new Date().getMinutes());
-  return (
-    <View>
-      <Headline lead={`${name} has a walk at ${prettyTime(time)}.`} focus={route.name} />
-      <Text style={styles.scheduledNote}>
-        {minutesAway > 60
-          ? `In ${Math.floor(minutesAway / 60)} h ${minutesAway % 60} min. It is on Today's care with a reminder.`
-          : `In ${Math.max(1, minutesAway)} min. It is on Today's care with a reminder.`}
-      </Text>
-
-      <PressScale
-        accessibilityRole="button"
-        accessibilityLabel="Back to care"
-        scaleTo={0.97}
-        style={styles.cta}
-        onPress={onDone}
-      >
-        <View style={styles.ctaInner}>
-          <Text style={styles.ctaText}>Back to care</Text>
-          <CheckIcon size={iconSize.button} color={text.primary} weight="bold" />
-        </View>
-      </PressScale>
-
-      <PressScale
-        accessibilityRole="button"
-        accessibilityLabel="Walk now instead"
-        scaleTo={0.96}
-        style={styles.quiet}
-        onPress={onWalkNow}
-      >
-        <Text style={styles.quietText}>Walk now instead</Text>
-      </PressScale>
-    </View>
-  );
-};
 
 const Figure = ({ value, unit, label }: { value: string; unit?: string; label: string }) => (
   <View style={styles.figure} accessibilityLabel={`${label}: ${value}${unit ? ` ${unit}` : ""}`}>
@@ -680,6 +693,20 @@ const styles = StyleSheet.create({
   },
   routeUnit: { ...type.supporting, fontWeight: "500", color: text.secondary },
   routeName: { ...type.caption, fontWeight: "500", color: text.secondary, marginTop: space.xs },
+  place: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: space.sm,
+    maxWidth: "100%",
+    marginBottom: space.md,
+    paddingHorizontal: space.md,
+    paddingVertical: 6,
+    borderRadius: radius.pill,
+    backgroundColor: bg.subtle,
+  },
+  placeText: { ...type.caption, fontWeight: "600", color: text.secondary, flexShrink: 1 },
+  placeLink: { ...type.caption, fontWeight: "700", color: text.primary, textDecorationLine: "underline" },
   routeNote: { ...type.supporting, color: text.secondary, marginTop: space.md },
 
   whenRow: { flexDirection: "row", gap: space.sm, marginTop: space.xl },
@@ -712,6 +739,16 @@ const styles = StyleSheet.create({
     gap: space.sm,
   },
   ctaText: { ...type.cardTitle, fontSize: 17, fontWeight: "700", color: text.primary },
+  ctaSecondary: {
+    height: layout.controlHeight,
+    marginTop: space.sm,
+    borderRadius: radius.pill,
+    borderWidth: 1.5,
+    borderColor: border.default,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ctaSecondaryText: { ...type.cardTitle, fontWeight: "600", color: text.primary },
 
   quiet: { alignSelf: "center", paddingVertical: space.md, paddingHorizontal: space.xl, marginTop: space.xs },
   quietText: { ...type.supporting, fontWeight: "600", color: text.secondary },
@@ -726,6 +763,26 @@ const styles = StyleSheet.create({
 
   status: { flexDirection: "row", alignItems: "center", gap: space.sm },
   statusDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: accent.band },
+  navWrap: { position: "absolute", left: layout.gutter - 8, right: layout.gutter - 8 },
+  nav: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.md,
+    padding: space.md,
+    borderRadius: radius.card,
+    backgroundColor: text.primary,
+    shadowColor: "#1C1B1A",
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+  },
+  navIcon: { width: 48, height: 48, borderRadius: 24, backgroundColor: accent.deep, alignItems: "center", justifyContent: "center" },
+  navText: { flex: 1 },
+  navDistance: { fontSize: 24, lineHeight: 28, letterSpacing: -0.4, fontWeight: "800", color: text.inverse, fontVariant: ["tabular-nums"] },
+  navDo: { ...type.supporting, fontSize: 15, fontWeight: "600", color: text.inverse, marginTop: 2 },
+  statusDotAway: { backgroundColor: accent.deep },
+  awayPlace: { fontSize: 34, lineHeight: 40, letterSpacing: -0.8, fontWeight: "700", color: text.primary, marginTop: space.md },
+  awayNote: { ...type.supporting, color: text.secondary, marginTop: space.sm },
   statusDotPaused: { backgroundColor: border.strong },
   statusText: { ...type.supporting, fontWeight: "500", color: text.secondary, flexShrink: 1 },
   timer: {

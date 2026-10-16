@@ -40,7 +40,7 @@ export const AnonymousAccountWarningModal = ({
 
             <View style={styles.actions}>
               <PrimaryCta
-                label="Save progress first"
+                label="Add a way to sign in first"
                 onPress={() => {
                   onCancel();
                   router.push("/account/link");

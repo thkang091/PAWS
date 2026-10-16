@@ -11,13 +11,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { CalendarBlankIcon } from "phosphor-react-native";
+import { ArmchairIcon, CaretLeftIcon, CaretRightIcon, FootprintsIcon, PersonSimpleWalkIcon, StairsIcon } from "phosphor-react-native";
 
 import { HourBars } from "@/features/care/components/HourBars";
 import { StepRing } from "@/features/care/components/StepRing";
 import { PEEK_WIDTH, PeekDog } from "@/features/care/components/PeekDog";
 import { WalkPlanner } from "@/features/care/components/WalkPlanner";
-import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { WalkStack } from "@/features/care/components/WalkStack";
 import { WeekStack } from "@/features/care/components/WeekStack";
 import {
@@ -27,7 +26,9 @@ import {
   paceOf,
   type ActivityWeek,
 } from "@/features/care/components/activityData";
-import { CountUp } from "@/features/profile/components/CountUp";
+import { enter as rise } from "@/features/care/food/enter";
+import { MOBILITY_NOUN, type Mobility } from "@/features/care/intel/careIntel";
+import { useCareIntel } from "@/features/care/intel/useCareIntel";
 import { PressScale } from "@/components/ui/PressScale";
 import {
   accent,
@@ -61,7 +62,6 @@ export const ActivityView = memo(
     scope,
     onScope,
     onSelectDay,
-    onOpenSchedule,
     onStartWalk,
     activity,
     goalMinutes,
@@ -73,10 +73,10 @@ export const ActivityView = memo(
     scope: ActivityScope;
     onScope: (scope: ActivityScope) => void;
     onSelectDay: (dayIndex: number) => void;
-    onOpenSchedule: () => void;
     onStartWalk: () => void;
   }) => {
     const reduceMotion = useReducedMotion();
+    const intel = useCareIntel();
     const weekly = scope === "weekly";
     const totals = activity.totals;
     const day = activity.days.find((item) => item.date.getDay() === selectedDay) ?? activity.days[0];
@@ -87,12 +87,11 @@ export const ActivityView = memo(
     const km = weekly ? totals.km : day.km;
 
     const selectedDate = week.find((d) => d.getDay() === selectedDay) ?? week[0];
+    const dayIndex = week.findIndex((d) => d.getDay() === selectedDay);
     const range = weekly
       ? `${shortDate(week[0])} – ${shortDate(week[week.length - 1])}`
       : `${DAY_LABEL[selectedDate.getDay()]} ${shortDate(selectedDate)}`;
 
-    const dog = useCurrentDog();
-    const dogName = dog.data?.name ?? "your dog";
 
     const enter = (order: number) =>
       reduceMotion
@@ -103,114 +102,189 @@ export const ActivityView = memo(
       ? undefined
       : (weekly ? FadeInRight : FadeInLeft).duration(motion.duration.enter);
 
+    const reached = minutes >= goal;
+    const heading = weekly ? "So far this week" : isToday ? "Today" : day.label;
+
     return (
       <View>
         <Animated.View entering={enter(0)} style={styles.scopeRow}>
           <ScopeTabs scope={scope} onChange={onScope} />
 
-          <PressScale
-            accessibilityRole="button"
-            accessibilityLabel={`${range}. Open the schedule.`}
-            scaleTo={0.96}
-            onPress={onOpenSchedule}
-          >
-            <View style={styles.range}>
-              <Text style={styles.rangeText}>{range}</Text>
-              <CalendarBlankIcon size={iconSize.inline} color={text.secondary} weight="regular" />
-            </View>
-          </PressScale>
-        </Animated.View>
-
-        <Animated.View entering={enter(1)} style={styles.card}>
-          <StepRing value={minutes} goal={goal} unit="Active min" />
-
-          <View style={styles.cardStats}>
-            <CardStat label="Goal" text={asDuration(goal)} />
-            {minutes >= goal ? (
-              <CardStat label="Over the goal" text={`+${asDuration(minutes - goal)}`} beaten />
-            ) : (
-              <CardStat label="To go" text={asDuration(goal - minutes)} />
-            )}
-            {weekly ? (
-              <CardStat label="Active days" value={totals.activeDays} unit="of 7" />
-            ) : (
-              <CardStat label={day.walks.length === 1 ? "Walk" : "Walks"} value={day.walks.length} />
-            )}
-          </View>
-          <PeekDog onStart={onStartWalk} hint="Drag the dog left, or tap, to start a walk now." />
-        </Animated.View>
-
-        <Animated.View entering={enter(2)} style={styles.figures}>
-          <Figure
-            value={km == null ? "Not logged" : asKm(km)}
-            unit={km == null ? undefined : "km"}
-            label="Distance"
-            quiet={km == null}
-          />
-          <View style={styles.figureRule} />
-          <Figure value={asDuration(minutes)} label="Time" />
-          <View style={styles.figureRule} />
           {weekly ? (
-            <Figure value={String(totals.walks)} label="Walks" />
+            <View style={styles.range} accessibilityLabel={range}>
+              <Text style={styles.rangeText}>{range}</Text>
+            </View>
           ) : (
-            <Figure
-              value={day.pace ?? paceOf(day.minutes, day.km) ?? (day.km == null ? "Not logged" : "Too short")}
-              unit={day.pace ? "/km" : undefined}
-              label="Pace"
-              quiet={!day.pace}
+            <DayStepper
+              label={range}
+              canBack={dayIndex > 0}
+              canForward={dayIndex >= 0 && dayIndex < week.length - 1 && isoDay(week[dayIndex + 1]) <= isoDay(new Date())}
+              onBack={() => onSelectDay(week[dayIndex - 1].getDay())}
+              onForward={() => onSelectDay(week[dayIndex + 1].getDay())}
             />
           )}
         </Animated.View>
 
-        <Animated.View entering={enter(3)}>
-          <WalkPlanner dogName={dogName} goalMinutes={goalMinutes} />
+        {/* Health's rhythm: a section title, one line under it, then a butter card holding a white panel. */}
+        <Animated.View key={`hero-${scope}`} entering={bandEnter}>
+          <Text style={[styles.sectionTitle, styles.sectionFirst]}>{heading}</Text>
+          <Text style={styles.lede}>{`${intel.name} needs ${asDuration(goalMinutes)} a day.`}</Text>
+
+          <View style={styles.hero}>
+            <View style={styles.heroTop}>
+              <StepRing value={minutes} goal={goal} unit="min" />
+              <View style={styles.heroCopy}>
+                <Text style={styles.headline}>{reached ? "Goal reached" : `${asDuration(goal - minutes)} to go`}</Text>
+                <Text style={styles.heroSub}>
+                  {weekly
+                    ? `${totals.activeDays} of 7 days active`
+                    : day.walks.length
+                      ? `${day.walks.length} ${day.walks.length === 1 ? "walk" : "walks"}`
+                      : isToday
+                        ? "No walk yet"
+                        : "Nothing logged"}
+                </Text>
+              </View>
+              <PeekDog onStart={onStartWalk} hint="Drag the dog left, or tap, to start a walk now." />
+            </View>
+
+            <View style={styles.panel}>
+              <Figure value={km == null ? "None" : asKm(km)} unit={km == null ? undefined : "km"} label="Distance" quiet={km == null} />
+              <View style={styles.figureRule} />
+              <Figure value={asDuration(minutes)} label="Time" />
+              <View style={styles.figureRule} />
+              {weekly ? (
+                <Figure value={String(totals.walks)} label="Walks" />
+              ) : (
+                <Figure
+                  value={day.pace ?? paceOf(day.minutes, day.km) ?? "None"}
+                  unit={day.pace ? "/km" : undefined}
+                  label="Pace"
+                  quiet={!day.pace && !paceOf(day.minutes, day.km)}
+                />
+              )}
+            </View>
+          </View>
+        </Animated.View>
+
+        <Animated.View entering={enter(2)}>
+          <WalkPlanner />
         </Animated.View>
 
         <Animated.View
           layout={reduceMotion ? undefined : LinearTransition.duration(motion.duration.enter)}
         >
           <Animated.View key={scope} entering={bandEnter}>
-            {weekly ? (
-              <>
-                <Text style={styles.sectionTitle}>This week</Text>
-                <View style={styles.chartTight}>
-                  <WeekStack
-                    stacks={activity.stacks}
-                    selectedDay={selectedDay}
-                    goal={goalMinutes}
-                    onSelectDay={onSelectDay}
-                  />
-                </View>
-              </>
-            ) : (
-              <>
-                <Text style={styles.sectionTitle}>
-                  {day.walks.length === 1 ? "The walk" : "The walks"}
-                </Text>
-                <View style={styles.chart}>
-                  <WalkStack
-                    walks={day.walks}
-                    emptyText={isToday ? "No walks yet today." : `Nothing logged on ${day.label}.`}
-                  />
-                </View>
-
-                {day.walks.length > 0 ? (
-                  <>
-                    <Text style={styles.sectionTitle}>Time of day</Text>
-                    <View style={styles.chart}>
+            <Text style={styles.sectionTitle}>{weekly ? "Every day" : day.walks.length === 1 ? "The walk" : "The walks"}</Text>
+            <Text style={styles.lede}>{weekly ? "Tap a day to open it." : "Where the minutes came from."}</Text>
+            <View style={styles.box}>
+              {weekly ? (
+                <WeekStack stacks={activity.stacks} selectedDay={selectedDay} goal={goalMinutes} onSelectDay={onSelectDay} />
+              ) : (
+                <>
+                  <WalkStack walks={day.walks} emptyText={isToday ? "No walks yet today." : `Nothing logged on ${day.label}.`} />
+                  {day.walks.length > 0 ? (
+                    <View style={styles.boxSplit}>
+                      <Text style={styles.boxLabel}>Time of day</Text>
                       <HourBars hours={day.hours} />
                     </View>
-                  </>
-                ) : null}
-              </>
-            )}
+                  ) : null}
+                </>
+              )}
+            </View>
           </Animated.View>
+        </Animated.View>
 
+        <Animated.View entering={enter(3)}>
+          <Movement mobility={intel.mobility} />
         </Animated.View>
       </View>
     );
   },
 );
+
+/** One day at a time: the date between two quiet arrows. Days after today stay out of reach. */
+const DayStepper = ({ label, canBack, canForward, onBack, onForward }: { label: string; canBack: boolean; canForward: boolean; onBack: () => void; onForward: () => void }) => (
+  <View style={styles.stepper}>
+    <PressScale accessibilityRole="button" accessibilityLabel="Previous day" accessibilityState={{ disabled: !canBack }} disabled={!canBack} hitSlop={8} scaleTo={0.88} style={styles.stepperButton} onPress={onBack}>
+      <CaretLeftIcon size={14} color={canBack ? text.primary : text.disabled} weight="bold" />
+    </PressScale>
+    <Text style={styles.rangeText}>{label}</Text>
+    <PressScale accessibilityRole="button" accessibilityLabel="Next day" accessibilityState={{ disabled: !canForward }} disabled={!canForward} hitSlop={8} scaleTo={0.88} style={styles.stepperButton} onPress={onForward}>
+      <CaretRightIcon size={14} color={canForward ? text.primary : text.disabled} weight="bold" />
+    </PressScale>
+  </View>
+);
+
+/**
+ * Movement, read from the evening check-in. Activity shows the trend; when something persists, Care home raises it as
+ * the most important thing and Health owns what to do about it.
+ */
+const Movement = ({ mobility }: { mobility: Mobility }) => {
+  const reduceMotion = useReducedMotion();
+  const seen = (n: number) => (n === 0 ? null : `${n} of the last ${mobility.checkIns} check-ins`);
+  const rows =
+    mobility.status === "unknown"
+      ? [{ key: "none", Glyph: PersonSimpleWalkIcon, title: "Not tracked yet", status: "The evening check-in asks about it", flag: false }]
+      : [
+          {
+            key: "mobility",
+            Glyph: PersonSimpleWalkIcon,
+            title: "Mobility",
+            status:
+              mobility.status === "normal"
+                ? "Normal"
+                : mobility.status === "concern" && mobility.streak && mobility.streak.days >= 3
+                  ? `${MOBILITY_NOUN[mobility.streak.sign][0].toUpperCase()}${MOBILITY_NOUN[mobility.streak.sign].slice(1)}, ${mobility.streak.days} days running`
+                  : mobility.status === "concern"
+                    ? "Limping more than once this week"
+                    : "Something to watch",
+            flag: mobility.status === "concern",
+          },
+          { key: "stiff", Glyph: ArmchairIcon, title: "Getting up", status: seen(mobility.counts.stiff) ?? "No stiffness", flag: false },
+          { key: "limping", Glyph: FootprintsIcon, title: "Limping", status: seen(mobility.counts.limping) ?? "None reported", flag: false },
+          {
+            key: "stairs",
+            Glyph: StairsIcon,
+            title: "Stairs and jumping",
+            status: seen(mobility.counts.stairs + mobility.counts.reluctant > 0 ? Math.max(mobility.counts.stairs, mobility.counts.reluctant) : 0) ?? "Moving freely",
+            flag: false,
+          },
+        ];
+  return (
+    <View>
+      <Text style={styles.sectionTitle}>Movement</Text>
+      <Text style={styles.lede}>From the evening check-in, over the last week.</Text>
+      <View style={styles.list}>
+        {rows.map((row, i) => {
+          const attention = row.flag || (row.key !== "mobility" && !/^No |^None|^Moving|^Normal/.test(row.status) && mobility.status !== "unknown");
+          return (
+            <Animated.View
+              key={row.key}
+              entering={reduceMotion ? undefined : rise({ y: 8 }, { delay: 80 + i * 50, duration: motion.duration.enter })}
+              style={[styles.listRow, i > 0 && styles.ruled]}
+              accessible
+              accessibilityLabel={`${row.title}. ${row.status}`}
+            >
+              <View style={[styles.disc, attention && styles.discOn]}>
+                <row.Glyph size={iconSize.standard} color={text.primary} weight="regular" />
+              </View>
+              <View style={styles.flex}>
+                <Text style={styles.rowTitle}>{row.title}</Text>
+                <View style={styles.statusRow}>
+                  {attention ? <View style={styles.flag} /> : null}
+                  <Text style={[styles.status, attention && styles.statusOn]} numberOfLines={1}>
+                    {row.status}
+                  </Text>
+                </View>
+              </View>
+            </Animated.View>
+          );
+        })}
+      </View>
+    </View>
+  );
+};
 
 ActivityView.displayName = "ActivityView";
 
@@ -276,35 +350,6 @@ export const ScopeTabs = ({
   );
 };
 
-const CardStat = ({
-  label,
-  value,
-  text: written,
-  unit,
-  beaten = false,
-}: {
-  label: string;
-  value?: number;
-  text?: string;
-  unit?: string;
-  beaten?: boolean;
-}) => (
-  <View
-    style={styles.cardStat}
-    accessibilityLabel={`${label}: ${written ?? value}${unit ? ` ${unit}` : ""}`}
-  >
-    <Text style={[styles.cardStatLabel, beaten && styles.cardStatLabelBeaten]}>{label}</Text>
-    <View style={styles.cardStatRow}>
-      {written != null ? (
-        <Text style={styles.cardStatValue}>{written}</Text>
-      ) : (
-        <CountUp value={value ?? 0} grouped style={styles.cardStatValue} />
-      )}
-      {unit ? <Text style={styles.cardStatUnit}>{unit}</Text> : null}
-    </View>
-  </View>
-);
-
 const Figure = ({
   value,
   unit,
@@ -335,7 +380,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: space.md,
-    marginTop: space.section,
+    marginTop: space.xl,
   },
 
   tabs: { flexDirection: "row", gap: space.lg, paddingBottom: space.sm },
@@ -363,58 +408,38 @@ const styles = StyleSheet.create({
   },
   rangeText: { ...type.supporting, color: text.secondary, fontVariant: ["tabular-nums"] },
 
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: space.lg,
-    marginTop: space.xl,
-    padding: space.xl,
-    paddingRight: PEEK_WIDTH - layout.gutter + space.sm,
-    borderRadius: radius.card,
-    borderWidth: 1,
-    borderColor: border.soft,
-    backgroundColor: bg.surface,
-  },
-  cardStats: { flex: 1, gap: space.md },
-  cardStat: {},
-  cardStatLabel: { ...type.caption, color: text.tertiary },
-  cardStatLabelBeaten: { color: text.secondary, fontWeight: "600" },
-  cardStatRow: { flexDirection: "row", alignItems: "baseline", gap: 3, marginTop: 1 },
-  cardStatValue: {
-    fontSize: 20,
-    lineHeight: 24,
-    letterSpacing: -0.4,
-    fontWeight: "700",
-    color: text.primary,
-    fontVariant: ["tabular-nums"],
-    padding: 0,
-  },
-  cardStatUnit: { ...type.caption, fontWeight: "500", color: text.secondary },
-
-  figures: {
-    flexDirection: "row",
-    alignItems: "stretch",
-    marginTop: space.xl,
-    paddingVertical: space.lg,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: border.soft,
-  },
+  flex: { flex: 1 },
+  hero: { padding: space.xxl, borderRadius: radius.card + 8, backgroundColor: accent.soft },
+  heroTop: { flexDirection: "row", alignItems: "center", gap: space.lg, minHeight: 150, paddingRight: PEEK_WIDTH - layout.gutter - space.xl + space.sm },
+  heroCopy: { flex: 1 },
+  headline: { ...type.pageTitle, fontSize: 24, lineHeight: 28, color: text.primary, fontVariant: ["tabular-nums"] },
+  heroSub: { ...type.supporting, color: text.secondary, marginTop: 4 },
+  panel: { flexDirection: "row", alignItems: "stretch", marginTop: space.xl, paddingVertical: space.lg, paddingHorizontal: space.lg, borderRadius: radius.card, backgroundColor: bg.canvas },
   figure: { flex: 1 },
-  figureRule: { width: 1, backgroundColor: border.soft, marginHorizontal: space.lg },
-  figureValue: {
-    fontSize: 20,
-    lineHeight: 24,
-    letterSpacing: -0.4,
-    fontWeight: "700",
-    color: text.primary,
-    fontVariant: ["tabular-nums"],
-  },
-  figureQuiet: { ...type.supporting, fontWeight: "600", color: text.tertiary, lineHeight: 24 },
+  figureRule: { width: 1, backgroundColor: border.soft, marginHorizontal: space.md },
+  figureValue: { ...type.cardTitle, fontSize: 18, fontWeight: "600", color: text.primary, fontVariant: ["tabular-nums"] },
+  figureQuiet: { color: text.tertiary },
   figureUnit: { ...type.caption, fontWeight: "500", color: text.secondary },
   figureLabel: { ...type.caption, color: text.tertiary, marginTop: 2 },
 
-  sectionTitle: { ...type.sectionTitle, color: text.primary, marginTop: space.section },
-  chart: { marginTop: space.lg },
-  chartTight: { marginTop: space.xs },
+  lede: { ...type.supporting, color: text.secondary, marginTop: 4, marginBottom: space.xl },
+  box: { paddingVertical: space.xl, paddingHorizontal: space.md, borderRadius: radius.card, borderWidth: 1, borderColor: border.soft },
+  boxSplit: { marginTop: space.xl, paddingTop: space.xl, borderTopWidth: 1, borderTopColor: border.soft },
+  boxLabel: { ...type.caption, color: text.secondary, marginBottom: space.sm },
+
+  list: { borderRadius: radius.card, borderWidth: 1, borderColor: border.soft, overflow: "hidden" },
+  listRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.lg, backgroundColor: bg.canvas },
+  ruled: { borderTopWidth: 1, borderTopColor: border.soft },
+  disc: { width: 44, height: 44, borderRadius: radius.pill, backgroundColor: bg.subtle, alignItems: "center", justifyContent: "center" },
+  discOn: { backgroundColor: accent.primary },
+  rowTitle: { ...type.cardTitle, fontWeight: "600", color: text.primary },
+  statusRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
+  flag: { width: 7, height: 7, borderRadius: 3.5, backgroundColor: accent.band },
+  status: { ...type.caption, color: text.tertiary, flexShrink: 1 },
+  statusOn: { color: text.primary, fontWeight: "600" },
+
+  sectionTitle: { ...type.sectionTitle, fontSize: 22, lineHeight: 27, color: text.primary, marginTop: space.block },
+  sectionFirst: { marginTop: space.section },
+  stepper: { flexDirection: "row", alignItems: "center", gap: space.xs, height: 36, paddingHorizontal: 4, borderRadius: radius.pill, borderWidth: 1, borderColor: border.soft },
+  stepperButton: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
 });

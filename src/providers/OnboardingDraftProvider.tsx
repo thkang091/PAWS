@@ -6,11 +6,18 @@ import type {
   Motivation,
   TrainingExperience,
 } from "@/constants/onboardingSetup";
-import type { EnergyLevel, ObedienceLevel, SelectedOwnerGoal } from "@/types/domain";
+import type { DogGender, EnergyLevel, ObedienceLevel, SelectedOwnerGoal } from "@/types/domain";
 
 export type OnboardingDraft = {
   name: string;
   ageBucket: DogAgeBucket | null;
+  /** A closer age within the bucket, in years (months as a fraction for puppies). Optional. */
+  ageExact: number | null;
+  /** Optional extras on the first screen. Left empty, they are asked later instead of being guessed. */
+  gender: DogGender | null;
+  breed: string;
+  /** Profile's own energy words ("Couch potato", "Steady", "Busy", "Non-stop"), so it is never asked twice. */
+  energy: string | null;
   together: TogetherDuration | null;
   selectedTrainingGoals: SelectedOwnerGoal[];
   experience: TrainingExperience | null;
@@ -23,6 +30,10 @@ export type OnboardingDraft = {
 const initialDraft: OnboardingDraft = {
   name: "",
   ageBucket: null,
+  ageExact: null,
+  gender: null,
+  breed: "",
+  energy: null,
   together: null,
   selectedTrainingGoals: [],
   experience: null,

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, {
   FadeIn,
@@ -11,6 +11,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CaretLeftIcon } from "phosphor-react-native";
 
 import { BlockList } from "@/features/profile/components/blocks";
+import { MedicalRecord } from "@/features/profile/components/MedicalRecord";
+import { ProfileSetScreen } from "@/features/profile/components/ProfileSetScreen";
 import { EditFieldSheet, type EditTarget } from "@/features/profile/components/EditFieldSheet";
 import { HEADER_HEIGHT, ScrollHeader } from "@/features/profile/components/ScrollHeader";
 import { PressScale } from "@/components/ui/PressScale";
@@ -23,10 +25,21 @@ import {
   text,
   type,
 } from "@/constants/design";
-import { findSection, type Block } from "@/constants/profileRecord";
+import { optionsFor, type Block } from "@/constants/profileRecord";
 import { useProfileDraft } from "@/features/profile/state/profileDraft";
+import { useProfileData } from "@/features/profile/state/useProfileData";
 
-export default function ProfileSectionScreen() {
+export default function ProfileSectionRoute() {
+  const { section: key } = useLocalSearchParams<{ section: string }>();
+  // The medical record has its own screen built on real data; other sections still render from the profile record.
+  if (key === "health") return <MedicalRecord />;
+  // The question sets each have their own screen; the old social questions live in Personality now.
+  if (key === "social") return <ProfileSetScreen setKey="personality" />;
+  if (key === "basics" || key === "safety" || key === "home" || key === "baseline" || key === "personality") return <ProfileSetScreen setKey={key} />;
+  return <ProfileSectionScreen />;
+}
+
+function ProfileSectionScreen() {
   const { section: key } = useLocalSearchParams<{ section: string }>();
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
@@ -37,33 +50,21 @@ export default function ProfileSectionScreen() {
   const [editing, setEditing] = useState(false);
   const [target, setTarget] = useState<EditTarget>(null);
 
-  const section = key ? findSection(key) : undefined;
-
-  const blocks = useMemo<readonly Block[]>(() => {
-    if (!section) return [];
-    return section.blocks.map((block) =>
-      block.kind === "facts"
-        ? {
-            ...block,
-            rows: block.rows.map(
-              ([label, value]) => [label, draft.resolve(section.key, label, value)] as const,
-            ),
-          }
-        : block,
-    );
-  }, [draft, section]);
+  const profile = useProfileData();
+  const section = key ? profile.findSection(key) : undefined;
+  const blocks: readonly Block[] = section?.blocks ?? [];
 
   if (!section) {
     return (
       <View style={[styles.screen, styles.missing, { paddingTop: insets.top + HEADER_HEIGHT }]}>
-        <Text style={styles.lede}>That part of Bori&rsquo;s record does not exist.</Text>
+        <Text style={styles.lede}>{`That part of ${profile.name}'s profile does not exist.`}</Text>
       </View>
     );
   }
 
   const editableLabels = section.blocks
     .filter((block): block is Extract<Block, { kind: "facts" }> => block.kind === "facts")
-    .flatMap((block) => block.rows.map(([label]) => label));
+    .flatMap((block) => block.rows.map(([label]) => label).filter((label) => !block.locked?.includes(label)));
 
   return (
     <View style={styles.screen}>
@@ -94,7 +95,7 @@ export default function ProfileSectionScreen() {
           <BlockList
             blocks={blocks}
             editing={editing}
-            onEditField={(label, value) => setTarget({ label, value })}
+            onEditField={(label, value) => setTarget({ label, value, options: optionsFor(section.key, label) })}
           />
         </Animated.View>
       </Animated.ScrollView>

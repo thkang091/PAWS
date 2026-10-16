@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { regionWeightUnit } from "@/lib/units";
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import Svg, { Circle, Polyline } from "react-native-svg";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
@@ -39,13 +40,18 @@ export default function NutritionScreen() {
 
   const [open, setOpen] = useState(false);
   const [weight, setWeight] = useState("");
-  const [unit, setUnit] = useState<"kg" | "lb">("kg");
+  const [unit, setUnit] = useState<"kg" | "lb">(() => regionWeightUnit());
   const [note, setNote] = useState("");
 
   const entries = useMemo(() => [...(logs.data ?? [])], [logs.data]);
   const series = useMemo(() => [...entries].reverse(), [entries]);
 
   const latest = entries[0];
+  // Once there is a weigh-in, new ones start in the same unit.
+  useEffect(() => {
+    if (latest) setUnit(latest.weightUnit);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [latest?.id]);
   const previous = entries[1];
   const delta =
     latest && previous && latest.weightUnit === previous.weightUnit
@@ -192,7 +198,7 @@ export default function NutritionScreen() {
           label="Weight"
           value={weight}
           onChangeText={setWeight}
-          placeholder={latest ? latest.weightValue.toFixed(1) : "28.4"}
+          placeholder={latest ? latest.weightValue.toFixed(1) : "0.0"}
           keyboardType="decimal-pad"
         />
         <ChipRow

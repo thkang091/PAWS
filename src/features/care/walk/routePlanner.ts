@@ -21,9 +21,12 @@ export type Spot = {
   km: number;
 };
 
-export type RouteKind = "spot" | "block" | "pin";
+export type RouteKind = "spot" | "block" | "pin" | "free";
 
-export type PlannedRoute = WalkRoute & { kind: RouteKind; via: LatLng | null };
+/** One turn of Google's walking directions, used for the live banner on the walk screen. */
+export type NavStep = { instruction: string; maneuver: string; end: LatLng; meters: number };
+
+export type PlannedRoute = WalkRoute & { kind: RouteKind; via: LatLng | null; steps?: readonly NavStep[] };
 
 const toRad = (deg: number) => (deg * Math.PI) / 180;
 
@@ -92,7 +95,9 @@ export const encodePolyline = (points: readonly LatLng[]): string => {
   return out;
 };
 
-type Walked = { path: LatLng[]; km: number; minutes: number };
+type Walked = { path: LatLng[]; km: number; minutes: number; steps: NavStep[] };
+
+const MAX_STRAIGHT_KM = 0.45;
 
 const cache = new Map<string, Walked>();
 
@@ -111,7 +116,7 @@ export const walkThrough = async (points: readonly LatLng[]): Promise<Walked | n
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": KEY,
-        "X-Goog-FieldMask": "routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline",
+        "X-Goog-FieldMask": "routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline,routes.legs.steps.distanceMeters,routes.legs.steps.endLocation,routes.legs.steps.navigationInstruction",
       },
       body: JSON.stringify({
         origin: waypoint(points[0]),
@@ -122,14 +127,43 @@ export const walkThrough = async (points: readonly LatLng[]): Promise<Walked | n
     });
     if (!response.ok) return null;
     const body = (await response.json()) as {
-      routes?: { distanceMeters?: number; duration?: string; polyline?: { encodedPolyline?: string } }[];
+      routes?: {
+        distanceMeters?: number;
+        duration?: string;
+        polyline?: { encodedPolyline?: string };
+        legs?: {
+          steps?: {
+            distanceMeters?: number;
+            endLocation?: { latLng?: { latitude?: number; longitude?: number } };
+            navigationInstruction?: { maneuver?: string; instructions?: string };
+          }[];
+        }[];
+      }[];
     };
     const route = body.routes?.[0];
     if (!route?.polyline?.encodedPolyline) return null;
     const km = (route.distanceMeters ?? 0) / 1000;
+    const path = decodePolyline(route.polyline.encodedPolyline);
+    // Walking directions can ride a ferry across water: one long straight leg. That is not a dog walk.
+    if (path.some((point, i) => i > 0 && distanceKm(path[i - 1], point) > MAX_STRAIGHT_KM)) return null;
     const seconds = Number((route.duration ?? "0s").replace("s", ""));
+    const steps: NavStep[] = (route.legs ?? []).flatMap((leg) =>
+      (leg.steps ?? []).flatMap((step) => {
+        const at = step.endLocation?.latLng;
+        if (typeof at?.latitude !== "number" || typeof at.longitude !== "number") return [];
+        return [
+          {
+            instruction: step.navigationInstruction?.instructions?.split("\n")[0].trim() || "Continue",
+            maneuver: step.navigationInstruction?.maneuver ?? "STRAIGHT",
+            end: { latitude: at.latitude, longitude: at.longitude },
+            meters: step.distanceMeters ?? 0,
+          },
+        ];
+      }),
+    );
     const walked: Walked = {
-      path: decodePolyline(route.polyline.encodedPolyline),
+      steps,
+      path,
       km,
       minutes: Math.max(5, Math.round(((seconds || (km / PERSON_KMH) * 3600) / 60) * DOG_PACE)),
     };
@@ -177,10 +211,24 @@ const describe = (km: number, minutes: number) => `${km.toFixed(1)} km, about ${
 export const blockLoop = async (start: LatLng, targetMinutes: number): Promise<PlannedRoute | null> => {
   const targetKm = ((targetMinutes / DOG_PACE) * PERSON_KMH) / 60;
   const leg = Math.max(0.15, targetKm / 3.6);
-  const heading = (start.latitude * 1000 + start.longitude * 1000) % 360;
-  const a = offset(start, leg, heading);
-  const b = offset(start, leg, heading + 70);
-  const walked = await walkThrough([start, a, b, start]);
+  const base = (start.latitude * 1000 + start.longitude * 1000) % 360;
+  let heading = base;
+  const loop = (size: number) => walkThrough([start, offset(start, size, heading), offset(start, size, heading + 70), start]);
+  let size = leg;
+  let walked = await loop(size);
+  // Near water or a freeway one direction has no walkable loop, so turn and try the others.
+  for (const turn of [120, 240]) {
+    if (walked) break;
+    heading = base + turn;
+    walked = await loop(size);
+  }
+  // Winding streets stretch a loop, so rescale up to twice until it lands near the length asked for.
+  for (let pass = 0; pass < 2 && walked && Math.abs(walked.minutes - targetMinutes) / targetMinutes > 0.12; pass++) {
+    size *= targetMinutes / walked.minutes;
+    const next = await loop(size);
+    if (!next) break;
+    if (Math.abs(next.minutes - targetMinutes) < Math.abs(walked.minutes - targetMinutes)) walked = next;
+  }
   if (!walked) return null;
   return {
     id: `block-${targetMinutes}`,
@@ -191,12 +239,18 @@ export const blockLoop = async (start: LatLng, targetMinutes: number): Promise<P
     distanceKm: walked.km,
     minutes: walked.minutes,
     path: walked.path,
+    steps: walked.steps,
   };
 };
 
+/** Past this a "walk" is a trek: the route is huge, the map chokes and nobody means it. */
+const MAX_REACH_KM = 8;
+const MAX_WALK_MINUTES = 240;
+
 export const loopVia = async (start: LatLng, target: LatLng, name: string, kind: RouteKind, id: string): Promise<PlannedRoute | null> => {
+  if (distanceKm(start, target) > MAX_REACH_KM) return null;
   const walked = await walkThrough([start, target, start]);
-  if (!walked) return null;
+  if (!walked || walked.minutes > MAX_WALK_MINUTES) return null;
   return {
     id,
     kind,
@@ -206,6 +260,7 @@ export const loopVia = async (start: LatLng, target: LatLng, name: string, kind:
     distanceKm: walked.km,
     minutes: walked.minutes,
     path: walked.path,
+    steps: walked.steps,
   };
 };
 
@@ -219,3 +274,14 @@ export const buildOptions = async (start: LatLng, targetMinutes: number, spots: 
 };
 
 export const summary = (route: Pick<WalkRoute, "distanceKm" | "minutes">) => describe(route.distanceKm, route.minutes);
+
+const GENERIC_TAIL = /^(park|garden|gardens|playground|square|plaza|green|trail|beach|reserve|field|commons)$/i;
+
+/** "Father Alfred E. Boeddeker Park" reads as "Boeddeker Park" wherever space is tight. */
+export const shortPlaceName = (name: string) => {
+  const clean = name.split(/\s[-–|(]\s?|,/)[0].trim();
+  if (clean.length <= 20) return clean;
+  const words = clean.split(" ");
+  if (words.length > 2 && GENERIC_TAIL.test(words[words.length - 1])) return words.slice(-2).join(" ");
+  return clean;
+};

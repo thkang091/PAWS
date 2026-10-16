@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { onWipe, syncedStorage as AsyncStorage } from "@/lib/cloudKv";
 
 export type SavedPlace = {
   query: string;
@@ -84,3 +84,9 @@ export const cancelVisit = (id: string) =>
   commit({ ...state, visits: state.visits.filter((visit) => visit.id !== id) });
 
 export const useCareLocations = () => useSyncExternalStore(subscribe, snapshot, snapshot);
+
+// A reset of the account empties this store too.
+onWipe(() => {
+  state = { hydrated: true, home: null, clinics: [], visits: [] };
+  listeners.forEach((listener) => listener());
+});

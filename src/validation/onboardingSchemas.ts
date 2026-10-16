@@ -74,9 +74,8 @@ export const onboardingFlowSchema = z.object({
   ageBucket: z.enum(["puppy", "young_adult", "senior", "unsure"], {
     message: "Pick an age range.",
   }),
-  together: z.enum(["just_home", "under_a_month", "a_few_months", "a_year_plus"], {
-    message: "Tell us how long you have been together.",
-  }),
+  // Asked later on Profile; onboarding stays short.
+  together: z.enum(["just_home", "under_a_month", "a_few_months", "a_year_plus"]).nullable().optional(),
   selectedTrainingGoals: z
     .array(selectedOwnerGoalSchema)
     .length(1, "Choose what to work on first."),
@@ -86,9 +85,8 @@ export const onboardingFlowSchema = z.object({
   dailyMinutes: z.union([z.literal(3), z.literal(5), z.literal(10), z.literal(15)], {
     message: "Pick how much time feels realistic.",
   }),
-  motivation: z.enum(["treats", "toys", "play", "praise", "not_sure"], {
-    message: "Pick what your dog works for.",
-  }),
+  // Asked in Profile's Personality questions, with more detail.
+  motivation: z.enum(["treats", "toys", "play", "praise", "not_sure"]).nullable().optional(),
   obedienceLevel: z.enum(["beginner", "basic", "intermediate", "advanced"]),
   energyLevel: z.enum(["low", "moderate", "high", "very_high"]),
 });

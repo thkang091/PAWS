@@ -17,7 +17,6 @@ import { OnboardingScreen } from "@/features/onboarding/components/OnboardingScr
 import { QuestionHeadline } from "@/features/onboarding/components/QuestionHeadline";
 import { ScaleRow } from "@/features/onboarding/components/ScaleRow";
 import { SegmentedScale } from "@/features/onboarding/components/SegmentedScale";
-import { SelectChipRow } from "@/features/onboarding/components/SelectChipRow";
 import { motion, space, text, type } from "@/constants/design";
 import {
   dailyMinuteOptions,
@@ -25,22 +24,21 @@ import {
   experienceOptions,
   formatMinutes,
   minutesClause,
-  motivationClause,
-  motivationOptions,
   type Clause,
   type DailyMinutes,
-  type Motivation,
   type TrainingExperience,
 } from "@/constants/onboardingSetup";
 import { queryKeys } from "@/constants/queryKeys";
 import { getErrorMessage } from "@/lib/errors";
 import { ageYearsForBucket, ownedSinceForDuration } from "@/lib/onboardingMapping";
 import { useOnboardingDraft } from "@/providers/OnboardingDraftProvider";
+import { energyChoices } from "@/constants/onboardingOptions";
+import { setField } from "@/features/profile/state/profileDraft";
 import { createDogProfile } from "@/services/onboardingService";
 import { onboardingFlowSchema } from "@/validation/onboardingSchemas";
 
 const SCROLL_HEADROOM = 130;
-const ORDER = ["experience", "time", "motivation"] as const;
+const ORDER = ["experience", "time"] as const;
 type Question = (typeof ORDER)[number];
 
 export default function OnboardingSetupScreen() {
@@ -55,16 +53,18 @@ export default function OnboardingSetupScreen() {
   const [open, setOpen] = useState<Question | null>(() => {
     if (draft.experience === null) return "experience";
     if (draft.dailyMinutes === null) return "time";
-    if (draft.motivation === null) return "motivation";
     return null;
   });
 
-  const ready =
-    draft.experience !== null && draft.dailyMinutes !== null && draft.motivation !== null;
+  const ready = draft.experience !== null && draft.dailyMinutes !== null;
 
   const createDog = useMutation({
     mutationFn: createDogProfile,
     onSuccess: () => {
+      // Answers that live in the profile, so Profile shows them as answered and never asks again.
+      if (draft.energy) setField("know", "energy", draft.energy);
+      // "Not sure" saves a placeholder age the database needs; this marks it so Profile still asks.
+      if (draft.ageBucket === "unsure" && draft.ageExact == null) setField("basics", "ageUnsure", "yes");
       void queryClient.invalidateQueries({ queryKey: queryKeys.currentDog });
       void queryClient.invalidateQueries({ queryKey: queryKeys.profile });
       void queryClient.invalidateQueries({ queryKey: ["dogRoadmap"] });
@@ -87,9 +87,7 @@ export default function OnboardingSetupScreen() {
   }));
 
   const advanceFrom = (question: Question) => {
-    const next = ORDER.slice(ORDER.indexOf(question) + 1).find((q) =>
-      q === "time" ? draft.dailyMinutes === null : draft.motivation === null,
-    );
+    const next = ORDER.slice(ORDER.indexOf(question) + 1).find(() => draft.dailyMinutes === null);
     setOpen(next ?? null);
     setTimeout(() => {
       scrollRef.current?.scrollTo({
@@ -114,16 +112,18 @@ export default function OnboardingSetupScreen() {
       return;
     }
     const values = parsed.data;
+    const energy = energyChoices.find((c) => c.label === draft.energy) ?? null;
     createDog.mutate({
       name: values.name,
-      gender: "unknown",
-      breed: "",
+      gender: draft.gender ?? "unknown",
+      breed: draft.breed.trim(),
       birthday: null,
-      ageYears: ageYearsForBucket(values.ageBucket),
-      ownedSince: ownedSinceForDuration(values.together),
+      ageYears: draft.ageExact ?? ageYearsForBucket(values.ageBucket),
+      ownedSince: values.together ? ownedSinceForDuration(values.together) : null,
       adoptionDate: null,
       obedienceLevel: values.obedienceLevel,
-      energyLevel: values.energyLevel,
+      // The record needs a level; what the owner actually said is kept as their answer, so nothing reads a guess as fact.
+      energyLevel: energy?.level ?? values.energyLevel,
       goalKeys: [],
       existingSkillIds: [],
       targetSkillIds: [],
@@ -133,13 +133,12 @@ export default function OnboardingSetupScreen() {
       planPreferences: {
         trainingExperience: values.experience,
         dailyMinutes: values.dailyMinutes,
-        motivation: values.motivation,
+        motivation: values.motivation ?? "not_sure",
       },
     });
   };
 
-  const answered =
-    (draft.experience ? 1 : 0) + (draft.dailyMinutes ? 1 : 0) + (draft.motivation ? 1 : 0);
+  const answered = (draft.experience ? 1 : 0) + (draft.dailyMinutes ? 1 : 0);
 
   const sentence = (): SentencePart[] => {
     const clauses: Array<{ clause: Clause; question: Question }> = [];
@@ -148,9 +147,6 @@ export default function OnboardingSetupScreen() {
     }
     if (draft.dailyMinutes) {
       clauses.push({ clause: minutesClause(draft.dailyMinutes), question: "time" });
-    }
-    if (draft.motivation) {
-      clauses.push({ clause: motivationClause(draft.motivation), question: "motivation" });
     }
     if (clauses.length === 0) return [];
 
@@ -213,21 +209,6 @@ export default function OnboardingSetupScreen() {
             onChange={(minutes) => {
               update({ dailyMinutes: minutes as DailyMinutes });
               advanceFrom("time");
-            }}
-          />
-        </>
-      );
-    }
-    if (open === "motivation") {
-      return (
-        <>
-          <Text style={styles.prompt}>{`What motivates ${displayName} most?`}</Text>
-          <SelectChipRow
-            options={motivationOptions.map((o) => ({ label: o.label, value: o.value }))}
-            value={draft.motivation ?? ""}
-            onChange={(value) => {
-              update({ motivation: value as Motivation });
-              advanceFrom("motivation");
             }}
           />
         </>

@@ -1,20 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Linking, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import Animated, {
   FadeIn,
-  FadeInLeft,
-  FadeInRight,
   LinearTransition,
-  useAnimatedStyle,
   useReducedMotion,
-  useSharedValue,
-  withSpring,
-  withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import {
-  ArrowRightIcon,
   ArrowsClockwiseIcon,
   BowlFoodIcon,
   HeartbeatIcon,
@@ -31,7 +24,11 @@ import {
   XIcon,
 } from "phosphor-react-native";
 
+import { router } from "expo-router";
+
 import { CareSetupStart } from "@/features/care/components/CareSetupStart";
+import { Chip } from "@/features/onboarding/components/SelectChipRow";
+import { SetupChoiceCard, SetupShell } from "@/features/care/components/SetupShell";
 import { completeGroomingSetup, markGroomingMissedOnboarding } from "@/features/care/state/groomingSetup";
 import { afterDinner, enableDailyCheckIn, useCheckInSettings } from "@/features/care/state/dailyCheckIn";
 import { APPETITE } from "@/features/care/components/DailyHealthCheckSheet";
@@ -54,7 +51,6 @@ import type { Feed } from "@/services/serpApi";
 import {
   CLINIC_DISCLAIMER,
   findClinics,
-  type Booking,
   type Clinic,
 } from "@/services/vetDirectory";
 import {
@@ -69,7 +65,6 @@ import {
 import {
   AREAS,
   GROUPS,
-  VACCINE_RECENCY,
   groupOn,
   toggleGroup,
   initialAnswers,
@@ -106,7 +101,6 @@ import {
   type,
 } from "@/constants/design";
 
-const MED_PRESETS = ["Apoquel", "NexGard", "Heartgard", "Simparica", "Bravecto"];
 
 type PhosphorIcon = typeof PillIcon;
 
@@ -160,6 +154,8 @@ export const CareSetupFlow = ({
 
   const existing = useCareOnboarding().choice;
   const checkInSettings = useCheckInSettings();
+  // Optional: someone who says yes is taken to the medical record once setup is done, so AI advice knows about it.
+  const [health, setHealth] = useState<"none" | "yes" | null>(null);
   const [a, setA] = useState<Answers>(() =>
     only
       ? {
@@ -343,6 +339,7 @@ export const CareSetupFlow = ({
       enableDailyCheckIn(answers.checkinTime ?? afterDinner(answers.mealTimes));
     }
     onDone();
+    if (health === "yes") setTimeout(() => router.push("/profile/health" as never), 500);
   };
 
   const finishArea = (answers: typeof a, area: AreaKey) => {
@@ -540,523 +537,467 @@ export const CareSetupFlow = ({
             ? a.postcode.trim().length >= 3
             : true;
 
-  const enter = reduceMotion
-    ? undefined
-    : (direction > 0 ? FadeInRight : FadeInLeft).duration(motion.duration.enter);
-
   return (
-    <View style={styles.screen}>
-      <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
-        <PressScale
-          accessibilityRole="button"
-          accessibilityLabel={
-            leaving ? "Close" : step === 0 ? "Back to the start" : "Previous step"
-          }
-          style={styles.roundButton}
-          onPress={() => (leaving ? onClose?.() : go(step - 1))}
-        >
-          {leaving ? (
-            <XIcon size={iconSize.nav} color={text.primary} weight="bold" />
-          ) : (
-            <CaretLeftIcon size={iconSize.nav} color={text.primary} weight="bold" />
-          )}
-        </PressScale>
-
-        <Animated.View
-          style={styles.progress}
-          layout={reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)}
-        >
-          {Array.from({ length: total }, (_, index) => (
-            <Animated.View
-              key={index}
-              layout={
-                reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
-              }
-              entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.select)}
-              style={[styles.segment, index <= step && styles.segmentOn]}
-            />
-          ))}
-        </Animated.View>
-
-        <View style={styles.headerSpacer} />
-      </View>
-
-      <Animated.ScrollView
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: insets.bottom + bottomInset + 128 },
-        ]}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        {dayEvents.length > 0 &&
-        (screen === "walks" || screen === "meals" || screen === "meds") ? (
+    <SetupShell
+      step={step}
+      total={total}
+      direction={direction}
+      closing={leaving}
+      onBack={() => (leaving ? onClose?.() : go(step - 1))}
+      bottomInset={bottomInset}
+      above={
+        dayEvents.length > 0 && (screen === "walks" || screen === "meals" || screen === "meds") ? (
           <Animated.View
             layout={reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)}
             style={styles.timelineWrap}
           >
             <DayTimeline events={dayEvents} highlight={lastAdded} />
           </Animated.View>
+        ) : null
+      }
+      primary={{
+        label: last ? (only ? "Add to care" : "Start tracking") : "Next",
+        done: last,
+        disabled: !ready,
+        onPress: () => (last ? finish() : go(step + 1)),
+      }}
+    >
+        {only && step === 0 ? <AddingBadge area={only} /> : null}
+
+        {screen === "areas" ? (
+          <>
+            <Text style={styles.title}>What should PAWS help with?</Text>
+            <Text style={styles.stageNote}>Pick any. You only set up what you choose.</Text>
+            <View style={styles.groupList}>
+              {GROUPS.map((group, index) => (
+                <SetupChoiceCard
+                  key={group.key}
+                  order={index}
+                  label={group.label}
+                  hint={group.hint}
+                  Glyph={GLYPH[group.glyph] ?? PersonSimpleWalkIcon}
+                  on={groupOn(a.areas, group.key)}
+                  reduceMotion={reduceMotion}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setA((current) => ({ ...current, areas: toggleGroup(current.areas, group.key) }));
+                  }}
+                />
+              ))}
+            </View>
+            {only ? null : (
+              <View style={styles.healthAsk}>
+                <Text style={styles.healthAskLabel}>{`Any conditions, allergies or medicines? Optional`}</Text>
+                <View style={styles.healthChips}>
+                  <Chip label="None" selected={health === "none"} onPress={() => setHealth(health === "none" ? null : "none")} />
+                  <Chip label="Yes, add after setup" selected={health === "yes"} onPress={() => setHealth(health === "yes" ? null : "yes")} />
+                </View>
+              </View>
+            )}
+          </>
         ) : null}
 
-        <Animated.View key={step} entering={enter}>
-          {only && step === 0 ? <AddingBadge area={only} /> : null}
+        {area === "walks" ? (
+          <>
+            <Text style={styles.title}>When do you walk?</Text>
+            <TimeGrid
+              slots={a.walkTimes}
+              suggested={best.walkTimes}
+              onToggle={(slot) => pick("walkTimes", slot)}
+              onSuggest={() => apply("walkTimes", best.walkTimes)}
+              reduceMotion={reduceMotion}
+              />
+          </>
+        ) : null}
 
-          {screen === "areas" ? (
-            <>
-              <Text style={styles.title}>What should PAWS help with?</Text>
-              <Text style={styles.stageNote}>Pick any. You only set up what you choose.</Text>
-              <View style={styles.groupList}>
-                {GROUPS.map((group, index) => (
-                  <GroupCard
-                    key={group.key}
-                    order={index}
-                    label={group.label}
-                    hint={group.hint}
-                    glyph={group.glyph}
-                    on={groupOn(a.areas, group.key)}
-                    reduceMotion={reduceMotion}
+        {area === "meals" ? (
+          <>
+            <Text style={styles.title}>When do you feed {name}?</Text>
+            <TimeGrid
+              slots={a.mealTimes}
+              suggested={best.mealTimes}
+              onToggle={(slot) => pick("mealTimes", slot)}
+              onSuggest={() => apply("mealTimes", best.mealTimes)}
+              reduceMotion={reduceMotion}
+              />
+          </>
+        ) : null}
+
+        {area === "grooming" ? (
+          <>
+            <Text style={styles.title}>Which do you do yourself?</Text>
+            <Text style={styles.stageNote}>
+              Pick one and PAWS names the kit. Leave it and it assumes a groomer.
+            </Text>
+
+            <View style={styles.kitList}>
+              {GROOMING_KIT.map((job, index) => (
+                <KitCard
+                  key={job.key}
+                  job={job}
+                  order={index}
+                  on={a.grooming.includes(job.key)}
+                  reduceMotion={reduceMotion}
+                  onToggle={() => toggle("grooming", job.key)}
+                />
+              ))}
+            </View>
+          </>
+        ) : null}
+
+        {area === "meds" ? (
+          <>
+            <Text style={styles.title}>What {name} should be on</Text>
+            <Text style={styles.stageNote}>
+              The usual preventatives for {stageLabel[stage]}. Tick what is handled.
+            </Text>
+
+            <Animated.View
+              layout={
+                reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
+              }
+              style={styles.planTimeline}
+            >
+              <DayTimeline
+                events={medicationPlan(stage).map((item) => ({
+                  key: item.key,
+                  time: item.when,
+                  label: item.label,
+                  state: a.meds.includes(item.key) ? "done" : "todo",
+                }))}
+              />
+            </Animated.View>
+
+            <PlanList
+              items={medicationPlan(stage)}
+              chosen={a.meds}
+              doneLabel="On it"
+              todoLabel="Not yet"
+              onToggle={(key) => toggle("meds", key)}
+              reduceMotion={reduceMotion}
+            />
+
+            <Text style={styles.label}>Anything else?</Text>
+            <Text style={styles.stageNote}>
+              Search by name, by what it is for, or by the active ingredient.
+            </Text>
+
+            <View style={styles.searchWrap}>
+              <MagnifyingGlassIcon
+                size={iconSize.standard}
+                color={text.tertiary}
+                weight="bold"
+              />
+              <TextInput
+                ref={medField}
+                style={styles.searchInput}
+                value={a.medCustom}
+                onChangeText={(next) => setA((c) => ({ ...c, medCustom: next }))}
+                placeholder="Apoquel, itching, oclacitinib…"
+                placeholderTextColor={text.tertiary}
+                autoCorrect={false}
+                autoCapitalize="none"
+                returnKeyType="search"
+              />
+              {a.medCustom.length > 0 ? (
+                <PressScale
+                  accessibilityRole="button"
+                  accessibilityLabel="Clear search"
+                  hitSlop={10}
+                  scaleTo={0.9}
+                  onPress={() => setA((c) => ({ ...c, medCustom: "" }))}
+                >
+                  <XIcon size={iconSize.inline} color={text.secondary} weight="bold" />
+                </PressScale>
+              ) : null}
+            </View>
+
+            <Animated.ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.filterRail}
+              contentContainerStyle={styles.filterRailInner}
+            >
+              {MED_CATEGORIES.map((item) => {
+                const on = a.medFilter === item.key;
+                return (
+                  <PressScale
+                    key={item.key}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: on }}
+                    accessibilityLabel={item.label}
+                    scaleTo={0.94}
+                    style={[styles.chip, on && styles.chipOn]}
                     onPress={() => {
                       void Haptics.selectionAsync();
-                      setA((current) => ({ ...current, areas: toggleGroup(current.areas, group.key) }));
+                      setA((c) => ({ ...c, medFilter: on ? null : item.key }));
                     }}
-                  />
-                ))}
-              </View>
-            </>
-          ) : null}
-
-          {area === "walks" ? (
-            <>
-              <Text style={styles.title}>When do you walk?</Text>
-              <TimeGrid
-                slots={a.walkTimes}
-                suggested={best.walkTimes}
-                onToggle={(slot) => pick("walkTimes", slot)}
-                onSuggest={() => apply("walkTimes", best.walkTimes)}
-                reduceMotion={reduceMotion}
-                />
-            </>
-          ) : null}
-
-          {area === "meals" ? (
-            <>
-              <Text style={styles.title}>When do you feed {name}?</Text>
-              <TimeGrid
-                slots={a.mealTimes}
-                suggested={best.mealTimes}
-                onToggle={(slot) => pick("mealTimes", slot)}
-                onSuggest={() => apply("mealTimes", best.mealTimes)}
-                reduceMotion={reduceMotion}
-                />
-            </>
-          ) : null}
-
-          {area === "grooming" ? (
-            <>
-              <Text style={styles.title}>Which do you do yourself?</Text>
-              <Text style={styles.stageNote}>
-                Pick one and PAWS names the kit. Leave it and it assumes a groomer.
-              </Text>
-
-              <View style={styles.kitList}>
-                {GROOMING_KIT.map((job, index) => (
-                  <KitCard
-                    key={job.key}
-                    job={job}
-                    order={index}
-                    on={a.grooming.includes(job.key)}
-                    reduceMotion={reduceMotion}
-                    onToggle={() => toggle("grooming", job.key)}
-                  />
-                ))}
-              </View>
-            </>
-          ) : null}
-
-          {area === "meds" ? (
-            <>
-              <Text style={styles.title}>What {name} should be on</Text>
-              <Text style={styles.stageNote}>
-                The usual preventatives for {stageLabel[stage]}. Tick what is handled.
-              </Text>
-
-              <Animated.View
-                layout={
-                  reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
-                }
-                style={styles.planTimeline}
-              >
-                <DayTimeline
-                  events={medicationPlan(stage).map((item) => ({
-                    key: item.key,
-                    time: item.when,
-                    label: item.label,
-                    state: a.meds.includes(item.key) ? "done" : "todo",
-                  }))}
-                />
-              </Animated.View>
-
-              <PlanList
-                items={medicationPlan(stage)}
-                chosen={a.meds}
-                doneLabel="On it"
-                todoLabel="Not yet"
-                onToggle={(key) => toggle("meds", key)}
-                reduceMotion={reduceMotion}
-              />
-
-              <Text style={styles.label}>Anything else?</Text>
-              <Text style={styles.stageNote}>
-                Search by name, by what it is for, or by the active ingredient.
-              </Text>
-
-              <View style={styles.searchWrap}>
-                <MagnifyingGlassIcon
-                  size={iconSize.standard}
-                  color={text.tertiary}
-                  weight="bold"
-                />
-                <TextInput
-                  ref={medField}
-                  style={styles.searchInput}
-                  value={a.medCustom}
-                  onChangeText={(next) => setA((c) => ({ ...c, medCustom: next }))}
-                  placeholder="Apoquel, itching, oclacitinib…"
-                  placeholderTextColor={text.tertiary}
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  returnKeyType="search"
-                />
-                {a.medCustom.length > 0 ? (
-                  <PressScale
-                    accessibilityRole="button"
-                    accessibilityLabel="Clear search"
-                    hitSlop={10}
-                    scaleTo={0.9}
-                    onPress={() => setA((c) => ({ ...c, medCustom: "" }))}
                   >
-                    <XIcon size={iconSize.inline} color={text.secondary} weight="bold" />
+                    <Text style={[styles.chipText, on && styles.chipTextOn]}>{item.label}</Text>
                   </PressScale>
-                ) : null}
-              </View>
+                );
+              })}
+            </Animated.ScrollView>
 
-              <Animated.ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.filterRail}
-                contentContainerStyle={styles.filterRailInner}
-              >
-                {MED_CATEGORIES.map((item) => {
-                  const on = a.medFilter === item.key;
-                  return (
-                    <PressScale
-                      key={item.key}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: on }}
-                      accessibilityLabel={item.label}
-                      scaleTo={0.94}
-                      style={[styles.chip, on && styles.chipOn]}
-                      onPress={() => {
-                        void Haptics.selectionAsync();
-                        setA((c) => ({ ...c, medFilter: on ? null : item.key }));
-                      }}
-                    >
-                      <Text style={[styles.chipText, on && styles.chipTextOn]}>{item.label}</Text>
-                    </PressScale>
-                  );
-                })}
-              </Animated.ScrollView>
-
-              <Animated.View
-                layout={
-                  reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
-                }
-                style={styles.hits}
-              >
-                {hits.length === 0 && a.medCustom.trim().length > 1 ? (
-                  <PressScale
-                    accessibilityRole="button"
-                    accessibilityLabel={`Add ${a.medCustom.trim()} as written`}
-                    scaleTo={0.98}
-                    style={styles.addOwn}
-                    onPress={() => {
-                      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            <Animated.View
+              layout={
+                reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
+              }
+              style={styles.hits}
+            >
+              {hits.length === 0 && a.medCustom.trim().length > 1 ? (
+                <PressScale
+                  accessibilityRole="button"
+                  accessibilityLabel={`Add ${a.medCustom.trim()} as written`}
+                  scaleTo={0.98}
+                  style={styles.addOwn}
+                  onPress={() => {
+                    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                    setA((c) => ({
+                      ...c,
+                      medKeys: [...c.medKeys, `custom:${c.medCustom.trim()}`],
+                      medCustom: "",
+                    }));
+                  }}
+                >
+                  <PlusIcon size={iconSize.standard} color={text.primary} weight="bold" />
+                  <View style={styles.addOwnCopy}>
+                    <Text style={styles.addOwnTitle}>
+                      Add &ldquo;{a.medCustom.trim()}&rdquo;
+                    </Text>
+                    <Text style={styles.addOwnNote}>
+                      Not in the list. PAWS keeps your spelling
+                    </Text>
+                  </View>
+                </PressScale>
+              ) : (
+                hits.slice(0, 8).map((medicine, index) => (
+                  <MedHit
+                    key={medicine.key}
+                    medicine={medicine}
+                    order={index}
+                    on={a.medKeys.includes(medicine.key)}
+                    reduceMotion={reduceMotion}
+                    onToggle={() => {
+                      void Haptics.selectionAsync();
                       setA((c) => ({
                         ...c,
-                        medKeys: [...c.medKeys, `custom:${c.medCustom.trim()}`],
-                        medCustom: "",
+                        medKeys: c.medKeys.includes(medicine.key)
+                          ? c.medKeys.filter((key) => key !== medicine.key)
+                          : [...c.medKeys, medicine.key],
                       }));
                     }}
-                  >
-                    <PlusIcon size={iconSize.standard} color={text.primary} weight="bold" />
-                    <View style={styles.addOwnCopy}>
-                      <Text style={styles.addOwnTitle}>
-                        Add &ldquo;{a.medCustom.trim()}&rdquo;
-                      </Text>
-                      <Text style={styles.addOwnNote}>
-                        Not in the list. PAWS keeps your spelling
-                      </Text>
-                    </View>
-                  </PressScale>
-                ) : (
-                  hits.slice(0, 8).map((medicine, index) => (
-                    <MedHit
-                      key={medicine.key}
-                      medicine={medicine}
-                      order={index}
-                      on={a.medKeys.includes(medicine.key)}
-                      reduceMotion={reduceMotion}
-                      onToggle={() => {
-                        void Haptics.selectionAsync();
-                        setA((c) => ({
-                          ...c,
-                          medKeys: c.medKeys.includes(medicine.key)
-                            ? c.medKeys.filter((key) => key !== medicine.key)
-                            : [...c.medKeys, medicine.key],
-                        }));
-                      }}
-                    />
-                  ))
-                )}
-              </Animated.View>
+                  />
+                ))
+              )}
+            </Animated.View>
 
-              {a.medKeys.length > 0 ? (
-                <Animated.View
-                  entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.enter)}
-                  layout={
-                    reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
-                  }
-                >
-                  <Text style={styles.label}>When?</Text>
-                  <TimeGrid
-                    slots={a.medTimes}
-                    suggested={best.medTimes}
-                    onToggle={(slot) => pick("medTimes", slot)}
-                    onSuggest={() => apply("medTimes", best.medTimes)}
-                    reduceMotion={reduceMotion}
-                    />
-                </Animated.View>
-              ) : null}
-
-              <Text style={styles.privacyNote}>{MED_DISCLAIMER}</Text>
-            </>
-          ) : null}
-
-          {area === "vaccines" ? (
-            <>
-              <Text style={styles.title}>What {name} needs</Text>
-              <Text style={styles.stageNote}>
-                The schedule for {stageLabel[stage]}. Tick anything already done.
-              </Text>
-
+            {a.medKeys.length > 0 ? (
               <Animated.View
+                entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.enter)}
                 layout={
                   reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
                 }
-                style={styles.planTimeline}
               >
-                <DayTimeline
-                  events={vaccinePlan(stage).map((item) => ({
-                    key: item.key,
-                    time: item.when,
-                    label: item.label,
-                    state: a.vaccines.includes(item.key) ? "done" : "todo",
-                  }))}
-                />
+                <Text style={styles.label}>When?</Text>
+                <TimeGrid
+                  slots={a.medTimes}
+                  suggested={best.medTimes}
+                  onToggle={(slot) => pick("medTimes", slot)}
+                  onSuggest={() => apply("medTimes", best.medTimes)}
+                  reduceMotion={reduceMotion}
+                  />
               </Animated.View>
+            ) : null}
 
-              <PlanList
-                items={vaccinePlan(stage)}
-                chosen={a.vaccines}
-                doneLabel="Had it"
-                todoLabel="Not yet"
-                onToggle={(key) => toggle("vaccines", key)}
-                reduceMotion={reduceMotion}
+            <Text style={styles.privacyNote}>{MED_DISCLAIMER}</Text>
+          </>
+        ) : null}
+
+        {area === "vaccines" ? (
+          <>
+            <Text style={styles.title}>What {name} needs</Text>
+            <Text style={styles.stageNote}>
+              The schedule for {stageLabel[stage]}. Tick anything already done.
+            </Text>
+
+            <Animated.View
+              layout={
+                reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
+              }
+              style={styles.planTimeline}
+            >
+              <DayTimeline
+                events={vaccinePlan(stage).map((item) => ({
+                  key: item.key,
+                  time: item.when,
+                  label: item.label,
+                  state: a.vaccines.includes(item.key) ? "done" : "todo",
+                }))}
               />
-            </>
-          ) : null}
+            </Animated.View>
 
-          {screen === "kit" ? (
-            <>
-              <Text style={styles.title}>Do you have the kit?</Text>
-              <Text style={styles.stageNote}>
-                Anything you are missing, PAWS will say what to look for.
-              </Text>
+            <PlanList
+              items={vaccinePlan(stage)}
+              chosen={a.vaccines}
+              doneLabel="Had it"
+              todoLabel="Not yet"
+              onToggle={(key) => toggle("vaccines", key)}
+              reduceMotion={reduceMotion}
+            />
+          </>
+        ) : null}
 
-              <View style={styles.kitList}>
-                {GROOMING_KIT.filter((job) => a.grooming.includes(job.key)).map((job, index) => (
-                  <KitRow
-                    key={job.key}
-                    job={job}
+        {screen === "kit" ? (
+          <>
+            <Text style={styles.title}>Do you have the kit?</Text>
+            <Text style={styles.stageNote}>
+              Anything you are missing, PAWS will say what to look for.
+            </Text>
+
+            <View style={styles.kitList}>
+              {GROOMING_KIT.filter((job) => a.grooming.includes(job.key)).map((job, index) => (
+                <KitRow
+                  key={job.key}
+                  job={job}
+                  order={index}
+                  owned={a.kitOwned.includes(job.key)}
+                  wantsHow={a.kitHowTo.includes(job.key)}
+                  reduceMotion={reduceMotion}
+                  onOwn={() => toggle("kitOwned", job.key)}
+                  onHow={() => toggle("kitHowTo", job.key)}
+                />
+              ))}
+            </View>
+          </>
+        ) : null}
+
+        {screen === "vet-where" ? (
+          <>
+            <Text style={styles.title}>Where should PAWS look?</Text>
+            <Text style={styles.stageNote}>
+              {missingCore.length === 1
+                ? `${missingCore[0].label} is still outstanding.`
+                : `${missingCore.length} core shots are still outstanding.`}
+            </Text>
+
+            <Text style={styles.label}>Postcode</Text>
+            <TextInput
+              style={[styles.input, styles.postcode]}
+              value={a.postcode}
+              onChangeText={(next) => setA((c) => ({ ...c, postcode: next.toUpperCase() }))}
+              placeholder="94110"
+              placeholderTextColor={text.tertiary}
+              autoCapitalize="characters"
+              autoCorrect={false}
+              returnKeyType="done"
+              maxLength={10}
+            />
+
+            <Animated.View
+              layout={
+                reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
+              }
+              style={styles.lookup}
+            >
+              {lookup.state === "looking" ? (
+                <Text style={styles.lookupWait}>Looking…</Text>
+              ) : lookup.state === "found" ? (
+                <Animated.View
+                  entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.select)}
+                  style={styles.lookupFound}
+                >
+                  <CheckIcon size={iconSize.inline} color={text.primary} weight="bold" />
+                  <Text style={styles.lookupPlace}>
+                    {lookup.place.town}
+                    {lookup.place.region ? `, ${lookup.place.region}` : ""}
+                  </Text>
+                </Animated.View>
+              ) : lookup.state === "notFound" ? (
+                <Text style={styles.lookupBad}>
+                  No postcode matches that. Check the digits?
+                </Text>
+              ) : lookup.state === "offline" ? (
+                <Text style={styles.lookupWait}>
+                  Cannot check it offline. Carry on and PAWS will confirm later.
+                </Text>
+              ) : null}
+            </Animated.View>
+
+            <Text style={styles.privacyNote}>
+              An area is enough to find a clinic. PAWS never asks for your street.
+            </Text>
+          </>
+        ) : null}
+
+        {screen === "vet-book" ? (
+          <>
+            <Text style={styles.title}>Somewhere to go</Text>
+            <Text style={styles.stageNote}>
+              {lookup.state === "found"
+                ? `Vets near ${lookup.place.town}`
+                : "Waiting on the postcode"}
+            </Text>
+
+            {clinics.state === "ready" ? (
+              <Animated.Text
+                entering={
+                  reduceMotion ? undefined : FadeIn.duration(motion.duration.enter)
+                }
+                style={styles.bookingNote}
+              >
+                Most of these book by phone. PAWS cannot make the call. Tap a
+                number, and it will keep the time they give you.
+              </Animated.Text>
+            ) : null}
+
+            {clinics.state === "loading" ? (
+              <ClinicSkeleton reduceMotion={reduceMotion} />
+            ) : clinics.state === "ready" ? (
+              <View style={styles.clinicList}>
+                {clinics.items.map((clinic, index) => (
+                  <ClinicCard
+                    key={clinic.id}
+                    clinic={clinic}
                     order={index}
-                    owned={a.kitOwned.includes(job.key)}
-                    wantsHow={a.kitHowTo.includes(job.key)}
+                    booking={a.booked}
                     reduceMotion={reduceMotion}
-                    onOwn={() => toggle("kitOwned", job.key)}
-                    onHow={() => toggle("kitHowTo", job.key)}
+                    onBook={(booking) => setA((c) => ({ ...c, booked: booking }))}
                   />
                 ))}
               </View>
-            </>
-          ) : null}
-
-          {screen === "vet-where" ? (
-            <>
-              <Text style={styles.title}>Where should PAWS look?</Text>
-              <Text style={styles.stageNote}>
-                {missingCore.length === 1
-                  ? `${missingCore[0].label} is still outstanding.`
-                  : `${missingCore.length} core shots are still outstanding.`}
+            ) : (
+              <Text style={styles.clinicEmpty}>
+                {clinics.state === "idle"
+                  ? "Go back a step and PAWS will look once the postcode resolves."
+                  : clinics.state === "unconfigured"
+                    ? "Clinic search is not available right now."
+                    : clinics.state === "offline"
+                      ? "Cannot reach the directory right now. Carry on, the shots are still on the list."
+                      : clinics.state === "empty"
+                        ? "No practices came back for those days and times. Try \u201cEither\u201d on the last step."
+                        : "The directory did not answer. Carry on and try again later."}
               </Text>
+            )}
 
-              <Text style={styles.label}>Postcode</Text>
-              <TextInput
-                style={[styles.input, styles.postcode]}
-                value={a.postcode}
-                onChangeText={(next) => setA((c) => ({ ...c, postcode: next.toUpperCase() }))}
-                placeholder="94110"
-                placeholderTextColor={text.tertiary}
-                autoCapitalize="characters"
-                autoCorrect={false}
-                returnKeyType="done"
-                maxLength={10}
-              />
+            <Text style={styles.privacyNote}>{CLINIC_DISCLAIMER}</Text>
+          </>
+        ) : null}
 
-              <Animated.View
-                layout={
-                  reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)
-                }
-                style={styles.lookup}
-              >
-                {lookup.state === "looking" ? (
-                  <Text style={styles.lookupWait}>Looking…</Text>
-                ) : lookup.state === "found" ? (
-                  <Animated.View
-                    entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.select)}
-                    style={styles.lookupFound}
-                  >
-                    <CheckIcon size={iconSize.inline} color={text.primary} weight="bold" />
-                    <Text style={styles.lookupPlace}>
-                      {lookup.place.town}
-                      {lookup.place.region ? `, ${lookup.place.region}` : ""}
-                    </Text>
-                  </Animated.View>
-                ) : lookup.state === "notFound" ? (
-                  <Text style={styles.lookupBad}>
-                    No postcode matches that. Check the digits?
-                  </Text>
-                ) : lookup.state === "offline" ? (
-                  <Text style={styles.lookupWait}>
-                    Cannot check it offline. Carry on and PAWS will confirm later.
-                  </Text>
-                ) : null}
-              </Animated.View>
-
-              <Text style={styles.privacyNote}>
-                An area is enough to find a clinic. PAWS never asks for your street.
-              </Text>
-            </>
-          ) : null}
-
-          {screen === "vet-book" ? (
-            <>
-              <Text style={styles.title}>Somewhere to go</Text>
-              <Text style={styles.stageNote}>
-                {lookup.state === "found"
-                  ? `Vets near ${lookup.place.town}`
-                  : "Waiting on the postcode"}
-              </Text>
-
-              {clinics.state === "ready" ? (
-                <Animated.Text
-                  entering={
-                    reduceMotion ? undefined : FadeIn.duration(motion.duration.enter)
-                  }
-                  style={styles.bookingNote}
-                >
-                  Most of these book by phone. PAWS cannot make the call. Tap a
-                  number, and it will keep the time they give you.
-                </Animated.Text>
-              ) : null}
-
-              {clinics.state === "loading" ? (
-                <ClinicSkeleton reduceMotion={reduceMotion} />
-              ) : clinics.state === "ready" ? (
-                <View style={styles.clinicList}>
-                  {clinics.items.map((clinic, index) => (
-                    <ClinicCard
-                      key={clinic.id}
-                      clinic={clinic}
-                      order={index}
-                      booking={a.booked}
-                      reduceMotion={reduceMotion}
-                      onBook={(booking) => setA((c) => ({ ...c, booked: booking }))}
-                    />
-                  ))}
-                </View>
-              ) : (
-                <Text style={styles.clinicEmpty}>
-                  {clinics.state === "idle"
-                    ? "Go back a step and PAWS will look once the postcode resolves."
-                    : clinics.state === "unconfigured"
-                      ? "Clinic search needs a SerpApi key in this build."
-                      : clinics.state === "offline"
-                        ? "Cannot reach the directory right now. Carry on, the shots are still on the list."
-                        : clinics.state === "empty"
-                          ? "No practices came back for those days and times. Try \u201cEither\u201d on the last step."
-                          : "The directory did not answer. Carry on and try again later."}
-                </Text>
-              )}
-
-              <Text style={styles.privacyNote}>{CLINIC_DISCLAIMER}</Text>
-            </>
-          ) : null}
-
-          {screen === "checkin" ? (
-            <CheckInStep
-              name={name}
-              dinner={[...(a.mealTimes.length ? a.mealTimes : existing?.mealTimes ?? [])].sort().at(-1) ?? null}
-              time={a.checkinTime ?? afterDinner(a.mealTimes.length ? a.mealTimes : existing?.mealTimes ?? [])}
-              suggested={afterDinner(a.mealTimes.length ? a.mealTimes : existing?.mealTimes ?? [])}
-              reduceMotion={reduceMotion}
-              onPick={(time) => {
-                void Haptics.selectionAsync();
-                setA((current) => ({ ...current, checkinTime: time }));
-              }}
-            />
-          ) : null}
-        </Animated.View>
-      </Animated.ScrollView>
-
-      <View style={[styles.dock, { paddingBottom: insets.bottom + bottomInset + space.lg }]}>
-        <PressScale
-          accessibilityRole="button"
-          accessibilityLabel={last ? (only ? "Add to care" : "Start tracking") : "Next step"}
-          scaleTo={0.97}
-          disabled={!ready}
-          style={[styles.next, !ready && styles.nextOff]}
-          onPress={() => (last ? finish() : go(step + 1))}
-        >
-          <Text style={[styles.nextText, !ready && styles.nextTextOff]}>
-            {last ? (only ? "Add to care" : "Start tracking") : "Next"}
-          </Text>
-          {last ? (
-            <CheckIcon
-              size={iconSize.button}
-              color={ready ? text.primary : text.disabled}
-              weight="bold"
-            />
-          ) : (
-            <ArrowRightIcon
-              size={iconSize.button}
-              color={ready ? text.primary : text.disabled}
-              weight="bold"
-            />
-          )}
-        </PressScale>
-      </View>
-    </View>
+        {screen === "checkin" ? (
+          <CheckInStep
+            name={name}
+            dinner={[...(a.mealTimes.length ? a.mealTimes : existing?.mealTimes ?? [])].sort().at(-1) ?? null}
+            time={a.checkinTime ?? afterDinner(a.mealTimes.length ? a.mealTimes : existing?.mealTimes ?? [])}
+            suggested={afterDinner(a.mealTimes.length ? a.mealTimes : existing?.mealTimes ?? [])}
+            reduceMotion={reduceMotion}
+            onPick={(time) => {
+              void Haptics.selectionAsync();
+              setA((current) => ({ ...current, checkinTime: time }));
+            }}
+          />
+        ) : null}
+    </SetupShell>
   );
 };
 
@@ -1126,63 +1067,6 @@ const AddingBadge = ({ area }: { area: AreaKey }) => {
       </View>
       <Text style={styles.addingText}>ADDING {item?.label.toUpperCase() ?? "CARE"}</Text>
     </View>
-  );
-};
-
-const GroupCard = ({
-  order,
-  label,
-  hint,
-  glyph,
-  on,
-  reduceMotion,
-  onPress,
-}: {
-  order: number;
-  label: string;
-  hint: string;
-  glyph: string;
-  on: boolean;
-  reduceMotion: boolean;
-  onPress: () => void;
-}) => {
-  const Glyph = GLYPH[glyph] ?? PersonSimpleWalkIcon;
-  const pop = useSharedValue(on ? 1 : 0);
-  useEffect(() => {
-    pop.value = reduceMotion ? (on ? 1 : 0) : withSpring(on ? 1 : 0, { duration: 380, dampingRatio: 0.7 });
-  }, [on, pop, reduceMotion]);
-
-  const tick = useAnimatedStyle(() => ({
-    opacity: pop.value,
-    transform: [{ scale: 0.7 + pop.value * 0.3 }],
-  }));
-
-  return (
-    <Animated.View
-      entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.enter).delay(order * 50)}
-    >
-      <PressScale
-        accessibilityRole="checkbox"
-        accessibilityState={{ checked: on }}
-        accessibilityLabel={`${label}. ${hint}`}
-        scaleTo={0.98}
-        style={[styles.groupCard, on && styles.groupCardOn]}
-        onPress={onPress}
-      >
-        <View style={[styles.groupDisc, on && styles.groupDiscOn]}>
-          <Glyph size={iconSize.feature} color={text.primary} weight={on ? "fill" : "regular"} />
-        </View>
-        <View style={styles.groupCopy}>
-          <Text style={styles.groupLabel}>{label}</Text>
-          <Text style={styles.groupHint}>{hint}</Text>
-        </View>
-        <View style={[styles.groupBox, on && styles.groupBoxOn]}>
-          <Animated.View style={tick}>
-            <CheckIcon size={14} color={text.primary} weight="bold" />
-          </Animated.View>
-        </View>
-      </PressScale>
-    </Animated.View>
   );
 };
 
@@ -1529,8 +1413,6 @@ const styles = StyleSheet.create({
   headerSpacer: { width: layout.iconButton },
 
   progress: { flex: 1, flexDirection: "row", gap: 6 },
-  segment: { flex: 1, height: 4, borderRadius: radius.pill, backgroundColor: bg.subtle },
-  segmentOn: { backgroundColor: accent.deep },
 
   content: { paddingHorizontal: layout.gutter, paddingTop: space.lg },
 
@@ -1538,6 +1420,9 @@ const styles = StyleSheet.create({
   label: { ...type.cardTitle, fontWeight: "600", color: text.primary, marginTop: space.section },
 
   groupList: { gap: space.md, marginTop: space.xxl },
+  healthAsk: { marginTop: space.xxl },
+  healthAskLabel: { ...type.supporting, color: text.secondary, marginBottom: space.md },
+  healthChips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
 
   checkPreview: { marginTop: space.xxl, padding: space.xl, borderRadius: radius.card + 8, backgroundColor: text.primary },
   checkPreviewQ: { ...type.sectionTitle, fontSize: 22, lineHeight: 27, color: text.inverse },
@@ -1553,40 +1438,6 @@ const styles = StyleSheet.create({
   },
   checkPreviewPillText: { ...type.supporting, fontWeight: "700", color: text.primary },
   checkWhenNote: { ...type.supporting, color: text.secondary, marginBottom: space.lg, lineHeight: 21 },
-  groupCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: space.lg,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.xl,
-    borderRadius: radius.card + 4,
-    borderWidth: 1.5,
-    borderColor: border.soft,
-    backgroundColor: bg.canvas,
-  },
-  groupCardOn: { borderColor: accent.deep, backgroundColor: accent.soft },
-  groupDisc: {
-    width: 52,
-    height: 52,
-    borderRadius: radius.pill,
-    backgroundColor: bg.subtle,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  groupDiscOn: { backgroundColor: accent.primary },
-  groupCopy: { flex: 1 },
-  groupLabel: { ...type.sectionTitle, color: text.primary },
-  groupHint: { ...type.supporting, color: text.secondary, marginTop: 2 },
-  groupBox: {
-    width: 26,
-    height: 26,
-    borderRadius: 8,
-    borderWidth: 1.5,
-    borderColor: border.strong,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  groupBoxOn: { borderColor: accent.deep, backgroundColor: accent.deep },
 
   timelineWrap: { marginBottom: space.xl },
 
@@ -1839,7 +1690,5 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     backgroundColor: accent.deep,
   },
-  nextOff: { backgroundColor: bg.subtle },
   nextText: { ...type.cardTitle, fontWeight: "700", color: text.primary },
-  nextTextOff: { color: text.disabled },
 });

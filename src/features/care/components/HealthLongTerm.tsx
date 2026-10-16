@@ -2,24 +2,41 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import {
+  BugIcon,
   CaretRightIcon,
   ChartBarIcon,
   HeartbeatIcon,
+  IdentificationCardIcon,
   PillIcon,
+  ScalesIcon,
+  ScissorsIcon,
+  GenderIntersexIcon,
+  StethoscopeIcon,
   SyringeIcon,
+  ToothIcon,
   type Icon as PhosphorIcon,
 } from "phosphor-react-native";
 
 import { ConditionsCard } from "@/features/care/components/ConditionsCard";
+import { areaSummary } from "@/features/care/intel/careIntel";
+import { useCareIntel } from "@/features/care/intel/useCareIntel";
 import { FlowSheet } from "@/features/care/components/FlowSheet";
 import { WeekGrid, dayKeyOf } from "@/features/care/components/HealthCheckIn";
 import { isFinished } from "@/features/care/health/medPlan";
 import { useCheckInByDate } from "@/features/care/state/dailyCheckIn";
 import { useHealthRecord } from "@/features/care/state/healthRecord";
-import { useMedications } from "@/hooks/useCareHealth";
+import { useConsistency } from "@/features/care/state/useConsistency";
+import { useGroomingLogs, useMedications } from "@/hooks/useCareHealth";
+import { useWeightLogs } from "@/hooks/useWeightLogs";
+import { fixStatus, groomingStatus, idStatus, weightStatus } from "@/features/care/intel/coverage";
+import { useProfileSets } from "@/features/profile/intel/useProfileSets";
+import { useProfileDraft } from "@/features/profile/state/profileDraft";
 import { useHealthOverview } from "@/hooks/useHealthOverview";
 import { PressScale } from "@/components/ui/PressScale";
 import { accent, bg, border, icon as iconSize, radius, space, text, type } from "@/constants/design";
+
+const AREA_TITLE = { parasites: "Parasite prevention", dental: "Dental care", exams: "Preventive exams & testing" } as const;
+const AREA_GLYPH = { parasites: BugIcon, dental: ToothIcon, exams: StethoscopeIcon } as const;
 
 type Row = {
   key: string;
@@ -45,6 +62,18 @@ export const HealthLongTerm = ({
   const medications = useMedications(dogId);
   const { items } = useHealthRecord();
   const [sheet, setSheet] = useState<"conditions" | "history" | null>(null);
+  const intel = useCareIntel();
+  const consistency = useConsistency();
+  const weights = useWeightLogs(dogId);
+  const grooming = useGroomingLogs(dogId);
+  const profile = useProfileSets();
+  const draft = useProfileDraft();
+  const latest = weights.data?.[0] ?? null;
+  const weight = weightStatus(latest?.recordedAt ?? null, intel.stage, intel.today, latest ? `${latest.weightValue} ${latest.weightUnit}` : null);
+  const groom = groomingStatus(grooming.data ?? [], intel.today);
+  const chip = draft.isEdited("about", "Microchip number") ? draft.resolve("about", "Microchip number", "").trim() : "";
+  const id = idStatus(chip && chip !== "Not added" ? chip : null);
+  const fix = fixStatus(profile.get("basics").answers.fixed ?? "", profile.months, profile.size);
 
   const vaccines = overview.rings.find((ring) => ring.key === "vaccines");
   const checkins = overview.rings.find((ring) => ring.key === "checkins");
@@ -76,12 +105,67 @@ export const HealthLongTerm = ({
       attention: false,
       onPress: () => setSheet("conditions"),
     },
+    ...(["parasites", "dental", "exams"] as const).map((area) => {
+      const summary = areaSummary(area, intel.log, intel.stage, intel.today);
+      return {
+        key: area,
+        glyph: AREA_GLYPH[area],
+        title: area === "exams" && intel.stage === "senior" ? "Senior exams & testing" : AREA_TITLE[area],
+        status: summary.text,
+        attention: summary.attention,
+        onPress: () => onOpen(`/care/preventive?area=${area}`),
+      };
+    }),
+    {
+      key: "weight",
+      glyph: ScalesIcon,
+      title: "Weight & body",
+      status: weight.text,
+      attention: weight.attention,
+      onPress: () => onOpen("/care/weight-log"),
+    },
+    {
+      key: "grooming",
+      glyph: ScissorsIcon,
+      title: "Grooming",
+      status: groom.text,
+      attention: groom.attention,
+      onPress: () => onOpen("/care/grooming"),
+    },
+    ...(fix
+      ? [
+          {
+            key: "fix",
+            glyph: GenderIntersexIcon,
+            title: "Spay or neuter",
+            status: fix.text,
+            attention: fix.attention,
+            onPress: () => onOpen("/profile/get-to-know?set=basics&q=fixed&only=1"),
+          },
+        ]
+      : []),
+    {
+      key: "id",
+      glyph: IdentificationCardIcon,
+      title: "ID & microchip",
+      status: id.text,
+      attention: id.attention,
+      onPress: () => onOpen("/profile/about"),
+    },
     {
       key: "history",
       glyph: ChartBarIcon,
       title: "Check-in history",
-      status: checkins?.state === "none" ? "Check-in is off" : `This week: ${checkins?.detail.toLowerCase() ?? ""}`,
-      attention: checkins?.state === "attention" && (checkins?.detail.includes("off") ?? false),
+      // Missed days come first: answers that were all normal say nothing about the evenings that were skipped.
+      status:
+        checkins?.state === "none"
+          ? "Check-in is off"
+          : consistency.missedThisWeek > 0
+            ? `${consistency.missedThisWeek} missed this week`
+            : consistency.streak >= 2
+              ? `${consistency.streak} days in a row`
+              : (checkins?.detail ?? "This week"),
+      attention: consistency.missedThisWeek > 0 || (checkins?.state === "attention" && (checkins?.detail.includes("off") ?? false)),
       onPress: () => setSheet("history"),
     },
   ];

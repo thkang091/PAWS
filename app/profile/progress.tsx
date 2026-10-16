@@ -16,13 +16,7 @@ import { Panel, PanelRow } from "@/features/profile/components/ProfilePanels";
 import { HEADER_HEIGHT, ScrollHeader } from "@/features/profile/components/ScrollHeader";
 import { SegmentedTabs } from "@/features/profile/components/SegmentedTabs";
 import { PressScale } from "@/components/ui/PressScale";
-import {
-  achievements,
-  gameHistory,
-  gameRecords,
-  together,
-  type Block,
-} from "@/constants/profileRecord";
+import { useProfileData } from "@/features/profile/state/useProfileData";
 import {
   bg,
   icon as iconSize,
@@ -43,43 +37,6 @@ const VIEWS: readonly { key: ViewKey; label: string }[] = [
 
 const VIEW_ORDER: readonly ViewKey[] = ["training", "games", "milestones"];
 
-const TRAINING_BLOCKS: readonly Block[] = [
-  {
-    kind: "meters",
-    title: "By category",
-    note: "Skills marked strong, out of the skills Bori has started.",
-    rows: [
-      { label: "Communication", strong: 2, total: 2 },
-      { label: "Calmness", strong: 1, total: 3 },
-      { label: "Leash skills", strong: 1, total: 2 },
-      { label: "Social skills", strong: 1, total: 2 },
-      { label: "Real-world skills", strong: 1, total: 2 },
-      { label: "Handling", strong: 0, total: 1 },
-    ],
-  },
-  {
-    kind: "facts",
-    title: "Totals",
-    rows: [
-      ["Skills learned", "9"],
-      ["Strong", "6"],
-      ["Still practising", "3"],
-      ["Current focus", "Calm manners"],
-    ],
-  },
-  { kind: "link", label: "Open training", hint: "Lessons and this week's plan", href: "/train" },
-];
-
-const GAMES_BLOCKS: readonly Block[] = [
-  { kind: "entries", title: "Personal records", rows: gameRecords },
-  { kind: "entries", title: "History", rows: gameHistory },
-  { kind: "link", label: "Open games", hint: "Challenges, duels and tournaments", href: "/game" },
-];
-
-const MILESTONE_BLOCKS: readonly Block[] = [
-  { kind: "entries", title: "Recent", rows: achievements },
-];
-
 export default function ProfileProgressScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
@@ -87,6 +44,8 @@ export default function ProfileProgressScreen() {
   const scrollY = useScrollViewOffset(scrollRef);
 
   const [view, setView] = useState<ViewKey>("training");
+  const profile = useProfileData();
+  const together = profile.together;
 
   const previous = useRef(0);
   const index = VIEW_ORDER.indexOf(view);
@@ -100,8 +59,7 @@ export default function ProfileProgressScreen() {
       });
 
   const settle = reduceMotion ? undefined : LinearTransition.duration(motion.duration.select);
-  const blocks =
-    view === "training" ? TRAINING_BLOCKS : view === "games" ? GAMES_BLOCKS : MILESTONE_BLOCKS;
+  const blocks = profile.progress[view];
 
   return (
     <View style={styles.screen}>
@@ -117,23 +75,24 @@ export default function ProfileProgressScreen() {
         <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(motion.duration.enter)}>
           <Text style={styles.title}>Together</Text>
           <Text style={styles.lede}>
-            Twelve days running, nine skills, and everything the two of you have done in PAWS.
+            {together.strong + together.practising
+              ? `${together.strong} strong ${together.strong === 1 ? "skill" : "skills"}, ${together.practising} in practice, and everything you and ${profile.name} have done in PAWS.`
+              : `Everything you and ${profile.name} do in PAWS adds up here.`}
           </Text>
         </Animated.View>
 
         <Panel
-          lead={`Bond level ${together.bondLevel}`}
-          title={`${together.streakDays} days running.`}
+          lead={`Bond level ${together.level}`}
+          title={together.streak ? `${together.streak} ${together.streak === 1 ? "day" : "days"} running.` : "Start a streak today."}
           style={styles.summary}
         >
           <PanelRow
             label="Next level"
-            steps={{ filled: Math.round((together.bondXpInLevel / together.bondXpPerLevel) * 5), total: 5 }}
-            value={`${together.bondXpPerLevel - together.bondXpInLevel} XP`}
+            steps={{ filled: Math.round((together.xpInLevel / together.xpPerLevel) * 5), total: 5 }}
+            value={`${together.xpPerLevel - together.xpInLevel} XP`}
           />
-          <PanelRow label="Day streak" value={`${together.streakDays} days`} order={1} />
-          <PanelRow label="Best ever" value={`${together.bestStreakDays} days`} order={2} />
-          <PanelRow label="Paw points" value={together.pawPoints.toLocaleString()} order={3} />
+          <PanelRow label="Day streak" value={`${together.streak} ${together.streak === 1 ? "day" : "days"}`} order={1} />
+          <PanelRow label="Coins" value={together.points.toLocaleString()} order={2} />
         </Panel>
 
         <View style={styles.switch}>

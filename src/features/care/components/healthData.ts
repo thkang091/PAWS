@@ -21,8 +21,8 @@ export const QUICK_SERVICES: readonly QuickService[] = [
   {
     key: "records",
     label: "Health records",
-    hint: "Vet visits, documents, history",
-    href: "/profile/health",
+    hint: "History and a PDF for the vet",
+    href: "/care/records",
   },
   {
     key: "appointment",

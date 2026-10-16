@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 
-import { pointAlong, type LatLng, type WalkRoute } from "@/features/care/walk/walkRoutes";
+import type { LatLng, WalkRoute } from "@/features/care/walk/walkRoutes";
 
 export type LocationPermission = "granted" | "denied" | "unavailable" | "pending";
 
@@ -9,11 +9,18 @@ export type WalkSample = {
   elapsed: number;
   distanceKm: number;
   progress: number;
-  position: LatLng;
+  position: LatLng | null;
   /** The dog's real path this walk, in order. Empty until a GPS fix arrives. */
   trail: readonly LatLng[];
   permission: LocationPermission;
+  /** "away" until the phone reaches the start the guardian chose; the clock and distance wait for that. */
+  status: "locating" | "away" | "walking";
+  /** Start counting now, wherever the phone is. */
+  begin: () => void;
 };
+
+/** Within this of the chosen start, the walk has begun. */
+const ARRIVED_KM = 0.15;
 
 /** Two GPS fixes further apart than this are a jump (tunnel, lost signal), not a step. */
 const MAX_JUMP_KM = 0.12;
@@ -30,20 +37,26 @@ const haversineKm = (a: LatLng, b: LatLng) => {
   return 12742 * Math.asin(Math.sqrt(h));
 };
 
-export const useWalkTracker = (route: WalkRoute, running: boolean): WalkSample => {
+export const useWalkTracker = (route: WalkRoute, running: boolean, waitForStart: boolean): WalkSample => {
   const [elapsed, setElapsed] = useState(0);
   const [distanceKm, setDistanceKm] = useState(0);
   const [trail, setTrail] = useState<LatLng[]>([]);
   const [permission, setPermission] = useState<LocationPermission>("pending");
   const last = useRef<LatLng | null>(null);
   const watcher = useRef<Location.LocationSubscription | null>(null);
+  const [armed, setArmed] = useState(!waitForStart);
+  const [away, setAway] = useState(false);
+  const [phone, setPhone] = useState<LatLng | null>(null);
+  const armedRef = useRef(armed);
+  armedRef.current = armed;
+  const startPoint = route.path[0] ?? null;
 
   // Elapsed time runs off a plain clock, independent of GPS fix cadence.
   useEffect(() => {
-    if (!running) return;
+    if (!running || !armed) return;
     const id = setInterval(() => setElapsed((value) => value + 1), 1000);
     return () => clearInterval(id);
-  }, [running]);
+  }, [running, armed]);
 
   useEffect(() => {
     if (!running) {
@@ -61,6 +74,8 @@ export const useWalkTracker = (route: WalkRoute, running: boolean): WalkSample =
       if (cancelled) return;
       if (status !== "granted") {
         setPermission("denied");
+        // Without location there is no way to know you arrived, so count from now.
+        setArmed(true);
         return;
       }
       setPermission("granted");
@@ -73,6 +88,16 @@ export const useWalkTracker = (route: WalkRoute, running: boolean): WalkSample =
         },
         (fix) => {
           const here: LatLng = { latitude: fix.coords.latitude, longitude: fix.coords.longitude };
+          setPhone(here);
+          if (!armedRef.current) {
+            if (startPoint && haversineKm(here, startPoint) > ARRIVED_KM) {
+              setAway(true);
+              return;
+            }
+            setAway(false);
+            setArmed(true);
+            armedRef.current = true;
+          }
           const accuracy = fix.coords.accuracy ?? MAX_ACCURACY_M;
           const previous = last.current;
           last.current = here;
@@ -85,6 +110,7 @@ export const useWalkTracker = (route: WalkRoute, running: boolean): WalkSample =
         },
       ).catch(() => {
         setPermission("unavailable");
+        setArmed(true);
         return null;
       });
     };
@@ -99,7 +125,15 @@ export const useWalkTracker = (route: WalkRoute, running: boolean): WalkSample =
   }, [running]);
 
   const progress = route.distanceKm > 0 ? Math.min(1, distanceKm / route.distanceKm) : 0;
-  const position = trail.length > 0 ? trail[trail.length - 1] : pointAlong(route.path, progress);
+  // Before the first GPS fix, show the dog at the start of the route rather than guessing along it.
+  const position = phone ?? trail[trail.length - 1] ?? route.path[0] ?? null;
 
-  return { elapsed, distanceKm, progress, position, trail, permission };
+  const status = armed ? "walking" : away ? "away" : "locating";
+  const begin = () => {
+    armedRef.current = true;
+    setAway(false);
+    setArmed(true);
+  };
+
+  return { elapsed, distanceKm, progress, position, trail, permission, status, begin };
 };

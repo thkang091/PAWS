@@ -142,10 +142,8 @@ const savePlanPreferences = async (
   }
 };
 
-import { DEMO_MODE, demoCreateDog } from "@/services/demoData";
 
 export const createDogProfile = async (input: CreateDogProfileInput): Promise<Dog> => {
-  if (DEMO_MODE) return demoCreateDog(input.name);
   const client = getClientOrThrow();
   const { data, error } = await client.rpc("create_dog_profile", {
     dog_name: input.name,

@@ -14,6 +14,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ModeIllustration, modeAspect } from "@/features/game/components/ModeIllustration";
 import type { ModeKey } from "@/features/game/components/modePaths";
 import { PressScale } from "@/components/ui/PressScale";
+import { useCurrentDog } from "@/hooks/useCurrentDog";
+import { usePrefetchPetCatalog } from "@/hooks/usePetRewards";
 import {
   accent,
   bg,
@@ -43,6 +45,9 @@ const TAB_CLEARANCE = 116;
 
 export default function GameTabScreen() {
   const { width } = useWindowDimensions();
+  const dog = useCurrentDog();
+  // The Pet Shop's gift cards start loading here, so the shop opens with them already in place.
+  usePrefetchPetCatalog(dog.data?.id);
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
 

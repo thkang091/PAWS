@@ -1,13 +1,10 @@
-import Constants from "expo-constants";
+import { callGemini, geminiAvailable } from "@/services/geminiProxy";
 
 import type { FoodRule, FoodVerdict } from "@/services/foodService";
 import type { ChatImage } from "@/services/trainerChat";
 
-const KEY =
-  (Constants.expoConfig?.extra as { geminiApiKey?: string | null } | undefined)?.geminiApiKey ??
-  null;
-
-export const foodCheckConfigured = typeof KEY === "string" && KEY.length > 0;
+// Gemini runs behind the `gemini` edge function; the key never ships in the app.
+export const foodCheckConfigured = geminiAvailable;
 
 const PRIMARY = "gemini-2.5-flash";
 const FALLBACK = "gemini-flash-latest";
@@ -20,6 +17,8 @@ export type FoodDog = {
   weightKg: number | null;
   currentFood: string | null;
   rules: readonly FoodRule[];
+  /** The full profile brief: conditions, medications, activity and recent check-ins can change the answer. */
+  profile?: string;
 };
 
 export type FoodAnswer = {
@@ -53,6 +52,7 @@ const briefing = (dog: FoodDog) =>
     "",
     `DOG: ${dog.name}${dog.breed ? `, ${dog.breed}` : ""}${dog.ageYears != null ? `, about ${dog.ageYears} years old` : ""}${dog.weightKg != null ? `, about ${dog.weightKg} kg` : ""}.`,
     dog.currentFood ? `Usual food: ${dog.currentFood}.` : "Usual food: not set.",
+    dog.profile ? `PROFILE:\n${dog.profile}\nUse it: conditions (pancreatitis, kidney disease, diabetes, sensitive stomach), medications and recent stomach trouble in check-ins can make an otherwise safe food a caution or avoid.` : "",
     dog.rules.length > 0
       ? `CAN'T-EAT LIST set by the guardian (always honour it): ${dog.rules
           .map((rule) => `${rule.name} (${KIND_LABEL[rule.kind]}${rule.note ? `, ${rule.note}` : ""})`)
@@ -93,23 +93,7 @@ const tidy = (value: string) =>
     .replace(/\s*[—–]\s*/g, ", ")
     .trim();
 
-const call = async (model: string, body: object): Promise<Response> => {
-  const abort = new AbortController();
-  const timer = setTimeout(() => abort.abort(), TIMEOUT_MS);
-  try {
-    return await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": KEY as string },
-        body: JSON.stringify(body),
-        signal: abort.signal,
-      },
-    );
-  } finally {
-    clearTimeout(timer);
-  }
-};
+const call = (model: string, body: object): Promise<Response> => callGemini(model, body, TIMEOUT_MS);
 
 export const askFood = async (
   dog: FoodDog,

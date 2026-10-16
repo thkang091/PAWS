@@ -14,7 +14,10 @@ import { AnonymousAccountWarningModal } from "@/components/account/AnonymousAcco
 import { HEADER_HEIGHT, ScrollHeader } from "@/features/profile/components/ScrollHeader";
 import { PressScale } from "@/components/ui/PressScale";
 import { Panel, PanelRow, glyphFor } from "@/features/profile/components/ProfilePanels";
-import { settingsGroups } from "@/constants/profileRecord";
+import { useAccountStatus } from "@/hooks/useAccountStatus";
+import { HoldToReset } from "@/features/profile/components/HoldToReset";
+import { canReset, resetAccount } from "@/services/resetService";
+import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { useAuth } from "@/providers/AuthProvider";
 import {
   bg,
@@ -36,6 +39,26 @@ export default function ProfileSettingsScreen() {
   const [confirming, setConfirming] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const { signOut } = useAuth();
+  const dog = useCurrentDog();
+  const account = useAccountStatus();
+  const name = dog.data?.name ?? "your dog";
+  // Only rows that go somewhere. Nothing here is a placeholder.
+  const settingsGroups = [
+    {
+      label: "PAWS",
+      rows: [
+        { key: "notifications", title: "Notifications", hint: "Reminders, check-ins and nudges", href: "/notifications-settings" },
+        { key: "account", title: "Account", hint: account.data?.isAnonymous ? "Add a way to sign in on a new phone" : "How you sign in", href: "/account/link" },
+      ],
+    },
+    {
+      label: name,
+      rows: [
+        { key: "data", title: "Medical record", hint: "Share a PDF with your vet", href: "/profile/health" },
+        { key: "records", title: "Health records", hint: "Visits, tests and doses", href: "/care/records" },
+      ],
+    },
+  ];
 
   const enter = (order: number) =>
     reduceMotion
@@ -55,7 +78,7 @@ export default function ProfileSettingsScreen() {
       >
         <Animated.View entering={enter(0)}>
           <Text style={styles.title}>Settings</Text>
-          <Text style={styles.lede}>The app, the account, and who else can reach Bori.</Text>
+          <Text style={styles.lede}>{`The app, your account, and ${name}'s records.`}</Text>
         </Animated.View>
 
         {settingsGroups.map((group, groupIndex) => (
@@ -74,7 +97,19 @@ export default function ProfileSettingsScreen() {
           </Animated.View>
         ))}
 
-        <Animated.View entering={enter(1 + settingsGroups.length)} style={styles.out}>
+        {canReset(account.data?.email) ? (
+          <Animated.View entering={enter(1 + settingsGroups.length)}>
+            <HoldToReset
+              name={name}
+              onConfirm={async () => {
+                await resetAccount();
+                router.replace("/welcome");
+              }}
+            />
+          </Animated.View>
+        ) : null}
+
+        <Animated.View entering={enter(2 + settingsGroups.length)} style={styles.out}>
           <PressScale
             accessibilityRole="button"
             accessibilityLabel="Sign out"
@@ -84,7 +119,11 @@ export default function ProfileSettingsScreen() {
           >
             <Text style={styles.signOutLabel}>Sign out</Text>
           </PressScale>
-          <Text style={styles.version}>PAWS · Bori&rsquo;s record is stored on this device</Text>
+          <Text style={styles.version}>
+            {account.data?.isAnonymous === false || account.data?.hasRecoverableIdentity
+              ? `PAWS · ${name}'s records are saved to your account`
+              : `PAWS · Link an account so ${name}'s records survive a new phone`}
+          </Text>
         </Animated.View>
       </Animated.ScrollView>
 

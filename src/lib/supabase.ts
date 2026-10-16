@@ -12,6 +12,8 @@ export const supabase: SupabaseClient | null = env.isValid
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: false,
+        // Linking Apple or Google comes back to paws://auth/callback with a one-time code, exchanged in the app.
+        flowType: "pkce",
       },
     })
   : null;

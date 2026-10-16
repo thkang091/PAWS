@@ -6,7 +6,7 @@ import { CalendarCheckIcon, SyringeIcon, WarningCircleIcon } from "phosphor-reac
 
 import { MonthPicker, type PickedDay } from "@/features/care/components/MonthPicker";
 import { TimeGrid } from "@/features/care/components/TimeGrid";
-import { TIME_SLOTS, prettyTime } from "@/features/care/components/careSetupAnswers";
+import { TIME_SLOTS } from "@/features/care/components/careSetupAnswers";
 import { Dialog } from "@/components/ui/Dialog";
 import { PressScale } from "@/components/ui/PressScale";
 import {

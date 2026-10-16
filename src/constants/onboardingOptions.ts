@@ -257,6 +257,47 @@ export const ageBucketOptions: AgeBucketOption[] = [
   { value: "unsure", title: "Not sure", detail: null, pose: "unsure", curious: true },
 ];
 
+/** Closer ages within each bucket, in years. Puppies go by months. */
+export const exactAgeOptions: Record<Exclude<DogAgeBucket, "unsure">, readonly { label: string; years: number }[]> = {
+  puppy: [
+    { label: "2 mo", years: 2 / 12 },
+    { label: "3 mo", years: 3 / 12 },
+    { label: "4 mo", years: 4 / 12 },
+    { label: "6 mo", years: 6 / 12 },
+    { label: "9 mo", years: 9 / 12 },
+  ],
+  young_adult: [1, 2, 3, 4, 5, 6, 7].map((y) => ({ label: `${y}`, years: y })),
+  senior: [
+    ...[8, 9, 10, 11, 12].map((y) => ({ label: `${y}`, years: y })),
+    { label: "13+", years: 13 },
+  ],
+};
+
+/** The breeds most people pick, one tap each. Anything else is a search away. */
+export const quickBreeds = ["Mixed", "Labrador", "Golden", "French Bulldog", "Poodle", "Maltese", "Shih Tzu", "Jindo", "Dachshund"] as const;
+
+/** Breeds the search knows, for "Search breeds". A typed breed that is not here is kept as typed. */
+export const ALL_BREEDS: readonly string[] = [
+  "Mixed", "Labrador Retriever", "Golden Retriever", "French Bulldog", "Poodle", "Toy Poodle", "Miniature Poodle", "Maltese", "Shih Tzu",
+  "Jindo", "Dachshund", "Beagle", "German Shepherd", "Bulldog", "Rottweiler", "Yorkshire Terrier", "Boxer", "Pembroke Welsh Corgi",
+  "Cardigan Welsh Corgi", "Siberian Husky", "Alaskan Malamute", "Australian Shepherd", "Border Collie", "Cavalier King Charles Spaniel",
+  "Cocker Spaniel", "English Springer Spaniel", "Shiba Inu", "Akita", "Chihuahua", "Pomeranian", "Pug", "Boston Terrier", "Bichon Frise",
+  "Havanese", "Miniature Schnauzer", "Standard Schnauzer", "Great Dane", "Doberman Pinscher", "Bernese Mountain Dog", "Newfoundland",
+  "Saint Bernard", "Great Pyrenees", "Shetland Sheepdog", "Collie", "Samoyed", "Chow Chow", "Shar Pei", "Basset Hound", "Bloodhound",
+  "Vizsla", "Weimaraner", "German Shorthaired Pointer", "Brittany", "Belgian Malinois", "Dalmatian", "Whippet", "Greyhound",
+  "Italian Greyhound", "Papillon", "Lhasa Apso", "Pekingese", "West Highland White Terrier", "Jack Russell Terrier", "Scottish Terrier",
+  "Bull Terrier", "Staffordshire Terrier", "American Pit Bull Terrier", "Cane Corso", "Mastiff", "Labradoodle", "Goldendoodle",
+  "Cockapoo", "Maltipoo", "Australian Cattle Dog", "Rhodesian Ridgeback", "Spitz", "Japanese Spitz", "Sapsali", "Pungsan",
+];
+
+/** Profile's energy words, mapped onto the record's level. */
+export const energyChoices: readonly { label: string; level: EnergyLevel }[] = [
+  { label: "Couch potato", level: "low" },
+  { label: "Steady", level: "moderate" },
+  { label: "Busy", level: "high" },
+  { label: "Non-stop", level: "very_high" },
+];
+
 export type TogetherDuration = "just_home" | "under_a_month" | "a_few_months" | "a_year_plus";
 
 export type TogetherIcon = "house" | "paw" | "bone" | "heart";

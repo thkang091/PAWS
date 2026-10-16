@@ -23,7 +23,7 @@ import {
   type,
 } from "@/constants/design";
 
-export type EditTarget = { label: string; value: string } | null;
+export type EditTarget = { label: string; value: string; options?: readonly string[] | null } | null;
 
 export const EditFieldSheet = ({
   target,
@@ -38,12 +38,14 @@ export const EditFieldSheet = ({
   const [draft, setDraft] = useState("");
 
   useEffect(() => {
-    if (target) setDraft(target.value);
+    // An unanswered question opens empty, not with the words "Not added" to delete first.
+    if (target) setDraft(target.value === "Not added" ? "" : target.value);
   }, [target]);
 
   if (!target) return null;
 
   const unchanged = draft.trim() === target.value.trim() || draft.trim().length === 0;
+  const options = target.options ?? null;
 
   return (
     <Modal transparent visible animationType="none" onRequestClose={onCancel}>
@@ -67,10 +69,31 @@ export const EditFieldSheet = ({
         >
           <View style={styles.grip} />
           <Text style={styles.label}>{target.label}</Text>
+          {options ? (
+            <View style={styles.options}>
+              {options.map((option) => {
+                const on = draft.trim().toLowerCase() === option.toLowerCase();
+                return (
+                  <PressScale
+                    key={option}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: on }}
+                    accessibilityLabel={option}
+                    scaleTo={0.95}
+                    style={[styles.option, on && styles.optionOn]}
+                    onPress={() => setDraft(option)}
+                  >
+                    <Text style={[styles.optionText, on && styles.optionTextOn]}>{option}</Text>
+                  </PressScale>
+                );
+              })}
+            </View>
+          ) : null}
           <TextInput
             value={draft}
             onChangeText={setDraft}
-            autoFocus
+            placeholder={options ? "Or write your own" : "Type it here"}
+            autoFocus={!options}
             selectTextOnFocus
             style={styles.input}
             placeholderTextColor={text.tertiary}
@@ -140,6 +163,11 @@ const styles = StyleSheet.create({
     borderBottomColor: border.default,
   },
   actions: { flexDirection: "row", gap: space.md, marginTop: space.xxl },
+  options: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, marginTop: space.lg, marginBottom: space.sm },
+  option: { height: 38, paddingHorizontal: space.lg, borderRadius: radius.pill, borderWidth: 1, borderColor: border.soft, justifyContent: "center" },
+  optionOn: { backgroundColor: text.primary, borderColor: text.primary },
+  optionText: { ...type.supporting, color: text.primary },
+  optionTextOn: { color: text.inverse, fontWeight: "600" },
   quiet: {
     flex: 1,
     height: layout.controlHeight,

@@ -2,18 +2,15 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { G, Path } from "react-native-svg";
 import Animated, {
-  FadeIn,
   FadeInDown,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
   withDelay,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
-import { CheckIcon } from "phosphor-react-native";
 
 import { PawsMark } from "@/features/welcome/components/PawsMark";
 import { ONBOARDING_SCENE } from "@/features/welcome/components/onboardingScenePaths";
@@ -22,7 +19,6 @@ import type { CarePlan } from "@/constants/careSetup";
 import {
   accent,
   bg,
-  icon as iconSize,
   layout,
   motion,
   radius,
@@ -46,15 +42,25 @@ const FILL: Record<string, string> = {
 };
 
 export const CareSetupStart = ({
-  plan,
   onStart,
   onAutomatic,
+  onClose,
   bottomInset = 0,
+  title = "A routine that\nfits your life",
+  subtitle = "Training, care, and walks organized into small, manageable steps.",
+  startLabel = "Start",
+  automaticLabel = "I don\u2019t know where to start",
 }: {
-  plan: CarePlan;
+  plan?: CarePlan;
   onStart: () => void;
-  onAutomatic: () => void;
+  onAutomatic?: () => void;
+  /** Shown as the secondary link when there is no "automatic" path, e.g. "Not now". */
+  onClose?: () => void;
   bottomInset?: number;
+  title?: string;
+  subtitle?: string;
+  startLabel?: string;
+  automaticLabel?: string;
 }) => {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
@@ -87,7 +93,7 @@ export const CareSetupStart = ({
 
   const takeThePlan = () => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    onAutomatic();
+    (onAutomatic ?? onClose)?.();
   };
 
   return (
@@ -130,10 +136,10 @@ export const CareSetupStart = ({
       <View style={[styles.sheet, { paddingBottom: insets.bottom + bottomInset + space.lg }]}>
         <View style={styles.copy}>
           <Animated.Text entering={enter(0)} style={styles.title}>
-            A routine that{"\n"}fits your life
+            {title}
           </Animated.Text>
           <Animated.Text entering={enter(1)} style={styles.sub}>
-            Training, care, and walks organized into small, manageable steps.
+            {subtitle}
           </Animated.Text>
         </View>
 
@@ -141,7 +147,7 @@ export const CareSetupStart = ({
             <Animated.View entering={enter(2)}>
               <PressScale
                 accessibilityRole="button"
-                accessibilityLabel="Start setting up the routine"
+                accessibilityLabel={startLabel}
                 scaleTo={0.97}
                 style={styles.start}
                 onPress={() => {
@@ -149,21 +155,23 @@ export const CareSetupStart = ({
                   onStart();
                 }}
               >
-                <Text style={styles.startText}>Start</Text>
+                <Text style={styles.startText}>{startLabel}</Text>
               </PressScale>
             </Animated.View>
 
+            {onAutomatic || onClose ? (
             <Animated.View entering={enter(3)}>
               <PressScale
                 accessibilityRole="button"
-                accessibilityLabel="I don't know where to start. PAWS will ask when you are out and build the day around it."
+                accessibilityLabel={onAutomatic ? "I don't know where to start. PAWS will ask when you are out and build the day around it." : automaticLabel}
                 scaleTo={0.97}
                 style={styles.secondary}
                 onPress={takeThePlan}
               >
-                <Text style={styles.secondaryText}>I don&rsquo;t know where to start</Text>
+                <Text style={styles.secondaryText}>{automaticLabel}</Text>
               </PressScale>
             </Animated.View>
+            ) : null}
         </View>
       </View>
     </View>

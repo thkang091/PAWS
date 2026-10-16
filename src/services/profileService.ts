@@ -18,10 +18,8 @@ export const getCurrentProfile = async (): Promise<Profile | null> => {
   };
 };
 
-import { DEMO_MODE, demoGetDog } from "@/services/demoData";
 
 export const getCurrentDog = async (): Promise<Dog | null> => {
-  if (DEMO_MODE) return demoGetDog();
   const client = getClientOrThrow();
   const { data, error } = await client.from("dogs").select("*").order("created_at", { ascending: true }).limit(1).maybeSingle();
   throwIfError(error);
@@ -108,4 +106,11 @@ export const updateDogProfile = async (dogId: string, values: DogProfileUpdate):
   ]);
 
   return mapDog(data);
+};
+
+/** Just the basics that tailor care and training (breed, age); nothing else on the dog is touched. */
+export const updateDogBasics = async (dogId: string, values: { breed?: string; age_years?: number; gender?: "male" | "female" }): Promise<void> => {
+  const client = getClientOrThrow();
+  const { error } = await client.from("dogs").update(values).eq("id", dogId);
+  throwIfError(error);
 };

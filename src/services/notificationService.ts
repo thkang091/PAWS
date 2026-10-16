@@ -8,7 +8,6 @@ import type { CareRoutine, NotificationPreferences } from "@/types/domain";
 export const initNotifications = () => {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
-      shouldShowAlert: true,
       shouldShowBanner: true,
       shouldShowList: true,
       shouldPlaySound: true,
@@ -107,17 +106,29 @@ export const syncCareReminders = async (reminders: readonly CareReminder[], dogN
 };
 
 const CHECKIN_DAYS_AHEAD = 7;
+/** A nudge this long after the check-in time if it is still open. */
+const LATE_NUDGE_MINUTES = 90;
+const MORNING_HOUR = 9;
 
+const keyOf = (at: Date) => `${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, "0")}-${String(at.getDate()).padStart(2, "0")}`;
+
+/**
+ * The evening check-in reminder, then two follow-ups if it goes unanswered: a nudge later that evening, and a note
+ * the next morning that says how many days have gone by, so a quiet week never passes unnoticed. Everything for a
+ * day is cancelled as soon as that day is answered or skipped (this re-runs whenever the record changes).
+ */
 export const syncCheckInReminders = async (opts: {
   enabled: boolean;
   time: string;
-  answeredDates: readonly string[];
+  /** Days answered or skipped on purpose. */
+  coveredDates: readonly string[];
+  since: string | null;
   dogName: string;
 }): Promise<void> => {
   if (Platform.OS === "web") return;
   const scheduled = await Notifications.getAllScheduledNotificationsAsync();
   for (const notif of scheduled) {
-    if (notif.identifier.startsWith("checkin__")) {
+    if (notif.identifier.startsWith("checkin")) {
       await Notifications.cancelScheduledNotificationAsync(notif.identifier).catch(() => {});
     }
   }
@@ -128,23 +139,58 @@ export const syncCheckInReminders = async (opts: {
   const [hour, minute] = opts.time.split(":").map((part) => parseInt(part, 10));
   if (isNaN(hour) || isNaN(minute)) return;
   const now = Date.now();
+  const covered = new Set(opts.coveredDates);
+  const name = opts.dogName;
 
-  for (let offset = 0; offset < CHECKIN_DAYS_AHEAD; offset++) {
-    const at = new Date();
-    at.setDate(at.getDate() + offset);
-    at.setHours(hour, minute, 0, 0);
-    const key = `${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, "0")}-${String(at.getDate()).padStart(2, "0")}`;
-    if (at.getTime() <= now || opts.answeredDates.includes(key)) continue;
-    await Notifications.scheduleNotificationAsync({
-      identifier: `checkin__${key}`,
-      content: {
-        title: `How is ${opts.dogName} today?`,
-        body: "Four quick questions: eating, energy, bathroom and anything odd.",
-        sound: true,
-        data: { checkIn: key },
-      },
-      trigger: { type: SchedulableTriggerInputTypes.DATE, date: at },
+  // Missed days in a row by the end of a given day, if nothing more is answered before then.
+  const runThrough = (day: Date) => {
+    let run = 0;
+    const at = new Date(day);
+    while (run < 60) {
+      const key = keyOf(at);
+      if (covered.has(key) || (opts.since && key < opts.since)) break;
+      run += 1;
+      at.setDate(at.getDate() - 1);
+    }
+    return run;
+  };
+
+  const schedule = (identifier: string, date: Date, title: string, body: string, day: string) =>
+    Notifications.scheduleNotificationAsync({
+      identifier,
+      content: { title, body, sound: true, data: { checkIn: day } },
+      trigger: { type: SchedulableTriggerInputTypes.DATE, date },
     }).catch(() => {});
+
+  for (let offset = -1; offset < CHECKIN_DAYS_AHEAD; offset++) {
+    const evening = new Date();
+    evening.setDate(evening.getDate() + offset);
+    evening.setHours(hour, minute, 0, 0);
+    const day = keyOf(evening);
+    if (covered.has(day) || (opts.since && day < opts.since)) continue;
+
+    if (evening.getTime() > now) {
+      await schedule(`checkin__${day}`, evening, `How is ${name} today?`, "Four quick questions: eating, energy, bathroom and anything odd.", day);
+    }
+
+    const late = new Date(evening.getTime() + LATE_NUDGE_MINUTES * 60_000);
+    if (late.getTime() > now && late.getDate() === evening.getDate()) {
+      await schedule(`checkin_late__${day}`, late, `${name}'s check-in is still open`, "Under a minute, and the day is saved.", day);
+    }
+
+    const morning = new Date(evening);
+    morning.setDate(morning.getDate() + 1);
+    morning.setHours(MORNING_HOUR, 0, 0, 0);
+    if (morning.getTime() > now) {
+      const run = runThrough(evening);
+      await schedule(
+        `checkin_missed__${day}`,
+        morning,
+        run > 1 ? `${run} days without a check-in` : `Yesterday's check-in was missed`,
+        run > 1 ? `Gaps hide changes in ${name}'s health. Catch up in a few taps.` : `Fill in how ${name} was yesterday. It takes seconds.`,
+        day,
+      );
+    }
   }
 };
 
@@ -237,4 +283,26 @@ export const saveNotificationPreferences = async (preferences: NotificationPrefe
   });
   throwIfError(error);
   return preferences;
+};
+
+const doseNotifId = (kind: string) => `dose__${kind}`;
+
+/** One reminder on the morning a preventive dose or check is next due. Replaces any earlier one for the same kind. */
+export const scheduleDoseReminder = async (kind: string, date: string, title: string, body: string): Promise<void> => {
+  if (Platform.OS === "web") return;
+  await Notifications.cancelScheduledNotificationAsync(doseNotifId(kind)).catch(() => {});
+  const [y, m, d] = date.split("-").map(Number);
+  const at = new Date(y, m - 1, d, 9, 0, 0);
+  if (at.getTime() <= Date.now()) return;
+  if (!(await requestNotificationPermissions())) return;
+  await Notifications.scheduleNotificationAsync({
+    identifier: doseNotifId(kind),
+    content: { title, body, sound: true, data: { careKind: kind } },
+    trigger: { type: SchedulableTriggerInputTypes.DATE, date: at },
+  }).catch(() => {});
+};
+
+export const cancelDoseReminder = async (kind: string): Promise<void> => {
+  if (Platform.OS === "web") return;
+  await Notifications.cancelScheduledNotificationAsync(doseNotifId(kind)).catch(() => {});
 };

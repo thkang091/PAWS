@@ -22,6 +22,7 @@ import { useCareProfile } from "@/hooks/useCareHealth";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { useLogFeeding } from "@/hooks/useFeedingLogs";
 import { useInvalidateRecentTreats, useSaveTreat, useSavedTreats, useSetCurrentFood } from "@/hooks/useFood";
+import { rememberFoodFacts } from "@/features/care/state/foodFacts";
 import { searchPetFoods, type FoodSearch } from "@/services/foodService";
 import {
   accent,
@@ -47,6 +48,7 @@ type Item = {
   meta: string | null;
   imageUrl: string | null;
   kcalPer100g: number | null;
+  nutrients?: Omit<import("@/features/care/state/foodFacts").Nutrients, "kcalPer100g">;
 };
 
 export default function FoodSearchScreen() {
@@ -123,6 +125,7 @@ export default function FoodSearchScreen() {
             meta: food.kcalPer100g ? `${food.kcalPer100g} kcal per 100 g` : null,
             imageUrl: food.imageUrl,
             kcalPer100g: food.kcalPer100g,
+            nutrients: { protein: food.protein, fat: food.fat, fiber: food.fiber, carbs: food.carbs, moisture: food.moisture },
           }))
         : [],
     [lookup],
@@ -140,6 +143,17 @@ export default function FoodSearchScreen() {
   const pick = (item: Item) => {
     if (!dogId || busy) return;
     setFailed(false);
+    // Keep what the food is made of, so Nutrition can break it down.
+    rememberFoodFacts({
+      name: item.label,
+      imageUrl: item.imageUrl,
+      kcalPer100g: item.kcalPer100g,
+      protein: item.nutrients?.protein ?? null,
+      fat: item.nutrients?.fat ?? null,
+      fiber: item.nutrients?.fiber ?? null,
+      carbs: item.nutrients?.carbs ?? null,
+      moisture: item.nutrients?.moisture ?? null,
+    });
 
     if (item.kind === "food" && !treatMode) {
       setBusy(item.key);

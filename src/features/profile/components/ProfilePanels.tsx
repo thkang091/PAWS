@@ -249,7 +249,7 @@ export const PanelRow = ({
       {steps ? <Steps filled={steps.filled} total={steps.total} delay={order * motion.stagger} /> : null}
       {value ? (
         <View style={[steps && styles.valueFixed, editing && styles.editable]}>
-          <Text style={styles.value} numberOfLines={1}>
+          <Text style={[styles.value, value === "Not added" && styles.valueEmpty]} numberOfLines={1}>
             {value}
           </Text>
         </View>
@@ -429,6 +429,7 @@ const styles = StyleSheet.create({
   labelStrong: { ...type.cardTitle, fontWeight: "600", color: text.primary },
   sub: { ...type.caption, color: text.secondary, marginTop: 1 },
   value: { ...type.supporting, fontWeight: "600", color: text.primary, textAlign: "right" },
+  valueEmpty: { color: text.tertiary, fontWeight: "500" },
   valueFixed: { flex: 1 },
   editable: { borderBottomWidth: 3, borderBottomColor: text.primary, borderRadius: 1 },
   go: {

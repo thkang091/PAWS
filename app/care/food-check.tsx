@@ -20,6 +20,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
+import { takePendingPhoto } from "@/features/care/state/pendingPhoto";
 import {
   CaretLeftIcon,
   CheckCircleIcon,
@@ -39,6 +40,8 @@ import { useCareProfile } from "@/hooks/useCareHealth";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { useAddFoodRule, useFoodChecks, useFoodRules, useSaveFoodCheck } from "@/hooks/useFood";
 import { useWeightLogs } from "@/hooks/useWeightLogs";
+import { useDogContext } from "@/features/care/intel/useDogContext";
+import { useFoodPlan } from "@/features/care/state/foodPlan";
 import { askFood, type FoodAnswer, type FoodTurn } from "@/services/foodCheck";
 import type { FoodVerdict } from "@/services/foodService";
 import { transcribe, type ChatImage, type VoiceClip } from "@/services/trainerChat";
@@ -127,6 +130,8 @@ export default function FoodCheckScreen() {
   const careProfile = useCareProfile(dogId);
   const weights = useWeightLogs(dogId);
   const rules = useFoodRules(dogId);
+  const context = useDogContext();
+  const foodPlan = useFoodPlan();
   const checks = useFoodChecks(dogId);
   const addRule = useAddFoodRule(dogId);
   const saveCheck = useSaveFoodCheck(dogId);
@@ -181,8 +186,9 @@ export default function FoodCheckScreen() {
         breed: dog.data?.breed ?? null,
         ageYears: dog.data ? ageFrom(dog.data.birthday, dog.data.ageYears) : null,
         weightKg: latestKg,
-        currentFood: careProfile.data?.foodBrand ?? null,
+        currentFood: foodPlan.plan?.food.product.name ?? careProfile.data?.foodBrand ?? null,
         rules: rules.data ?? [],
+        profile: context.brief,
       },
       history,
       { text: question, image: message.image },
@@ -195,7 +201,7 @@ export default function FoodCheckScreen() {
       setNotice({
         text:
           reply.state === "unconfigured"
-            ? "Food checks need the Gemini key in this build."
+            ? "Food checks are not available right now. Try again soon."
             : reply.state === "offline"
               ? "Could not reach the checker. Check your connection and try again."
               : "That did not come back clearly. Try again, or type the food's name.",
@@ -276,6 +282,12 @@ export default function FoodCheckScreen() {
     if (params.start === "camera" && !started.current && dogId) {
       started.current = true;
       void snap();
+    }
+    // The Feed camera already took the photo; check it straight away.
+    if (params.start === "photo" && !started.current && dogId) {
+      started.current = true;
+      const photo = takePendingPhoto();
+      if (photo) void send({ text: "", image: photo });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.start, dogId]);

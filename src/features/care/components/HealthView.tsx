@@ -6,15 +6,15 @@ import {
   FileTextIcon,
   FirstAidKitIcon,
   PillIcon,
-  PrescriptionIcon,
 } from "phosphor-react-native";
 
-import { DailyHealthCheckSheet } from "@/features/care/components/DailyHealthCheckSheet";
+import { requestCheckIn } from "@/features/care/components/CheckInLock";
 import { FlowSheet } from "@/features/care/components/FlowSheet";
 import { GroomingSetupPrompt } from "@/features/care/components/GroomingSetupPrompt";
 import { DaySummary } from "@/features/care/components/HealthCheckIn";
 import { HealthLongTerm } from "@/features/care/components/HealthLongTerm";
 import { HealthToday } from "@/features/care/components/HealthToday";
+import { PharmacyGlyph } from "@/features/care/components/PharmacyGlyph";
 import { QUICK_SERVICES } from "@/features/care/components/healthData";
 import { useTodayCheckIn } from "@/features/care/state/dailyCheckIn";
 import { useGroomingPrompt } from "@/features/care/state/groomingSetup";
@@ -36,7 +36,7 @@ type PhosphorIcon = typeof PillIcon;
 const SERVICE_GLYPH: Record<string, PhosphorIcon> = {
   records: FileTextIcon,
   appointment: CalendarPlusIcon,
-  pharmacy: PrescriptionIcon,
+  pharmacy: PharmacyGlyph as PhosphorIcon,
   emergency: FirstAidKitIcon,
 };
 
@@ -57,7 +57,6 @@ export const HealthView = memo(
     const dogName = dog.data?.name ?? "your dog";
     const { due: groomingDue } = useGroomingPrompt();
     const { entry } = useTodayCheckIn();
-    const [checkInOpen, setCheckInOpen] = useState(false);
     const [summaryOpen, setSummaryOpen] = useState(false);
 
     const enter = (order: number) =>
@@ -71,7 +70,7 @@ export const HealthView = memo(
           <HealthToday
             dogId={dogId}
             dogName={dogName}
-            onCheckIn={() => setCheckInOpen(true)}
+            onCheckIn={requestCheckIn}
             onViewCheckIn={() => setSummaryOpen(true)}
             onOpenMeds={() => onOpen("/care/medications")}
           />
@@ -113,7 +112,6 @@ export const HealthView = memo(
           </View>
         </Animated.View>
 
-        <DailyHealthCheckSheet open={checkInOpen} onClose={() => setCheckInOpen(false)} />
 
         <FlowSheet
           open={summaryOpen && Boolean(entry)}

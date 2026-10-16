@@ -1,7 +1,8 @@
 import { useSyncExternalStore } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { onWipe, syncedStorage as AsyncStorage } from "@/lib/cloudKv";
 
 import { setField } from "@/features/profile/state/profileDraft";
+import type { RecordInsight } from "@/services/recordInsight";
 
 export type RecordKind = "condition" | "allergy";
 
@@ -11,6 +12,9 @@ export type RecordItem = {
   name: string;
   note: string;
   addedAt: number;
+  updatedAt?: number;
+  /** What Gemini made of it; null when it was asked and could not answer. */
+  insight?: RecordInsight | null;
 };
 
 type State = { hydrated: boolean; items: readonly RecordItem[] };
@@ -53,10 +57,26 @@ void AsyncStorage.getItem(KEY)
 
 export const addRecordItem = (kind: RecordKind, name: string, note = "") => {
   const clean = name.trim();
-  if (!clean) return;
-  if (state.items.some((item) => item.kind === kind && item.name.toLowerCase() === clean.toLowerCase())) return;
-  commit([...state.items, { id: `${kind}-${Date.now()}`, kind, name: clean, note: note.trim(), addedAt: Date.now() }]);
+  if (!clean) return null;
+  if (state.items.some((item) => item.kind === kind && item.name.toLowerCase() === clean.toLowerCase())) return null;
+  const id = `${kind}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  commit([...state.items, { id, kind, name: clean, note: note.trim(), addedAt: Date.now() }]);
+  return id;
 };
+
+export const setRecordInsight = (id: string, insight: RecordInsight | null) =>
+  commit(state.items.map((item) => (item.id === id ? { ...item, insight } : item)));
+
+export const updateRecordItem = (id: string, patch: Partial<Pick<RecordItem, "name" | "note">>) =>
+  commit(
+    state.items.map((item) => {
+      if (item.id !== id) return item;
+      const name = (patch.name ?? item.name).trim() || item.name;
+      // A new name or note means the old explanation may no longer fit; it is looked up again.
+      const stale = name !== item.name || (patch.note ?? item.note) !== item.note;
+      return { ...item, ...patch, name, updatedAt: Date.now(), insight: stale ? undefined : item.insight };
+    }),
+  );
 
 export const removeRecordItem = (id: string) => commit(state.items.filter((item) => item.id !== id));
 
@@ -66,3 +86,9 @@ export const SUGGESTIONS: Record<RecordKind, readonly string[]> = {
   condition: ["Arthritis", "Hip dysplasia", "Ear infections", "Skin allergies", "Epilepsy", "Diabetes", "Hypothyroidism", "Heart murmur"],
   allergy: ["Chicken", "Beef", "Wheat", "Dairy", "Pollen", "Flea bites", "Dust mites", "Penicillin"],
 };
+
+// A reset of the account empties this store too.
+onWipe(() => {
+  state = { hydrated: true, items: [] };
+  listeners.forEach((listener) => listener());
+});

@@ -28,7 +28,6 @@ import {
   accent,
   bg,
   border,
-  icon as iconSize,
   motion,
   radius,
   space,

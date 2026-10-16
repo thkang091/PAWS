@@ -16,7 +16,7 @@
       "bundleIdentifier": "com.example.paws",
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "PAWS needs camera access to record your dog's training videos for AI verification.",
+        "NSCameraUsageDescription": "PAWS uses the camera to record training videos, check whether a food is safe for your dog, and scan food bags.",
         "NSMicrophoneUsageDescription": "PAWS needs microphone access to record audio during training video capture.",
         "NSPhotoLibraryUsageDescription": "PAWS needs access to your photo library to upload training videos and reference photos.",
         "NSPhotoLibraryAddUsageDescription": "PAWS saves training reference photos to your photo library."

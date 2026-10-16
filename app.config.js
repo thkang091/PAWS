@@ -21,8 +21,7 @@ module.exports = ({ config }) => ({
   ],
   extra: {
     ...config.extra,
-    geminiApiKey:
-      process.env.GEMINI_API_KEY ?? process.env.EXPO_PUBLIC_GEMINI_API_KEY ?? null,
+    // Gemini is called through the `gemini` Supabase edge function; its key is a function secret, never bundled.
     googleMapsConfigured: Boolean(GOOGLE_MAPS_API_KEY),
     googleMapsKey: GOOGLE_MAPS_API_KEY,
   },

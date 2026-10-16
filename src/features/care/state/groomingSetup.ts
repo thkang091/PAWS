@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { onWipe, syncedStorage as AsyncStorage } from "@/lib/cloudKv";
 
 const NUDGE_AFTER_MS = 21 * 24 * 60 * 60 * 1000;
 
@@ -53,3 +53,9 @@ export const useGroomingPrompt = () => {
   const due = !s.setUp && dueSince != null && Date.now() >= dueSince;
   return { due, setUp: s.setUp };
 };
+
+// A reset of the account empties this store too.
+onWipe(() => {
+  state = { setUp: false, missedOnboardingAt: null, deferredUntil: 0 };
+  listeners.forEach((listener) => listener());
+});

@@ -154,6 +154,53 @@ export const saveCareRoutineSetup = async (dogId: string, routineDrafts: CareRou
   return (data ?? []).map((row) => mapCareRoutine(row as DogCareRoutineRow));
 };
 
+/** Add one routine to the dog's day, after the ones already there. */
+export const addCareRoutine = async (
+  dogId: string,
+  draft: { title: string; description: string; iconKey: string; reminderTime: string | null },
+): Promise<CareRoutine> => {
+  const client = getClientOrThrow();
+  const { data: userData, error: userError } = await client.auth.getUser();
+  throwIfError(userError);
+  const ownerId = userData.user?.id;
+  if (!ownerId) throw new Error("Authentication required.");
+
+  const last = await client
+    .from("dog_care_routines")
+    .select("sort_order")
+    .eq("dog_id", dogId)
+    .order("sort_order", { ascending: false })
+    .limit(1);
+  throwIfError(last.error);
+  const sortOrder = ((last.data?.[0] as { sort_order?: number } | undefined)?.sort_order ?? -1) + 1;
+
+  const { data, error } = await client
+    .from("dog_care_routines")
+    .insert({
+      dog_id: dogId,
+      owner_id: ownerId,
+      routine_key: `custom-${Date.now().toString(36)}`,
+      title: draft.title.trim(),
+      description: draft.description.trim(),
+      icon_key: draft.iconKey,
+      silver_reward: 5,
+      sort_order: sortOrder,
+      is_active: true,
+      reminder_time: draft.reminderTime,
+    })
+    .select("*")
+    .single();
+  throwIfError(error);
+  return mapCareRoutine(data as DogCareRoutineRow);
+};
+
+/** Take a routine out of the day. It is switched off rather than deleted, so past completions keep their meaning. */
+export const removeCareRoutine = async (routineId: string): Promise<void> => {
+  const client = getClientOrThrow();
+  const { error } = await client.from("dog_care_routines").update({ is_active: false }).eq("id", routineId);
+  throwIfError(error);
+};
+
 export const getCareRoutineCompletions = async (dogId: string, completionDate: string): Promise<CareRoutineCompletion[]> => {
   const client = getClientOrThrow();
   const { data, error } = await client

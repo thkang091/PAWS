@@ -7,7 +7,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { ArrowRightIcon, ClockCounterClockwiseIcon, CoinsIcon } from "phosphor-react-native";
 
-import { SaveProgressBanner } from "@/components/account/SaveProgressBanner";
 import { TopicHeader } from "@/features/train/components/TopicHeader";
 import { TopicPicker } from "@/features/train/components/TopicPicker";
 import { TopicTrail, type TrailStep } from "@/features/train/components/TopicTrail";
@@ -217,8 +216,6 @@ export default function TrainTabScreen() {
           contentContainerStyle={styles.columnInner}
           showsVerticalScrollIndicator={false}
         >
-          <SaveProgressBanner />
-
           {topic ? (
             <Animated.View
               key={topic.key}

@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { onWipe, syncedStorage as AsyncStorage } from "@/lib/cloudKv";
 
 import type { AreaKey } from "@/features/care/components/careSetupAnswers";
 
@@ -20,7 +20,6 @@ export type CarePlanChoice = {
   mealPortions?: readonly number[];
   routineKeys: readonly string[];
   walkTimes?: readonly string[];
-  walkRoutes?: Readonly<Record<string, { name: string; minutes: number }>>;
   mealTimes?: readonly string[];
   grooming?: readonly string[];
   medName?: string;
@@ -42,6 +41,12 @@ type State = {
 
 const KEY = "paws.careOnboarding.v1";
 
+/** Older builds saved route names from the retired demo map here; they are not real places. */
+const stripRoutes = (choice: CarePlanChoice): CarePlanChoice => {
+  const { walkRoutes: _old, ...rest } = choice as CarePlanChoice & { walkRoutes?: unknown };
+  return rest;
+};
+
 let state: State = { hydrated: false, completed: false, choice: null, deferredUntil: 0, mutedReminders: [] };
 
 const listeners = new Set<() => void>();
@@ -59,7 +64,7 @@ void AsyncStorage.getItem(KEY)
     state = {
       hydrated: true,
       completed: saved.completed ?? false,
-      choice: saved.choice ?? null,
+      choice: saved.choice ? stripRoutes(saved.choice) : null,
       deferredUntil: saved.deferredUntil ?? 0,
       mutedReminders: saved.mutedReminders ?? [],
     };
@@ -101,25 +106,6 @@ export const extendCarePlan = (area: AreaKey, patch: Partial<CarePlanChoice>) =>
   };
   persist();
   notify();
-};
-
-export const scheduleWalk = (time: string, route: { name: string; minutes: number }): boolean => {
-  if (!state.choice) return false;
-  const times = state.choice.walkTimes ?? [];
-  const areas = state.choice.areas ?? [];
-  state = {
-    ...state,
-    choice: {
-      ...state.choice,
-      walkTimes: [...new Set([...times, time])].sort(),
-      walkRoutes: { ...(state.choice.walkRoutes ?? {}), [time]: route },
-      areas: areas.includes("walks") ? areas : [...areas, "walks"],
-      routineKeys: [...new Set([...(state.choice.routineKeys ?? []), "walk"])],
-    },
-  };
-  persist();
-  notify();
-  return true;
 };
 
 export const toggleReminder = (key: string) => {
@@ -223,3 +209,9 @@ export const useVaccineDuty = (): VaccineDuty | null => {
     deferred: Date.now() < deferredUntil,
   };
 };
+
+// A reset of the account empties this store too.
+onWipe(() => {
+  state = { hydrated: true, completed: false, choice: null, deferredUntil: 0, mutedReminders: [] };
+  notify();
+});

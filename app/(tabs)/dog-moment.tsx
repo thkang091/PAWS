@@ -6,7 +6,6 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 
-import { SaveProgressBanner } from "@/components/account/SaveProgressBanner";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
@@ -34,7 +33,6 @@ export default function DogMomentTabScreen() {
   const [caption, setCaption] = useState("");
   const [selectedMood, setSelectedMood] = useState("Happy");
   const [selectedQuest, setSelectedQuest] = useState("Training");
-  const [showSaveBanner, setShowSaveBanner] = useState(false);
   const todayMoment = useMemo(() => (moments.data ?? []).find((moment) => moment.momentDate === todayKey()), [moments.data]);
   const recentMoments = moments.data ?? [];
 
@@ -73,7 +71,6 @@ export default function DogMomentTabScreen() {
       localDate: todayKey(),
     }, {
       onSuccess: () => {
-        setShowSaveBanner(true);
         setSelectedAsset(null);
         setCaption("");
         if (dog.data?.id) {
@@ -167,7 +164,6 @@ export default function DogMomentTabScreen() {
           <Ionicons name="calendar" size={24} color={theme.colors.text} />
         </Pressable>
       </View>
-      {showSaveBanner ? <SaveProgressBanner forceVisible /> : <SaveProgressBanner />}
 
       <View style={styles.streakCard}>
         <View style={styles.fireCircle}><Ionicons name="flame" size={28} color={theme.colors.secondary} /></View>

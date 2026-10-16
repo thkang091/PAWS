@@ -118,7 +118,7 @@ export default function WelcomeScreen() {
             style={[styles.ctaLayer, accountStyle]}
             pointerEvents={page === last ? "auto" : "none"}
           >
-            <PrimaryCta label="Create an account" onPress={startOnboarding} />
+            <PrimaryCta label="Get started" onPress={startOnboarding} />
           </Animated.View>
         </View>
 
@@ -133,11 +133,6 @@ export default function WelcomeScreen() {
             style={[styles.tailLayer, accountStyle]}
             pointerEvents={page === last ? "auto" : "none"}
           >
-            <View style={styles.signInRow}>
-              <Text style={styles.quiet}>Have an account already?</Text>
-              <TextButton label="Sign in" strong onPress={() => router.push("/account/link")} />
-            </View>
-            <TextButton label="Continue as a guest" strong onPress={startOnboarding} />
           </Animated.View>
         </View>
       </View>

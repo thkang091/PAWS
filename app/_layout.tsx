@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { CheckInLock } from "@/features/care/components/CheckInLock";
 import { AppProvider } from "@/providers/AppProvider";
 import { useAuth } from "@/providers/AuthProvider";
 import { initNotifications } from "@/services/notificationService";
@@ -30,6 +31,7 @@ const RootNavigator = () => {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="rewards" options={{ title: "Rewards" }} />
       <Stack.Screen name="game/shop" options={{ headerShown: false }} />
+      <Stack.Screen name="game/store" options={{ headerShown: false }} />
       <Stack.Screen name="game/challenge" options={{ headerShown: false }} />
       <Stack.Screen name="game/[gameId]" options={{ title: "Challenge" }} />
       <Stack.Screen name="train/lesson-preview" options={{ headerShown: false }} />
@@ -46,11 +48,13 @@ const RootNavigator = () => {
       <Stack.Screen name="avatar-shop" options={{ title: "Avatar Shop" }} />
       <Stack.Screen name="inventory" options={{ title: "Inventory" }} />
       <Stack.Screen name="notifications-settings" options={{ headerShown: false }} />
-      <Stack.Screen name="account/link" options={{ title: "Save Progress" }} />
+      <Stack.Screen name="account/link" options={{ headerShown: false }} />
+      <Stack.Screen name="auth/callback" options={{ headerShown: false, gestureEnabled: false }} />
       <Stack.Screen name="profile/edit" options={{ title: "Edit Profile" }} />
       <Stack.Screen name="profile/[section]" options={{ headerShown: false }} />
       <Stack.Screen name="profile/progress" options={{ headerShown: false }} />
       <Stack.Screen name="profile/settings" options={{ headerShown: false }} />
+      <Stack.Screen name="profile/get-to-know" options={{ headerShown: false }} />
       <Stack.Screen name="care/schedule" options={{ headerShown: false }} />
       <Stack.Screen name="care/find-vet" options={{ headerShown: false }} />
       <Stack.Screen name="care/book-visit" options={{ headerShown: false }} />
@@ -58,12 +62,23 @@ const RootNavigator = () => {
       <Stack.Screen name="care/pharmacy" options={{ headerShown: false }} />
       <Stack.Screen name="care/setup" options={{ headerShown: false }} />
       <Stack.Screen name="care/walk" options={{ headerShown: false }} />
+      <Stack.Screen name="care/plan-walk" options={{ headerShown: false }} />
+      <Stack.Screen name="care/food-plan" options={{ headerShown: false }} />
+      <Stack.Screen name="care/food-browse" options={{ headerShown: false }} />
+      <Stack.Screen name="care/food-item" options={{ headerShown: false }} />
+      <Stack.Screen name="care/food-change" options={{ headerShown: false }} />
+      <Stack.Screen name="care/food-prefs" options={{ headerShown: false }} />
       <Stack.Screen name="care/food-check" options={{ headerShown: false }} />
       <Stack.Screen name="care/food-rules" options={{ headerShown: false }} />
       <Stack.Screen name="care/food-search" options={{ headerShown: false }} />
-      <Stack.Screen name="care/event-form" options={{ title: "Care Event" }} />
+      <Stack.Screen name="care/routine-form" options={{ headerShown: false }} />
       <Stack.Screen name="care/weight-log" options={{ headerShown: false }} />
       <Stack.Screen name="care/vaccinations" options={{ headerShown: false }} />
+      <Stack.Screen name="care/preventive" options={{ headerShown: false }} />
+      <Stack.Screen name="care/records" options={{ headerShown: false }} />
+      <Stack.Screen name="care/log-care" options={{ headerShown: false }} />
+      <Stack.Screen name="care/record" options={{ headerShown: false }} />
+      <Stack.Screen name="care/check-in-edit" options={{ headerShown: false }} />
       <Stack.Screen name="care/medications" options={{ headerShown: false }} />
       <Stack.Screen name="care/exercise" options={{ headerShown: false }} />
       <Stack.Screen name="care/grooming" options={{ headerShown: false }} />
@@ -85,6 +100,8 @@ export default function RootLayout() {
       <AppProvider>
         <StatusBar style="dark" />
         <RootNavigator />
+        {/* The evening check-in covers every screen once it is due, until it is answered. */}
+        <CheckInLock />
       </AppProvider>
     </GestureHandlerRootView>
   );

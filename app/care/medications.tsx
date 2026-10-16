@@ -17,7 +17,6 @@ import {
   BellIcon,
   CheckIcon,
   ClockIcon,
-  PencilSimpleIcon,
   PillIcon,
   PlusIcon,
   ProhibitIcon,

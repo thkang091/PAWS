@@ -8,7 +8,6 @@ import Animated, {
   useSharedValue,
   withDelay,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
 import { useEffect } from "react";
 import * as Haptics from "expo-haptics";
