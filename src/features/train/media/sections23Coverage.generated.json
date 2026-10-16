@@ -1,0 +1,469 @@
+{
+  "missing": [],
+  "courses": {
+    "2-1": {
+      "title": "Mark the Right Choice",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "2-1/v2/clips/PAWS_2-1_C01_Marker_then_reward_Zak_v2.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 170
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "2-1/v2/clips/PAWS_2-1_C02_Mark_a_glance_Zak_v2.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 228
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "2-1/v2/clips/PAWS_2-1_C03_Hidden_reward_Pupford_v2.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 264
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "2-1/v2/clips/PAWS_2-1_C02_Mark_a_glance_Zak_v2.mp4",
+            "2-1/v2/clips/PAWS_2-1_C04_Leave_object_Zak_v2.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 393
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "2-1/v2/clips/PAWS_2-1_C05_Door_routine_and_release_Pupford_v2.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 252
+        }
+      ]
+    },
+    "2-2": {
+      "title": "Pause Access to Rewards",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "2-2/clips/PAWS_2-2_C01_Toy_pause_and_resume_Pupford_v1.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 327
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "2-2/clips/PAWS_2-2_C02_Treat_hand_pause_Zak_v1.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 200
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "2-2/clips/PAWS_2-2_C03_Drop_sit_resume_Pupford_v1.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 207
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "2-2/clips/PAWS_2-2_C04_Indoor_boundary_pause_resume_Zak_v1.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 327
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "2-2/clips/PAWS_2-2_C01_Toy_pause_and_resume_Pupford_v1.mp4",
+            "2-2/clips/PAWS_2-2_C04_Indoor_boundary_pause_resume_Zak_v1.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 654
+        }
+      ]
+    },
+    "2-3": {
+      "title": "Learn Clear Feedback Words",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "2-3/clips/PAWS_2-3_C01_Yes_then_treat_Zak_v1.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 104
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "2-3/clips/PAWS_2-3_C02_This_way_toy_redirect_Zak_v1.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 153
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "2-3/clips/PAWS_2-3_C01_Yes_then_treat_Zak_v1.mp4",
+            "2-3/clips/PAWS_2-3_C02_This_way_toy_redirect_Zak_v1.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 257
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "2-3/clips/PAWS_2-3_C03_Distant_distraction_turn_AniEd_v1.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 306
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "2-3/clips/PAWS_2-3_C04_Both_words_walking_play_Zak_v1.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 565
+        }
+      ]
+    },
+    "2-4": {
+      "title": "Build a Reward Pattern",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "2-4/clips/PAWS_2-4_C01_Repeat_attention_rewards_Zak_v1.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 337
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "2-4/clips/PAWS_2-4_C02_Reward_in_place_and_release_Pupford_v1.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 240
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "2-4/clips/PAWS_2-4_C03_Hidden_food_after_attention_Pupford_v1.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 264
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "2-4/clips/PAWS_2-4_C04_Sit_then_food_Simpawtico_v1.mp4",
+            "2-4/clips/PAWS_2-4_C05_Sit_then_petting_Simpawtico_v1.mp4",
+            "2-4/clips/PAWS_2-4_C06_Sit_then_short_toy_play_Zak_v1.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 645
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "2-4/clips/PAWS_2-4_C04_Sit_then_food_Simpawtico_v1.mp4",
+            "2-4/clips/PAWS_2-4_C05_Sit_then_petting_Simpawtico_v1.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 330
+        }
+      ]
+    },
+    "2-5": {
+      "title": "Practice a Calm Reset",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "2-5/clips/PAWS_2-5_C01_Pause_toy_and_wait_Pupford_v1.mp4",
+            "2-5/clips/PAWS_2-5_C02_Still_ball_attention_and_reward_Zak_v1.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 759
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "2-5/clips/PAWS_2-5_C03_Leave_shoes_and_switch_to_chew_Zak_v1.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 1071
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "2-5/clips/PAWS_2-5_C03_Leave_shoes_and_switch_to_chew_Zak_v1.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 1071
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "2-5/clips/PAWS_2-5_C04_Reduce_motion_and_retry_Zak_v1.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 483
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "2-5/clips/PAWS_2-5_C05_Shorter_stay_reset_and_all_done_Zak_v1.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 900
+        }
+      ]
+    },
+    "3-1": {
+      "title": "Enjoy Everyday Touch",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "3-1/PAWS_3-1_01_Shoulder_Touch.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 366
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "3-1/PAWS_3-1_02_Back_and_Neck_Touch.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 248
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "3-1/PAWS_3-1_03_Chest_and_Shoulder_Touch.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 424
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "3-1/PAWS_3-1_01_Shoulder_Touch.mp4",
+            "3-1/PAWS_3-1_03_Chest_and_Shoulder_Touch.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 790
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "3-5 - need review/PAWS_3-5_04_Familiar_Trainer_Brief_Back_Stroke_Pupford.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 121
+        }
+      ]
+    },
+    "3-2": {
+      "title": "Prepare for Nail Care",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "3-2/PAWS_3-2_01_Leg_to_Paw_Touch.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 172
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "3-2/PAWS_3-2_02_Paw_Top_Touch.mp4",
+            "3-2/PAWS_3-2_03_Offered_Paw_Palm_Contact.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 287
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "3-2/PAWS_3-2_04_Toe_and_Nail_Touch.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 226
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "3-2/PAWS_3-2_05_Tool_Sight_and_Sound.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 317
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "3-2/PAWS_3-2_06_Tool_Touch_Without_Cutting.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 127
+        }
+      ]
+    },
+    "3-3": {
+      "title": "Prepare for Hygiene Checks",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "3-3/PAWS_3-3_01_Outer_Ear_Touch.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 95
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "3-3/PAWS_3-3_02_Cheek_Touch.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 181
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "3-3/PAWS_3-3_03_Outer_Lip_Touch.mp4",
+            "3-3/PAWS_3-3_04_External_Lip_Lift.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 474
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "3-3/PAWS_3-3_05_Rear_Side_Gentle_Stroke.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 307
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "3-3/PAWS_3-3_01_Outer_Ear_Touch.mp4",
+            "3-3/PAWS_3-3_04_External_Lip_Lift.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 345
+        }
+      ]
+    },
+    "3-4": {
+      "title": "Stay Calm for Bath and Towel",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "3-4/PAWS_3-4_01_Dry_Mat_Entry_Reward_Release.mp4",
+            "3-4/PAWS_3-4_02_Dry_Mat_Small_Shift.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 408
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "3-4/PAWS_3-4_03_Distant_Water_Cue_Reward.mp4"
+          ],
+          "assetLevel": 2,
+          "frames": 569
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "3-4/PAWS_3-4_04_Damp_Cloth_Gentle_Strokes.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 326
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "3-4/PAWS_3-4_05_Brief_Towel_Side_Contact.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 143
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "3-4/PAWS_3-4_04_Damp_Cloth_Gentle_Strokes.mp4",
+            "3-4/PAWS_3-4_05_Brief_Towel_Side_Contact.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 469
+        }
+      ]
+    },
+    "3-5": {
+      "title": "Comfortable With Another Handler",
+      "levels": [
+        {
+          "levelNumber": 1,
+          "sources": [
+            "3-5 - need review/PAWS_3-5_01_Approach_Familiar_Trainer_and_Low_Reward.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 303
+        },
+        {
+          "levelNumber": 2,
+          "sources": [
+            "3-5 - need review/PAWS_3-5_01_Approach_Familiar_Trainer_and_Low_Reward.mp4"
+          ],
+          "assetLevel": 1,
+          "frames": 303
+        },
+        {
+          "levelNumber": 3,
+          "sources": [
+            "3-5 - need review/PAWS_3-5_04_Familiar_Trainer_Brief_Back_Stroke_Pupford.mp4"
+          ],
+          "assetLevel": 3,
+          "frames": 121
+        },
+        {
+          "levelNumber": 4,
+          "sources": [
+            "3-5 - need review/PAWS_3-5_05_Lv4_Collar_Outside_Touch_and_Withdrawal_KirstysPaws.mp4"
+          ],
+          "assetLevel": 4,
+          "frames": 167
+        },
+        {
+          "levelNumber": 5,
+          "sources": [
+            "3-5 - need review/PAWS_3-5_01_Approach_Familiar_Trainer_and_Low_Reward.mp4",
+            "3-5 - need review/PAWS_3-5_02_Familiar_Trainer_Back_Strokes_and_Free_Exit.mp4"
+          ],
+          "assetLevel": 5,
+          "frames": 489
+        }
+      ]
+    }
+  }
+}

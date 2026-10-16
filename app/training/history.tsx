@@ -9,6 +9,7 @@ import { bg, layout, space, text, type } from "@/constants/design";
 import { queryKeys } from "@/constants/queryKeys";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { getDogTrainingOverview } from "@/services/trainingCurriculumService";
+import { areLessonVideosUnlocked } from "@/features/train/media/lessonVideoUnlock";
 
 export default function TrainingHistoryScreen() {
   const dog = useCurrentDog();
@@ -43,7 +44,8 @@ export default function TrainingHistoryScreen() {
         ) : (
           <View style={styles.stack}>
             {rows.map((row) => {
-              const fraction = row.progress.checkpointStatus === "passed" ? 1 : (row.progress.currentLevelNumber - 1) / 5;
+              const complete = areLessonVideosUnlocked(row.progress);
+              const fraction = complete ? 1 : (row.progress.currentLevelNumber - 1) / 5;
               return (
                 <View key={row.skill.id} style={styles.row}>
                   <View style={styles.rowHeader}>
@@ -52,8 +54,9 @@ export default function TrainingHistoryScreen() {
                   </View>
                   <ProgressBar accessibilityLabel={`${row.skill.title} progress`} progress={Math.max(0, Math.min(1, fraction))} />
                   <Text style={styles.rowStatus}>
-                    {row.progress.checkpointStatus === "passed"
-                      ? "Checkpoint passed"
+                    {complete
+                      ? "Lesson complete"
+                      : row.progress.needsReinforcement ? "Practice to revisit"
                       : `Level ${row.progress.currentLevelNumber} of 5`}
                     {row.progress.reviewSoon ? " · Review scheduled" : ""}
                   </Text>

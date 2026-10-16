@@ -13,13 +13,15 @@
       "backgroundColor": "#FFF8EC"
     },
     "ios": {
-      "bundleIdentifier": "com.example.paws",
+      "bundleIdentifier": "com.tminjae1124.paws",
+      "buildNumber": "3",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "PAWS uses the camera to record training videos, check whether a food is safe for your dog, and scan food bags.",
         "NSMicrophoneUsageDescription": "PAWS needs microphone access to record audio during training video capture.",
         "NSPhotoLibraryUsageDescription": "PAWS needs access to your photo library to upload training videos and reference photos.",
-        "NSPhotoLibraryAddUsageDescription": "PAWS saves training reference photos to your photo library."
+        "NSPhotoLibraryAddUsageDescription": "PAWS saves training reference photos to your photo library.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -77,10 +79,14 @@
       ]
     ],
     "extra": {
-      "pawsPoseModuleComment": "On-device pose extraction prototype. Requires a development build (expo prebuild). No effect in Expo Go. See modules/paws-pose/."
+      "pawsPoseModuleComment": "On-device pose extraction prototype. Requires a development build (expo prebuild). No effect in Expo Go. See modules/paws-pose/.",
+      "eas": {
+        "projectId": "71704dda-8d80-402f-abef-e24f4d961f41"
+      }
     },
     "runtimeVersion": {
       "policy": "appVersion"
-    }
+    },
+    "owner": "tminjae1124"
   }
 }

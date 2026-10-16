@@ -10,9 +10,11 @@
     "@supabase/supabase-js": "^2.109.0",
     "@tanstack/react-query": "^5.101.0",
     "expo": "~56.0.22",
+    "expo-asset": "~56.0.24",
     "expo-audio": "~56.0.13",
     "expo-camera": "~56.0.8",
     "expo-constants": "~56.0.17",
+    "expo-dev-client": "~56.0.27",
     "expo-document-picker": "~56.0.4",
     "expo-file-system": "~56.0.11",
     "expo-haptics": "~56.0.3",
@@ -41,6 +43,7 @@
     "react-native-svg": "15.15.4",
     "react-native-url-polyfill": "^3.0.0",
     "react-native-web": "^0.21.2",
+    "react-native-webview": "13.16.1",
     "react-native-worklets": "0.8.3",
     "ws": "^8.21.0",
     "zod": "^4.4.3"
@@ -59,6 +62,7 @@
   },
   "scripts": {
     "start": "expo start",
+    "start:iphone": "node scripts/start-iphone.mjs",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",

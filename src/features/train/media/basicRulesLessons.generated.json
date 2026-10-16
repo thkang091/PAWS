@@ -1,0 +1,749 @@
+{
+  "1-3": [
+    {
+      "id": "drop-it-l1",
+      "levelNumber": 1,
+      "duration": 6.266667,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Introduce the cue",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Start with an empty mouth and say “Drop”."
+            },
+            {
+              "at": 1.5,
+              "text": "Scatter a few treats just after the cue."
+            },
+            {
+              "at": 4.8,
+              "text": "Let your dog finish, then reset."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drop-it-l2",
+      "levelNumber": 2,
+      "duration": 19.6,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Trade and return",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Start with an easy, safe toy."
+            },
+            {
+              "at": 2.5,
+              "text": "Say “Drop”, then offer the treat trade."
+            },
+            {
+              "at": 5.5,
+              "text": "Pick up the toy while your dog eats."
+            },
+            {
+              "at": 7.0,
+              "text": "Return the toy to keep the trade friendly."
+            }
+          ]
+        },
+        {
+          "title": "An easier trade example",
+          "cues": [
+            {
+              "at": 9.6,
+              "text": "If release is difficult, make the trade easier."
+            },
+            {
+              "at": 14.1,
+              "text": "Scatter treats so your dog can let go."
+            },
+            {
+              "at": 17.6,
+              "text": "Return the safe toy after the trade."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drop-it-l3",
+      "levelNumber": 3,
+      "duration": 4.666667,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Release before reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Say “Drop” once and give your dog a moment."
+            },
+            {
+              "at": 1.7,
+              "text": "Mark the release, then bring the reward."
+            },
+            {
+              "at": 3.8,
+              "text": "Offer the safe item again."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drop-it-l4",
+      "levelNumber": 4,
+      "duration": 10.2,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Practise while standing",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Practise the same trade while standing nearby."
+            },
+            {
+              "at": 3.5,
+              "text": "Reward when your dog lets go."
+            },
+            {
+              "at": 5.5,
+              "text": "Return the safe item, then step away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drop-it-l5",
+      "levelNumber": 5,
+      "duration": 10.1,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Drop during play",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Begin a gentle game with a safe toy."
+            },
+            {
+              "at": 4.5,
+              "text": "Pause the game and say “Drop”."
+            },
+            {
+              "at": 6.8,
+              "text": "Reward the release before restarting play."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "1-4": [
+    {
+      "id": "potty-routine-l1",
+      "levelNumber": 1,
+      "duration": 17.2,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition. Mat/bed footage illustrates movement only; practise at the potty area. No elimination is shown and no sit/down is required.",
+      "steps": [
+        {
+          "title": "Practise going to a spot",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Movement example: practise this at your potty area."
+            },
+            {
+              "at": 2.0,
+              "text": "Guide your dog to the chosen spot."
+            },
+            {
+              "at": 5.0,
+              "text": "Reward arriving calmly; no sit or down needed."
+            }
+          ]
+        },
+        {
+          "title": "Repeat and release",
+          "cues": [
+            {
+              "at": 10.6,
+              "text": "Another movement example: guide to the same spot."
+            },
+            {
+              "at": 13.1,
+              "text": "Reward your dog at the spot."
+            },
+            {
+              "at": 15.4,
+              "text": "Release and move away calmly."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "potty-routine-l2",
+      "levelNumber": 2,
+      "duration": 23.2,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition. Mat/bed footage illustrates movement only; practise at the potty area. No elimination is shown and no sit/down is required.",
+      "steps": [
+        {
+          "title": "Wait briefly at the spot",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Movement example: use your potty area, not a bed."
+            },
+            {
+              "at": 3.0,
+              "text": "Reward arrival, then allow a short quiet pause."
+            },
+            {
+              "at": 8.0,
+              "text": "Release to finish this practice repetition."
+            }
+          ]
+        },
+        {
+          "title": "Another arrival example",
+          "cues": [
+            {
+              "at": 9.066667,
+              "text": "Another movement example: guide to the chosen spot."
+            },
+            {
+              "at": 12.566667,
+              "text": "Reward arriving at the spot."
+            },
+            {
+              "at": 15.566667,
+              "text": "Repeat calmly without requiring a sit or down."
+            }
+          ]
+        },
+        {
+          "title": "Finish the practice",
+          "cues": [
+            {
+              "at": 19.433333,
+              "text": "Release example: signal that the repetition is over."
+            },
+            {
+              "at": 21.433333,
+              "text": "Let your dog move away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "potty-routine-l3",
+      "levelNumber": 3,
+      "duration": 40.0,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Go outside together",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Open the door calmly and head outside."
+            },
+            {
+              "at": 4.5,
+              "text": "Walk with your dog to the potty area."
+            }
+          ]
+        },
+        {
+          "title": "Another potty example",
+          "cues": [
+            {
+              "at": 7.566667,
+              "text": "Another dog: wait quietly during the potty break."
+            },
+            {
+              "at": 13.566667,
+              "text": "Let your dog finish without interruption."
+            },
+            {
+              "at": 17.066667,
+              "text": "Praise and reward after finishing."
+            }
+          ]
+        },
+        {
+          "title": "A calm return example",
+          "cues": [
+            {
+              "at": 22.133333,
+              "text": "Separate example: finish the outing calmly."
+            },
+            {
+              "at": 27.133333,
+              "text": "Walk together away from the potty area."
+            },
+            {
+              "at": 34.133333,
+              "text": "Head back indoors without rushing."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "potty-routine-l4",
+      "levelNumber": 4,
+      "duration": 49.4,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Start the morning routine",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Plan a potty trip soon after waking."
+            },
+            {
+              "at": 5.0,
+              "text": "Get ready to take your puppy outside."
+            }
+          ]
+        },
+        {
+          "title": "Allow time outside",
+          "cues": [
+            {
+              "at": 9.8,
+              "text": "Give your puppy a quiet chance to explore the grass."
+            },
+            {
+              "at": 12.8,
+              "text": "Wait patiently; this clip does not show elimination."
+            }
+          ]
+        },
+        {
+          "title": "Go outside together",
+          "cues": [
+            {
+              "at": 15.5,
+              "text": "Open the door calmly and head outside."
+            },
+            {
+              "at": 20.0,
+              "text": "Walk with your dog to the potty area."
+            }
+          ]
+        },
+        {
+          "title": "Reward after finishing",
+          "cues": [
+            {
+              "at": 23.066667,
+              "text": "Wait quietly while your dog finishes."
+            },
+            {
+              "at": 25.566667,
+              "text": "Reward promptly after your dog finishes."
+            },
+            {
+              "at": 29.066667,
+              "text": "Move on calmly together."
+            }
+          ]
+        },
+        {
+          "title": "A calm return example",
+          "cues": [
+            {
+              "at": 31.533333,
+              "text": "Separate example: finish the outing calmly."
+            },
+            {
+              "at": 36.533333,
+              "text": "Walk together away from the potty area."
+            },
+            {
+              "at": 43.533333,
+              "text": "Head back indoors without rushing."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "potty-routine-l5",
+      "levelNumber": 5,
+      "duration": 43.7,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Start the morning routine",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Plan a potty trip soon after waking."
+            },
+            {
+              "at": 5.0,
+              "text": "Get ready to take your puppy outside."
+            }
+          ]
+        },
+        {
+          "title": "Go outside together",
+          "cues": [
+            {
+              "at": 9.8,
+              "text": "Open the door calmly and head outside."
+            },
+            {
+              "at": 14.3,
+              "text": "Walk with your dog to the potty area."
+            }
+          ]
+        },
+        {
+          "title": "Reward after finishing",
+          "cues": [
+            {
+              "at": 17.366667,
+              "text": "Wait quietly while your dog finishes."
+            },
+            {
+              "at": 19.866667,
+              "text": "Reward promptly after your dog finishes."
+            },
+            {
+              "at": 23.366667,
+              "text": "Move on calmly together."
+            }
+          ]
+        },
+        {
+          "title": "A calm return example",
+          "cues": [
+            {
+              "at": 25.833333,
+              "text": "Separate example: finish the outing calmly."
+            },
+            {
+              "at": 30.833333,
+              "text": "Walk together away from the potty area."
+            },
+            {
+              "at": 37.833333,
+              "text": "Head back indoors without rushing."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "1-5": [
+    {
+      "id": "quiet-moments-l1",
+      "levelNumber": 1,
+      "duration": 14.5,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Notice natural calm",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Notice your dog resting quietly."
+            },
+            {
+              "at": 2.5,
+              "text": "Deliver a small reward calmly."
+            }
+          ]
+        },
+        {
+          "title": "Another calm example",
+          "cues": [
+            {
+              "at": 4.5,
+              "text": "Another example: notice your dog settling."
+            },
+            {
+              "at": 6.5,
+              "text": "Mark and reward calm; lying down is optional."
+            }
+          ]
+        },
+        {
+          "title": "Introduce the quiet cue",
+          "cues": [
+            {
+              "at": 9.2,
+              "text": "While your dog is quiet, say your quiet cue once."
+            },
+            {
+              "at": 10.2,
+              "text": "Reward calmly to build the association."
+            }
+          ]
+        },
+        {
+          "title": "A release example",
+          "cues": [
+            {
+              "at": 12.0,
+              "text": "Separate example: give the release cue."
+            },
+            {
+              "at": 13.5,
+              "text": "Let your dog leave the spot."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quiet-moments-l2",
+      "levelNumber": 2,
+      "duration": 10.666667,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Turn back to you",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Say the familiar quiet cue once."
+            },
+            {
+              "at": 1.5,
+              "text": "Mark the turn toward you and reward."
+            }
+          ]
+        },
+        {
+          "title": "Repeat a quiet response",
+          "cues": [
+            {
+              "at": 3.366667,
+              "text": "Another repetition: cue once, then wait."
+            },
+            {
+              "at": 5.866667,
+              "text": "Praise and reward attention back to you."
+            }
+          ]
+        },
+        {
+          "title": "A release example",
+          "cues": [
+            {
+              "at": 8.166667,
+              "text": "Separate example: give the release cue."
+            },
+            {
+              "at": 9.666667,
+              "text": "Let your dog leave the spot."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quiet-moments-l3",
+      "levelNumber": 3,
+      "duration": 21.3,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Move to the resting spot",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Guide your dog onto the resting spot."
+            },
+            {
+              "at": 2.5,
+              "text": "Reward on the spot."
+            },
+            {
+              "at": 4.8,
+              "text": "Release to finish the short repetition."
+            }
+          ]
+        },
+        {
+          "title": "Repeat a quiet response",
+          "cues": [
+            {
+              "at": 6.6,
+              "text": "Another repetition: cue once, then wait."
+            },
+            {
+              "at": 9.1,
+              "text": "Praise and reward attention back to you."
+            }
+          ]
+        },
+        {
+          "title": "A short calm wait",
+          "cues": [
+            {
+              "at": 11.4,
+              "text": "Another repetition: guide onto the resting spot."
+            },
+            {
+              "at": 13.9,
+              "text": "Reward calmly in place."
+            },
+            {
+              "at": 16.4,
+              "text": "Keep the quiet pause short and easy."
+            }
+          ]
+        },
+        {
+          "title": "A release example",
+          "cues": [
+            {
+              "at": 18.8,
+              "text": "Separate example: give the release cue."
+            },
+            {
+              "at": 20.3,
+              "text": "Let your dog leave the spot."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quiet-moments-l4",
+      "levelNumber": 4,
+      "duration": 17.366667,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Keep a distraction small",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Movement example: touch the handle briefly."
+            },
+            {
+              "at": 1.3,
+              "text": "Reward a calm response; reduce movement if needed."
+            }
+          ]
+        },
+        {
+          "title": "Repeat a quiet response",
+          "cues": [
+            {
+              "at": 2.666667,
+              "text": "Another repetition: cue once, then wait."
+            },
+            {
+              "at": 5.166667,
+              "text": "Praise and reward attention back to you."
+            }
+          ]
+        },
+        {
+          "title": "A short calm wait",
+          "cues": [
+            {
+              "at": 7.466667,
+              "text": "Another repetition: guide onto the resting spot."
+            },
+            {
+              "at": 9.966667,
+              "text": "Reward calmly in place."
+            },
+            {
+              "at": 12.466667,
+              "text": "Keep the quiet pause short and easy."
+            }
+          ]
+        },
+        {
+          "title": "A release example",
+          "cues": [
+            {
+              "at": 14.866667,
+              "text": "Separate example: give the release cue."
+            },
+            {
+              "at": 16.366667,
+              "text": "Let your dog leave the spot."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quiet-moments-l5",
+      "levelNumber": 5,
+      "duration": 19.5,
+      "coverageNote": "Separate demonstration examples, not one continuous repetition.",
+      "steps": [
+        {
+          "title": "Use the cue at home",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Say the familiar quiet cue once near the window."
+            },
+            {
+              "at": 3.0,
+              "text": "Let your dogs turn away and come toward you."
+            },
+            {
+              "at": 7.0,
+              "text": "Praise their attention back to you."
+            }
+          ]
+        },
+        {
+          "title": "A short calm wait",
+          "cues": [
+            {
+              "at": 9.6,
+              "text": "Another repetition: guide onto the resting spot."
+            },
+            {
+              "at": 12.1,
+              "text": "Reward calmly in place."
+            },
+            {
+              "at": 14.6,
+              "text": "Keep the quiet pause short and easy."
+            }
+          ]
+        },
+        {
+          "title": "A release example",
+          "cues": [
+            {
+              "at": 17.0,
+              "text": "Separate example: give the release cue."
+            },
+            {
+              "at": 18.5,
+              "text": "Let your dog leave the spot."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

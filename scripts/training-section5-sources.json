@@ -1,0 +1,140 @@
+[
+  {
+    "skill": "5-1",
+    "id": "01",
+    "file": "5-1/PAWS_5-1_01_Visit_Indoor_Potty_Area_and_Return.mp4",
+    "duration": 12.01
+  },
+  {
+    "skill": "5-1",
+    "id": "02",
+    "file": "5-1/PAWS_5-1_02_Follow_Indoor_Route_Pause_and_Reward.mp4",
+    "duration": 6.88
+  },
+  {
+    "skill": "5-1",
+    "id": "03",
+    "file": "5-1/PAWS_5-1_03_Same_Potty_Area_From_Another_Start.mp4",
+    "duration": 5.84
+  },
+  {
+    "skill": "5-1",
+    "id": "04",
+    "file": "5-1/PAWS_5-1_04_Reward_After_Potty_Explanation_and_Example.mp4",
+    "duration": 23.43
+  },
+  {
+    "skill": "5-2",
+    "id": "01",
+    "file": "5-2/PAWS_5-2_01_Neutral_Accident_Response_Explanation.mp4",
+    "duration": 8.93
+  },
+  {
+    "skill": "5-2",
+    "id": "02",
+    "file": "5-2/PAWS_5-2_02_Guide_to_a_Neutral_Resting_Spot.mp4",
+    "duration": 8.91
+  },
+  {
+    "skill": "5-2",
+    "id": "03",
+    "file": "5-2/PAWS_5-2_03_Wipe_the_Floor_and_Lift_the_Cloth.mp4",
+    "duration": 11.23
+  },
+  {
+    "skill": "5-2",
+    "id": "04",
+    "file": "5-2/PAWS_5-2_04_Write_a_Potty_Log.mp4",
+    "duration": 9.38
+  },
+  {
+    "skill": "5-2",
+    "id": "05",
+    "file": "5-2/PAWS_5-2_05_Adjust_the_Next_Potty_Opportunity_Explanation.mp4",
+    "duration": 11.07
+  },
+  {
+    "skill": "5-2",
+    "id": "06",
+    "file": "5-2/PAWS_5-2_06_Use_the_Familiar_Indoor_Potty_Route.mp4",
+    "duration": 6.88
+  },
+  {
+    "skill": "5-3",
+    "id": "01",
+    "file": "5-3/PAWS_5-3_01_Outdoor_Route_Wait_Reward_and_Continue.mp4",
+    "duration": 15.98
+  },
+  {
+    "skill": "5-3",
+    "id": "02",
+    "file": "5-3/PAWS_5-3_02_Wait_for_Completion_then_Praise_Zak.mp4",
+    "duration": 9.84
+  },
+  {
+    "skill": "5-3",
+    "id": "03",
+    "file": "5-3/PAWS_5-3_03_Allow_Quiet_Sniffing_on_Leash_Pupford.mp4",
+    "duration": 16.18
+  },
+  {
+    "skill": "5-3",
+    "id": "04",
+    "file": "5-3/PAWS_5-3_04_Move_Away_From_Distant_Distractions_Zak.mp4",
+    "duration": 15.2
+  },
+  {
+    "skill": "5-1",
+    "id": "05",
+    "file": "assets/training/sources/section5/indoor-potty-and-reward.mp4",
+    "projectFile": "assets/training/sources/section5/indoor-potty-and-reward.mp4",
+    "duration": 9.5,
+    "sourceUrl": "https://www.youtube.com/watch?v=AVCV8k3xvGY",
+    "sourceInterval": [
+      281,
+      290.5
+    ]
+  },
+  {
+    "skill": "5-2",
+    "id": "07",
+    "file": "assets/training/sources/section5/notice-an-accident.mp4",
+    "projectFile": "assets/training/sources/section5/notice-an-accident.mp4",
+    "duration": 2.25,
+    "sourceUrl": "https://www.youtube.com/watch?v=t68E7g4D4dU",
+    "sourceInterval": [
+      115.05,
+      117.3
+    ]
+  },
+  {
+    "skill": "5-2",
+    "id": "08",
+    "file": "assets/training/sources/section5/recovery-clean.mp4",
+    "projectFile": "assets/training/sources/section5/recovery-clean.mp4",
+    "duration": 4,
+    "sourceUrl": "https://www.youtube.com/watch?v=ijT16-8BPNQ",
+    "sourceInterval": [
+      145.4,
+      149.4
+    ]
+  },
+  {
+    "skill": "5-2",
+    "id": "09",
+    "file": "assets/training/sources/section5/recovery-record.mp4",
+    "projectFile": "assets/training/sources/section5/recovery-record.mp4",
+    "duration": 4,
+    "sourceUrl": "https://www.youtube.com/watch?v=K5gCY0uMFp0",
+    "sourceInterval": [
+      157.9,
+      161.9
+    ]
+  },
+  {
+    "skill": "5-2",
+    "id": "10",
+    "file": "5-2/PAWS_5-2_06_Use_the_Familiar_Indoor_Potty_Route.mp4",
+    "duration": 6.88
+  }
+]

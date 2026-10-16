@@ -608,6 +608,8 @@ export type DogTrainingSkillProgress = {
   reviewSoon: boolean;
   lastPracticedAt: string | null;
   completedAt: string | null;
+  level5CompletedAt?: string | null;
+  needsReinforcement?: boolean;
 };
 
 export type SectionRoadmapNode = {

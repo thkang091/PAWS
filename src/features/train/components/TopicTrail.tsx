@@ -2,9 +2,8 @@ import { StyleSheet, View } from "react-native";
 
 import { ChapterNode, NODE_SIZE, type NodeState } from "@/features/train/components/ChapterNode";
 import { ChapterPath } from "@/features/train/components/ChapterPath";
-import { GardenBackdrop } from "@/features/train/components/GardenBackdrop";
 import { Reveal } from "@/features/onboarding/components/Reveal";
-import { motion, radius, space } from "@/constants/design";
+import { motion, space } from "@/constants/design";
 
 export type TrailStep = { id: string; title: string; state: NodeState };
 
@@ -31,7 +30,6 @@ export const TopicTrail = ({
 
   return (
     <View key={topicKey} style={styles.meadow}>
-      <GardenBackdrop width={width} height={trailHeight + space.xxl * 2} />
       <View style={{ width, height: trailHeight }}>
         <ChapterPath points={points} width={width} height={trailHeight} progress={Math.max(0, walked)} />
         {steps.map((step, i) => (
@@ -54,8 +52,6 @@ export const TopicTrail = ({
 const styles = StyleSheet.create({
   meadow: {
     marginTop: space.xl,
-    borderRadius: radius.sheet,
-    overflow: "hidden",
     paddingTop: space.xxl,
     paddingBottom: space.xxl,
   },

@@ -1,0 +1,867 @@
+{
+  "4-1": [
+    {
+      "id": "section-4-1-l1",
+      "levelNumber": 1,
+      "duration": 14.166667,
+      "coverageNote": "Name-cue captions are instructions, not an audio transcript. Level 4 uses an open doorway with visual contact. Outdoor footage illustrates orientation, not recall or proof of generalization.",
+      "steps": [
+        {
+          "title": "Say the name once and wait",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Say your dog’s name once in a calm voice."
+            },
+            {
+              "at": 1.2,
+              "text": "Reward the turn toward you."
+            },
+            {
+              "at": 3.5,
+              "text": "Begin another easy repetition."
+            },
+            {
+              "at": 6.0,
+              "text": "Wait without repeating the name."
+            },
+            {
+              "at": 10.0,
+              "text": "Reward when your dog turns back."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-1-l2",
+      "levelNumber": 2,
+      "duration": 9.266667,
+      "coverageNote": "Name-cue captions are instructions, not an audio transcript. Level 4 uses an open doorway with visual contact. Outdoor footage illustrates orientation, not recall or proof of generalization.",
+      "steps": [
+        {
+          "title": "Respond from a short distance",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Begin a few steps apart indoors."
+            },
+            {
+              "at": 3.0,
+              "text": "Say the name once and allow time to turn."
+            },
+            {
+              "at": 5.5,
+              "text": "Let your dog come toward you."
+            },
+            {
+              "at": 7.5,
+              "text": "Deliver the reward beside you."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-1-l3",
+      "levelNumber": 3,
+      "duration": 4.3,
+      "coverageNote": "Name-cue captions are instructions, not an audio transcript. Level 4 uses an open doorway with visual contact. Outdoor footage illustrates orientation, not recall or proof of generalization.",
+      "steps": [
+        {
+          "title": "Turn away from mild movement",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "With a quiet person nearby, say the name once."
+            },
+            {
+              "at": 1.8,
+              "text": "Notice your dog turning back to you."
+            },
+            {
+              "at": 3.0,
+              "text": "Reward the return of attention."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-1-l4",
+      "levelNumber": 4,
+      "duration": 10.9,
+      "coverageNote": "Name-cue captions are instructions, not an audio transcript. Level 4 uses an open doorway with visual contact. Outdoor footage illustrates orientation, not recall or proof of generalization.",
+      "steps": [
+        {
+          "title": "Respond across an open doorway",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Keep each other in view across the doorway."
+            },
+            {
+              "at": 3.8,
+              "text": "Say the name once and wait for the turn."
+            },
+            {
+              "at": 6.5,
+              "text": "Let your dog move back toward you."
+            },
+            {
+              "at": 8.5,
+              "text": "Reward the response."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-1-l5",
+      "levelNumber": 5,
+      "duration": 9.3,
+      "coverageNote": "Name-cue captions are instructions, not an audio transcript. Level 4 uses an open doorway with visual contact. Outdoor footage illustrates orientation, not recall or proof of generalization.",
+      "steps": [
+        {
+          "title": "Try a quiet outdoor setting",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Choose a quiet, secure outdoor space."
+            },
+            {
+              "at": 2.2,
+              "text": "Say the name once and watch for a turn."
+            },
+            {
+              "at": 3.5,
+              "text": "Send the reward toward your dog."
+            },
+            {
+              "at": 6.5,
+              "text": "Let your dog finish the reward and reset."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "4-2": [
+    {
+      "id": "section-4-2-l1",
+      "levelNumber": 1,
+      "duration": 9.5,
+      "coverageNote": "Distances depend on the dog. The nearby switched-off vacuum example shows an already comfortable puppy, not a required starting distance. Level 4 combines separate look-and-return and move-away demonstrations.",
+      "steps": [
+        {
+          "title": "Look at a still object",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog notice the still object."
+            },
+            {
+              "at": 1.5,
+              "text": "Reward attention returning to you."
+            },
+            {
+              "at": 4.5,
+              "text": "Keep the object still for another easy look."
+            },
+            {
+              "at": 6.5,
+              "text": "Reward beside you again."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-2-l2",
+      "levelNumber": 2,
+      "duration": 10.0,
+      "coverageNote": "Distances depend on the dog. The nearby switched-off vacuum example shows an already comfortable puppy, not a required starting distance. Level 4 combines separate look-and-return and move-away demonstrations.",
+      "steps": [
+        {
+          "title": "One small object movement",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Start at a distance your dog finds comfortable."
+            },
+            {
+              "at": 1.2,
+              "text": "Move the switched-off object a little, then stop."
+            },
+            {
+              "at": 3.5,
+              "text": "Reward beside you after the movement."
+            },
+            {
+              "at": 7.5,
+              "text": "Pause before adding more movement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-2-l3",
+      "levelNumber": 3,
+      "duration": 10.9,
+      "coverageNote": "Distances depend on the dog. The nearby switched-off vacuum example shows an already comfortable puppy, not a required starting distance. Level 4 combines separate look-and-return and move-away demonstrations.",
+      "steps": [
+        {
+          "title": "Watch a person from a distance",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog notice the person at a distance."
+            },
+            {
+              "at": 1.2,
+              "text": "Reward the check-in beside you."
+            },
+            {
+              "at": 4.0,
+              "text": "Allow a brief look as the person moves slowly."
+            },
+            {
+              "at": 6.2,
+              "text": "Reward attention returning to you."
+            },
+            {
+              "at": 9.0,
+              "text": "Keep the distance comfortable."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-2-l4",
+      "levelNumber": 4,
+      "duration": 25.8,
+      "coverageNote": "Distances depend on the dog. The nearby switched-off vacuum example shows an already comfortable puppy, not a required starting distance. Level 4 combines separate look-and-return and move-away demonstrations.",
+      "steps": [
+        {
+          "title": "Notice a distant dog",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Keep a generous distance from the other dog."
+            },
+            {
+              "at": 2.5,
+              "text": "Notice your dog turning toward you."
+            },
+            {
+              "at": 4.2,
+              "text": "Reward the check-in beside you."
+            },
+            {
+              "at": 7.5,
+              "text": "Keep the next look brief and easy."
+            }
+          ]
+        },
+        {
+          "title": "Move away after a check-in",
+          "cues": [
+            {
+              "at": 10.6,
+              "text": "Separate example: notice the distant trigger."
+            },
+            {
+              "at": 14.1,
+              "text": "Reward attention returning to you."
+            },
+            {
+              "at": 17.1,
+              "text": "Turn and move farther away together."
+            },
+            {
+              "at": 20.6,
+              "text": "Continue toward the quieter area."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-2-l5",
+      "levelNumber": 5,
+      "duration": 12.233333,
+      "coverageNote": "Distances depend on the dog. The nearby switched-off vacuum example shows an already comfortable puppy, not a required starting distance. Level 4 combines separate look-and-return and move-away demonstrations.",
+      "steps": [
+        {
+          "title": "Use the pattern in the park",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog notice a distant everyday activity."
+            },
+            {
+              "at": 2.2,
+              "text": "Reward the turn back toward you."
+            },
+            {
+              "at": 6.0,
+              "text": "Keep the next look brief."
+            },
+            {
+              "at": 8.5,
+              "text": "Reward another check-in beside you."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "4-3": [
+    {
+      "id": "section-4-3-l1",
+      "levelNumber": 1,
+      "duration": 9.466667,
+      "coverageNote": "Same muted 0.6x player as other lessons: sound types come from source records, and captions describe the practice rather than providing sound-exposure audio. Level 4 combines distant keys with a separate turn-and-walk-away example; no measured loudness or universal distance is claimed.",
+      "steps": [
+        {
+          "title": "Introduce a soft recorded sound",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Use a very quiet wind recording."
+            },
+            {
+              "at": 1.2,
+              "text": "Offer a reward beside you."
+            },
+            {
+              "at": 4.0,
+              "text": "Let your dog notice the sound without moving closer."
+            },
+            {
+              "at": 6.5,
+              "text": "Reward and keep the practice brief."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-3-l2",
+      "levelNumber": 2,
+      "duration": 7.133333,
+      "coverageNote": "Same muted 0.6x player as other lessons: sound types come from source records, and captions describe the practice rather than providing sound-exposure audio. Level 4 combines distant keys with a separate turn-and-walk-away example; no measured loudness or universal distance is claimed.",
+      "steps": [
+        {
+          "title": "A brief household recording",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Play a quiet vacuum recording; leave the vacuum off."
+            },
+            {
+              "at": 2.0,
+              "text": "Offer the reward beside you."
+            },
+            {
+              "at": 5.5,
+              "text": "Stop the sound and pause."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-3-l3",
+      "levelNumber": 3,
+      "duration": 6.5,
+      "coverageNote": "Same muted 0.6x player as other lessons: sound types come from source records, and captions describe the practice rather than providing sound-exposure audio. Level 4 combines distant keys with a separate turn-and-walk-away example; no measured loudness or universal distance is claimed.",
+      "steps": [
+        {
+          "title": "One quiet doorbell recording",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Play one very soft doorbell recording."
+            },
+            {
+              "at": 1.5,
+              "text": "Let your dog notice it, then turn back."
+            },
+            {
+              "at": 3.0,
+              "text": "Reward the return to you."
+            },
+            {
+              "at": 5.0,
+              "text": "Pause before another sound."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-3-l4",
+      "levelNumber": 4,
+      "duration": 16.233333,
+      "coverageNote": "Same muted 0.6x player as other lessons: sound types come from source records, and captions describe the practice rather than providing sound-exposure audio. Level 4 combines distant keys with a separate turn-and-walk-away example; no measured loudness or universal distance is claimed.",
+      "steps": [
+        {
+          "title": "A real sound from a distance",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Keep your dog at a comfortable resting spot."
+            },
+            {
+              "at": 2.0,
+              "text": "Make a brief key sound farther away."
+            },
+            {
+              "at": 4.5,
+              "text": "Return to your dog."
+            },
+            {
+              "at": 5.8,
+              "text": "Reward at the resting spot."
+            }
+          ]
+        },
+        {
+          "title": "Move away together",
+          "cues": [
+            {
+              "at": 7.366667,
+              "text": "Separate example: keep a real sound brief and gentle."
+            },
+            {
+              "at": 9.366667,
+              "text": "Invite your dog to turn toward you."
+            },
+            {
+              "at": 10.566667,
+              "text": "Walk away together toward the resting area."
+            },
+            {
+              "at": 13.666667,
+              "text": "Reward after moving away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-3-l5",
+      "levelNumber": 5,
+      "duration": 12.3,
+      "coverageNote": "Same muted 0.6x player as other lessons: sound types come from source records, and captions describe the practice rather than providing sound-exposure audio. Level 4 combines distant keys with a separate turn-and-walk-away example; no measured loudness or universal distance is claimed.",
+      "steps": [
+        {
+          "title": "Recover during an everyday moment",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Notice an everyday sound from the resting spot."
+            },
+            {
+              "at": 2.5,
+              "text": "Reward attention returning to you."
+            },
+            {
+              "at": 5.5,
+              "text": "Allow your dog to stay close and settle."
+            },
+            {
+              "at": 9.5,
+              "text": "Keep the moment easy and finish calmly."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "4-4": [
+    {
+      "id": "section-4-4-l1",
+      "levelNumber": 1,
+      "duration": 8.9,
+      "coverageNote": "Combined examples are separate demonstrations. Duration is brief and voluntary; the videos do not establish independence across all contexts.",
+      "steps": [
+        {
+          "title": "Choose the resting mat",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Invite your dog toward the resting mat."
+            },
+            {
+              "at": 2.5,
+              "text": "Let all four paws move onto the mat."
+            },
+            {
+              "at": 4.5,
+              "text": "Allow a comfortable position."
+            },
+            {
+              "at": 6.5,
+              "text": "Deliver the reward on the mat."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-4-l2",
+      "levelNumber": 2,
+      "duration": 15.033333,
+      "coverageNote": "Combined examples are separate demonstrations. Duration is brief and voluntary; the videos do not establish independence across all contexts.",
+      "steps": [
+        {
+          "title": "One step away and back",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Start beside your dog’s resting spot."
+            },
+            {
+              "at": 1.8,
+              "text": "Take one small step away."
+            },
+            {
+              "at": 3.5,
+              "text": "Return and pause briefly."
+            },
+            {
+              "at": 5.5,
+              "text": "Reward on the mat."
+            }
+          ]
+        },
+        {
+          "title": "A little more distance",
+          "cues": [
+            {
+              "at": 7.4,
+              "text": "Another example: take a few calm steps away."
+            },
+            {
+              "at": 10.4,
+              "text": "Keep the distance easy for your dog."
+            },
+            {
+              "at": 12.4,
+              "text": "Return to the resting spot."
+            },
+            {
+              "at": 13.9,
+              "text": "Reward your dog there."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-4-l3",
+      "levelNumber": 3,
+      "duration": 22.8,
+      "coverageNote": "Combined examples are separate demonstrations. Duration is brief and voluntary; the videos do not establish independence across all contexts.",
+      "steps": [
+        {
+          "title": "Pause, then release",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Invite your dog onto the mat with an empty hand."
+            },
+            {
+              "at": 3.0,
+              "text": "Pause quietly beside the mat."
+            },
+            {
+              "at": 7.0,
+              "text": "Keep the wait brief and comfortable."
+            },
+            {
+              "at": 11.5,
+              "text": "Release before your dog leaves the mat."
+            }
+          ]
+        },
+        {
+          "title": "One step away and back",
+          "cues": [
+            {
+              "at": 15.4,
+              "text": "Another example: start beside your dog’s resting spot."
+            },
+            {
+              "at": 17.2,
+              "text": "Take one small step away."
+            },
+            {
+              "at": 18.9,
+              "text": "Return and pause briefly."
+            },
+            {
+              "at": 20.9,
+              "text": "Reward on the mat."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-4-l4",
+      "levelNumber": 4,
+      "duration": 19.333333,
+      "coverageNote": "Combined examples are separate demonstrations. Duration is brief and voluntary; the videos do not establish independence across all contexts.",
+      "steps": [
+        {
+          "title": "A small household action",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Keep your dog at the familiar resting spot."
+            },
+            {
+              "at": 1.5,
+              "text": "Move the drawer slowly, then stop."
+            },
+            {
+              "at": 5.0,
+              "text": "Return to your dog."
+            },
+            {
+              "at": 7.0,
+              "text": "Reward at the resting spot."
+            }
+          ]
+        },
+        {
+          "title": "A short walk nearby",
+          "cues": [
+            {
+              "at": 9.166667,
+              "text": "Another example: walk a short route beside the resting space."
+            },
+            {
+              "at": 12.166667,
+              "text": "Let your dog stay while you move away."
+            },
+            {
+              "at": 15.166667,
+              "text": "Return calmly."
+            },
+            {
+              "at": 17.166667,
+              "text": "Reward on the mat."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-4-l5",
+      "levelNumber": 5,
+      "duration": 20.2,
+      "coverageNote": "Combined examples are separate demonstrations. Duration is brief and voluntary; the videos do not establish independence across all contexts.",
+      "steps": [
+        {
+          "title": "Choose the bed during a routine",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Let your dog choose the familiar bed."
+            },
+            {
+              "at": 4.0,
+              "text": "Allow time to settle while you stay nearby."
+            },
+            {
+              "at": 9.0,
+              "text": "Continue the quiet household activity."
+            },
+            {
+              "at": 14.5,
+              "text": "Return to reward the choice."
+            },
+            {
+              "at": 18.0,
+              "text": "Deliver the reward at the bed."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "4-5": [
+    {
+      "id": "section-4-5-l1",
+      "levelNumber": 1,
+      "duration": 9.6,
+      "coverageNote": "A door-departure routine illustrates the starting-place pattern. The platform is the original setup, not required equipment. Level 3 combines separate repetitions; Level 5 reuses the walk departure example, not evidence of an unrehearsed daily habit.",
+      "steps": [
+        {
+          "title": "Use one starting place",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Invite your dog to the same starting spot."
+            },
+            {
+              "at": 2.0,
+              "text": "Reward arrival at the spot."
+            },
+            {
+              "at": 4.5,
+              "text": "Add a short, comfortable pause."
+            },
+            {
+              "at": 7.5,
+              "text": "Release before moving away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-5-l2",
+      "levelNumber": 2,
+      "duration": 5.933333,
+      "coverageNote": "A door-departure routine illustrates the starting-place pattern. The platform is the original setup, not required equipment. Level 3 combines separate repetitions; Level 5 reuses the walk departure example, not evidence of an unrehearsed daily habit.",
+      "steps": [
+        {
+          "title": "Add one starting cue",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Give the familiar starting cue once."
+            },
+            {
+              "at": 1.2,
+              "text": "Let your dog arrive at the spot."
+            },
+            {
+              "at": 3.0,
+              "text": "Reward arrival."
+            },
+            {
+              "at": 4.8,
+              "text": "Release to finish this short repetition."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-5-l3",
+      "levelNumber": 3,
+      "duration": 16.866667,
+      "coverageNote": "A door-departure routine illustrates the starting-place pattern. The platform is the original setup, not required equipment. Level 3 combines separate repetitions; Level 5 reuses the walk departure example, not evidence of an unrehearsed daily habit.",
+      "steps": [
+        {
+          "title": "Use one starting place",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Invite your dog to the same starting spot."
+            },
+            {
+              "at": 2.0,
+              "text": "Reward arrival at the spot."
+            },
+            {
+              "at": 4.5,
+              "text": "Add a short, comfortable pause."
+            },
+            {
+              "at": 7.5,
+              "text": "Release before moving away."
+            }
+          ]
+        },
+        {
+          "title": "Leave for a walk together",
+          "cues": [
+            {
+              "at": 9.6,
+              "text": "Another example: begin at the familiar starting spot."
+            },
+            {
+              "at": 11.6,
+              "text": "Pause before opening the door."
+            },
+            {
+              "at": 13.3,
+              "text": "Open the door while your dog waits."
+            },
+            {
+              "at": 15.4,
+              "text": "Release, then head outside together."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-5-l4",
+      "levelNumber": 4,
+      "duration": 5.466667,
+      "coverageNote": "A door-departure routine illustrates the starting-place pattern. The platform is the original setup, not required equipment. Level 3 combines separate repetitions; Level 5 reuses the walk departure example, not evidence of an unrehearsed daily habit.",
+      "steps": [
+        {
+          "title": "Change your starting position",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Approach the same spot from the other side."
+            },
+            {
+              "at": 1.5,
+              "text": "Use the same cue and let your dog arrive."
+            },
+            {
+              "at": 3.0,
+              "text": "Reward at the usual spot."
+            },
+            {
+              "at": 4.5,
+              "text": "Release as usual."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-4-5-l5",
+      "levelNumber": 5,
+      "duration": 7.266667,
+      "coverageNote": "A door-departure routine illustrates the starting-place pattern. The platform is the original setup, not required equipment. Level 3 combines separate repetitions; Level 5 reuses the walk departure example, not evidence of an unrehearsed daily habit.",
+      "steps": [
+        {
+          "title": "Leave for a walk together",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Begin at the familiar starting spot."
+            },
+            {
+              "at": 2.0,
+              "text": "Pause before opening the door."
+            },
+            {
+              "at": 3.7,
+              "text": "Open the door while your dog waits."
+            },
+            {
+              "at": 5.8,
+              "text": "Release, then head outside together."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

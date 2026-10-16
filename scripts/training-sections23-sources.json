@@ -1,0 +1,302 @@
+[
+  {
+    "skill": "2-1",
+    "id": "C01",
+    "file": "2-1/v2/clips/PAWS_2-1_C01_Marker_then_reward_Zak_v2.mp4",
+    "duration": 5.67
+  },
+  {
+    "skill": "2-1",
+    "id": "C02",
+    "file": "2-1/v2/clips/PAWS_2-1_C02_Mark_a_glance_Zak_v2.mp4",
+    "duration": 7.6
+  },
+  {
+    "skill": "2-1",
+    "id": "C03",
+    "file": "2-1/v2/clips/PAWS_2-1_C03_Hidden_reward_Pupford_v2.mp4",
+    "duration": 8.8
+  },
+  {
+    "skill": "2-1",
+    "id": "C04",
+    "file": "2-1/v2/clips/PAWS_2-1_C04_Leave_object_Zak_v2.mp4",
+    "duration": 5.5
+  },
+  {
+    "skill": "2-1",
+    "id": "C05",
+    "file": "2-1/v2/clips/PAWS_2-1_C05_Door_routine_and_release_Pupford_v2.mp4",
+    "duration": 8.4
+  },
+  {
+    "skill": "2-2",
+    "id": "C01",
+    "file": "2-2/clips/PAWS_2-2_C01_Toy_pause_and_resume_Pupford_v1.mp4",
+    "duration": 10.9
+  },
+  {
+    "skill": "2-2",
+    "id": "C02",
+    "file": "2-2/clips/PAWS_2-2_C02_Treat_hand_pause_Zak_v1.mp4",
+    "duration": 6.67
+  },
+  {
+    "skill": "2-2",
+    "id": "C03",
+    "file": "2-2/clips/PAWS_2-2_C03_Drop_sit_resume_Pupford_v1.mp4",
+    "duration": 6.9
+  },
+  {
+    "skill": "2-2",
+    "id": "C04",
+    "file": "2-2/clips/PAWS_2-2_C04_Indoor_boundary_pause_resume_Zak_v1.mp4",
+    "duration": 10.9
+  },
+  {
+    "skill": "2-2",
+    "id": "C05",
+    "file": "2-2/clips/PAWS_2-2_C05_Checkpoint_resume_recap_Zak_v1.mp4",
+    "duration": 7.3
+  },
+  {
+    "skill": "2-3",
+    "id": "C01",
+    "file": "2-3/clips/PAWS_2-3_C01_Yes_then_treat_Zak_v1.mp4",
+    "duration": 3.47
+  },
+  {
+    "skill": "2-3",
+    "id": "C02",
+    "file": "2-3/clips/PAWS_2-3_C02_This_way_toy_redirect_Zak_v1.mp4",
+    "duration": 5.1
+  },
+  {
+    "skill": "2-3",
+    "id": "C03",
+    "file": "2-3/clips/PAWS_2-3_C03_Distant_distraction_turn_AniEd_v1.mp4",
+    "duration": 10.2
+  },
+  {
+    "skill": "2-3",
+    "id": "C04",
+    "file": "2-3/clips/PAWS_2-3_C04_Both_words_walking_play_Zak_v1.mp4",
+    "duration": 18.83
+  },
+  {
+    "skill": "2-4",
+    "id": "C01",
+    "file": "2-4/clips/PAWS_2-4_C01_Repeat_attention_rewards_Zak_v1.mp4",
+    "duration": 11.23
+  },
+  {
+    "skill": "2-4",
+    "id": "C02",
+    "file": "2-4/clips/PAWS_2-4_C02_Reward_in_place_and_release_Pupford_v1.mp4",
+    "duration": 8.0
+  },
+  {
+    "skill": "2-4",
+    "id": "C03",
+    "file": "2-4/clips/PAWS_2-4_C03_Hidden_food_after_attention_Pupford_v1.mp4",
+    "duration": 8.8
+  },
+  {
+    "skill": "2-4",
+    "id": "C04",
+    "file": "2-4/clips/PAWS_2-4_C04_Sit_then_food_Simpawtico_v1.mp4",
+    "duration": 5.3
+  },
+  {
+    "skill": "2-4",
+    "id": "C05",
+    "file": "2-4/clips/PAWS_2-4_C05_Sit_then_petting_Simpawtico_v1.mp4",
+    "duration": 5.7
+  },
+  {
+    "skill": "2-4",
+    "id": "C06",
+    "file": "2-4/clips/PAWS_2-4_C06_Sit_then_short_toy_play_Zak_v1.mp4",
+    "duration": 10.5
+  },
+  {
+    "skill": "2-5",
+    "id": "C01",
+    "file": "2-5/clips/PAWS_2-5_C01_Pause_toy_and_wait_Pupford_v1.mp4",
+    "duration": 10.9
+  },
+  {
+    "skill": "2-5",
+    "id": "C02",
+    "file": "2-5/clips/PAWS_2-5_C02_Still_ball_attention_and_reward_Zak_v1.mp4",
+    "duration": 14.4
+  },
+  {
+    "skill": "2-5",
+    "id": "C03",
+    "file": "2-5/clips/PAWS_2-5_C03_Leave_shoes_and_switch_to_chew_Zak_v1.mp4",
+    "duration": 35.7
+  },
+  {
+    "skill": "2-5",
+    "id": "C04",
+    "file": "2-5/clips/PAWS_2-5_C04_Reduce_motion_and_retry_Zak_v1.mp4",
+    "duration": 16.1
+  },
+  {
+    "skill": "2-5",
+    "id": "C05",
+    "file": "2-5/clips/PAWS_2-5_C05_Shorter_stay_reset_and_all_done_Zak_v1.mp4",
+    "duration": 30.0
+  },
+  {
+    "skill": "3-1",
+    "id": "01",
+    "file": "3-1/PAWS_3-1_01_Shoulder_Touch.mp4",
+    "duration": 12.22
+  },
+  {
+    "skill": "3-1",
+    "id": "02",
+    "file": "3-1/PAWS_3-1_02_Back_and_Neck_Touch.mp4",
+    "duration": 8.32
+  },
+  {
+    "skill": "3-1",
+    "id": "03",
+    "file": "3-1/PAWS_3-1_03_Chest_and_Shoulder_Touch.mp4",
+    "duration": 14.19
+  },
+  {
+    "skill": "3-2",
+    "id": "01",
+    "file": "3-2/PAWS_3-2_01_Leg_to_Paw_Touch.mp4",
+    "duration": 5.79
+  },
+  {
+    "skill": "3-2",
+    "id": "02",
+    "file": "3-2/PAWS_3-2_02_Paw_Top_Touch.mp4",
+    "duration": 4.82
+  },
+  {
+    "skill": "3-2",
+    "id": "03",
+    "file": "3-2/PAWS_3-2_03_Offered_Paw_Palm_Contact.mp4",
+    "duration": 4.82
+  },
+  {
+    "skill": "3-2",
+    "id": "04",
+    "file": "3-2/PAWS_3-2_04_Toe_and_Nail_Touch.mp4",
+    "duration": 7.59
+  },
+  {
+    "skill": "3-2",
+    "id": "05",
+    "file": "3-2/PAWS_3-2_05_Tool_Sight_and_Sound.mp4",
+    "duration": 10.62
+  },
+  {
+    "skill": "3-2",
+    "id": "06",
+    "file": "3-2/PAWS_3-2_06_Tool_Touch_Without_Cutting.mp4",
+    "duration": 4.29
+  },
+  {
+    "skill": "3-3",
+    "id": "01",
+    "file": "3-3/PAWS_3-3_01_Outer_Ear_Touch.mp4",
+    "duration": 3.2
+  },
+  {
+    "skill": "3-3",
+    "id": "02",
+    "file": "3-3/PAWS_3-3_02_Cheek_Touch.mp4",
+    "duration": 6.07
+  },
+  {
+    "skill": "3-3",
+    "id": "03",
+    "file": "3-3/PAWS_3-3_03_Outer_Lip_Touch.mp4",
+    "duration": 7.47
+  },
+  {
+    "skill": "3-3",
+    "id": "04",
+    "file": "3-3/PAWS_3-3_04_External_Lip_Lift.mp4",
+    "duration": 8.37
+  },
+  {
+    "skill": "3-3",
+    "id": "05",
+    "file": "3-3/PAWS_3-3_05_Rear_Side_Gentle_Stroke.mp4",
+    "duration": 10.27
+  },
+  {
+    "skill": "3-4",
+    "id": "01",
+    "file": "3-4/PAWS_3-4_01_Dry_Mat_Entry_Reward_Release.mp4",
+    "duration": 6.2
+  },
+  {
+    "skill": "3-4",
+    "id": "02",
+    "file": "3-4/PAWS_3-4_02_Dry_Mat_Small_Shift.mp4",
+    "duration": 7.4
+  },
+  {
+    "skill": "3-4",
+    "id": "03",
+    "file": "3-4/PAWS_3-4_03_Distant_Water_Cue_Reward.mp4",
+    "duration": 19.0
+  },
+  {
+    "skill": "3-4",
+    "id": "04",
+    "file": "3-4/PAWS_3-4_04_Damp_Cloth_Gentle_Strokes.mp4",
+    "duration": 10.87
+  },
+  {
+    "skill": "3-4",
+    "id": "05",
+    "file": "3-4/PAWS_3-4_05_Brief_Towel_Side_Contact.mp4",
+    "duration": 4.77
+  },
+  {
+    "skill": "3-5",
+    "id": "01",
+    "file": "3-5 - need review/PAWS_3-5_01_Approach_Familiar_Trainer_and_Low_Reward.mp4",
+    "duration": 10.1
+  },
+  {
+    "skill": "3-5",
+    "id": "02",
+    "file": "3-5 - need review/PAWS_3-5_02_Familiar_Trainer_Back_Strokes_and_Free_Exit.mp4",
+    "duration": 6.2
+  },
+  {
+    "skill": "3-5",
+    "id": "03",
+    "file": "3-5 - need review/PAWS_3-5_03_Familiar_Trainer_Hand_Target_and_Reward.mp4",
+    "duration": 3.6
+  },
+  {
+    "skill": "3-1",
+    "id": "04",
+    "file": "3-5 - need review/PAWS_3-5_04_Familiar_Trainer_Brief_Back_Stroke_Pupford.mp4",
+    "duration": 4.03
+  },
+  {
+    "skill": "3-5",
+    "id": "04",
+    "file": "3-5 - need review/PAWS_3-5_04_Familiar_Trainer_Brief_Back_Stroke_Pupford.mp4",
+    "duration": 4.03
+  },
+  {
+    "skill": "3-5",
+    "id": "05",
+    "file": "3-5 - need review/PAWS_3-5_05_Lv4_Collar_Outside_Touch_and_Withdrawal_KirstysPaws.mp4",
+    "duration": 5.57
+  }
+]

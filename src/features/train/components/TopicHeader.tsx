@@ -23,7 +23,7 @@ export const TopicHeader = ({
 }) => {
   const complete = total > 0 && done >= total;
   const fraction = total === 0 ? 0 : done / total;
-  const label = complete ? "Review" : done === 0 ? "Start" : "Continue";
+  const label = complete ? "Rewatch" : done === 0 ? "Start" : "Continue";
 
   return (
     <View style={[styles.card, { backgroundColor: pastel[topic.tint] }]}>

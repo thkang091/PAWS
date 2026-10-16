@@ -1,0 +1,457 @@
+{
+  "5-1": [
+    {
+      "id": "section-5-1-l1",
+      "levelNumber": 1,
+      "duration": 6.833333,
+      "coverageNote": "L2 shows indoor pad use followed by a reward after the puppy steps onto adjacent bedding; it demonstrates completion-before-reward, not reward placement on the pad. L1 is arrival practice; L3 adds a cue instruction to the same route. L4 shows another starting point, not a verified room change. L5 reuses the route as an easier reference; reduced guidance is a practice condition, not proven footage. Never label arrival rewards as post-elimination rewards.",
+      "steps": [
+        {
+          "title": "Follow the familiar route",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Use one short potty cue before the familiar route."
+            },
+            {
+              "at": 1.8,
+              "text": "Walk calmly toward the same potty area."
+            },
+            {
+              "at": 3.5,
+              "text": "Let your dog enter and pause."
+            },
+            {
+              "at": 5.4,
+              "text": "Reward arrival when practising the route only."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-1-l2",
+      "levelNumber": 2,
+      "duration": 9.5,
+      "coverageNote": "L2 shows indoor pad use followed by a reward after the puppy steps onto adjacent bedding; it demonstrates completion-before-reward, not reward placement on the pad. L1 is arrival practice; L3 adds a cue instruction to the same route. L4 shows another starting point, not a verified room change. L5 reuses the route as an easier reference; reduced guidance is a practice condition, not proven footage. Never label arrival rewards as post-elimination rewards.",
+      "steps": [
+        {
+          "title": "Wait, then reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Wait quietly while your dog uses the pad."
+            },
+            {
+              "at": 4.7,
+              "text": "Let your dog finish before responding."
+            },
+            {
+              "at": 6.5,
+              "text": "Praise and reward after completion."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-1-l3",
+      "levelNumber": 3,
+      "duration": 6.833333,
+      "coverageNote": "L2 shows indoor pad use followed by a reward after the puppy steps onto adjacent bedding; it demonstrates completion-before-reward, not reward placement on the pad. L1 is arrival practice; L3 adds a cue instruction to the same route. L4 shows another starting point, not a verified room change. L5 reuses the route as an easier reference; reduced guidance is a practice condition, not proven footage. Never label arrival rewards as post-elimination rewards.",
+      "steps": [
+        {
+          "title": "Follow the familiar route",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Use one short potty cue before the familiar route."
+            },
+            {
+              "at": 1.8,
+              "text": "Walk calmly toward the same potty area."
+            },
+            {
+              "at": 3.5,
+              "text": "Let your dog enter and pause."
+            },
+            {
+              "at": 5.4,
+              "text": "Reward arrival when practising the route only."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-1-l4",
+      "levelNumber": 4,
+      "duration": 5.8,
+      "coverageNote": "L2 shows indoor pad use followed by a reward after the puppy steps onto adjacent bedding; it demonstrates completion-before-reward, not reward placement on the pad. L1 is arrival practice; L3 adds a cue instruction to the same route. L4 shows another starting point, not a verified room change. L5 reuses the route as an easier reference; reduced guidance is a practice condition, not proven footage. Never label arrival rewards as post-elimination rewards.",
+      "steps": [
+        {
+          "title": "Change the starting point",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Begin from another familiar starting point."
+            },
+            {
+              "at": 1.6,
+              "text": "Follow the route to the same potty area."
+            },
+            {
+              "at": 3.6,
+              "text": "Reward the calm arrival in the area."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-1-l5",
+      "levelNumber": 5,
+      "duration": 6.833333,
+      "coverageNote": "L2 shows indoor pad use followed by a reward after the puppy steps onto adjacent bedding; it demonstrates completion-before-reward, not reward placement on the pad. L1 is arrival practice; L3 adds a cue instruction to the same route. L4 shows another starting point, not a verified room change. L5 reuses the route as an easier reference; reduced guidance is a practice condition, not proven footage. Never label arrival rewards as post-elimination rewards.",
+      "steps": [
+        {
+          "title": "Follow the familiar route",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Use one short potty cue before the familiar route."
+            },
+            {
+              "at": 1.8,
+              "text": "Walk calmly toward the same potty area."
+            },
+            {
+              "at": 3.5,
+              "text": "Let your dog enter and pause."
+            },
+            {
+              "at": 5.4,
+              "text": "Reward arrival when practising the route only."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "5-2": [
+    {
+      "id": "section-5-2-l1",
+      "levelNumber": 1,
+      "duration": 2.266667,
+      "coverageNote": "L1 shows an accident on the carpet; staying calm is the practice instruction, not a filmed guardian response. L2 uses the cleanup-only easier path. L3 shows logging; L4 shows the next familiar route. L5 is three short separate examples: wipe, record, prepare the next route. They are not one dog or one continuous event. Record fields, safe cleaner use and supply storage remain practice instructions, not all visible actions.",
+      "steps": [
+        {
+          "title": "Notice the accident",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Notice the accident. Stay calm; avoid scolding."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-2-l2",
+      "levelNumber": 2,
+      "duration": 11.233333,
+      "coverageNote": "L1 shows an accident on the carpet; staying calm is the practice instruction, not a filmed guardian response. L2 uses the cleanup-only easier path. L3 shows logging; L4 shows the next familiar route. L5 is three short separate examples: wipe, record, prepare the next route. They are not one dog or one continuous event. Record fields, safe cleaner use and supply storage remain practice instructions, not all visible actions.",
+      "steps": [
+        {
+          "title": "Clean with your dog safely away",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Keep your dog away from the cleanup area."
+            },
+            {
+              "at": 2.0,
+              "text": "Wipe the spot calmly and thoroughly."
+            },
+            {
+              "at": 5.5,
+              "text": "Use a pet-safe cleaner as directed on its label."
+            },
+            {
+              "at": 9.0,
+              "text": "After cleaning, put the cloth and supplies out of reach."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-2-l3",
+      "levelNumber": 3,
+      "duration": 9.366667,
+      "coverageNote": "L1 shows an accident on the carpet; staying calm is the practice instruction, not a filmed guardian response. L2 uses the cleanup-only easier path. L3 shows logging; L4 shows the next familiar route. L5 is three short separate examples: wipe, record, prepare the next route. They are not one dog or one continuous event. Record fields, safe cleaner use and supply storage remain practice instructions, not all visible actions.",
+      "steps": [
+        {
+          "title": "Keep a simple potty log",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Write a brief, factual note about the accident."
+            },
+            {
+              "at": 2.4,
+              "text": "Record the time and location."
+            },
+            {
+              "at": 4.8,
+              "text": "Add the recent routine and any signs you noticed."
+            },
+            {
+              "at": 7.3,
+              "text": "Use the note to plan the next potty opportunity."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-2-l4",
+      "levelNumber": 4,
+      "duration": 6.833333,
+      "coverageNote": "L1 shows an accident on the carpet; staying calm is the practice instruction, not a filmed guardian response. L2 uses the cleanup-only easier path. L3 shows logging; L4 shows the next familiar route. L5 is three short separate examples: wipe, record, prepare the next route. They are not one dog or one continuous event. Record fields, safe cleaner use and supply storage remain practice instructions, not all visible actions.",
+      "steps": [
+        {
+          "title": "Practise the next indoor route",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Use the familiar route for the next opportunity."
+            },
+            {
+              "at": 1.8,
+              "text": "Walk calmly toward the indoor potty area."
+            },
+            {
+              "at": 3.5,
+              "text": "Let your dog enter without being placed there."
+            },
+            {
+              "at": 5.4,
+              "text": "For route practice, reward the calm arrival."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-2-l5",
+      "levelNumber": 5,
+      "duration": 14.833333,
+      "coverageNote": "L1 shows an accident on the carpet; staying calm is the practice instruction, not a filmed guardian response. L2 uses the cleanup-only easier path. L3 shows logging; L4 shows the next familiar route. L5 is three short separate examples: wipe, record, prepare the next route. They are not one dog or one continuous event. Record fields, safe cleaner use and supply storage remain practice instructions, not all visible actions.",
+      "steps": [
+        {
+          "title": "Clean the spot",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Clean the spot with your dog safely away."
+            }
+          ]
+        },
+        {
+          "title": "Record what happened",
+          "cues": [
+            {
+              "at": 4.0,
+              "text": "Another example: note the time and what happened."
+            }
+          ]
+        },
+        {
+          "title": "Prepare the next opportunity",
+          "cues": [
+            {
+              "at": 8.0,
+              "text": "Another example: guide your dog to the potty area."
+            },
+            {
+              "at": 11.5,
+              "text": "Give your dog a calm chance to use the area."
+            },
+            {
+              "at": 13.4,
+              "text": "During route practice, reward arrival."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "5-3": [
+    {
+      "id": "section-5-3-l1",
+      "levelNumber": 1,
+      "duration": 15.966667,
+      "coverageNote": "One short action clip per Level. Cue and waste cleanup are practice instructions, not confirmed recorded actions. Sniffing is not elimination. L4 uses general distance-from-distractions practice as the existing easier path, without appending another demonstration. L5 reuses the short potty trip example, not an entire ordinary walk.",
+      "steps": [
+        {
+          "title": "Visit the outdoor potty area",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Take the leash and follow the familiar outdoor route."
+            },
+            {
+              "at": 4.0,
+              "text": "Walk to a suitable nearby potty area."
+            },
+            {
+              "at": 6.5,
+              "text": "Use one potty cue on arrival, then wait quietly."
+            },
+            {
+              "at": 9.0,
+              "text": "Reward after your dog has finished."
+            },
+            {
+              "at": 12.0,
+              "text": "Clean up any waste before continuing the walk."
+            },
+            {
+              "at": 14.0,
+              "text": "Leave the area calmly together."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-3-l2",
+      "levelNumber": 2,
+      "duration": 9.833333,
+      "coverageNote": "One short action clip per Level. Cue and waste cleanup are practice instructions, not confirmed recorded actions. Sniffing is not elimination. L4 uses general distance-from-distractions practice as the existing easier path, without appending another demonstration. L5 reuses the short potty trip example, not an entire ordinary walk.",
+      "steps": [
+        {
+          "title": "Wait, then reward",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Stay nearby and wait quietly."
+            },
+            {
+              "at": 2.5,
+              "text": "Let your dog finish without interruption."
+            },
+            {
+              "at": 4.5,
+              "text": "Praise and reward after completion."
+            },
+            {
+              "at": 7.5,
+              "text": "Clean up any waste before leaving the area."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-3-l3",
+      "levelNumber": 3,
+      "duration": 16.166667,
+      "coverageNote": "One short action clip per Level. Cue and waste cleanup are practice instructions, not confirmed recorded actions. Sniffing is not elimination. L4 uses general distance-from-distractions practice as the existing easier path, without appending another demonstration. L5 reuses the short potty trip example, not an entire ordinary walk.",
+      "steps": [
+        {
+          "title": "Allow quiet sniffing",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Use your potty cue once on arrival."
+            },
+            {
+              "at": 3.5,
+              "text": "Give your dog time to sniff without repeating the cue."
+            },
+            {
+              "at": 7.5,
+              "text": "Keep the leash comfortable and avoid pulling."
+            },
+            {
+              "at": 12.0,
+              "text": "If no elimination happens, finish calmly and try later."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-3-l4",
+      "levelNumber": 4,
+      "duration": 15.2,
+      "coverageNote": "One short action clip per Level. Cue and waste cleanup are practice instructions, not confirmed recorded actions. Sniffing is not elimination. L4 uses general distance-from-distractions practice as the existing easier path, without appending another demonstration. L5 reuses the short potty trip example, not an entire ordinary walk.",
+      "steps": [
+        {
+          "title": "Practise moving away from distractions",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Practise at a comfortable distance from distractions."
+            },
+            {
+              "at": 4.0,
+              "text": "Invite your dog to turn back toward you."
+            },
+            {
+              "at": 7.0,
+              "text": "Move together toward a quieter space."
+            },
+            {
+              "at": 10.5,
+              "text": "Reward attention returning to you."
+            },
+            {
+              "at": 13.2,
+              "text": "Use a quieter potty spot if the distraction is too much."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "section-5-3-l5",
+      "levelNumber": 5,
+      "duration": 15.966667,
+      "coverageNote": "One short action clip per Level. Cue and waste cleanup are practice instructions, not confirmed recorded actions. Sniffing is not elimination. L4 uses general distance-from-distractions practice as the existing easier path, without appending another demonstration. L5 reuses the short potty trip example, not an entire ordinary walk.",
+      "steps": [
+        {
+          "title": "Visit the outdoor potty area",
+          "cues": [
+            {
+              "at": 0.0,
+              "text": "Take the leash and follow the familiar outdoor route."
+            },
+            {
+              "at": 4.0,
+              "text": "Walk to a suitable nearby potty area."
+            },
+            {
+              "at": 6.5,
+              "text": "Use one potty cue on arrival, then wait quietly."
+            },
+            {
+              "at": 9.0,
+              "text": "Reward after your dog has finished."
+            },
+            {
+              "at": 12.0,
+              "text": "Clean up any waste before continuing the walk."
+            },
+            {
+              "at": 14.0,
+              "text": "Leave the area calmly together."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

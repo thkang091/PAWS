@@ -20,6 +20,8 @@ import type {
   TrainingSkillSummary,
 } from "@/types/domain";
 import type { Json } from "@/types/database";
+import { applyLocalLevelContent, applyLocalSkillContent, DROP_IT_PREPARATION } from "@/features/train/media/dropItContent";
+import { CHEWING_PREPARATION } from "@/features/train/media/chewingContent";
 
 const mapSection = (row: Record<string, unknown>): TrainingSection => ({
   id: row.id as string,
@@ -30,7 +32,7 @@ const mapSection = (row: Record<string, unknown>): TrainingSection => ({
   safetyBoundary: (row.safety_boundary as string | null) ?? null,
 });
 
-const mapSkillSummary = (row: Record<string, unknown>): TrainingSkillSummary => ({
+const mapSkillSummary = (row: Record<string, unknown>): TrainingSkillSummary => applyLocalSkillContent({
   id: row.id as string,
   sectionId: row.section_id as string,
   skillCode: row.skill_code as string,
@@ -40,7 +42,7 @@ const mapSkillSummary = (row: Record<string, unknown>): TrainingSkillSummary => 
   sortOrder: row.sort_order as number,
 });
 
-const mapSkillProgress = (row: Record<string, unknown>): DogTrainingSkillProgress => ({
+const mapSkillProgress = (row: Record<string, unknown>, needsReinforcement = false): DogTrainingSkillProgress => ({
   skillId: row.skill_id as string,
   status: row.status as DogTrainingSkillProgress["status"],
   currentLevelNumber: row.current_level_number as number,
@@ -49,7 +51,21 @@ const mapSkillProgress = (row: Record<string, unknown>): DogTrainingSkillProgres
   reviewSoon: row.review_soon as boolean,
   lastPracticedAt: (row.last_practiced_at as string | null) ?? null,
   completedAt: (row.completed_at as string | null) ?? null,
+  level5CompletedAt: (row.level5_completed_at as string | null) ?? null,
+  needsReinforcement,
 });
+
+// Read alongside progress so the roadmap and history use the same difficulty
+// condition as the server's round completion / video unlock response.
+const getSkillsNeedingReinforcement = async (dogId: string): Promise<Set<string>> => {
+  const { data, error } = await getClientOrThrow().from("training_level_difficulties")
+    .select("training_levels!inner(skill_id)").eq("dog_id", dogId).is("resolved_at", null);
+  throwIfError(error);
+  return new Set((data ?? []).flatMap(row => {
+    const levels = row.training_levels as unknown as { skill_id: string } | { skill_id: string }[];
+    return (Array.isArray(levels) ? levels : [levels]).map(level => level.skill_id);
+  }));
+};
 
 const mapPreferences = (row: Record<string, unknown>): DogTrainingPreferences => ({
   dogId: row.dog_id as string,
@@ -60,7 +76,7 @@ const mapPreferences = (row: Record<string, unknown>): DogTrainingPreferences =>
   onboardingCompletedAt: (row.onboarding_completed_at as string | null) ?? null,
 });
 
-const mapSession = (row: Record<string, unknown>): TrainingSession => ({
+export const mapTrainingSession = (row: Record<string, unknown>): TrainingSession => ({
   id: row.id as string,
   dogId: row.dog_id as string,
   skillId: row.skill_id as string,
@@ -76,6 +92,8 @@ const mapSession = (row: Record<string, unknown>): TrainingSession => ({
   currentCardKey: (row.current_card_key as string | null) ?? null,
   idempotencyKey: row.idempotency_key as string,
 });
+
+const mapSession = mapTrainingSession;
 
 const mapButtons = (value: Json): TrainingLessonCardButton[] =>
   Array.isArray(value)
@@ -146,17 +164,18 @@ export const getTrainingSections = async (): Promise<TrainingSection[]> => {
 
 export const getSectionRoadmap = async (dogId: string, sectionId: string): Promise<SectionRoadmap> => {
   const client = getClientOrThrow();
-  const [sectionResult, skillsResult, progressResult] = await Promise.all([
+  const [sectionResult, skillsResult, progressResult, needsReinforcement] = await Promise.all([
     client.from("training_sections").select("*").eq("id", sectionId).single(),
     client.from("training_skills").select("*").eq("section_id", sectionId).order("sort_order", { ascending: true }),
     client.from("dog_training_skill_progress").select("*").eq("dog_id", dogId),
+    getSkillsNeedingReinforcement(dogId),
   ]);
   throwIfError(sectionResult.error);
   throwIfError(skillsResult.error);
   throwIfError(progressResult.error);
 
   const progressBySkillId = new Map(
-    (progressResult.data ?? []).map((row) => [row.skill_id as string, mapSkillProgress(row as Record<string, unknown>)]),
+    (progressResult.data ?? []).map((row) => [row.skill_id as string, mapSkillProgress(row as Record<string, unknown>, needsReinforcement.has(row.skill_id as string))]),
   );
 
   return {
@@ -212,6 +231,17 @@ export const getTrainingEnergy = async (dogId: string): Promise<TrainingEnergy> 
   return { base: result.base, consumed: result.consumed, remaining: result.remaining };
 };
 
+export const resetTrainingEnergy = async (dogId: string): Promise<TrainingEnergy> => {
+  const client = getClientOrThrow();
+  const { data, error } = await client.rpc("reset_training_energy", {
+    p_dog_id: dogId,
+    p_local_date: getEffectiveLocalDate(),
+  });
+  if (error) throw new Error("Couldn't refill energy. Please try again.");
+  const result = data as TrainingEnergy;
+  return { base: result.base, consumed: result.consumed, remaining: result.remaining };
+};
+
 export const resolveSkillSession = async (dogId: string, skillId: string): Promise<SkillSessionResolution> => {
   const client = getClientOrThrow();
   const { data, error } = await client.rpc("resolve_skill_session", { p_dog_id: dogId, p_skill_id: skillId });
@@ -257,6 +287,16 @@ export const startTrainingSession = async (
   };
 };
 
+export const continueTrainingSession = async (completedSessionId: string): Promise<StartSessionResult> => {
+  const { data, error } = await getClientOrThrow().rpc("continue_training_session", {
+    p_completed_session_id: completedSessionId,
+    p_local_date: getEffectiveLocalDate(),
+  });
+  throwIfError(error);
+  const result = data as { session: Record<string, unknown>; remainingEnergy: number; chargedEnergy: boolean };
+  return { session: mapSession(result.session), remainingEnergy: result.remainingEnergy, chargedEnergy: result.chargedEnergy };
+};
+
 export const getActiveTrainingSession = async (dogId: string, skillId: string): Promise<TrainingSession | null> => {
   const client = getClientOrThrow();
   const { data, error } = await client
@@ -270,6 +310,12 @@ export const getActiveTrainingSession = async (dogId: string, skillId: string): 
     .maybeSingle();
   throwIfError(error);
   return data ? mapSession(data as Record<string, unknown>) : null;
+};
+
+export const getTrainingSession = async (sessionId: string): Promise<TrainingSession> => {
+  const { data, error } = await getClientOrThrow().from("training_sessions").select("*").eq("id", sessionId).single();
+  throwIfError(error);
+  return mapSession(data as Record<string, unknown>);
 };
 
 export const setSessionCardPosition = async (sessionId: string, cardKey: string): Promise<void> => {
@@ -329,17 +375,18 @@ export const getDueReviews = async (dogId: string): Promise<TrainingReviewAssign
 
 export const getAllSectionRoadmaps = async (dogId: string): Promise<SectionRoadmap[]> => {
   const client = getClientOrThrow();
-  const [sectionsResult, skillsResult, progressResult] = await Promise.all([
+  const [sectionsResult, skillsResult, progressResult, needsReinforcement] = await Promise.all([
     client.from("training_sections").select("*").order("section_number", { ascending: true }),
     client.from("training_skills").select("*").order("sort_order", { ascending: true }),
     client.from("dog_training_skill_progress").select("*").eq("dog_id", dogId),
+    getSkillsNeedingReinforcement(dogId),
   ]);
   throwIfError(sectionsResult.error);
   throwIfError(skillsResult.error);
   throwIfError(progressResult.error);
 
   const progressBySkillId = new Map(
-    (progressResult.data ?? []).map((row) => [row.skill_id as string, mapSkillProgress(row as Record<string, unknown>)]),
+    (progressResult.data ?? []).map((row) => [row.skill_id as string, mapSkillProgress(row as Record<string, unknown>, needsReinforcement.has(row.skill_id as string))]),
   );
   const skillsBySectionId = new Map<string, TrainingSkillSummary[]>();
   for (const row of skillsResult.data ?? []) {
@@ -367,11 +414,11 @@ export type DogTrainingOverviewRow = {
 
 export const getDogTrainingOverview = async (dogId: string): Promise<DogTrainingOverviewRow[]> => {
   const client = getClientOrThrow();
-  const { data, error } = await client
+  const [{ data, error }, needsReinforcement] = await Promise.all([client
     .from("dog_training_skill_progress")
     .select("*, training_skills(*, training_sections(title))")
     .eq("dog_id", dogId)
-    .order("last_practiced_at", { ascending: false, nullsFirst: false });
+    .order("last_practiced_at", { ascending: false, nullsFirst: false }), getSkillsNeedingReinforcement(dogId)]);
   throwIfError(error);
   return (data ?? []).map((row) => {
     const record = row as Record<string, unknown> & {
@@ -380,7 +427,7 @@ export const getDogTrainingOverview = async (dogId: string): Promise<DogTraining
     return {
       skill: mapSkillSummary(record.training_skills),
       sectionTitle: record.training_skills.training_sections.title,
-      progress: mapSkillProgress(record),
+      progress: mapSkillProgress(record, needsReinforcement.has(record.skill_id as string)),
     };
   });
 };
@@ -394,6 +441,22 @@ const mapMediaBinding = (row: Record<string, unknown>): TrainingMediaBinding => 
   status: row.status as string,
   fallbackText: (row.fallback_text as string | null) ?? null,
 });
+
+// Preparation belongs to the whole skill. Curriculum ready cards are stored
+// on Level 1, even when the session resolver selects a later Level/checkpoint.
+export const getTrainingPreparation = async (skillId: string): Promise<TrainingReadyCard> => {
+  const client = getClientOrThrow();
+  const level = await client.from("training_levels").select("id, training_skills(skill_code)")
+    .eq("skill_id", skillId).eq("stage_type", "level").eq("level_number", 1).single();
+  throwIfError(level.error);
+  const joinedSkill: unknown = level.data?.training_skills;
+  const skill = (Array.isArray(joinedSkill) ? joinedSkill[0] : joinedSkill) as { skill_code: string } | undefined;
+  if (skill?.skill_code === "1-3") return DROP_IT_PREPARATION;
+  if (skill?.skill_code === "6-3") return CHEWING_PREPARATION;
+  const ready = await client.from("training_ready_cards").select("*").eq("level_id", level.data!.id).single();
+  throwIfError(ready.error);
+  return mapReadyCard(ready.data as Record<string, unknown>);
+};
 
 export const getTrainingLevelDetail = async (levelId: string): Promise<TrainingLevelDetail> => {
   const client = getClientOrThrow();
@@ -414,7 +477,7 @@ export const getTrainingLevelDetail = async (levelId: string): Promise<TrainingL
     training_skills: { id: string; skill_code: string; title: string; one_line_goal: string };
   };
 
-  return {
+  return applyLocalLevelContent({
     id: levelRow.id as string,
     skillId: levelRow.skill_id as string,
     stageType: levelRow.stage_type as TrainingLevelDetail["stageType"],
@@ -437,5 +500,5 @@ export const getTrainingLevelDetail = async (levelId: string): Promise<TrainingL
       title: levelRow.training_skills.title,
       oneLineGoal: levelRow.training_skills.one_line_goal,
     },
-  };
+  });
 };

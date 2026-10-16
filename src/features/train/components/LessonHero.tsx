@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import {
   type ImageSourcePropType,
-  Image,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { Image, type ImageContentPosition } from "expo-image";
 import Animated, { type SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import Svg, { Circle, Defs, Path, Text as SvgText, TextPath } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,11 +20,14 @@ export type LessonHeroProps = {
   chapter?: string;
   badge?: string;
   poster?: ImageSourcePropType;
+  posterPosition?: ImageContentPosition;
+  mediaLabel?: string;
   collapse: SharedValue<number>;
   topInset: number;
   onBack?: () => void;
   onPlay?: () => void;
   children?: ReactNode;
+  showChrome?: boolean;
 };
 
 const BADGE = 104;
@@ -35,11 +38,14 @@ export const LessonHero = ({
   chapter,
   badge,
   poster,
+  posterPosition = "center",
+  mediaLabel = "Video slot",
   collapse,
   topInset,
   onBack,
   onPlay,
   children,
+  showChrome = true,
 }: LessonHeroProps) => {
   const overlay = useAnimatedStyle(() => ({
     opacity: Math.max(0, 1 - collapse.value / 0.66),
@@ -54,10 +60,12 @@ export const LessonHero = ({
       {children ? (
         <View style={StyleSheet.absoluteFill}>{children}</View>
       ) : poster ? (
-        <Image source={poster} style={StyleSheet.absoluteFill} resizeMode="cover" />
+        <View style={StyleSheet.absoluteFill}>
+          <Image source={poster} style={{ width: "100%", height: "100%" }} contentFit="cover" contentPosition={posterPosition} accessibilityLabel={`${title} preparation`} />
+        </View>
       ) : (
         <View style={[StyleSheet.absoluteFill, styles.plate]}>
-          <Text style={styles.plateText}>Video slot</Text>
+          <Text style={styles.plateText}>{mediaLabel}</Text>
         </View>
       )}
 
@@ -73,7 +81,7 @@ export const LessonHero = ({
         />
       </Animated.View>
 
-      <View style={[styles.chrome, { top: topInset + space.sm }]} pointerEvents="box-none">
+      {showChrome ? <View style={[styles.chrome, { top: topInset + space.sm }]} pointerEvents="box-none">
         {onBack ? (
           <PressScale
             accessibilityRole="button"
@@ -98,7 +106,7 @@ export const LessonHero = ({
             </View>
           ) : null}
         </Animated.View>
-      </View>
+      </View> : null}
 
       {badge ? (
         <Animated.View
