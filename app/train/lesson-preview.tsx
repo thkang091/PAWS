@@ -46,6 +46,8 @@ import {
   text,
   type,
 } from "@/constants/design";
+import { markTopicLessonDone } from "@/features/train/state/trainingTopic";
+import type { TopicKey } from "@/constants/trainingTopics";
 
 const LESSON = CURRENT_LESSON;
 
@@ -61,8 +63,8 @@ const clock = (seconds: number) => {
 };
 
 export default function LessonScreen() {
-  const { dayId, totalDays, title, purpose } = useLocalSearchParams<{
-    dayId?: string; totalDays?: string; title?: string; purpose?: string;
+  const { dayId, totalDays, title, purpose, topic, lesson } = useLocalSearchParams<{
+    dayId?: string; totalDays?: string; title?: string; purpose?: string; topic?: string; lesson?: string;
   }>();
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -151,6 +153,8 @@ export default function LessonScreen() {
       router.push(`/train/activity/${dayId}${totalDays ? `?totalDays=${totalDays}` : ""}`);
       return;
     }
+    // Topics without a server curriculum keep their progress here, so the trail moves on for real.
+    if (topic && lesson != null) markTopicLessonDone(topic as TopicKey, Number(lesson));
     setDone(true);
   };
 

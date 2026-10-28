@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
-import { accent, radius, space, text, type } from "@/constants/design";
+import { PlayIcon } from "phosphor-react-native";
+
+import { bg, border, scene, space, text, type } from "@/constants/design";
 import sources from "@/features/train/media/trainingVideoSources.json";
 
 type Props = {
@@ -8,51 +10,63 @@ type Props = {
   materials: readonly { label: string; detail: string }[];
 };
 
-/** Shared introduction for curriculum lessons and lessons awaiting video. */
+/**
+ * Shared introduction for curriculum lessons and lessons awaiting video: who made the video as a quiet credit line, the
+ * lesson's goal as the lead sentence, then what to have ready as a short numbered list.
+ */
 export function LessonPreparation({ skillCode, purpose, materials }: Props) {
   const credits = (sources as Record<string, { creator: string; url: string }[]>)[skillCode ?? ""] ?? [];
   const creators = [...new Set(credits.map(source => source.creator))];
 
   return (
     <View>
-      <View style={styles.source}>
-        <View style={styles.avatar}>
-          <Text style={styles.initial}>{creators[0]?.slice(0, 1) ?? "–"}</Text>
-        </View>
-        <View style={styles.sourceCopy}>
-          <Text style={styles.sourceName}>{creators.join(" · ") || "Video coming soon"}</Text>
-          <Text style={styles.sourceLabel}>{creators.length ? "Certified dog trainer" : "Source to be added"}</Text>
-        </View>
-      </View>
-      <Text style={styles.purpose}>{purpose}</Text>
-      <Text style={styles.heading}>Before you start</Text>
-      <View style={styles.materials}>
-        {materials.map(material => (
-          <View key={material.label} style={styles.material}>
-            <View style={styles.bullet} />
-            <Text style={styles.materialCopy}>
-              <Text style={styles.materialLabel}>{material.label}</Text>
-              {material.detail ? ` — ${material.detail}` : ""}
-            </Text>
+      {creators.length ? (
+        <View style={styles.credit} accessible accessibilityLabel={`Video by ${creators.join(" and ")}`}>
+          <View style={styles.play}>
+            <PlayIcon size={9} color="#FFFFFF" weight="fill" />
           </View>
-        ))}
-      </View>
+          <Text style={styles.creditText} numberOfLines={1}>
+            Video by <Text style={styles.creditName}>{creators.join(" · ")}</Text>
+          </Text>
+        </View>
+      ) : null}
+
+      <Text style={styles.purpose}>{purpose}</Text>
+
+      {materials.length ? (
+        <>
+          <Text style={styles.eyebrow}>BEFORE YOU START</Text>
+          <View style={styles.list}>
+            {materials.map((material, i) => (
+              <View key={material.label} style={[styles.row, i > 0 && styles.rowRule]}>
+                <Text style={styles.number}>{i + 1}</Text>
+                <View style={styles.rowCopy}>
+                  <Text style={styles.label}>{material.label}</Text>
+                  {material.detail ? <Text style={styles.detail}>{material.detail}</Text> : null}
+                </View>
+              </View>
+            ))}
+          </View>
+        </>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  source: { flexDirection: "row", alignItems: "center", gap: space.md },
-  avatar: { width: 46, height: 46, borderRadius: radius.pill, backgroundColor: accent.primary, alignItems: "center", justifyContent: "center" },
-  initial: { ...type.cardTitle, fontWeight: "700", color: text.primary },
-  sourceCopy: { flex: 1 },
-  sourceName: { ...type.supporting, fontWeight: "600", color: text.primary },
-  sourceLabel: { ...type.caption, color: text.secondary, marginTop: 2 },
-  purpose: { ...type.body, color: text.secondary, marginTop: space.lg },
-  heading: { ...type.sectionTitle, color: text.primary, marginTop: space.xl },
-  materials: { gap: space.sm, marginTop: space.md },
-  material: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
-  bullet: { width: 6, height: 6, borderRadius: 3, backgroundColor: accent.deep, marginTop: 8 },
-  materialCopy: { ...type.supporting, color: text.secondary, flex: 1 },
-  materialLabel: { fontWeight: "600", color: text.primary },
+  credit: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  play: { width: 18, height: 18, borderRadius: 9, backgroundColor: scene.sageDeep, alignItems: "center", justifyContent: "center", paddingLeft: 1 },
+  creditText: { ...type.supporting, color: text.secondary, flexShrink: 1 },
+  creditName: { fontWeight: "700", color: text.primary },
+
+  purpose: { fontSize: 20, lineHeight: 28, fontWeight: "600", letterSpacing: -0.3, color: text.primary, marginTop: space.md },
+
+  eyebrow: { ...type.caption, fontWeight: "800", letterSpacing: 0.7, color: text.tertiary, marginTop: space.xxl, marginBottom: space.sm },
+  list: { borderRadius: 18, backgroundColor: bg.subtle, paddingHorizontal: space.lg },
+  row: { flexDirection: "row", alignItems: "flex-start", gap: space.md, paddingVertical: space.md },
+  rowRule: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: border.default },
+  number: { width: 22, height: 22, borderRadius: 11, overflow: "hidden", backgroundColor: bg.canvas, textAlign: "center", lineHeight: 22, fontSize: 12, fontWeight: "800", color: text.secondary, fontVariant: ["tabular-nums"] },
+  rowCopy: { flex: 1, gap: 2 },
+  label: { ...type.supporting, fontWeight: "600", color: text.primary, lineHeight: 22 },
+  detail: { ...type.supporting, color: text.secondary },
 });

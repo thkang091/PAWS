@@ -119,9 +119,12 @@ export const ProductArt = memo(({ product, size }: { product: ProductKey; size: 
 
 ProductArt.displayName = "ProductArt";
 
-export const Coin = memo(({ size = 16 }: { size?: number }) => (
+/** Gold coins come from passing challenges and become gift cards; silver coins come from daily care and pay for games. */
+export const COIN_FILL = { gold: accent.deep, silver: "#DADDE0" } as const;
+
+export const Coin = memo(({ size = 16, tone = "gold" }: { size?: number; tone?: "gold" | "silver" }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24">
-    <Circle cx={12} cy={12} r={10.5} fill={accent.deep} stroke={INK} strokeWidth={1.6} />
+    <Circle cx={12} cy={12} r={10.5} fill={COIN_FILL[tone]} stroke={INK} strokeWidth={1.6} />
     <G fill={INK}>
       <Circle cx={8.6} cy={10.2} r={1.5} />
       <Circle cx={12} cy={8.9} r={1.6} />
@@ -132,3 +135,7 @@ export const Coin = memo(({ size = 16 }: { size?: number }) => (
 ));
 
 Coin.displayName = "Coin";
+
+/** Coins share the stat glyph family (streak flame, energy bolt). */
+export const COIN_TINT = { gold: accent.band, silver: "#9AA0A6" } as const;
+export { CoinGlyph } from "@/components/ui/StatGlyphs";

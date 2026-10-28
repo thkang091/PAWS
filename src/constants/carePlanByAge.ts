@@ -31,6 +31,11 @@ export type PlanItem = {
   required: boolean;
 };
 
+/**
+ * Core shots every dog gets, then the lifestyle shots a vet adds for some dogs. Core follows the AAHA canine
+ * guidelines (leptospirosis became core in North America in 2022). Which lifestyle shots fit is judged for each dog
+ * (see services/vaccineAdvice.ts).
+ */
 const PUPPY_VACCINES: readonly PlanItem[] = [
   {
     key: "dhpp",
@@ -47,11 +52,11 @@ const PUPPY_VACCINES: readonly PlanItem[] = [
     required: true,
   },
   {
-    key: "bordetella",
-    label: "Kennel cough",
-    when: "From 8 weeks",
-    why: "Asked for by most groomers, day-cares and boarding kennels.",
-    required: false,
+    key: "leptospirosis",
+    label: "Leptospirosis",
+    when: "12 and 15 weeks",
+    why: "Caught from puddles and wildlife, and can pass to people.",
+    required: true,
   },
   {
     key: "booster",
@@ -60,13 +65,34 @@ const PUPPY_VACCINES: readonly PlanItem[] = [
     why: "The puppy series only holds for a year without them.",
     required: true,
   },
+  {
+    key: "bordetella",
+    label: "Kennel cough",
+    when: "From 8 weeks",
+    why: "Asked for by most groomers, day-cares and boarding kennels.",
+    required: false,
+  },
+  {
+    key: "influenza",
+    label: "Dog flu",
+    when: "From 8 weeks, two doses",
+    why: "For puppies headed to day-care, classes or dog parks.",
+    required: false,
+  },
+  {
+    key: "lyme",
+    label: "Lyme",
+    when: "From 12 weeks, two doses",
+    why: "For tick country: woods, long grass and hiking.",
+    required: false,
+  },
 ];
 
 const ADULT_VACCINES: readonly PlanItem[] = [
   {
     key: "rabies",
     label: "Rabies",
-    when: "Every 3 years",
+    when: "Every 1 to 3 years",
     why: "Required by law almost everywhere, and needed for boarding and travel.",
     required: true,
   },
@@ -78,6 +104,13 @@ const ADULT_VACCINES: readonly PlanItem[] = [
     required: true,
   },
   {
+    key: "leptospirosis",
+    label: "Leptospirosis",
+    when: "Every year",
+    why: "Caught from puddles and wildlife, and can pass to people.",
+    required: true,
+  },
+  {
     key: "bordetella",
     label: "Kennel cough",
     when: "Every year",
@@ -85,10 +118,17 @@ const ADULT_VACCINES: readonly PlanItem[] = [
     required: false,
   },
   {
-    key: "leptospirosis",
-    label: "Leptospirosis",
+    key: "influenza",
+    label: "Dog flu",
     when: "Every year",
-    why: "Worth it for dogs near wildlife, rivers or standing water.",
+    why: "For dogs who mix with lots of other dogs.",
+    required: false,
+  },
+  {
+    key: "lyme",
+    label: "Lyme",
+    when: "Every year",
+    why: "For tick country: woods, long grass and hiking.",
     required: false,
   },
 ];

@@ -1,11 +1,10 @@
 import { useMemo, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, { FadeIn, FadeOut, useReducedMotion } from "react-native-reanimated";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
-import { ClockCounterClockwiseIcon, CoinsIcon, FireIcon, LightningIcon } from "phosphor-react-native";
 
 import { TopicHeader } from "@/features/train/components/TopicHeader";
 import { TopicPicker } from "@/features/train/components/TopicPicker";
@@ -13,9 +12,8 @@ import { TopicTrail, type TrailStep } from "@/features/train/components/TopicTra
 import { GardenBackdrop } from "@/features/train/components/GardenBackdrop";
 import { EnergySheet } from "@/features/train/components/EnergySheet";
 import { areLessonVideosUnlocked } from "@/features/train/media/lessonVideoUnlock";
-import { PressScale } from "@/components/ui/PressScale";
 import { LoadingState } from "@/components/ui/LoadingState";
-import { accent, bg, border, icon, layout, motion, radius, scene, space, text, type } from "@/constants/design";
+import { bg, border, layout, motion, radius, scene, space, text, type } from "@/constants/design";
 import { buildChapters } from "@/constants/trainingChapters";
 import { queryKeys } from "@/constants/queryKeys";
 import { isCurriculumTopic, SECTION_NUMBER_BY_TOPIC_KEY } from "@/constants/trainingCurriculumMapping";
@@ -25,7 +23,7 @@ import { useDogRoadmap } from "@/hooks/useDogRoadmap";
 import { useDogStreak } from "@/hooks/useDogStreak";
 import { useProfileDashboard } from "@/hooks/useProfileDashboard";
 import { useWallet } from "@/hooks/useWallet";
-import { getAllSectionRoadmaps, getTrainingEnergy, resetTrainingEnergy } from "@/services/trainingCurriculumService";
+import { getAllSectionRoadmaps, getDogTrainingPreferences, getTrainingEnergy, resetTrainingEnergy } from "@/services/trainingCurriculumService";
 import { setActiveTopic, useTrainingTopic } from "@/features/train/state/trainingTopic";
 import type { PersonalizedRoadmapDay, SectionRoadmap } from "@/types/domain";
 
@@ -90,7 +88,19 @@ export default function TrainTabScreen() {
   );
 
   const reduceMotion = useReducedMotion();
-  const { active, done: sampleDone } = useTrainingTopic();
+  const { active: chosen, done: sampleDone, hydrated: topicHydrated } = useTrainingTopic();
+  // Nothing chosen on this phone yet: open the goal saved in onboarding (synced with the account).
+  const prefs = useQuery({
+    queryKey: dogId ? ["trainingPreferences", dogId] : ["trainingPreferences", "missing"],
+    queryFn: () => getDogTrainingPreferences(dogId ?? ""),
+    enabled: Boolean(dogId) && topicHydrated && !chosen,
+  });
+  const fromOnboarding = useMemo(() => {
+    const id = prefs.data?.preferredSectionId;
+    const number = id ? (sectionRoadmaps.data ?? []).find((r) => r.section.id === id)?.section.sectionNumber : undefined;
+    return number !== undefined ? ((Object.entries(SECTION_NUMBER_BY_TOPIC_KEY).find(([, n]) => n === number)?.[0] as TopicKey | undefined) ?? null) : null;
+  }, [prefs.data?.preferredSectionId, sectionRoadmaps.data]);
+  const active: TopicKey = chosen ?? fromOnboarding ?? "rules";
   const [picking, setPicking] = useState(false);
   const direction = useRef(1);
   const contentRef = useRef<ScrollView>(null);
@@ -157,11 +167,6 @@ export default function TrainTabScreen() {
     });
   };
 
-  const continueTopic = (item: ShelfTopic) => {
-    const next = item.steps.findIndex((step) => step.state === "current");
-    openLesson(item, next === -1 ? 0 : next);
-  };
-
   const selectTopic = (key: TopicKey, index: number) => {
     direction.current = index > activeIndex ? 1 : -1;
     setActiveTopic(key);
@@ -186,75 +191,40 @@ export default function TrainTabScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <GardenBackdrop width={width} height={height} />
-      <View style={[styles.contentFrame, styles.header]}>
-        <PressScale
-          style={styles.silver}
-          accessibilityRole="button"
-          accessibilityLabel={`Energy: ${energy.data?.remaining ?? "Loading"}. Refill energy`}
-          disabled={!dogId}
-          onPress={() => {
-            refill.reset();
-            void energy.refetch();
-            void Haptics.selectionAsync();
-            setEnergyOpen(true);
-          }}
-        >
-          <LightningIcon size={icon.inline} color={accent.band} weight="fill" />
-          <Text style={styles.silverNum}>{energy.data?.remaining ?? "—"}</Text>
-        </PressScale>
-
-        <View
-          style={styles.silver}
-          accessible
-          accessibilityLabel={`Streak: ${streakCount ?? "Loading"} days`}
-        >
-          <FireIcon size={icon.inline} color={accent.band} weight="fill" />
-          <Text style={styles.silverNum}>{streakCount ?? "—"}</Text>
-        </View>
-
-        <View
-          style={styles.silver}
-          accessible
-          accessibilityLabel={`Coins: ${wallet.data?.silverBalance ?? "Loading"}`}
-        >
-          <CoinsIcon size={icon.inline} color={accent.band} weight="fill" />
-          <Text style={styles.silverNum}>{wallet.data?.silverBalance.toLocaleString() ?? "—"}</Text>
-        </View>
-
-        <PressScale
-          accessibilityRole="button"
-          accessibilityLabel="Lesson history"
-          scaleTo={0.9}
-          style={styles.round}
-          onPress={() => {
-            void Haptics.selectionAsync();
-            router.push("/training/history");
-          }}
-        >
-          <ClockCounterClockwiseIcon size={icon.standard} color={text.primary} weight="regular" />
-        </PressScale>
-      </View>
-
       <View style={styles.body}>
-        <View style={styles.contentFrame}>
+        <View style={[styles.contentFrame, styles.headerWrap]}>
           {topic ? (
-            <Animated.View
-              key={topic.key}
-              entering={enter}
-              exiting={reduceMotion ? undefined : FadeOut.duration(90)}
-            >
-              <TopicHeader
-                topic={topic}
-                done={topic.done}
-                total={topic.total}
-                onContinue={() => continueTopic(topic)}
-                onOpenPicker={() => {
-                  void Haptics.selectionAsync();
-                  setPicking(true);
-                }}
-              />
-
-            </Animated.View>
+            <TopicHeader
+              topic={topic}
+              index={activeIndex}
+              count={topics.length}
+              done={topic.done}
+              total={topic.total}
+              stats={{
+                streak: streakCount ?? null,
+                energy: energy.data?.remaining ?? null,
+                gold: wallet.data?.goldBalance ?? null,
+                silver: wallet.data?.silverBalance ?? null,
+              }}
+              onEnergy={() => {
+                refill.reset();
+                void energy.refetch();
+                void Haptics.selectionAsync();
+                setEnergyOpen(true);
+              }}
+              onCoins={() => {
+                void Haptics.selectionAsync();
+                router.push("/training/history?tab=coins" as never);
+              }}
+              onHistory={() => {
+                void Haptics.selectionAsync();
+                router.push("/training/history");
+              }}
+              onOpenPicker={() => {
+                void Haptics.selectionAsync();
+                setPicking(true);
+              }}
+            />
           ) : null}
         </View>
 
@@ -275,6 +245,7 @@ export default function TrainTabScreen() {
                 steps={topic.steps}
                 doneCount={topic.done}
                 width={trailWidth}
+                pose={topic.pose}
                 onStepPress={(_, index) => openLesson(topic, index)}
               />
             </Animated.View>
@@ -314,6 +285,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingHorizontal: layout.gutter,
   },
+  headerWrap: { paddingTop: space.sm, zIndex: 2 },
   header: {
     flexDirection: "row",
     alignItems: "center",

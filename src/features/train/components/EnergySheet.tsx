@@ -1,7 +1,8 @@
 import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { EnergyGlyph } from "@/components/ui/StatGlyphs";
 import Animated, { FadeIn, SlideInDown, useReducedMotion } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LightningIcon, XIcon } from "phosphor-react-native";
+import { XIcon } from "phosphor-react-native";
 
 import { PressScale } from "@/components/ui/PressScale";
 import { accent, bg, border, icon, layout, motion, radius, space, text, type } from "@/constants/design";
@@ -35,7 +36,7 @@ export function EnergySheet({ energy, busy, error, onClose, onRefill }: {
             </PressScale>
           </View>
           <View style={styles.balance}>
-            <LightningIcon size={40} color={accent.band} weight="fill" />
+            <EnergyGlyph size={40} />
             <Text style={styles.amount}>{energy ? `${energy.remaining} / ${energy.base}` : "—"}</Text>
           </View>
           <Text style={styles.copy}>Refill your energy and keep training.</Text>

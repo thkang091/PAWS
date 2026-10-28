@@ -97,6 +97,17 @@ export const CareCalendar = memo(
     const [offset, setOffset] = useState(0);
     const [weekOffset, setWeekOffset] = useState(0);
     const [direction, setDirection] = useState(1);
+    // The month grid is only used while the calendar is open or folding; closed, the week is drawn on its own, so a
+    // lost transform can never leave a hidden (transparent) row on screen.
+    const [unfolded, setUnfolded] = useState(open);
+    useEffect(() => {
+      if (open) {
+        setUnfolded(true);
+        return;
+      }
+      const id = setTimeout(() => setUnfolded(false), reduceMotion ? 0 : 360);
+      return () => clearTimeout(id);
+    }, [open, reduceMotion]);
 
     useEffect(() => {
       if (!open) {
@@ -261,12 +272,13 @@ export const CareCalendar = memo(
 
         <GestureDetector gesture={swipe}>
           <Animated.View style={[styles.frame, frame]}>
-            {!open && weekOffset !== 0 ? (
-              <Animated.View key={`w${weekOffset}`} entering={slideIn} style={styles.row}>
+            {!open && (!unfolded || weekOffset !== 0) ? (
+              <Animated.View key={`w${weekOffset}`} entering={weekOffset === 0 && direction > 0 ? undefined : slideIn} style={styles.row}>
                 {week.map((date) => renderDay(date, false))}
               </Animated.View>
             ) : (
-              <Animated.View key={`m${offset}`} entering={offset === 0 && weekOffset === 0 && direction > 0 ? undefined : slideIn} style={offset === 0 ? slide : undefined}>
+              // Only a month change slides in; opening must keep the vertical unfold transform untouched.
+              <Animated.View key={`m${offset}`} entering={offset !== 0 ? slideIn : undefined} style={offset === 0 ? slide : undefined}>
                 {grid.map((row, r) => (
                   <Animated.View key={r} style={[styles.row, offset === 0 && r !== homeRow && others]}>
                     {row.map((date) => renderDay(date, date.getMonth() !== base.getMonth() && (open || offset !== 0)))}

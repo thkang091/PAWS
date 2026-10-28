@@ -27,7 +27,6 @@ import {
   LockIcon,
   MapPinIcon,
   NotebookIcon,
-  PawPrintIcon,
   PersonSimpleWalkIcon,
   SmileyIcon,
   StethoscopeIcon,
@@ -352,28 +351,17 @@ FocusHero.displayName = "FocusHero";
 export const IdentityPanel = ({
   name,
   breed,
-  tag,
   rows,
   onPressBond,
 }: {
   name: string;
   breed: string;
-  tag: string;
+  /** The internal dog tag; kept for callers but never shown. */
+  tag?: string;
   rows: readonly { key: string; label: string; value: string; steps?: { filled: number; total: number } }[];
   onPressBond: () => void;
 }) => (
-  <Panel
-    lead={breed}
-    title={name}
-    accessory={
-      <View style={styles.tag}>
-        <PawPrintIcon size={12} color={text.primary} weight="fill" />
-        <Text style={styles.tagText} numberOfLines={1}>
-          {tag}
-        </Text>
-      </View>
-    }
-  >
+  <Panel lead={breed} title={name}>
     {rows.map((row, index) => (
       <PanelRow
         key={row.key}

@@ -16,6 +16,10 @@ import { bg, layout, space, text, type } from "@/constants/design";
 
 type OnboardingScreenProps = {
   stage: number;
+  /** Stages in this flow (defaults to first-run onboarding's three). */
+  total?: number;
+  /** Extra room at the bottom, when the screen sits above a tab bar. */
+  bottomInset?: number;
   onBack: () => void;
   canGoBack?: boolean;
   fraction?: number;
@@ -30,6 +34,8 @@ type OnboardingScreenProps = {
 
 export const OnboardingScreen = ({
   stage,
+  total,
+  bottomInset = 0,
   onBack,
   canGoBack,
   fraction,
@@ -48,7 +54,7 @@ export const OnboardingScreen = ({
     >
       <ScrollView
         ref={scrollRef}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, bottomInset ? { paddingBottom: bottomInset } : null]}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
@@ -56,6 +62,7 @@ export const OnboardingScreen = ({
         <Reveal index={0}>
           <OnboardingHeader
             stage={stage}
+            total={total}
             onBack={onBack}
             canGoBack={canGoBack}
             fraction={fraction}

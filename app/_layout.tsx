@@ -43,7 +43,7 @@ const RootNavigator = () => {
       <Stack.Screen name="train/lesson/[skillId]" options={{ headerShown: false }} />
       <Stack.Screen name="train/activity/[dayId]" options={{ title: "Training Activity" }} />
       <Stack.Screen name="train/reference-setup/[assetType]" options={{ title: "Reference Setup", headerShown: false }} />
-      <Stack.Screen name="training/history" options={{ title: "Training History" }} />
+      <Stack.Screen name="training/history" options={{ headerShown: false }} />
       <Stack.Screen name="activity/[activityId]" options={{ title: "Verify Activity" }} />
       <Stack.Screen name="weekly-plan" options={{ title: "Weekly Plan" }} />
       <Stack.Screen name="avatar-shop" options={{ title: "Avatar Shop" }} />

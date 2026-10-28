@@ -40,6 +40,8 @@ type OnboardingHeaderProps = {
   onBack: () => void;
   canGoBack?: boolean;
   fraction?: number;
+  /** How many stages the flow has; first-run onboarding has three. */
+  total?: number;
 };
 
 export const OnboardingHeader = ({
@@ -47,6 +49,7 @@ export const OnboardingHeader = ({
   onBack,
   canGoBack = true,
   fraction = 1,
+  total = TOTAL_STAGES,
 }: OnboardingHeaderProps) => (
   <View>
     <View style={styles.backRow}>
@@ -68,11 +71,11 @@ export const OnboardingHeader = ({
 
     <View
       accessibilityRole="progressbar"
-      accessibilityValue={{ min: 1, max: TOTAL_STAGES, now: stage }}
+      accessibilityValue={{ min: 1, max: total, now: stage }}
       style={styles.progressRow}
     >
       <View style={styles.segments}>
-        {Array.from({ length: TOTAL_STAGES }, (_, i) => (
+        {Array.from({ length: total }, (_, i) => (
           <Segment
             key={i}
             index={i}
@@ -81,7 +84,7 @@ export const OnboardingHeader = ({
         ))}
       </View>
       <Text style={styles.counter}>
-        {stage} / {TOTAL_STAGES}
+        {stage} / {total}
       </Text>
     </View>
   </View>

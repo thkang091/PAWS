@@ -3,30 +3,23 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import Animated, { useReducedMotion } from "react-native-reanimated";
 import { useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
-import { SparkleIcon } from "phosphor-react-native";
 
-import { CareSetupStart } from "@/features/care/components/CareSetupStart";
-import { SetupShell, setupText } from "@/features/care/components/SetupShell";
+import { OnboardingScreen } from "@/features/onboarding/components/OnboardingScreen";
+import { QuestionHeadline, type QuestionPart } from "@/features/onboarding/components/QuestionHeadline";
+import { HeartDoodle } from "@/features/onboarding/components/HeartDoodle";
+import { FieldLabel } from "@/features/onboarding/components/FieldLabel";
+import { Reveal } from "@/features/onboarding/components/Reveal";
+import { Chip } from "@/features/onboarding/components/SelectChipRow";
 import { enter } from "@/features/care/food/enter";
 import { saveFeedingProfile, useFoodPlan } from "@/features/care/state/foodPlan";
-import { Chip } from "@/features/onboarding/components/SelectChipRow";
 import { AGE_CHOICES, BREED_CHOICES } from "@/features/profile/intel/getToKnow";
 import { SETS, type SetKey, type SetQuestion } from "@/features/profile/intel/profileSets";
 import { saveSetAnswer, useProfileSets } from "@/features/profile/intel/useProfileSets";
 import { setField } from "@/features/profile/state/profileDraft";
-import { PressScale } from "@/components/ui/PressScale";
 import { queryKeys } from "@/constants/queryKeys";
 import { useSaveWeightLog } from "@/hooks/useWeightLogs";
 import { updateDogBasics } from "@/services/profileService";
-import { accent, bg, border, motion, radius, space, text, type } from "@/constants/design";
-
-const TITLE: Record<SetKey, string> = {
-  basics: "The basics",
-  safety: "Health & safety",
-  home: "Home & routine",
-  baseline: "Training so far",
-  personality: "Personality",
-};
+import { bg, border, motion, radius, space, text, type } from "@/constants/design";
 
 /** Follow-ups (how often, which goal first) are refined later on Profile; setup asks the questions that matter first. */
 const isFollowUp = (q: SetQuestion) => q.id.startsWith("sev_") || q.id === "goal";
@@ -58,17 +51,27 @@ export const ProfileSetupFlow = ({ onClose, bottomInset = 0 }: { onClose: () => 
     })).filter((s) => s.ids.length > 0);
   }
   const screens = plan.current;
+  // Five sets, asked as at most three pages like first-run onboarding.
+  const pages = [
+    { keys: ["basics", "safety"] as SetKey[], headline: (n: string): QuestionPart[] => [{ kind: "text", value: "Let's get to know" }, { kind: "accent", value: n, suffix: "." }] },
+    { keys: ["home", "baseline"] as SetKey[], headline: (n: string): QuestionPart[] => [{ kind: "accent", value: n }, { kind: "text", value: "at home." }] },
+    { keys: ["personality"] as SetKey[], headline: (n: string): QuestionPart[] => [{ kind: "text", value: "What" }, { kind: "accent", value: n }, { kind: "text", value: "is like." }] },
+  ]
+    .map((p) => ({ ...p, ids: screens.filter((sc) => p.keys.includes(sc.key)).flatMap((sc) => sc.ids) }))
+    .filter((p) => p.ids.length > 0);
+  const setOf = (q: SetQuestion): SetKey => SETS.find((set) => profile.get(set.key).questions.some((x) => x.id === q.id))?.key ?? "basics";
+  const questionById = (id: string) => SETS.flatMap((set) => profile.get(set.key).questions).find((q) => q.id === id);
 
-  const [step, setStep] = useState(-1);
-  const [direction, setDirection] = useState(1);
+  const [step, setStep] = useState(0);
   const [otherBreed, setOtherBreed] = useState("");
   const [breedOther, setBreedOther] = useState(false);
   const [weight, setWeight] = useState("");
   const [unit, setUnit] = useState<"kg" | "lb">(profile.unit);
+  // What was tapped on this visit, so every chip lights up at once (age and sex are stored on the dog in another form).
+  const [picked, setPicked] = useState<Record<string, string[]>>({});
 
   const go = (to: number) => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setDirection(to > step ? 1 : -1);
     setStep(to);
   };
 
@@ -85,58 +88,43 @@ export const ProfileSetupFlow = ({ onClose, bottomInset = 0 }: { onClose: () => 
     }
   };
 
-  if (step === -1) {
-    return (
-      <CareSetupStart
-        title={`Get to know\n${profile.name}`}
-        subtitle={`${screens.length} short ${screens.length === 1 ? "page" : "pages"} on health, home and habits. Care and training fit ${profile.name} from here.`}
-        startLabel="Start"
-        automaticLabel="Not now"
-        onStart={() => go(0)}
-        onClose={onClose}
-        bottomInset={bottomInset}
-      />
-    );
-  }
+  const last = step >= pages.length;
+  const name = profile.name;
 
-  const last = step >= screens.length;
   if (last) {
     return (
-      <SetupShell
-        step={screens.length}
-        total={screens.length + 1}
-        direction={direction}
+      <OnboardingScreen
         bottomInset={bottomInset}
-        onBack={() => go(step - 1)}
-        primary={{
-          label: "See the profile",
-          done: true,
-          onPress: () => {
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            finishProfileSetup();
-            onClose();
-          },
+        stage={pages.length || 1}
+        total={pages.length || 1}
+        onBack={() => (pages.length ? go(pages.length - 1) : onClose())}
+        ctaLabel="See the profile"
+        onContinue={() => {
+          void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          finishProfileSetup();
+          onClose();
         }}
       >
-        <View style={styles.doneMark}>
-          <SparkleIcon size={22} color={text.primary} weight="fill" />
+        <View style={styles.opening}>
+          <QuestionHeadline parts={[{ kind: "text", value: "This is" }, { kind: "accent", value: name, suffix: "." }]} trailing={<HeartDoodle />} />
+          <Animated.Text entering={reduceMotion ? undefined : enter({ y: 8 }, { duration: motion.duration.enter })} style={styles.understanding}>
+            {profile.understanding}
+          </Animated.Text>
+          <Text style={styles.supporting}>Change anything later on Profile.</Text>
         </View>
-        <Text style={setupText.title}>{`This is ${profile.name}`}</Text>
-        <Animated.Text entering={reduceMotion ? undefined : enter({ y: 8 }, { duration: motion.duration.enter })} style={styles.understanding}>
-          {profile.understanding}
-        </Animated.Text>
-        <Text style={setupText.note}>Change anything later on Profile.</Text>
-      </SetupShell>
+      </OnboardingScreen>
     );
   }
 
-  const screen = screens[step];
-  const set = profile.get(screen.key);
-  const questions = set.questions.filter((q) => screen.ids.includes(q.id));
+  const page = pages[step];
+  const questions = page.ids.map((id) => questionById(id)).filter((q): q is SetQuestion => Boolean(q));
 
-  const answerOf = (q: SetQuestion) => set.answers[q.id] ?? "";
+  const answerOf = (q: SetQuestion) => profile.get(setOf(q)).answers[q.id] ?? "";
   const pick = (q: SetQuestion, label: string) => {
     void Haptics.selectionAsync();
+    const was = picked[q.id] ?? (answerOf(q) ? answerOf(q).split(", ") : []);
+    const now = !q.multi || q.special ? [label] : label === q.none ? (was.includes(label) ? [] : [label]) : (was.includes(label) ? was.filter((x) => x !== label) : [...was, label]).filter((x) => x !== q.none);
+    setPicked((p) => ({ ...p, [q.id]: now }));
     if (q.special === "sex") return writeDog({ gender: label === "Boy" ? "male" : "female" });
     if (q.special === "age") {
       const years = AGE_CHOICES.find((c) => c.label === label)?.years;
@@ -156,37 +144,39 @@ export const ProfileSetupFlow = ({ onClose, bottomInset = 0 }: { onClose: () => 
     if (!q.multi) next = [label];
     else if (label === q.none) next = current.includes(label) ? [] : [label];
     else next = (current.includes(label) ? current.filter((x) => x !== label) : [...current, label]).filter((x) => x !== q.none);
-    saveSetAnswer(screen.key, q.id, next.join(", "));
+    saveSetAnswer(setOf(q), q.id, next.join(", "), profile.dogId);
     if (q.id === "fixed" && label !== "Not sure") saveFeedingProfile({ ...food.profile, neutered: label === "Yes" });
   };
 
   const optionsOf = (q: SetQuestion): readonly { label: string }[] =>
     q.special === "breed" ? BREED_CHOICES.map((label) => ({ label })) : q.special === "age" ? AGE_CHOICES.map((c) => ({ label: c.label })) : q.options;
-  const isOn = (q: SetQuestion, label: string) =>
-    q.special === "breed" ? (label === "Something else" ? breedOther : answerOf(q) === label) : answerOf(q).split(", ").includes(label);
+  const isOn = (q: SetQuestion, label: string) => {
+    if (q.special === "breed" && label === "Something else") return breedOther;
+    return (picked[q.id] ?? (answerOf(q) ? answerOf(q).split(", ") : [])).includes(label);
+  };
 
   return (
-    <SetupShell
-      step={step}
-      total={screens.length + 1}
-      direction={direction}
-      bottomInset={bottomInset}
-      closing={step === 0}
+    <OnboardingScreen
+        bottomInset={bottomInset}
+      stage={step + 1}
+      total={pages.length}
       onBack={() => (step === 0 ? onClose() : go(step - 1))}
-      primary={{
-        label: step === screens.length - 1 ? "Finish" : "Next",
-        onPress: () => {
-          flushTyped();
-          go(step + 1);
-        },
+      fraction={1}
+      ctaLabel="Continue"
+      ctaFootnote={step === 0 ? "Everything saves as you tap." : undefined}
+      onContinue={() => {
+        flushTyped();
+        go(step + 1);
       }}
     >
-      <Text style={setupText.title}>{TITLE[screen.key]}</Text>
-      <Text style={setupText.note}>All optional. Tap what fits.</Text>
+      <View style={styles.opening}>
+        <QuestionHeadline parts={page.headline(name)} trailing={step === 0 ? <HeartDoodle /> : undefined} />
+        <Text style={styles.supporting}>All optional. Skip what you are unsure of.</Text>
+      </View>
 
       {questions.map((q, i) => (
-        <Animated.View key={q.id} entering={reduceMotion ? undefined : enter({ y: 8 }, { delay: i * 40, duration: motion.duration.enter })} style={styles.question}>
-          <Text style={styles.prompt}>{q.prompt(profile.name)}</Text>
+        <Reveal key={q.id} index={i + 1} style={styles.question}>
+          <FieldLabel>{q.short}</FieldLabel>
           {q.special === "weight" ? (
             <View style={styles.weightRow}>
               <TextInput
@@ -201,9 +191,7 @@ export const ProfileSetupFlow = ({ onClose, bottomInset = 0 }: { onClose: () => 
                 maxLength={5}
               />
               {(["lb", "kg"] as const).map((u) => (
-                <PressScale key={u} accessibilityRole="radio" accessibilityState={{ selected: unit === u }} accessibilityLabel={u} scaleTo={0.95} style={[styles.unit, unit === u && styles.unitOn]} onPress={() => setUnit(u)}>
-                  <Text style={[styles.unitText, unit === u && styles.unitTextOn]}>{u}</Text>
-                </PressScale>
+                <Chip key={u} label={u} selected={unit === u} onPress={() => setUnit(u)} />
               ))}
             </View>
           ) : (
@@ -226,23 +214,19 @@ export const ProfileSetupFlow = ({ onClose, bottomInset = 0 }: { onClose: () => 
               accessibilityLabel="Breed"
             />
           ) : null}
-        </Animated.View>
+        </Reveal>
       ))}
-    </SetupShell>
+    </OnboardingScreen>
   );
 };
 
 const styles = StyleSheet.create({
+  opening: { marginTop: space.section },
+  supporting: { ...type.body, color: text.secondary, marginTop: space.lg, maxWidth: 300 },
   question: { marginTop: space.xxl },
-  prompt: { ...type.cardTitle, fontWeight: "600", color: text.primary, marginBottom: space.md },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   input: { height: 52, marginTop: space.md, paddingHorizontal: space.lg, borderRadius: radius.input, borderWidth: 1, borderColor: border.soft, backgroundColor: bg.surface, ...type.body, color: text.primary },
   weightRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
-  weightInput: { flex: 1, height: 52, paddingHorizontal: space.lg, borderRadius: radius.input, borderWidth: 1, borderColor: border.soft, backgroundColor: bg.surface, ...type.body, color: text.primary, fontVariant: ["tabular-nums"] },
-  unit: { height: 52, minWidth: 52, borderRadius: radius.input, borderWidth: 1, borderColor: border.soft, alignItems: "center", justifyContent: "center" },
-  unitOn: { backgroundColor: accent.primary, borderColor: accent.primary },
-  unitText: { ...type.supporting, fontWeight: "600", color: text.secondary },
-  unitTextOn: { color: text.primary },
-  doneMark: { width: 48, height: 48, borderRadius: 24, backgroundColor: accent.primary, alignItems: "center", justifyContent: "center", marginBottom: space.lg },
-  understanding: { ...type.body, fontSize: 18, lineHeight: 27, color: text.primary, marginTop: space.lg },
+  weightInput: { flex: 1, height: 44, paddingHorizontal: space.lg, borderRadius: radius.pill, borderWidth: 1, borderColor: border.soft, backgroundColor: bg.surface, ...type.body, color: text.primary, fontVariant: ["tabular-nums"] },
+  understanding: { ...type.body, fontSize: 19, lineHeight: 28, color: text.primary, marginTop: space.xl },
 });

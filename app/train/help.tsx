@@ -30,8 +30,7 @@ import * as Haptics from "expo-haptics";
 import { ArrowRightIcon, XIcon } from "phosphor-react-native";
 
 import { CoachComposer } from "@/features/train/components/coach/CoachComposer";
-import { CoachMark, CoachReply, CoachThinking } from "@/features/train/components/coach/CoachReply";
-import { StepRail } from "@/features/train/components/coach/StepRail";
+import { CoachReply, CoachThinking } from "@/features/train/components/coach/CoachReply";
 import { UserBubble } from "@/features/train/components/coach/UserBubble";
 import { CURRENT_LESSON } from "@/features/train/components/currentLesson";
 import { getTrainingClipLessons } from "@/features/train/media/trainingClipLessons";
@@ -70,6 +69,15 @@ const sample = (levels: readonly number[], count = 24) =>
 const SHEET_GAP = 56;
 const DISMISS_DISTANCE = 140;
 const DISMISS_VELOCITY = 0.5;
+
+/** The lesson's steps as small dots; the step being talked about stretches into a pill. */
+const StepDots = ({ count, active, reduceMotion }: { count: number; active: number | null; reduceMotion: boolean }) => (
+  <View style={styles.dots} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+    {Array.from({ length: count }, (_, i) => (
+      <Animated.View key={i} layout={reduceMotion ? undefined : LinearTransition.duration(motion.duration.select)} style={[styles.dot, { width: i === active ? 18 : 6 }, i === active && styles.dotOn]} />
+    ))}
+  </View>
+);
 
 export default function CoachSheet() {
   const params = useLocalSearchParams<{ step?: string; state?: string; dayId?: string; skillId?: string; levelId?: string; cardIndex?: string; preview?: string; previewLevel?: string; clip?: string; reinforcement?: string; dogId?: string; roundId?: string; sessionId?: string; reviewAt?: string; skillCode?: string; levelNumber?: string; lessonTitle?: string }>();
@@ -361,11 +369,6 @@ export default function CoachSheet() {
     void reply(history);
   };
 
-  const focusLabel =
-    focus !== null && focus >= 0 && steps[focus]
-      ? `Step ${focus + 1} of ${steps.length}, ${steps[focus].title}`
-      : `Lesson ${lesson.number}, ${steps.length} steps`;
-
   const settle = reduceMotion ? undefined : LinearTransition.duration(motion.duration.enter).easing(motion.easing.out);
   const morph = reduceMotion ? undefined : LinearTransition.duration(440).easing(motion.easing.drawer);
 
@@ -379,18 +382,19 @@ export default function CoachSheet() {
         <View {...pan.panHandlers} style={styles.head}>
           <View style={styles.grabber} />
           <View style={styles.headRow}>
-            <CoachMark breathing={busy} reduceMotion={reduceMotion} size={40} />
             <View style={styles.headCopy}>
-              <Text style={styles.title}>Coach</Text>
-              <Text style={styles.subtitle} numberOfLines={1}>
+              <Text style={styles.eyebrow} numberOfLines={1}>
+                {focus !== null && focus >= 0 && steps.length > 1 ? `Lesson ${lesson.number} · Step ${focus + 1} of ${steps.length}` : `Lesson ${lesson.number} · Need a hand`}
+              </Text>
+              <Text style={styles.title} numberOfLines={2}>
                 {lesson.title}
               </Text>
             </View>
             <PressScale accessibilityRole="button" accessibilityLabel="Close coach" scaleTo={0.9} style={styles.close} onPress={close}>
-              <XIcon size={iconSize.standard} color={text.primary} weight="bold" />
+              <XIcon size={18} color={text.primary} weight="bold" />
             </PressScale>
           </View>
-          <StepRail count={steps.length} active={focus !== null && focus >= 0 ? focus : null} label={focusLabel} reduceMotion={reduceMotion} />
+          {steps.length > 1 ? <StepDots count={steps.length} active={focus !== null && focus >= 0 ? focus : null} reduceMotion={reduceMotion} /> : null}
         </View>
 
         <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === "ios" ? "padding" : undefined} keyboardVerticalOffset={insets.top + SHEET_GAP}>
@@ -539,7 +543,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 
-  head: { paddingHorizontal: space.xl, paddingBottom: space.lg, backgroundColor: bg.canvas },
+  head: { paddingHorizontal: space.xl, paddingBottom: space.lg, backgroundColor: bg.canvas, borderBottomWidth: 1, borderBottomColor: border.soft },
   grabber: {
     alignSelf: "center",
     width: 38,
@@ -549,21 +553,23 @@ const styles = StyleSheet.create({
     marginTop: space.sm,
     marginBottom: space.lg,
   },
-  headRow: { flexDirection: "row", alignItems: "center", gap: space.md, marginBottom: space.lg },
+  headRow: { flexDirection: "row", alignItems: "flex-start", gap: space.md },
   headCopy: { flex: 1 },
-  title: { ...type.sectionTitle, color: text.primary },
-  subtitle: { ...type.caption, color: text.secondary, marginTop: 1 },
+  eyebrow: { ...type.eyebrow, fontSize: 11, color: text.tertiary },
+  title: { ...type.cardTitle, fontSize: 19, lineHeight: 24, fontWeight: "700", color: text.primary, marginTop: 4 },
   close: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
     borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: border.soft,
+    backgroundColor: bg.subtle,
     alignItems: "center",
     justifyContent: "center",
   },
+  dots: { flexDirection: "row", gap: 5, marginTop: space.md },
+  dot: { height: 6, borderRadius: 3, backgroundColor: border.default },
+  dotOn: { backgroundColor: accent.band },
 
-  thread: { paddingHorizontal: space.xl, paddingTop: space.md, paddingBottom: space.xxl },
+  thread: { paddingHorizontal: space.xl, paddingTop: space.xl, paddingBottom: space.xxl },
 
   question: {
     ...type.pageTitle,

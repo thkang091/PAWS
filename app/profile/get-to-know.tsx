@@ -77,7 +77,7 @@ export default function GetToKnowScreen() {
   const store = (q: SetQuestion, values: string[]) => {
     if (!values.length) return;
     const value = values.join(", ");
-    saveSetAnswer(setKey, q.id, value);
+    saveSetAnswer(setKey, q.id, value, profile.dogId);
     // Spayed or neutered changes calories, so the Food Plan hears about it straight away.
     if (q.id === "fixed" && value !== "Not sure") saveFeedingProfile({ ...food.profile, neutered: value === "Yes" });
   };

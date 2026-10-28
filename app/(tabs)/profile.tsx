@@ -69,7 +69,7 @@ export default function ProfileTabScreen() {
   if (hydrated && sets.dogId && !done && !deferred && sets.answered < sets.total) {
     return (
       <ProfileSetupFlow
-        bottomInset={TAB_CLEARANCE - 40}
+        bottomInset={TAB_CLEARANCE}
         onClose={() => {
           setupDeferred = true;
           setDeferred(true);

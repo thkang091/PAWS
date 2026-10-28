@@ -1,10 +1,11 @@
 import { getTrainingClipPoster, getTrainingPosterPosition } from "@/features/train/media/trainingClipPosters";
+import { EnergyGlyph } from "@/components/ui/StatGlyphs";
 import { useEffect, useState } from "react";
 import { BackHandler, Modal, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { Redirect, router, Stack, useLocalSearchParams } from "expo-router";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSharedValue } from "react-native-reanimated";
-import { ArrowLeftIcon, ArrowRightIcon, LightningIcon } from "phosphor-react-native";
+import { ArrowLeftIcon, ArrowRightIcon } from "phosphor-react-native";
 import { PressScale } from "@/components/ui/PressScale";
 import { LessonHero } from "@/features/train/components/LessonHero";
 import { LessonPreparation } from "@/features/train/components/LessonPreparation";
@@ -112,7 +113,7 @@ function PreparationPreview({ round, onStart, onClose }: { round: 1 | 2; onStart
       </View>
     </ScrollView>
     <View style={[styles.footer, { paddingBottom: insets.bottom + space.lg }]}>
-      <View style={styles.energy}><LightningIcon size={17} color={accent.band} weight="fill" /><Text style={styles.smallCopy}>1 Energy</Text></View>
+      <View style={styles.energy}><EnergyGlyph size={17} /><Text style={styles.smallCopy}>1 Energy</Text></View>
       <TrainingFlowButton label="Start training" onPress={onStart} />
     </View>
   </View>;

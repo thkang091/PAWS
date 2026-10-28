@@ -1,123 +1,101 @@
 import { StyleSheet, Text, View } from "react-native";
-import { ArrowRightIcon, CaretDownIcon } from "phosphor-react-native";
+import { ClockCounterClockwiseIcon, ListBulletsIcon } from "phosphor-react-native";
 
-import { TrainCompanion, companionAspect } from "@/features/train/components/TrainCompanion";
+import { CoinGlyph, EnergyGlyph, StreakGlyph } from "@/components/ui/StatGlyphs";
 import { PressScale } from "@/components/ui/PressScale";
 import type { TrainingTopic } from "@/constants/trainingTopics";
-import { accent, icon, pastel, radius, space, text, type } from "@/constants/design";
+import { space } from "@/constants/design";
 
-const ART_H = 96;
+export type TrainStats = { streak: number | null; energy: number | null; gold: number | null; silver: number | null };
 
+/**
+ * The top of Train, in one raised green card: the dog's numbers across the top (streak, energy, gold, silver, history),
+ * a rule, then the topic being trained with how far along it is and a button to switch topics.
+ */
 export const TopicHeader = ({
   topic,
+  index,
+  count,
   done,
   total,
-  onContinue,
+  stats,
+  onEnergy,
+  onCoins,
+  onHistory,
   onOpenPicker,
 }: {
   topic: TrainingTopic;
+  index: number;
+  count: number;
   done: number;
   total: number;
-  onContinue: () => void;
+  stats: TrainStats;
+  onEnergy: () => void;
+  onCoins: () => void;
+  onHistory: () => void;
   onOpenPicker: () => void;
 }) => {
-  const complete = total > 0 && done >= total;
-  const fraction = total === 0 ? 0 : done / total;
-  const label = complete ? "Rewatch" : done === 0 ? "Start" : "Continue";
-
+  const show = (n: number | null) => (n == null ? "-" : n.toLocaleString());
   return (
-    <View style={[styles.card, { backgroundColor: pastel[topic.tint] }]}>
-      <View style={styles.top}>
-        <View style={styles.copy}>
-          <PressScale
-            accessibilityRole="button"
-            accessibilityLabel={`Topic: ${topic.title}. Change topic.`}
-            accessibilityHint="Opens the list of training topics"
-            scaleTo={0.97}
-            style={styles.switcher}
-            onPress={onOpenPicker}
-          >
-            <Text style={styles.title} numberOfLines={2}>
+    <View style={styles.lip}>
+      <View style={styles.card}>
+        <View style={styles.stats}>
+          <View style={styles.stat} accessible accessibilityLabel={`Streak ${stats.streak ?? 0} days`}>
+            <StreakGlyph muted={!stats.streak} />
+            <Text style={[styles.statText, !stats.streak && styles.statQuiet]}>{(stats.streak ?? 0).toLocaleString()}</Text>
+          </View>
+          <PressScale accessibilityRole="button" accessibilityLabel={`Energy ${stats.energy ?? 0}. Refill`} scaleTo={0.92} style={styles.stat} onPress={onEnergy}>
+            <EnergyGlyph />
+            <Text style={styles.statText}>{show(stats.energy)}</Text>
+          </PressScale>
+          <PressScale accessibilityRole="button" accessibilityLabel={`${stats.gold ?? 0} gold coins`} scaleTo={0.92} style={styles.stat} onPress={onCoins}>
+            <CoinGlyph tone="gold" />
+            <Text style={styles.statText}>{show(stats.gold)}</Text>
+          </PressScale>
+          <PressScale accessibilityRole="button" accessibilityLabel={`${stats.silver ?? 0} silver coins`} scaleTo={0.92} style={styles.stat} onPress={onCoins}>
+            <CoinGlyph tone="silver" />
+            <Text style={styles.statText}>{show(stats.silver)}</Text>
+          </PressScale>
+          <PressScale accessibilityRole="button" accessibilityLabel="History" scaleTo={0.9} style={styles.stat} onPress={onHistory} hitSlop={6}>
+            <ClockCounterClockwiseIcon size={22} color="rgba(255,255,255,0.86)" weight="bold" />
+          </PressScale>
+        </View>
+
+        <View style={styles.rule} />
+
+        <View style={styles.topicRow}>
+          <PressScale accessibilityRole="button" accessibilityLabel={`${topic.title}. ${done} of ${total} done. Change topic`} scaleTo={0.98} style={styles.topicCopy} onPress={onOpenPicker}>
+            <Text style={styles.eyebrow} numberOfLines={1}>{`Topic ${index + 1} · ${done} of ${total} done`.toUpperCase()}</Text>
+            <Text style={styles.title} numberOfLines={1}>
               {topic.title}
             </Text>
-            <View style={styles.caret}>
-              <CaretDownIcon size={13} color={text.primary} weight="bold" />
-            </View>
           </PressScale>
-
-          <Text style={styles.blurb} numberOfLines={2}>
-            {topic.blurb}
-          </Text>
+          <PressScale accessibilityRole="button" accessibilityLabel="All topics" scaleTo={0.9} style={styles.listButton} onPress={onOpenPicker}>
+            <ListBulletsIcon size={24} color="#FFFFFF" weight="bold" />
+          </PressScale>
         </View>
-
-        <View style={styles.art} pointerEvents="none">
-          <TrainCompanion pose={topic.pose} width={Math.min(112, ART_H * companionAspect(topic.pose))} />
-        </View>
-      </View>
-
-      <View style={styles.foot}>
-        <View style={styles.progress}>
-          <View style={styles.track}>
-            <View style={[styles.fill, { width: `${Math.round(fraction * 100)}%` }]} />
-          </View>
-          <Text style={styles.count}>
-            {complete ? "All done" : done === 0 ? `${total} lessons` : `${done} of ${total} done`}
-          </Text>
-        </View>
-        <PressScale
-          accessibilityRole="button"
-          accessibilityLabel={`${label} ${topic.title}`}
-          scaleTo={0.95}
-          style={styles.cta}
-          onPress={onContinue}
-        >
-          <Text style={styles.ctaText}>{label}</Text>
-          <ArrowRightIcon size={icon.inline} color={text.primary} weight="bold" />
-        </PressScale>
       </View>
     </View>
   );
 };
 
+const GREEN = "#657A59";
+const GREEN_LIP = "#465641";
+
 const styles = StyleSheet.create({
-  card: { borderRadius: 26, padding: space.lg, gap: space.lg },
-  top: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
-  copy: { flex: 1 },
+  lip: { borderRadius: 22, backgroundColor: GREEN_LIP, paddingBottom: 5 },
+  card: { borderRadius: 22, backgroundColor: GREEN, overflow: "hidden" },
 
-  switcher: { flexDirection: "row", alignItems: "center", gap: space.xs, alignSelf: "flex-start" },
-  title: {
-    ...type.sectionTitle,
-    fontSize: 23,
-    lineHeight: 27,
-    letterSpacing: -0.4,
-    color: text.primary,
-    flexShrink: 1,
-  },
-  caret: {
-    width: 22,
-    height: 22,
-    borderRadius: radius.pill,
-    backgroundColor: "rgba(28,27,26,0.07)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  stats: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: space.md, paddingTop: space.sm, paddingBottom: space.xs },
+  stat: { flexDirection: "row", alignItems: "center", gap: 6, height: 44, paddingHorizontal: space.xs },
+  statText: { fontSize: 16, lineHeight: 20, fontWeight: "800", color: "#FFFFFF", fontVariant: ["tabular-nums"] },
+  statQuiet: { color: "rgba(255,255,255,0.6)" },
 
-  blurb: { ...type.caption, fontSize: 13, lineHeight: 18, color: text.secondary, marginTop: 4 },
-  art: { height: ART_H, justifyContent: "flex-end", marginRight: -4 },
+  rule: { height: 2, backgroundColor: GREEN_LIP },
 
-  foot: { flexDirection: "row", alignItems: "center", gap: space.md },
-  progress: { flex: 1, gap: 6 },
-  track: { height: 6, borderRadius: radius.pill, backgroundColor: "rgba(28,27,26,0.08)", overflow: "hidden" },
-  fill: { height: 6, borderRadius: radius.pill, backgroundColor: accent.band },
-  count: { ...type.caption, fontWeight: "600", color: text.secondary },
-  cta: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: space.xs,
-    height: 42,
-    paddingHorizontal: space.lg,
-    borderRadius: radius.pill,
-    backgroundColor: accent.deep,
-  },
-  ctaText: { ...type.supporting, fontWeight: "700", color: text.primary },
+  topicRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingLeft: space.lg, paddingRight: space.md, paddingVertical: space.md },
+  topicCopy: { flex: 1 },
+  eyebrow: { fontSize: 12, lineHeight: 16, fontWeight: "800", letterSpacing: 0.7, color: "rgba(255,255,255,0.7)", fontVariant: ["tabular-nums"] },
+  title: { fontSize: 22, lineHeight: 28, fontWeight: "800", letterSpacing: -0.3, color: "#FFFFFF", marginTop: 2 },
+  listButton: { width: 48, height: 48, borderRadius: 14, borderWidth: 2, borderColor: "rgba(255,255,255,0.28)", alignItems: "center", justifyContent: "center" },
 });

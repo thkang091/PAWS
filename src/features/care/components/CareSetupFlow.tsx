@@ -20,6 +20,7 @@ import {
   PillIcon,
   PlusIcon,
   ScissorsIcon,
+  SparkleIcon,
   SyringeIcon,
   XIcon,
 } from "phosphor-react-native";
@@ -78,6 +79,8 @@ import {
 import { PressScale } from "@/components/ui/PressScale";
 import { ROUTINE_LIBRARY, recommendedPlan } from "@/constants/careSetup";
 import { useSaveCareRoutineSetup } from "@/hooks/useCareEvents";
+import { useDogContext } from "@/features/care/intel/useDogContext";
+import { vaccineAdvice, type VaccineAdvice } from "@/services/vaccineAdvice";
 import { useUpsertCareProfile } from "@/hooks/useCareHealth";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { useWeightLogs } from "@/hooks/useWeightLogs";
@@ -205,6 +208,18 @@ export const CareSetupFlow = ({
     setA((current) => ({ ...current, [key]: [...times] }));
     setLastAdded(`${prefix[key]}-${times[times.length - 1]}`);
   };
+
+  // Lifestyle shots judged for this dog by Gemini when the vaccine screen opens; core shots never change.
+  const dogContext = useDogContext();
+  const [advice, setAdvice] = useState<VaccineAdvice | null>(null);
+  const asked = useRef(false);
+  const vaccineItems = useMemo<PlanItem[]>(
+    () => [
+      ...vaccinePlan(stage),
+      ...(advice?.extras ?? []).map((e) => ({ key: `extra-${e.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, label: e.name, when: e.when, why: e.why, required: false })),
+    ],
+    [stage, advice],
+  );
 
   const missingCore = useMemo(
     () => vaccinePlan(stage).filter((item) => item.required && !a.vaccines.includes(item.key)),
@@ -816,6 +831,21 @@ export const CareSetupFlow = ({
 
         {area === "vaccines" ? (
           <>
+            <VaccineAdviceLoader
+              ask={!asked.current}
+              onAsk={() => {
+                asked.current = true;
+                const lifestyle = vaccinePlan(stage).filter((v) => !v.required).map((v) => ({ key: v.key, label: v.label }));
+                const region = (() => {
+                  try {
+                    return Intl.DateTimeFormat().resolvedOptions().locale.split(/[-_]/)[1] ?? null;
+                  } catch {
+                    return null;
+                  }
+                })();
+                void vaccineAdvice(lifestyle, { name, brief: dogContext.brief, region }).then(setAdvice);
+              }}
+            />
             <Text style={styles.title}>What {name} needs</Text>
             <Text style={styles.stageNote}>
               The schedule for {stageLabel[stage]}. Tick anything already done.
@@ -828,7 +858,7 @@ export const CareSetupFlow = ({
               style={styles.planTimeline}
             >
               <DayTimeline
-                events={vaccinePlan(stage).map((item) => ({
+                events={vaccineItems.filter((item) => item.required).map((item) => ({
                   key: item.key,
                   time: item.when,
                   label: item.label,
@@ -838,7 +868,10 @@ export const CareSetupFlow = ({
             </Animated.View>
 
             <PlanList
-              items={vaccinePlan(stage)}
+              items={vaccineItems}
+              notes={Object.fromEntries((advice?.fits ?? []).map((f) => [f.key, f]))}
+              extraKeys={vaccineItems.filter((v) => v.key.startsWith("extra-")).map((v) => v.key)}
+              name={name}
               chosen={a.vaccines}
               doneLabel="Had it"
               todoLabel="Not yet"
@@ -1082,8 +1115,20 @@ const bookedAppointment = (answers: Answers): CareAppointment | null =>
       }
     : null;
 
+/** Asks for the vaccine advice the first time the vaccine screen shows. */
+const VaccineAdviceLoader = ({ ask, onAsk }: { ask: boolean; onAsk: () => void }) => {
+  useEffect(() => {
+    if (ask) onAsk();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+};
+
 const PlanList = ({
   items,
+  notes,
+  extraKeys,
+  name,
   chosen,
   doneLabel,
   todoLabel,
@@ -1091,6 +1136,11 @@ const PlanList = ({
   reduceMotion,
 }: {
   items: readonly PlanItem[];
+  /** Gemini's read on lifestyle shots for this dog. */
+  notes?: Readonly<Record<string, { fit: "yes" | "maybe" | "no"; why: string }>>;
+  /** Shots Gemini added for this dog's region or life. */
+  extraKeys?: readonly string[];
+  name?: string;
   chosen: readonly string[];
   doneLabel: string;
   todoLabel: string;
@@ -1122,6 +1172,20 @@ const PlanList = ({
               </View>
               <Text style={styles.planWhen}>{item.when}</Text>
               <Text style={styles.planWhy}>{item.why}</Text>
+              {notes?.[item.key] || extraKeys?.includes(item.key) ? (
+                <View style={styles.fitLine}>
+                  <SparkleIcon size={12} color={notes?.[item.key]?.fit === "no" ? text.tertiary : accent.band} weight="fill" />
+                  <Text style={[styles.fitText, notes?.[item.key]?.fit === "no" && styles.fitTextNo]}>
+                    {extraKeys?.includes(item.key)
+                      ? `Suggested for ${name ?? "your dog"}`
+                      : notes![item.key].fit === "yes"
+                        ? `Fits ${name ?? "your dog"}. ${notes![item.key].why}`
+                        : notes![item.key].fit === "maybe"
+                          ? `Ask your vet. ${notes![item.key].why}`
+                          : `Probably not needed. ${notes![item.key].why}`}
+                  </Text>
+                </View>
+              ) : null}
               <Text style={[styles.planState, on && styles.planStateOn]}>
                 {on ? doneLabel : todoLabel}
               </Text>
@@ -1533,6 +1597,9 @@ const styles = StyleSheet.create({
   },
   planWhen: { ...type.caption, fontWeight: "600", color: text.secondary, marginTop: 3 },
   planWhy: { ...type.caption, color: text.tertiary, marginTop: 4, lineHeight: 17 },
+  fitLine: { flexDirection: "row", alignItems: "flex-start", gap: 5, marginTop: 6 },
+  fitText: { ...type.caption, fontWeight: "600", color: text.primary, flex: 1, lineHeight: 17 },
+  fitTextNo: { fontWeight: "400", color: text.tertiary },
   planCheck: {
     width: 26,
     height: 26,

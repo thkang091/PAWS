@@ -10,6 +10,7 @@ import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { preferredWeightUnit } from "@/lib/units";
 import { useMedications } from "@/hooks/useCareHealth";
 import { useWeightLogs } from "@/hooks/useWeightLogs";
+import { saveDogTrainingPreferences } from "@/services/trainingCurriculumService";
 
 export type SetState = {
   key: SetKey;
@@ -147,9 +148,15 @@ export const useProfileSets = () => {
   }, [dog.data, weights.data, intel.stage, intel.size, draft, record.items, meds.data]);
 };
 
-export const saveSetAnswer = (setKey: SetKey, id: string, value: string) => {
+const DELIVERY: Record<string, string> = { Food: "treats", Toys: "toys", "Praise and fuss": "praise", "Sniffing time": "play" };
+
+/** Save one answer. `dogId` lets answers that Train also uses (what motivates the dog) reach the training plan. */
+export const saveSetAnswer = (setKey: SetKey, id: string, value: string, dogId?: string | null) => {
   const set = setByKey(setKey);
   if (set) setField(set.section, id, value);
+  if (id === "motivation" && dogId && DELIVERY[value]) {
+    void saveDogTrainingPreferences(dogId, { deliveryStyle: DELIVERY[value] }).catch(() => undefined);
+  }
 };
 
 /** Size from breed when nothing else is known, for the basics questions before a weigh-in. */
