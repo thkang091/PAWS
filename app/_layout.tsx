@@ -29,9 +29,7 @@ const RootNavigator = () => {
       <Stack.Screen name="tutorial" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="rewards" options={{ title: "Rewards" }} />
-      <Stack.Screen name="game/shop" options={{ headerShown: false }} />
-      <Stack.Screen name="game/challenge" options={{ headerShown: false }} />
-      <Stack.Screen name="game/[gameId]" options={{ title: "Challenge" }} />
+      <Stack.Screen name="game" options={{ headerShown: false }} />
       <Stack.Screen name="train/lesson-preview" options={{ headerShown: false }} />
       <Stack.Screen name="train/media-preview" options={{ headerShown: false }} />
       <Stack.Screen

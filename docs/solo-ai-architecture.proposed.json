@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {"title": "Solo 녹화·판독·저장 — 제안 구조", "quality_profile": "showcase", "viewBox": [1370, 730]},
+  "components": [
+    {"id":"capture","type":"frontend","label":"앱에서 녹화","sublabel":"영상 · 명령 시점 보관","pos":[40,100],"size":[225,90]},
+    {"id":"storage","type":"cloud","label":"비공개 영상 저장","sublabel":"Supabase Storage","pos":[390,100],"size":[225,90]},
+    {"id":"submit","type":"messagebus","label":"제출 API · 작업 큐","sublabel":"소유권 확인 · 중복 방지","pos":[740,100],"size":[225,90]},
+    {"id":"worker","type":"backend","label":"판독 작업 실행","sublabel":"파일 확인 · 재시도 관리","pos":[1090,100],"size":[225,90]},
+    {"id":"result","type":"frontend","label":"결과 · 개인 기록","sublabel":"저장된 결과를 조회","pos":[40,470],"size":[225,90]},
+    {"id":"database","type":"database","label":"시도 · 판독 결과 DB","sublabel":"결과 확정은 한 번만","pos":[390,470],"size":[225,90]},
+    {"id":"scoring","type":"backend","label":"서버 검증 · 점수 계산","sublabel":"규칙 버전 · 시간 구간 확인","pos":[740,470],"size":[225,90]},
+    {"id":"gemini","type":"external","label":"Gemini 영상 판독","sublabel":"동작 · 구간 · 불확실성 반환","pos":[1090,470],"size":[225,90]}
+  ],
+  "connections": [
+    {"from":"capture","to":"storage","label":"영상 업로드"},
+    {"from":"storage","to":"submit","label":"앱에서 제출"},
+    {"from":"submit","to":"worker","label":"작업 선점"},
+    {"from":"worker","to":"gemini","label":"영상 · 규칙 전달","labelDy":150},
+    {"from":"gemini","to":"scoring","label":"관측 JSON"},
+    {"from":"scoring","to":"database","label":"원자적 저장"},
+    {"from":"database","to":"result","label":"ID로 조회"}
+  ],
+  "cards": [
+    {"dot":"cyan","title":"재사용","items":["Expo Camera 녹화 패턴","Supabase 인증·저장소","기존 Gemini 호출 방식"]},
+    {"dot":"emerald","title":"새로 연결","items":["게임별 시간·순서 판정 계약","Solo 전용 시도와 결과","앱 종료 후에도 복구할 작업 상태"]},
+    {"dot":"amber","title":"첫 구현 범위","items":["Solo 3종 · 개인 기록","점수는 서버에서 계산","Duel 연결·보상 정책은 후속 단계"]}
+  ]
+}
