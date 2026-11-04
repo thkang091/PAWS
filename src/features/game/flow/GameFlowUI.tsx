@@ -3,10 +3,10 @@ import { Modal, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewSty
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, InfoIcon, PawPrintIcon, ShuffleIcon, TimerIcon, FlagIcon, XIcon, VideoCameraSlashIcon } from "phosphor-react-native";
+import { CaretLeftIcon, ArrowRightIcon, CheckIcon, InfoIcon, PawPrintIcon, ShuffleIcon, TimerIcon, FlagIcon, XIcon, VideoCameraSlashIcon } from "phosphor-react-native";
 import { useReducedMotion } from "react-native-reanimated";
 import { PressScale } from "@/components/ui/PressScale";
-import { accent, bg, border, layout, pastel, radius, space, text, type } from "@/constants/design";
+import { accent, bg, border, icon as iconSize, layout, pastel, radius, space, text, type } from "@/constants/design";
 import type { PlayGame, PlayGameId } from "./gameFlow";
 
 const ART = {
@@ -18,7 +18,7 @@ const ART = {
 const GAME_STAGES = ["Camera setup", "Play round", "Video review", "Result"];
 
 export function GameScreen({ label, children, footer, onBack, backLabel = "Back", centered = false, dark = false, progress }: {
-  label: string; children: ReactNode; footer?: ReactNode; onBack?: () => void;
+  label?: string; children: ReactNode; footer?: ReactNode; onBack?: () => void;
   backLabel?: string; centered?: boolean; dark?: boolean;
   progress?: { current: number; total: number };
 }) {
@@ -30,9 +30,9 @@ export function GameScreen({ label, children, footer, onBack, backLabel = "Back"
       <PressScale accessibilityRole="button" accessibilityLabel={backLabel}
         onPress={onBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)/game"))}
         style={[ui.iconButton, dark && ui.darkOutline]}>
-        {backLabel === "Close" ? <XIcon size={24} color={dark ? "white" : text.primary} /> : <ArrowLeftIcon size={22} color={dark ? "white" : text.primary} />}
+        {backLabel === "Close" ? <XIcon size={24} color={dark ? "white" : text.primary} /> : <CaretLeftIcon size={iconSize.nav} weight="bold" color={dark ? "white" : text.primary} />}
       </PressScale>
-      <Text style={[ui.headerLabel, dark && ui.onDark]} numberOfLines={1}>{label}</Text>
+      {label ? <Text style={[ui.headerLabel, dark && ui.onDark]} numberOfLines={1}>{label}</Text> : <View style={ui.flex} />}
       <PressScale accessibilityRole="button" accessibilityLabel="About this preview" onPress={() => setAbout(true)} style={ui.previewButton}>
         <InfoIcon size={21} color={dark ? "white" : text.secondary} />
       </PressScale>
@@ -147,8 +147,8 @@ export function MissingGame() {
 export const ui = StyleSheet.create({
   screen: { flex: 1, width: "100%", maxWidth: 520, alignSelf: "center", backgroundColor: bg.canvas },
   darkScreen: { backgroundColor: "#191F1B" },
-  header: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingHorizontal: layout.gutter - space.sm, paddingBottom: space.sm },
-  iconButton: { width: layout.iconButton, height: layout.iconButton, borderRadius: radius.pill, alignItems: "center", justifyContent: "center" },
+  header: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingHorizontal: layout.gutter, paddingBottom: space.sm },
+  iconButton: { width: layout.iconButton, height: layout.iconButton, borderRadius: radius.pill, borderWidth: 1, borderColor: border.soft, alignItems: "center", justifyContent: "center" },
   darkOutline: { borderColor: "#41473F" },
   headerLabel: { ...type.supporting, color: text.secondary, flex: 1, textAlign: "center" },
   previewButton: { width: layout.iconButton, height: layout.iconButton, alignItems: "center", justifyContent: "center" },

@@ -4,7 +4,7 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { CheckIcon, TimerIcon } from "phosphor-react-native";
 import { accent, pastel, radius, space, text, type } from "@/constants/design";
 import { SOLO_GAMES, gameForMode, modeLabel, parsePlayLocation, parsePlayMode } from "./gameFlow";
-import { CameraStage, ChoiceRow, GameArt, GameButton, GameCard, GameGlyph, GameHeading, GameNote, GameScreen, MissingGame, gameTint, ui } from "./GameFlowUI";
+import { CameraStage, ChoiceRow, GameArt, GameButton, GameCard, GameGlyph, GameHeading, GameScreen, MissingGame, gameTint, ui } from "./GameFlowUI";
 
 export function useGameFlowParams() {
   const params = useLocalSearchParams<{ gameId?: string; mode?: string; location?: string; target?: string; elapsed?: string; outcome?: string }>();
@@ -15,11 +15,9 @@ export function useGameFlowParams() {
 }
 
 export function SoloGamesScreen() {
-  return <GameScreen label="Solo" onBack={() => router.replace("/(tabs)/game")}>
-    <GameHeading title="Solo games" description="Choose a game to play with your dog." />
+  return <GameScreen onBack={() => router.replace("/(tabs)/game")}>
     <View style={styles.collection}>{SOLO_GAMES.map(game => <GameCard key={game.id} game={game}
       onPress={() => router.push({ pathname: "/game/play/[gameId]", params: { gameId: game.id, mode: "solo" } })} />)}</View>
-    <GameNote>Play, record, then review your round.</GameNote>
   </GameScreen>;
 }
 
