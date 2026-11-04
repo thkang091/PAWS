@@ -130,7 +130,8 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
   const instruction = isSpot ? "Keep the starting point and target in view." : "Keep your dog’s whole body in view.";
   const cue = isSpot ? "To your " + (target === "platform" ? "platform!" : "mat!") : "Sit & stay";
   return <View style={styles.screen}>
-    <Stack.Screen options={{ gestureEnabled: !isActive, statusBarStyle: "light" }} />
+    {/* Expo controls status bar colors on focus; native-stack styling requires a different iOS configuration. */}
+    <Stack.Screen options={{ gestureEnabled: !isActive }} />
     <SoloCameraSurface active={focused && foreground && phase !== "reviewing" && phase !== "interrupted"} facing={facing} onReadyChange={setCameraReady} showHint={phase === "setup"} />
     <LinearGradient pointerEvents="none" colors={["rgba(13,20,17,0.85)", "rgba(13,20,17,0)"]} style={[styles.topShade, { height: compact ? 255 : 300 }]} />
     <LinearGradient pointerEvents="none" colors={["rgba(13,20,17,0)", "rgba(13,20,17,0.93)"]} style={styles.bottomShade} />
