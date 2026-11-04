@@ -7,7 +7,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { ArrowRightIcon } from "phosphor-react-native";
+import { ArrowRightIcon, LockSimpleIcon } from "phosphor-react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -16,6 +16,7 @@ import type { ModeKey } from "@/features/game/components/modePaths";
 import { PressScale } from "@/components/ui/PressScale";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { usePrefetchPetCatalog } from "@/hooks/usePetRewards";
+import { TOURNAMENT_ENABLED } from "@/features/game/flow/gameFlow";
 import {
   accent,
   bg,
@@ -29,12 +30,12 @@ import {
   type,
 } from "@/constants/design";
 
-type Mode = { key: ModeKey; title: string; blurb: string; href?: string };
+type Mode = { key: ModeKey; title: string; blurb: string; href?: string; locked?: boolean };
 
 const MODES: readonly Mode[] = [
   { key: "challenge", title: "Challenge", blurb: "Play solo", href: "/game/challenge" },
-  { key: "tournament", title: "Tournament", blurb: "Play together" },
-  { key: "duel", title: "Duel", blurb: "1 on 1" },
+  { key: "tournament", title: "Tournament", blurb: TOURNAMENT_ENABLED ? "Play together" : "Coming soon", href: TOURNAMENT_ENABLED ? "/game/tournament" : undefined, locked: !TOURNAMENT_ENABLED },
+  { key: "duel", title: "Duel", blurb: "1 on 1", href: "/game/duel" },
   { key: "lucky", title: "Lucky", blurb: "Spend your coins", href: "/game/shop" },
 ];
 
@@ -135,8 +136,9 @@ const ModeCard = ({
         accessibilityRole="button"
         accessibilityLabel={`${mode.title}. ${mode.blurb}`}
         accessibilityState={{ disabled: !onPress }}
+        disabled={!onPress}
         scaleTo={0.97}
-        style={styles.card}
+        style={[styles.card, mode.locked && styles.lockedCard]}
         onPress={onPress}
         onPressIn={() => {
           pressed.value = withTiming(1, {
@@ -151,24 +153,25 @@ const ModeCard = ({
           });
         }}
       >
-        <View style={[styles.art, { height: art / modeAspect(mode.key) }]}>
+        <View style={[styles.art, { height: art / modeAspect(mode.key) }, mode.locked && styles.lockedArt]}>
           <ModeIllustration mode={mode.key} width={art} />
         </View>
+        {mode.locked ? <View style={styles.lockBadge}><LockSimpleIcon size={17} color={text.secondary} weight="bold" /></View> : null}
 
         <View style={styles.caption}>
           <View style={styles.captionText}>
-            <Text style={styles.cardTitle} numberOfLines={1}>
+            <Text style={[styles.cardTitle, mode.locked && styles.lockedTitle]} numberOfLines={1}>
               {mode.title}
             </Text>
             <Text style={styles.cardBlurb} numberOfLines={1}>
               {mode.blurb}
             </Text>
           </View>
-          <View style={styles.arrow}>
+          {!mode.locked ? <View style={styles.arrow}>
             <Animated.View style={arrowStyle}>
               <ArrowRightIcon size={iconSize.button} color={text.primary} weight="bold" />
             </Animated.View>
-          </View>
+          </View> : null}
         </View>
       </PressScale>
     </Animated.View>
@@ -212,6 +215,10 @@ const styles = StyleSheet.create({
   art: {
     justifyContent: "flex-end",
   },
+  lockedCard: { backgroundColor: bg.subtle, borderStyle: "dashed" },
+  lockedArt: { opacity: 0.35 },
+  lockedTitle: { color: text.secondary },
+  lockBadge: { position: "absolute", top: space.md, right: space.md, width: 30, height: 30, borderRadius: radius.pill, backgroundColor: bg.canvas, alignItems: "center", justifyContent: "center" },
   caption: {
     flexDirection: "row",
     alignItems: "flex-end",

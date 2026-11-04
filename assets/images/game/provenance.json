@@ -1,0 +1,14 @@
+{
+  "provider": "Higgsfield",
+  "model": "gpt_image_2_5",
+  "generatedOn": "2026-10-27",
+  "reference": "Existing PAWS Game main screen, used for illustration style only",
+  "parameters": { "quality": "medium", "resolution": "1k", "aspect_ratio": "4:3", "background": "transparent" },
+  "usage": "Game selection cards and game rules only; no repeated illustration in camera, review or results",
+  "artworks": [
+    { "file": "longest-sit.png", "jobId": "f519372a-fdf2-4e0e-a0e9-45fa8cff9def", "scene": "Seated cream dog and a small hourglass" },
+    { "file": "trick-combo.png", "jobId": "099cce3b-ee30-460e-a37d-7ef1a3f9940c", "scene": "Dog offering a paw with a motion cue" },
+    { "file": "spot-sprint.png", "jobId": "8981b97c-0e9a-4c5e-8b3d-c57d1e5f852a", "scene": "Dog seated on a low green mat beside a cone" },
+    { "file": "paws-says.png", "jobId": "97a7408d-29f8-4202-9e6c-01a0a4bc325f", "scene": "Handler giving a hand cue to a seated dog" }
+  ]
+}
