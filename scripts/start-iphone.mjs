@@ -29,6 +29,10 @@ for (const key of publicKeys) {
   const value = process.env[key] ?? local[key];
   if (value !== undefined) env[key] = value;
 }
+// app.config.js uses this client-side Maps key in native configuration and runtime
+// extra. Restore only this Maps setting; backend and AI credentials stay excluded.
+const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY ?? local.GOOGLE_MAPS_API_KEY;
+if (googleMapsKey !== undefined) env.GOOGLE_MAPS_API_KEY = googleMapsKey;
 if (!env.EXPO_PUBLIC_SUPABASE_URL || !env.EXPO_PUBLIC_SUPABASE_ANON_KEY) {
   throw new Error('Public Supabase URL and anon key are required for the iPhone server.');
 }
