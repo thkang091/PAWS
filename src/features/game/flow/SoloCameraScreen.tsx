@@ -11,9 +11,12 @@ import { accent, text, type } from "@/constants/design";
 import { GameButton, MissingGame, ui } from "./GameFlowUI";
 import { formatGameTime, soloTimeLimitSeconds, type PlayGame } from "./gameFlow";
 import { useGameFlowParams } from "./SoloScreens";
-import SoloCameraSurface, { type SoloCameraHandle } from "./SoloCameraSurface";
+import SoloCameraSurface, { soloTrackingAvailable, type SoloCameraHandle } from "./SoloCameraSurface";
 import { createSoloRoundController } from "./soloRoundController";
 import { deleteSoloVideo, saveSoloRecording } from "./soloRecording";
+import { createSoloFramingGuide } from "./soloFramingGuide";
+import { projectSoloTrackingEvent } from "./soloTrackingGeometry";
+import { SoloFramingReticle, SoloFramingStatusRow } from "./SoloFramingOverlay";
 
 const INK = "#FFFFFF";
 
@@ -34,6 +37,11 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
   const [facing, setFacing] = useState<"back" | "front">("back");
   const [target, setTarget] = useState(initialTarget);
   const [leaving, setLeaving] = useState(false);
+  const [viewport, setViewport] = useState({ width, height });
+  const [guide] = useState(createSoloFramingGuide);
+  const [framing, setFraming] = useState(guide.getSnapshot);
+  const [trackingResetToken, setTrackingResetToken] = useState(0);
+  const lastTrackingAt = useRef(0);
   const camera = useRef<SoloCameraHandle>(null);
   const targetRef = useRef(target);
   targetRef.current = target;
@@ -57,6 +65,30 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
   const { phase, countdown, elapsed, error } = useSyncExternalStore(round.subscribe, round.getSnapshot, round.getSnapshot);
   const isActive = phase === "countdown" || phase === "running" || phase === "finishing";
   const remaining = Math.max(0, Math.ceil(timeLimit - elapsed));
+  const showingGuide = focused && foreground && cameraReady && phase === "setup";
+
+  useEffect(() => {
+    lastTrackingAt.current = performance.now();
+    const initial = guide.reset();
+    setFraming(soloTrackingAvailable ? initial : guide.update({ state: "unavailable", confidence: 0, timestampMs: lastTrackingAt.current }));
+    if (!showingGuide || !soloTrackingAvailable) return;
+    const timer = setInterval(() => {
+      const receivedAt = performance.now();
+      if (receivedAt - lastTrackingAt.current > 1000) {
+        setFraming(guide.update({ state: "lost", confidence: 0, timestampMs: receivedAt }, receivedAt));
+      }
+    }, 250);
+    return () => clearInterval(timer);
+  }, [showingGuide, facing, trackingResetToken, guide]);
+
+  const receiveTracking = useCallback((event: unknown) => {
+    if (!showingGuide) return;
+    const receivedAt = performance.now();
+    const observation = projectSoloTrackingEvent(event, viewport, receivedAt);
+    if (!observation) return;
+    lastTrackingAt.current = receivedAt;
+    setFraming(guide.update(observation, receivedAt));
+  }, [showingGuide, viewport, guide]);
 
   useFocusEffect(useCallback(() => {
     setFocused(true);
@@ -109,11 +141,15 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
     if (cameraReady && focused && foreground && Platform.OS !== "web") round.start();
   };
 
-  return <View style={styles.screen}>
+  return <View style={styles.screen} onLayout={({ nativeEvent: { layout } }) => {
+    setViewport(current => current.width === layout.width && current.height === layout.height ? current : { width: layout.width, height: layout.height });
+  }}>
     {/* Expo owns status bar styling for the current iOS build. */}
     <Stack.Screen options={{ gestureEnabled: !isActive }} />
     <SoloCameraSurface ref={camera} active={focused && foreground && phase !== "reviewing" && phase !== "interrupted"}
-      facing={facing} onReadyChange={setCameraReady} />
+      facing={facing} onReadyChange={setCameraReady} trackingEnabled={showingGuide}
+      trackingResetToken={trackingResetToken} onTrackingUpdate={receiveTracking} />
+    {showingGuide ? <SoloFramingReticle snapshot={framing} width={viewport.width} height={viewport.height} /> : null}
     <LinearGradient pointerEvents="none" colors={["rgba(13,20,17,0.85)", "rgba(13,20,17,0)"]} style={[styles.topShade, { height: compact ? 255 : 300 }]} />
     <LinearGradient pointerEvents="none" colors={["rgba(13,20,17,0)", "rgba(13,20,17,0.93)"]} style={styles.bottomShade} />
     <View style={[styles.chrome, { paddingTop: insets.top + 12, paddingBottom: Math.max(insets.bottom, 16) }]} pointerEvents="box-none">
@@ -135,15 +171,21 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
         <SoloRoundCue game={game} target={target} compact={compact} />
       </View> : null}
 
-      <View style={styles.openFrame} pointerEvents="none">
-        {phase === "setup" && cameraReady ? <View style={styles.frameGuide}>
-          <View style={[styles.corner, styles.topLeft]} /><View style={[styles.corner, styles.topRight]} />
-          <View style={[styles.corner, styles.bottomLeft]} /><View style={[styles.corner, styles.bottomRight]} />
-        </View> : null}
-      </View>
+      <View style={styles.openFrame} pointerEvents="none" />
 
       <View style={[styles.controls, compact && styles.controlsCompact]}>
         {phase === "setup" && cameraReady ? <>
+          <View style={styles.framingFeedback}>
+            <SoloFramingStatusRow snapshot={framing} />
+            <View style={styles.framingHintRow}>
+              <View style={styles.hintSpacer} />
+              <Text style={styles.framingHint} accessibilityLiveRegion="polite">{framing.hint ?? " "}</Text>
+              {soloTrackingAvailable && (framing.phase === "tracking" || framing.phase === "lost") ?
+                <PressScale accessibilityRole="button" accessibilityLabel="Recenter tracking" onPress={() => setTrackingResetToken(value => value + 1)} style={styles.resetTracking}>
+                  <ArrowsClockwiseIcon size={17} color="#DEE6D8" />
+                </PressScale> : <View style={styles.hintSpacer} />}
+            </View>
+          </View>
           {game.id === "spot-sprint" ? <View style={styles.targetRow} accessibilityRole="radiogroup" accessibilityLabel="Target type">
             {(["mat", "platform"] as const).map(value => <PressScale key={value} accessibilityRole="radio" accessibilityLabel={value === "mat" ? "Mat" : "Low platform"}
               accessibilityState={{ checked: target === value }} aria-checked={target === value} onPress={() => setTarget(value)} style={[styles.targetOption, target === value && styles.targetSelected]}>
@@ -191,7 +233,7 @@ function SoloRoundCue({ game, target, compact }: { game: PlayGame; target: strin
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#26342D" },
+  screen: { flex: 1, backgroundColor: "#26342D", overflow: "hidden" },
   topShade: { position: "absolute", top: 0, left: 0, right: 0 },
   bottomShade: { position: "absolute", bottom: 0, left: 0, right: 0, height: "38%" },
   chrome: { flex: 1, paddingHorizontal: 24 },
@@ -203,12 +245,11 @@ const styles = StyleSheet.create({
   instructionCompact: { paddingTop: 16 },
   instructionTitle: { ...type.sectionTitle, color: INK, textAlign: "center" },
   openFrame: { flex: 1, minHeight: 70, marginVertical: 26 },
-  frameGuide: { flex: 1, marginHorizontal: 5 },
-  corner: { position: "absolute", width: 24, height: 24, borderColor: "rgba(244,242,192,0.65)" },
-  topLeft: { top: 0, left: 0, borderTopWidth: 1.5, borderLeftWidth: 1.5, borderTopLeftRadius: 12 },
-  topRight: { top: 0, right: 0, borderTopWidth: 1.5, borderRightWidth: 1.5, borderTopRightRadius: 12 },
-  bottomLeft: { bottom: 0, left: 0, borderBottomWidth: 1.5, borderLeftWidth: 1.5, borderBottomLeftRadius: 12 },
-  bottomRight: { bottom: 0, right: 0, borderBottomWidth: 1.5, borderRightWidth: 1.5, borderBottomRightRadius: 12 },
+  framingFeedback: { gap: 2 },
+  framingHintRow: { flexDirection: "row", alignItems: "center", minHeight: 44 },
+  framingHint: { ...type.caption, color: "#EDF2E7", textAlign: "center", flex: 1 },
+  hintSpacer: { width: 44 },
+  resetTracking: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
   controls: { gap: 16, width: "100%", maxWidth: 440, alignSelf: "center" },
   controlsCompact: { gap: 12 },
   secondaryButton: { minHeight: 56, borderRadius: 28, borderWidth: 1, borderColor: "rgba(255,255,255,0.4)", backgroundColor: "rgba(16,28,21,0.35)", justifyContent: "center", alignItems: "center" },

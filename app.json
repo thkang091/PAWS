@@ -14,7 +14,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.tminjae1124.paws",
-      "buildNumber": "4",
+      "buildNumber": "5",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "PAWS uses the camera to record training videos, check whether a food is safe for your dog, and scan food bags.",

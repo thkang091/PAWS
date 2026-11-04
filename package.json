@@ -2,6 +2,13 @@
   "name": "paws",
   "version": "1.0.0",
   "main": "expo-router/entry",
+  "expo": {
+    "autolinking": {
+      "ios": {
+        "buildFromSource": ["expo-camera"]
+      }
+    }
+  },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",

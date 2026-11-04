@@ -1,6 +1,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { AppState, Linking, StyleSheet, Text, View } from "react-native";
+import { AppState, Linking, Platform, StyleSheet, Text, View } from "react-native";
 import { CameraView, useCameraPermissions, useMicrophonePermissions } from "expo-camera";
+import { requireOptionalNativeModule } from "expo-modules-core";
 import { CameraIcon, CameraSlashIcon } from "phosphor-react-native";
 import { PressScale } from "@/components/ui/PressScale";
 import { accent, layout, radius, scene, space, text } from "@/constants/design";
@@ -9,7 +10,17 @@ export type SoloCameraSurfaceProps = {
   active: boolean;
   onReadyChange: (ready: boolean) => void;
   facing: "back" | "front";
+  trackingEnabled?: boolean;
+  trackingResetToken?: number;
+  onTrackingUpdate?: (event: unknown) => void;
 };
+
+// Older development builds and Android retain a manual guide and normal recording.
+export const soloTrackingAvailable = (() => {
+  if (Platform.OS !== "ios") return false;
+  try { return requireOptionalNativeModule("ExpoCamera")?.pawsTrackingVersion === 1; }
+  catch { return false; }
+})();
 
 export type SoloCameraHandle = {
   record: (options: { maxDuration: number }) => Promise<{ uri: string }>;
@@ -27,7 +38,7 @@ function clearStopRetry(recording: PendingRecording | null) {
   if (recording) recording.stopRetry = null;
 }
 
-const SoloCameraSurface = forwardRef<SoloCameraHandle, SoloCameraSurfaceProps>(function SoloCameraSurface({ active, onReadyChange, facing }, ref) {
+const SoloCameraSurface = forwardRef<SoloCameraHandle, SoloCameraSurfaceProps>(function SoloCameraSurface({ active, onReadyChange, facing, trackingEnabled = false, trackingResetToken = 0, onTrackingUpdate }, ref) {
   const [permission, requestPermission, getPermission] = useCameraPermissions({ get: false });
   const [microphone, requestMicrophone, getMicrophone] = useMicrophonePermissions({ get: false });
   const [mountError, setMountError] = useState<string | null>(null);
@@ -44,9 +55,9 @@ const SoloCameraSurface = forwardRef<SoloCameraHandle, SoloCameraSurfaceProps>(f
   const lastReady = useRef<boolean | null>(null);
   const previewKey = `${facing}:${retry}`;
   const granted = !!permission?.granted && !!microphone?.granted;
-  const current = useRef({ active: active && foreground && !checkingPermission, granted, previewKey, ready });
+  const current = useRef({ active: active && foreground && !checkingPermission, granted, previewKey, ready, trackingEnabled });
   callback.current = onReadyChange;
-  current.current = { active: active && foreground && !checkingPermission, granted, previewKey, ready };
+  current.current = { active: active && foreground && !checkingPermission, granted, previewKey, ready, trackingEnabled };
 
   const reportReady = useCallback((value: boolean) => {
     current.current.ready = value;
@@ -220,8 +231,17 @@ const SoloCameraSurface = forwardRef<SoloCameraHandle, SoloCameraSurfaceProps>(f
   const title = mountError ? "Camera unavailable" : checking ? "Checking access…" : !permission.granted ? "Allow camera access" : !microphone.granted ? "Allow microphone access" : "Opening camera…";
   const description = mountError ?? (!checking && !granted ? "Camera and microphone access is needed to record." : null);
 
+  const trackingProps = soloTrackingAvailable ? {
+    pawsTrackingEnabled: trackingEnabled && canPreview,
+    pawsTrackingResetToken: trackingResetToken,
+    onPawsTrackingUpdate: (event: unknown) => {
+      if (!mounted.current || !current.current.active || !current.current.trackingEnabled || current.current.previewKey !== previewKey) return;
+      onTrackingUpdate?.(event);
+    },
+  } : {};
+
   return <View style={styles.surface}>
-    {canPreview ? <CameraView ref={camera} key={previewKey} style={StyleSheet.absoluteFill} facing={facing} active={active} mode="video" videoQuality="720p" mute={false}
+    {canPreview ? <CameraView ref={camera} key={previewKey} {...trackingProps} style={StyleSheet.absoluteFill} facing={facing} active={active} mode="video" videoQuality="720p" mute={false} autofocus="on"
       onCameraReady={() => {
         if (!mounted.current || !current.current.active || !current.current.granted || current.current.previewKey !== previewKey) return;
         setReady(true);

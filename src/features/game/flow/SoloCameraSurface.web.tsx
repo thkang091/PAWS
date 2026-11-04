@@ -8,7 +8,12 @@ export type SoloCameraSurfaceProps = {
   active: boolean;
   onReadyChange: (ready: boolean) => void;
   facing: "back" | "front";
+  trackingEnabled?: boolean;
+  trackingResetToken?: number;
+  onTrackingUpdate?: (event: unknown) => void;
 };
+
+export const soloTrackingAvailable = false;
 
 export type SoloCameraHandle = {
   record: (options: { maxDuration: number }) => Promise<{ uri: string }>;
