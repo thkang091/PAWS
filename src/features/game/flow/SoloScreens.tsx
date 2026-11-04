@@ -7,7 +7,7 @@ import { SOLO_GAMES, gameForMode, modeLabel, parsePlayLocation, parsePlayMode } 
 import { CameraStage, ChoiceRow, GameArt, GameButton, GameCard, GameGlyph, GameHeading, GameScreen, MissingGame, gameTint, ui } from "./GameFlowUI";
 
 export function useGameFlowParams() {
-  const params = useLocalSearchParams<{ gameId?: string; mode?: string; location?: string; target?: string; elapsed?: string; outcome?: string }>();
+  const params = useLocalSearchParams<{ gameId?: string; mode?: string; location?: string; target?: string; elapsed?: string; outcome?: string; recordingId?: string }>();
   const mode = parsePlayMode(params.mode);
   const location = parsePlayLocation(params.location);
   const game = gameForMode(mode, params.gameId);

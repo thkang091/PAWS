@@ -50,7 +50,7 @@ export function GameScreen({ label, children, footer, onBack, backLabel = "Back"
       <View style={ui.scrim}><View style={ui.dialog} accessibilityViewIsModal>
         <InfoIcon size={24} color={text.primary} />
         <Text accessibilityRole="header" style={ui.sectionTitle}>Screen preview</Text>
-        <Text style={ui.body}>Recording, room connections and AI review will be added next. Demo results are not saved and no coins are spent.</Text>
+        <Text style={ui.body}>Solo videos stay on your phone. AI review and room connections are not connected yet. Demo results are not saved and no coins are spent.</Text>
         <GameButton label="Got it" onPress={() => setAbout(false)} />
       </View></View>
     </Modal>

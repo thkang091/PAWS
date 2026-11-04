@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { CameraIcon } from "phosphor-react-native";
@@ -8,30 +8,39 @@ export type SoloCameraSurfaceProps = {
   active: boolean;
   onReadyChange: (ready: boolean) => void;
   facing: "back" | "front";
-  showHint?: boolean;
 };
 
-export default function SoloCameraSurface({ active, onReadyChange, showHint = true }: SoloCameraSurfaceProps) {
+export type SoloCameraHandle = {
+  record: (options: { maxDuration: number }) => Promise<{ uri: string }>;
+  stop: () => void;
+};
+
+const SoloCameraSurface = forwardRef<SoloCameraHandle, SoloCameraSurfaceProps>(function SoloCameraSurface({ active, onReadyChange }, ref) {
   const callback = useRef(onReadyChange);
   callback.current = onReadyChange;
   useEffect(() => {
-    callback.current(active);
+    callback.current(false);
     return () => callback.current(false);
   }, [active]);
 
+  useImperativeHandle(ref, () => ({
+    async record() { throw new Error("Recording is available in the PAWS phone app."); },
+    stop() {},
+  }), []);
+
   return <LinearGradient colors={[scene.sageDeep, "#414C43", "#252D29"]} locations={[0, 0.5, 1]}
     start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.surface} pointerEvents="none">
-    {showHint ? <View style={styles.label}>
+    {active ? <View style={styles.label}>
       <CameraIcon size={28} color={text.inverse} weight="light" />
-      <Text style={styles.title}>Camera preview</Text>
-      <Text style={styles.description}>Live camera opens on your phone.</Text>
+      <Text style={styles.title}>Record on your phone</Text>
     </View> : null}
   </LinearGradient>;
-}
+});
+
+export default SoloCameraSurface;
 
 const styles = StyleSheet.create({
   surface: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center" },
   label: { alignItems: "center", gap: space.sm, padding: space.xxl },
   title: { color: text.inverse, fontSize: 17, lineHeight: 22, fontWeight: "600" },
-  description: { color: "#D8E0D5", fontSize: 13, lineHeight: 19, textAlign: "center" },
 });

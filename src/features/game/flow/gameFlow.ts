@@ -5,7 +5,7 @@ export type PlayLocation = "together" | "remote";
 // Keep the planned group flow behind one entry gate while Solo and Duel are reviewed.
 export const TOURNAMENT_ENABLED = false;
 
-// Solo capture windows exclude the five-second setup countdown.
+// Solo capture windows exclude the three-second setup countdown.
 const SOLO_TIME_LIMITS = { "longest-sit": 20, "trick-combo": 12, "spot-sprint": 8 } as const;
 export function soloTimeLimitSeconds(gameId: PlayGameId): number {
   return gameId === "paws-says" ? PREVIEW_MAX_SECONDS : SOLO_TIME_LIMITS[gameId];
@@ -32,7 +32,7 @@ export const PLAY_GAMES: readonly PlayGame[] = [
     id: "longest-sit", title: "Longest Sit", subtitle: "Hold a sit",
     description: "Hold a sitting position for as long as possible.",
     measure: "Longest hold", duration: `${SOLO_TIME_LIMITS["longest-sit"]}-second challenge`,
-    steps: ["Frame your dog's whole body. You have 5 seconds to get ready.", "At Go, give the sit cue and hold the position within the time limit.", "End when your dog gets up, or let time run out. Review, then submit."],
+    steps: ["Frame your dog's whole body. You have 3 seconds to get ready.", "At Go, give the sit cue and hold the position within the time limit.", "End when your dog gets up, or let time run out. Review, then submit."],
     equipment: "A quiet spot and somewhere to prop your phone.",
     cues: ["Sit & stay"], sampleScore: "00:14.2", scoreLabel: "Time sitting",
   },
@@ -40,7 +40,7 @@ export const PLAY_GAMES: readonly PlayGame[] = [
     id: "trick-combo", title: "Random Trick Combo", subtitle: "Complete the sequence",
     description: "Complete three familiar tricks in the shortest time.",
     measure: "Fastest combo", duration: `${SOLO_TIME_LIMITS["trick-combo"]}-second challenge`,
-    steps: ["Use the 5-second countdown to get ready.", "At Go, complete all three commands in order within the time limit.", "End after the last trick. Review your round, then submit."],
+    steps: ["Use the 3-second countdown to get ready.", "At Go, complete all three commands in order within the time limit.", "End after the last trick. Review your round, then submit."],
     equipment: "A little floor space and tricks your pup already knows.",
     cues: ["Sit", "Paw", "Spin"], sampleScore: "00:08.4", scoreLabel: "Combo time",
   },
@@ -48,7 +48,7 @@ export const PLAY_GAMES: readonly PlayGame[] = [
     id: "spot-sprint", title: "Spot Sprint", subtitle: "Reach the target and sit",
     description: "Reach the target and sit as quickly as possible.",
     measure: "Fastest sit", duration: `${SOLO_TIME_LIMITS["spot-sprint"]}-second challenge`,
-    steps: ["Choose a mat or stable, low platform. Keep the start and target in frame.", "Use the 5-second countdown to get ready. At Go, cue your dog to the target.", "Reach the target and sit within the time limit. Review, then submit."],
+    steps: ["Choose a mat or stable, low platform. Keep the start and target in frame.", "Use the 3-second countdown to get ready. At Go, cue your dog to the target.", "Reach the target and sit within the time limit. Review, then submit."],
     equipment: "A familiar mat or stable, suitable platform.",
     cues: ["To your spot!"], sampleScore: "00:03.6", scoreLabel: "Time to sit",
   },
