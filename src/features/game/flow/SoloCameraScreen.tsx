@@ -90,6 +90,12 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
     setFraming(guide.update(observation, receivedAt));
   }, [showingGuide, viewport, guide]);
 
+  useEffect(() => {
+    if (Platform.OS === "ios" && showingGuide && framing.hint) {
+      AccessibilityInfo.announceForAccessibility(framing.hint);
+    }
+  }, [showingGuide, framing.hint]);
+
   useFocusEffect(useCallback(() => {
     setFocused(true);
     setForeground(AppState.currentState === "active");

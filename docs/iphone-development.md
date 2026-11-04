@@ -117,11 +117,22 @@ secrets, OAuth providers, or database migrations.
   its value is not recorded here. The signing profile includes the same one
   registered iPhone and signing certificate as build 3 and expires 2027-07-15.
   **Installation and runtime checks on the physical iPhone are still pending.**
+- **Build 5: FINISHED** at `2026-11-04T18:50:44Z`, with Solo centered acquisition
+  and on-device object tracking:
+  https://expo.dev/accounts/tminjae1124/projects/paws/builds/7508d9fa-70d1-4830-8687-b3c2265eae6c
+  The downloaded IPA is 39,742,363 bytes, version `1.0.0`, build `5`, with
+  minimum iOS 16.4. Framework verification passed: 18 binaries and 67 required
+  `@rpath` references, including embedded `ExpoModulesJSI`. Expo Camera is now
+  compiled from source and linked into the app; binary inspection confirmed
+  `PawsObjectTracker`, `pawsTrackingVersion`, and `onPawsTrackingUpdate` in PAWS.
+  `UIViewControllerBasedStatusBarAppearance` remains `false`, matching the
+  existing Expo status bar handling. **Physical-device tracking and recording
+  transition checks remain pending.**
 
-Solo currently remains a UI demo: camera preview, preparation countdown, timed
-round, review/loading, and sample result. Actual video recording, AI judging, and
-result persistence are not connected. The new native build provides the modules
-for implemented features; it does not complete unfinished Game or backend work.
+Solo now records a real video after a three-second countdown and plays the local
+clip on the review screen. AI judging and result persistence remain a demo.
+The framing guide's automatic object tracking requires build 5 or later; older
+binaries retain a manual center guide and can still record normally.
 
 Official guide: https://docs.expo.dev/tutorial/eas/ios-development-build-for-devices/
 
