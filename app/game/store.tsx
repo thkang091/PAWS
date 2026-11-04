@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import Animated, { useReducedMotion } from "react-native-reanimated";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
-import * as WebBrowser from "expo-web-browser";
 import { ArrowUpRightIcon, CaretLeftIcon, GiftIcon } from "phosphor-react-native";
 
 import { enter } from "@/features/care/food/enter";
@@ -13,6 +12,7 @@ import { PressScale } from "@/components/ui/PressScale";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { usePetCatalog } from "@/hooks/usePetRewards";
 import { useWallet } from "@/hooks/useWallet";
+import { loadWebBrowser, MissingNativeFeatureError } from "@/lib/nativeFeatures";
 import { CATEGORIES, browseStore, type CategoryKey, type StoreItem } from "@/services/storeBrowse";
 import { accent, bg, border, icon as iconSize, layout, motion, radius, space, text, type } from "@/constants/design";
 
@@ -125,14 +125,19 @@ export default function StoreScreen() {
                   accessibilityRole="link"
                   accessibilityLabel={`${item.title}${item.price ? `, ${item.price}` : ""}. Opens ${merchant}`}
                   scaleTo={0.96}
-                  onPress={() => {
+                  onPress={async () => {
                     void Haptics.selectionAsync();
-                    // The store opens inside PAWS; Done brings you straight back here.
-                    void WebBrowser.openBrowserAsync(item.url, {
-                      presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
-                      controlsColor: text.primary,
-                      dismissButtonStyle: "done",
-                    });
+                    try {
+                      const WebBrowser = loadWebBrowser("Opening store websites");
+                      // The store opens inside PAWS; Done brings you straight back here.
+                      await WebBrowser.openBrowserAsync(item.url, {
+                        presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
+                        controlsColor: text.primary,
+                        dismissButtonStyle: "done",
+                      });
+                    } catch (error) {
+                      Alert.alert("Could not open the store", error instanceof MissingNativeFeatureError ? error.message : "Try again in a moment.");
+                    }
                   }}
                 >
                   <View style={[styles.photo, { height: tile }]}>
