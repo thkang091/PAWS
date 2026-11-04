@@ -13,6 +13,8 @@ import { GardenBackdrop } from "@/features/train/components/GardenBackdrop";
 import { EnergySheet } from "@/features/train/components/EnergySheet";
 import { areLessonVideosUnlocked } from "@/features/train/media/lessonVideoUnlock";
 import { LoadingState } from "@/components/ui/LoadingState";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { bg, border, layout, motion, radius, scene, space, text, type } from "@/constants/design";
 import { buildChapters } from "@/constants/trainingChapters";
 import { queryKeys } from "@/constants/queryKeys";
@@ -149,6 +151,11 @@ export default function TrainTabScreen() {
   const topic = topics[activeIndex];
   const trailWidth = Math.min(width - layout.gutter * 2, 520);
 
+  const retryTraining = () => {
+    if (dogId) void sectionRoadmaps.refetch();
+    else void dog.refetch();
+  };
+
   const openLesson = (item: ShelfTopic, index: number) => {
     void Haptics.selectionAsync();
     const skillId = item.skillIds?.[index];
@@ -240,14 +247,27 @@ export default function TrainTabScreen() {
               entering={enter}
               exiting={reduceMotion ? undefined : FadeOut.duration(90)}
             >
-              <TopicTrail
-                topicKey={topic.key}
-                steps={topic.steps}
-                doneCount={topic.done}
-                width={trailWidth}
-                pose={topic.pose}
-                onStepPress={(_, index) => openLesson(topic, index)}
-              />
+              {topic.steps.length > 0 ? (
+                <TopicTrail
+                  topicKey={topic.key}
+                  steps={topic.steps}
+                  doneCount={topic.done}
+                  width={trailWidth}
+                  pose={topic.pose}
+                  onStepPress={(_, index) => openLesson(topic, index)}
+                />
+              ) : sectionRoadmaps.isFetching || dog.isFetching ? (
+                <LoadingState message="Loading your training…" />
+              ) : sectionRoadmaps.isError || dog.isError ? (
+                <ErrorState message="Couldn't load your lessons. Please try again." onRetry={retryTraining} />
+              ) : (
+                <EmptyState
+                  title="No lessons available yet"
+                  description="Try loading this topic again, or choose another topic."
+                  actionLabel="Retry"
+                  onActionPress={retryTraining}
+                />
+              )}
             </Animated.View>
           ) : null}
         </ScrollView>
