@@ -17,6 +17,7 @@ import { deleteSoloVideo, saveSoloRecording } from "./soloRecording";
 import { createSoloFramingGuide } from "./soloFramingGuide";
 import { projectSoloTrackingEvent } from "./soloTrackingGeometry";
 import { SoloFramingReticle, SoloFramingStatusRow } from "./SoloFramingOverlay";
+import { redGreenLightAt, type RedGreenLight } from "./redGreenLight";
 
 const INK = "#FFFFFF";
 
@@ -65,6 +66,7 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
   const { phase, countdown, elapsed, error } = useSyncExternalStore(round.subscribe, round.getSnapshot, round.getSnapshot);
   const isActive = phase === "countdown" || phase === "running" || phase === "finishing";
   const remaining = Math.max(0, Math.ceil(timeLimit - elapsed));
+  const lightCue = game.id === "red-light-green-light" ? redGreenLightAt(elapsed) : undefined;
   const showingGuide = focused && foreground && cameraReady && phase === "setup";
 
   useEffect(() => {
@@ -127,8 +129,10 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
   useEffect(() => {
     if (Platform.OS === "web" || !focused) return;
     if (phase === "countdown") AccessibilityInfo.announceForAccessibility("Recording starts in three seconds.");
-    if (phase === "running") AccessibilityInfo.announceForAccessibility("Recording. " + game.cues.join(", "));
-  }, [phase, focused, game]);
+    if (phase === "running") AccessibilityInfo.announceForAccessibility(lightCue
+      ? lightCue === "green" ? "Green light. Come closer." : "Red light. Stop."
+      : "Recording. " + game.cues.join(", "));
+  }, [phase, focused, game, lightCue]);
 
   const close = useCallback(() => {
     round.interrupt();
@@ -174,7 +178,7 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
           accessibilityLabel="Recording. Time remaining" accessibilityValue={{ text: remaining + " seconds" }}>
           <View style={styles.recordingDot} /><Text style={styles.timer}>{formatGameTime(remaining)}</Text>
         </View>
-        <SoloRoundCue game={game} target={target} compact={compact} />
+        <SoloRoundCue game={game} target={target} compact={compact} light={lightCue} />
       </View> : null}
 
       <View style={styles.openFrame} pointerEvents="none" />
@@ -227,7 +231,17 @@ function SoloCameraRound({ game, initialTarget }: { game: PlayGame; initialTarge
 }
 
 // Only the capture shell is shared. Each game's live instructions can evolve independently.
-function SoloRoundCue({ game, target, compact }: { game: PlayGame; target: string; compact: boolean }) {
+function SoloRoundCue({ game, target, compact, light }: { game: PlayGame; target: string; compact: boolean; light?: RedGreenLight }) {
+  if (game.id === "red-light-green-light") {
+    const green = light !== "red";
+    return <View style={styles.lightCue} accessible accessibilityLabel={green ? "Green light. Come closer." : "Red light. Stop."}>
+      <View style={styles.lightLabel}>
+        <View style={[styles.lightIndicator, { backgroundColor: green ? "#A8D9AE" : "#F6AAA3" }]} />
+        <Text style={styles.lightName}>{green ? "Green light" : "Red light"}</Text>
+      </View>
+      <Text style={[styles.command, compact && styles.commandCompact]}>{green ? "Come closer" : "Stop"}</Text>
+    </View>;
+  }
   if (game.id === "trick-combo") return <View style={styles.comboSequence} accessibilityLabel="Complete in order: Sit, Paw, Spin">
     {game.cues.map((command, index) => <View key={command + index} style={styles.comboItem}>
       <View style={styles.commandNumber}><Text style={styles.number}>{index + 1}</Text></View><Text style={[styles.comboCommand, compact && styles.comboCompact]}>{command}</Text>
@@ -269,6 +283,10 @@ const styles = StyleSheet.create({
   timer: { fontSize: 20, lineHeight: 24, fontWeight: "500", color: INK, fontVariant: ["tabular-nums"] },
   command: { fontSize: 34, lineHeight: 39, fontWeight: "600", letterSpacing: -0.6, color: INK, textAlign: "center" },
   commandCompact: { fontSize: 28, lineHeight: 33 },
+  lightCue: { alignItems: "center", gap: 8 },
+  lightLabel: { flexDirection: "row", alignItems: "center", gap: 8 },
+  lightIndicator: { width: 14, height: 14, borderRadius: 7 },
+  lightName: { ...type.supporting, color: INK, fontWeight: "600" },
   comboSequence: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 9, flexWrap: "wrap" },
   comboItem: { flexDirection: "row", alignItems: "center", gap: 7 },
   commandNumber: { width: 21, height: 21, borderRadius: 11, backgroundColor: accent.primary, justifyContent: "center", alignItems: "center" },

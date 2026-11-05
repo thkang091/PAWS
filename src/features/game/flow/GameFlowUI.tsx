@@ -3,7 +3,7 @@ import { Modal, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewSty
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { CaretLeftIcon, ArrowRightIcon, CheckIcon, InfoIcon, PawPrintIcon, ShuffleIcon, TimerIcon, FlagIcon, XIcon, VideoCameraSlashIcon } from "phosphor-react-native";
+import { CaretLeftIcon, ArrowRightIcon, CheckIcon, InfoIcon, PawPrintIcon, ShuffleIcon, TimerIcon, FlagIcon, TrafficSignalIcon, XIcon, VideoCameraSlashIcon } from "phosphor-react-native";
 import { useReducedMotion } from "react-native-reanimated";
 import { PressScale } from "@/components/ui/PressScale";
 import { accent, bg, border, icon as iconSize, layout, pastel, radius, space, text, type } from "@/constants/design";
@@ -13,6 +13,7 @@ const ART = {
   "longest-sit": require("../../../../assets/images/game/longest-sit.png"),
   "trick-combo": require("../../../../assets/images/game/trick-combo.png"),
   "spot-sprint": require("../../../../assets/images/game/spot-sprint.png"),
+  "red-light-green-light": require("../../../../assets/images/game/paws-says.png"),
   "paws-says": require("../../../../assets/images/game/paws-says.png"),
 };
 const GAME_STAGES = ["Camera setup", "Play round", "Video review", "Result"];
@@ -81,16 +82,23 @@ export function GameHeading({ eyebrow, title, description }: { eyebrow?: string;
 }
 
 export function GameGlyph({ id, size = 22 }: { id: PlayGameId; size?: number }) {
-  const Glyph = id === "longest-sit" ? TimerIcon : id === "trick-combo" ? ShuffleIcon : id === "spot-sprint" ? FlagIcon : PawPrintIcon;
+  const Glyph = id === "longest-sit" ? TimerIcon : id === "trick-combo" ? ShuffleIcon : id === "spot-sprint" ? FlagIcon : id === "red-light-green-light" ? TrafficSignalIcon : PawPrintIcon;
   return <Glyph size={size} color={text.primary} />;
 }
 
 // Generated through Higgsfield; see assets/images/game/provenance.json.
 export function GameArt({ id, width = 230, height = 176 }: { id: PlayGameId; width?: number; height?: number }) {
+  if (id === "red-light-green-light") return <View style={{ width, height }} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+    <Image source={ART[id]} contentFit="contain" style={{ width, height, transform: [{ scale: 1.12 }] }} accessible={false} />
+    <View style={[ui.signalBadge, { right: width * 0.04, bottom: height * 0.06 }]}>
+      <View style={[ui.signalLight, { backgroundColor: "#EAA29A" }]} />
+      <View style={[ui.signalLight, { backgroundColor: "#96B999" }]} />
+    </View>
+  </View>;
   return <Image source={ART[id]} contentFit="contain" style={{ width, height, transform: [{ scale: 1.12 }] }} accessible={false} />;
 }
 
-export const gameTint = (id: PlayGameId) => id === "longest-sit" ? pastel.butter : id === "trick-combo" ? pastel.sky : id === "spot-sprint" ? pastel.mint : pastel.peach;
+export const gameTint = (id: PlayGameId) => id === "longest-sit" ? pastel.butter : id === "trick-combo" ? pastel.sky : id === "spot-sprint" ? pastel.mint : id === "red-light-green-light" ? pastel.pistachio : pastel.peach;
 
 export function GameCard({ game, onPress, selected = false }: { game: PlayGame; onPress?: () => void; selected?: boolean }) {
   const contents = <>
@@ -183,6 +191,8 @@ export const ui = StyleSheet.create({
   cardTop: { flexDirection: "row", alignItems: "center", gap: space.sm },
   gameName: { ...type.sectionTitle, color: text.primary },
   cardDescription: { ...type.caption, fontSize: 13, lineHeight: 18, color: text.secondary },
+  signalBadge: { position: "absolute", gap: 4, padding: 5, borderRadius: 12, backgroundColor: "#42483F" },
+  signalLight: { width: 9, height: 9, borderRadius: 5 },
   cardFoot: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space.sm },
   cardAction: { flexDirection: "row", alignItems: "center", gap: space.xs, minHeight: 32, paddingHorizontal: space.md, borderRadius: radius.pill, backgroundColor: "rgba(255,255,255,0.82)" },
   cardActionText: { ...type.caption, fontWeight: "600", color: text.primary },

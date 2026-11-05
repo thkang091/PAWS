@@ -1,4 +1,4 @@
-export type PlayGameId = "longest-sit" | "trick-combo" | "spot-sprint" | "paws-says";
+export type PlayGameId = "longest-sit" | "trick-combo" | "spot-sprint" | "red-light-green-light" | "paws-says";
 export type PlayMode = "solo" | "duel" | "tournament";
 export type PlayLocation = "together" | "remote";
 
@@ -6,7 +6,7 @@ export type PlayLocation = "together" | "remote";
 export const TOURNAMENT_ENABLED = false;
 
 // Solo capture windows exclude the three-second setup countdown.
-const SOLO_TIME_LIMITS = { "longest-sit": 20, "trick-combo": 12, "spot-sprint": 8 } as const;
+const SOLO_TIME_LIMITS = { "longest-sit": 20, "trick-combo": 12, "spot-sprint": 8, "red-light-green-light": 15 } as const;
 export function soloTimeLimitSeconds(gameId: PlayGameId): number {
   return gameId === "paws-says" ? PREVIEW_MAX_SECONDS : SOLO_TIME_LIMITS[gameId];
 }
@@ -51,6 +51,14 @@ export const PLAY_GAMES: readonly PlayGame[] = [
     steps: ["Choose a mat or stable, low platform. Keep the start and target in frame.", "Use the 3-second countdown to get ready. At Go, cue your dog to the target.", "Reach the target and sit within the time limit. Review, then submit."],
     equipment: "A familiar mat or stable, suitable platform.",
     cues: ["To your spot!"], sampleScore: "00:03.6", scoreLabel: "Time to sit",
+  },
+  {
+    id: "red-light-green-light", title: "Red Light, Green Light", subtitle: "Stop and go",
+    description: "Come closer on green, stop on red, and reach the finish.",
+    measure: "Stop & go", duration: `${SOLO_TIME_LIMITS["red-light-green-light"]}-second challenge`,
+    steps: ["Choose a short, clear route to a finish spot beside you. Keep the route in frame.", "On green, call your dog closer. On red, ask them to stop. Follow the changing light.", "Reach the finish on green, then end the round. You have 15 seconds."],
+    equipment: "A clear path, a marked finish spot, and familiar come and stay cues.",
+    cues: ["Green light: Come closer", "Red light: Stop"], sampleScore: "00:11.4", scoreLabel: "Time to finish",
   },
   {
     id: "paws-says", title: "PAWS Says", subtitle: "Follow the commands",
