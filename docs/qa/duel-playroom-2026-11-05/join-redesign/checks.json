@@ -1,0 +1,61 @@
+{
+  "checks": [
+    "Join at390x844 has no scrolling",
+    "Code and QR have separate sections",
+    "No name input",
+    "Join focuses on form instead of participant row",
+    "Keyboard is not forced open",
+    "Example is placeholder only",
+    "Existing unconnected scanner remains disabled",
+    "Initial screen has no error or duplicate cancel action",
+    "Empty submission shows inline code error",
+    "Code input normalizes case and removes symbols",
+    "Editing clears error",
+    "Keyboard submit keeps validation",
+    "Unknown code error remains near input",
+    "Back cancels form",
+    "Back restores participant slots",
+    "Reopening clears prior code and error",
+    "Valid preview join opens existing QR lobby",
+    "Successful join restores participant slots",
+    "Join at360x800 has no scrolling",
+    "No horizontal overflow at360x800",
+    "Join at390x763 has no scrolling",
+    "No horizontal overflow at390x763",
+    "Join at360x640 has no scrolling",
+    "No horizontal overflow at360x640",
+    "Small-screen Join remains visible",
+    "Small-screen scan choice is reachable",
+    "Six Game main files unchanged"
+  ],
+  "sizes": [
+    {
+      "label": "Join at390x844 has no scrolling",
+      "client": 692,
+      "content": 692,
+      "overflow": "hidden",
+      "width": 390
+    },
+    {
+      "label": "Join at360x800 has no scrolling",
+      "client": 648,
+      "content": 648,
+      "overflow": "hidden",
+      "width": 360
+    },
+    {
+      "label": "Join at390x763 has no scrolling",
+      "client": 611,
+      "content": 611,
+      "overflow": "hidden",
+      "width": 390
+    },
+    {
+      "label": "Join at360x640 has no scrolling",
+      "client": 488,
+      "content": 488,
+      "overflow": "hidden",
+      "width": 360
+    }
+  ]
+}

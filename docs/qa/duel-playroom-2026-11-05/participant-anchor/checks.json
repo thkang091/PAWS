@@ -1,0 +1,1690 @@
+{
+  "checks": [
+    {
+      "name": "390x844 entry fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "friend": {
+          "x": 226,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "qr": null,
+        "dock": {
+          "x": 0,
+          "y": 600,
+          "w": 390,
+          "h": 244,
+          "bottom": 844
+        },
+        "middle": {
+          "x": 0,
+          "y": 405.90625,
+          "w": 390,
+          "h": 194.09375,
+          "bottom": 600
+        },
+        "compact": false,
+        "scroll": {
+          "height": 540,
+          "content": 540,
+          "top": 0
+        },
+        "headingHidden": false,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x844 Remote keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 181.90625,
+        "friendY": 181.90625
+      }
+    },
+    {
+      "name": "390x844 create keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 181.90625,
+        "friendY": 181.90625
+      }
+    },
+    {
+      "name": "390x844 invite fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "friend": {
+          "x": 226,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "qr": {
+          "x": 24,
+          "y": 497.90625,
+          "w": 342,
+          "h": 176,
+          "bottom": 673.90625
+        },
+        "dock": {
+          "x": 0,
+          "y": 732,
+          "w": 390,
+          "h": 112,
+          "bottom": 844
+        },
+        "middle": {
+          "x": 0,
+          "y": 405.90625,
+          "w": 390,
+          "h": 326.09375,
+          "bottom": 732
+        },
+        "compact": false,
+        "scroll": {
+          "height": 672,
+          "content": 672,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x844 reserved heading is hidden",
+      "pass": true
+    },
+    {
+      "name": "390x844 suitable invite arrangement",
+      "pass": true
+    },
+    {
+      "name": "390x844 connection keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 181.90625,
+        "friendY": 181.90625
+      }
+    },
+    {
+      "name": "390x844 connected fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "friend": {
+          "x": 226,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "qr": {
+          "x": 24,
+          "y": 497.90625,
+          "w": 342,
+          "h": 176,
+          "bottom": 673.90625
+        },
+        "dock": {
+          "x": 0,
+          "y": 732,
+          "w": 390,
+          "h": 112,
+          "bottom": 844
+        },
+        "middle": {
+          "x": 0,
+          "y": 405.90625,
+          "w": 390,
+          "h": 326.09375,
+          "bottom": 732
+        },
+        "compact": false,
+        "scroll": {
+          "height": 672,
+          "content": 672,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x844 self Ready keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 181.90625,
+        "friendY": 181.90625
+      }
+    },
+    {
+      "name": "390x844 both Ready keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 181.90625,
+        "friendY": 181.90625
+      }
+    },
+    {
+      "name": "390x844 selection fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "friend": {
+          "x": 226,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "qr": null,
+        "dock": {
+          "x": 0,
+          "y": 732,
+          "w": 390,
+          "h": 112,
+          "bottom": 844
+        },
+        "middle": {
+          "x": 0,
+          "y": 405.90625,
+          "w": 390,
+          "h": 326.09375,
+          "bottom": 732
+        },
+        "compact": false,
+        "scroll": {
+          "height": 672,
+          "content": 672,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x844 selected game keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 181.90625,
+        "friendY": 181.90625
+      }
+    },
+    {
+      "name": "390x844 cancel Ready keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 181.90625,
+        "friendY": 181.90625
+      }
+    },
+    {
+      "name": "390x844 returning invite fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "friend": {
+          "x": 226,
+          "y": 181.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 393.90625
+        },
+        "qr": {
+          "x": 24,
+          "y": 497.90625,
+          "w": 342,
+          "h": 176,
+          "bottom": 673.90625
+        },
+        "dock": {
+          "x": 0,
+          "y": 732,
+          "w": 390,
+          "h": 112,
+          "bottom": 844
+        },
+        "middle": {
+          "x": 0,
+          "y": 405.90625,
+          "w": 390,
+          "h": 326.09375,
+          "bottom": 732
+        },
+        "compact": false,
+        "scroll": {
+          "height": 672,
+          "content": 672,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x844 reconnect keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 181.90625,
+        "friendY": 181.90625
+      }
+    },
+    {
+      "name": "390x844 leave restores same entry positions",
+      "pass": true,
+      "details": {
+        "selfY": 181.90625,
+        "friendY": 181.90625
+      }
+    },
+    {
+      "name": "390x763 entry fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "friend": {
+          "x": 226,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "qr": null,
+        "dock": {
+          "x": 0,
+          "y": 519,
+          "w": 390,
+          "h": 244,
+          "bottom": 763
+        },
+        "middle": {
+          "x": 0,
+          "y": 391.328125,
+          "w": 390,
+          "h": 127.671875,
+          "bottom": 519
+        },
+        "compact": false,
+        "scroll": {
+          "height": 459,
+          "content": 459,
+          "top": 0
+        },
+        "headingHidden": false,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x763 Remote keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 167.328125,
+        "friendY": 167.328125
+      }
+    },
+    {
+      "name": "390x763 create keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 167.328125,
+        "friendY": 167.328125
+      }
+    },
+    {
+      "name": "390x763 invite fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "friend": {
+          "x": 226,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "qr": {
+          "x": 24,
+          "y": 483.328125,
+          "w": 342,
+          "h": 160,
+          "bottom": 643.328125
+        },
+        "dock": {
+          "x": 0,
+          "y": 651,
+          "w": 390,
+          "h": 112,
+          "bottom": 763
+        },
+        "middle": {
+          "x": 0,
+          "y": 391.328125,
+          "w": 390,
+          "h": 260,
+          "bottom": 651.328125
+        },
+        "compact": false,
+        "scroll": {
+          "height": 591,
+          "content": 591,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x763 reserved heading is hidden",
+      "pass": true
+    },
+    {
+      "name": "390x763 suitable invite arrangement",
+      "pass": true
+    },
+    {
+      "name": "390x763 connection keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 167.328125,
+        "friendY": 167.328125
+      }
+    },
+    {
+      "name": "390x763 connected fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "friend": {
+          "x": 226,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "qr": {
+          "x": 24,
+          "y": 483.328125,
+          "w": 342,
+          "h": 160,
+          "bottom": 643.328125
+        },
+        "dock": {
+          "x": 0,
+          "y": 651,
+          "w": 390,
+          "h": 112,
+          "bottom": 763
+        },
+        "middle": {
+          "x": 0,
+          "y": 391.328125,
+          "w": 390,
+          "h": 260,
+          "bottom": 651.328125
+        },
+        "compact": false,
+        "scroll": {
+          "height": 591,
+          "content": 591,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x763 self Ready keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 167.328125,
+        "friendY": 167.328125
+      }
+    },
+    {
+      "name": "390x763 both Ready keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 167.328125,
+        "friendY": 167.328125
+      }
+    },
+    {
+      "name": "390x763 selection fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "friend": {
+          "x": 226,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "qr": null,
+        "dock": {
+          "x": 0,
+          "y": 651,
+          "w": 390,
+          "h": 112,
+          "bottom": 763
+        },
+        "middle": {
+          "x": 0,
+          "y": 391.328125,
+          "w": 390,
+          "h": 259.671875,
+          "bottom": 651
+        },
+        "compact": false,
+        "scroll": {
+          "height": 591,
+          "content": 591,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x763 selected game keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 167.328125,
+        "friendY": 167.328125
+      }
+    },
+    {
+      "name": "390x763 cancel Ready keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 167.328125,
+        "friendY": 167.328125
+      }
+    },
+    {
+      "name": "390x763 returning invite fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "friend": {
+          "x": 226,
+          "y": 167.328125,
+          "w": 140,
+          "h": 212,
+          "bottom": 379.328125
+        },
+        "qr": {
+          "x": 24,
+          "y": 483.328125,
+          "w": 342,
+          "h": 160,
+          "bottom": 643.328125
+        },
+        "dock": {
+          "x": 0,
+          "y": 651,
+          "w": 390,
+          "h": 112,
+          "bottom": 763
+        },
+        "middle": {
+          "x": 0,
+          "y": 391.328125,
+          "w": 390,
+          "h": 260,
+          "bottom": 651.328125
+        },
+        "compact": false,
+        "scroll": {
+          "height": 591,
+          "content": 591,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "390x763 reconnect keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 167.328125,
+        "friendY": 167.328125
+      }
+    },
+    {
+      "name": "390x763 leave restores same entry positions",
+      "pass": true,
+      "details": {
+        "selfY": 167.328125,
+        "friendY": 167.328125
+      }
+    },
+    {
+      "name": "360x640 entry fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "friend": {
+          "x": 211,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "qr": null,
+        "dock": {
+          "x": 0,
+          "y": 472,
+          "w": 360,
+          "h": 168,
+          "bottom": 640
+        },
+        "middle": {
+          "x": 0,
+          "y": 378,
+          "w": 360,
+          "h": 94,
+          "bottom": 472
+        },
+        "compact": false,
+        "scroll": {
+          "height": 412,
+          "content": 412,
+          "top": 0
+        },
+        "headingHidden": false,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "360x640 Remote keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "360x640 create keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "360x640 invite fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "friend": {
+          "x": 211,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "qr": {
+          "x": 218,
+          "y": 386,
+          "w": 118,
+          "h": 118,
+          "bottom": 504
+        },
+        "dock": {
+          "x": 0,
+          "y": 528,
+          "w": 360,
+          "h": 112,
+          "bottom": 640
+        },
+        "middle": {
+          "x": 0,
+          "y": 378,
+          "w": 360,
+          "h": 150,
+          "bottom": 528
+        },
+        "compact": true,
+        "scroll": {
+          "height": 468,
+          "content": 468,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "360x640 reserved heading is hidden",
+      "pass": true
+    },
+    {
+      "name": "360x640 suitable invite arrangement",
+      "pass": true
+    },
+    {
+      "name": "360x640 connection keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "360x640 connected fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "friend": {
+          "x": 211,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "qr": {
+          "x": 218,
+          "y": 386,
+          "w": 118,
+          "h": 118,
+          "bottom": 504
+        },
+        "dock": {
+          "x": 0,
+          "y": 528,
+          "w": 360,
+          "h": 112,
+          "bottom": 640
+        },
+        "middle": {
+          "x": 0,
+          "y": 378,
+          "w": 360,
+          "h": 150,
+          "bottom": 528
+        },
+        "compact": true,
+        "scroll": {
+          "height": 468,
+          "content": 468,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "360x640 self Ready keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "360x640 both Ready keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "360x640 selection fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "friend": {
+          "x": 211,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "qr": null,
+        "dock": {
+          "x": 0,
+          "y": 528,
+          "w": 360,
+          "h": 112,
+          "bottom": 640
+        },
+        "middle": {
+          "x": 0,
+          "y": 378,
+          "w": 360,
+          "h": 150,
+          "bottom": 528
+        },
+        "compact": false,
+        "scroll": {
+          "height": 468,
+          "content": 468,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "360x640 selected game keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "360x640 cancel Ready keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "360x640 returning invite fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "friend": {
+          "x": 211,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "qr": {
+          "x": 218,
+          "y": 386,
+          "w": 118,
+          "h": 118,
+          "bottom": 504
+        },
+        "dock": {
+          "x": 0,
+          "y": 528,
+          "w": 360,
+          "h": 112,
+          "bottom": 640
+        },
+        "middle": {
+          "x": 0,
+          "y": 378,
+          "w": 360,
+          "h": 150,
+          "bottom": 528
+        },
+        "compact": true,
+        "scroll": {
+          "height": 468,
+          "content": 468,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "360x640 reconnect keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "Compact copy uses current code",
+      "pass": true
+    },
+    {
+      "name": "Compact copy feedback keeps participants",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "Compact copy feedback fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "friend": {
+          "x": 211,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "qr": {
+          "x": 218,
+          "y": 386,
+          "w": 118,
+          "h": 118,
+          "bottom": 504
+        },
+        "dock": {
+          "x": 0,
+          "y": 528,
+          "w": 360,
+          "h": 112,
+          "bottom": 640
+        },
+        "middle": {
+          "x": 0,
+          "y": 378,
+          "w": 360,
+          "h": 150,
+          "bottom": 528
+        },
+        "compact": true,
+        "scroll": {
+          "height": 468,
+          "content": 468,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "Compact share/copy targets remain 44px",
+      "pass": true
+    },
+    {
+      "name": "360x640 leave restores same entry positions",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "Join form keeps its dedicated layout",
+      "pass": true
+    },
+    {
+      "name": "Join success restores same participant positions",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "Guest invite fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "friend": {
+          "x": 211,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "qr": {
+          "x": 224,
+          "y": 386,
+          "w": 112,
+          "h": 112,
+          "bottom": 498
+        },
+        "dock": {
+          "x": 0,
+          "y": 528,
+          "w": 360,
+          "h": 112,
+          "bottom": 640
+        },
+        "middle": {
+          "x": 0,
+          "y": 378,
+          "w": 360,
+          "h": 150,
+          "bottom": 528
+        },
+        "compact": true,
+        "scroll": {
+          "height": 468,
+          "content": 468,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    },
+    {
+      "name": "Direct room entry reserves heading height",
+      "pass": true,
+      "details": {
+        "selfY": 154,
+        "friendY": 154
+      }
+    },
+    {
+      "name": "Direct room entry fits",
+      "pass": true,
+      "details": {
+        "self": {
+          "x": 24,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "friend": {
+          "x": 211,
+          "y": 154,
+          "w": 125,
+          "h": 212,
+          "bottom": 366
+        },
+        "qr": {
+          "x": 224,
+          "y": 386,
+          "w": 112,
+          "h": 112,
+          "bottom": 498
+        },
+        "dock": {
+          "x": 0,
+          "y": 528,
+          "w": 360,
+          "h": 112,
+          "bottom": 640
+        },
+        "middle": {
+          "x": 0,
+          "y": 378,
+          "w": 360,
+          "h": 150,
+          "bottom": 528
+        },
+        "compact": true,
+        "scroll": {
+          "height": 468,
+          "content": 468,
+          "top": 0
+        },
+        "headingHidden": true,
+        "codeFits": true
+      }
+    }
+  ],
+  "frames": [
+    {
+      "name": "390x844-01-entry",
+      "self": {
+        "x": 24,
+        "y": 181.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 393.90625
+      },
+      "friend": {
+        "x": 226,
+        "y": 181.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 393.90625
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 600,
+        "w": 390,
+        "h": 244,
+        "bottom": 844
+      },
+      "middle": {
+        "x": 0,
+        "y": 405.90625,
+        "w": 390,
+        "h": 194.09375,
+        "bottom": 600
+      },
+      "compact": false,
+      "scroll": {
+        "height": 540,
+        "content": 540,
+        "top": 0
+      },
+      "headingHidden": false,
+      "codeFits": true
+    },
+    {
+      "name": "390x844-02-invite",
+      "self": {
+        "x": 24,
+        "y": 181.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 393.90625
+      },
+      "friend": {
+        "x": 226,
+        "y": 181.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 393.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176,
+        "bottom": 673.90625
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112,
+        "bottom": 844
+      },
+      "middle": {
+        "x": 0,
+        "y": 405.90625,
+        "w": 390,
+        "h": 326.09375,
+        "bottom": 732
+      },
+      "compact": false,
+      "scroll": {
+        "height": 672,
+        "content": 672,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    },
+    {
+      "name": "390x844-03-connected",
+      "self": {
+        "x": 24,
+        "y": 181.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 393.90625
+      },
+      "friend": {
+        "x": 226,
+        "y": 181.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 393.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176,
+        "bottom": 673.90625
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112,
+        "bottom": 844
+      },
+      "middle": {
+        "x": 0,
+        "y": 405.90625,
+        "w": 390,
+        "h": 326.09375,
+        "bottom": 732
+      },
+      "compact": false,
+      "scroll": {
+        "height": 672,
+        "content": 672,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    },
+    {
+      "name": "390x844-04-both-ready",
+      "self": {
+        "x": 24,
+        "y": 181.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 393.90625
+      },
+      "friend": {
+        "x": 226,
+        "y": 181.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 393.90625
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112,
+        "bottom": 844
+      },
+      "middle": {
+        "x": 0,
+        "y": 405.90625,
+        "w": 390,
+        "h": 326.09375,
+        "bottom": 732
+      },
+      "compact": false,
+      "scroll": {
+        "height": 672,
+        "content": 672,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    },
+    {
+      "name": "390x763-01-entry",
+      "self": {
+        "x": 24,
+        "y": 167.328125,
+        "w": 140,
+        "h": 212,
+        "bottom": 379.328125
+      },
+      "friend": {
+        "x": 226,
+        "y": 167.328125,
+        "w": 140,
+        "h": 212,
+        "bottom": 379.328125
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 519,
+        "w": 390,
+        "h": 244,
+        "bottom": 763
+      },
+      "middle": {
+        "x": 0,
+        "y": 391.328125,
+        "w": 390,
+        "h": 127.671875,
+        "bottom": 519
+      },
+      "compact": false,
+      "scroll": {
+        "height": 459,
+        "content": 459,
+        "top": 0
+      },
+      "headingHidden": false,
+      "codeFits": true
+    },
+    {
+      "name": "390x763-02-invite",
+      "self": {
+        "x": 24,
+        "y": 167.328125,
+        "w": 140,
+        "h": 212,
+        "bottom": 379.328125
+      },
+      "friend": {
+        "x": 226,
+        "y": 167.328125,
+        "w": 140,
+        "h": 212,
+        "bottom": 379.328125
+      },
+      "qr": {
+        "x": 24,
+        "y": 483.328125,
+        "w": 342,
+        "h": 160,
+        "bottom": 643.328125
+      },
+      "dock": {
+        "x": 0,
+        "y": 651,
+        "w": 390,
+        "h": 112,
+        "bottom": 763
+      },
+      "middle": {
+        "x": 0,
+        "y": 391.328125,
+        "w": 390,
+        "h": 260,
+        "bottom": 651.328125
+      },
+      "compact": false,
+      "scroll": {
+        "height": 591,
+        "content": 591,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    },
+    {
+      "name": "390x763-03-connected",
+      "self": {
+        "x": 24,
+        "y": 167.328125,
+        "w": 140,
+        "h": 212,
+        "bottom": 379.328125
+      },
+      "friend": {
+        "x": 226,
+        "y": 167.328125,
+        "w": 140,
+        "h": 212,
+        "bottom": 379.328125
+      },
+      "qr": {
+        "x": 24,
+        "y": 483.328125,
+        "w": 342,
+        "h": 160,
+        "bottom": 643.328125
+      },
+      "dock": {
+        "x": 0,
+        "y": 651,
+        "w": 390,
+        "h": 112,
+        "bottom": 763
+      },
+      "middle": {
+        "x": 0,
+        "y": 391.328125,
+        "w": 390,
+        "h": 260,
+        "bottom": 651.328125
+      },
+      "compact": false,
+      "scroll": {
+        "height": 591,
+        "content": 591,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    },
+    {
+      "name": "390x763-04-both-ready",
+      "self": {
+        "x": 24,
+        "y": 167.328125,
+        "w": 140,
+        "h": 212,
+        "bottom": 379.328125
+      },
+      "friend": {
+        "x": 226,
+        "y": 167.328125,
+        "w": 140,
+        "h": 212,
+        "bottom": 379.328125
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 651,
+        "w": 390,
+        "h": 112,
+        "bottom": 763
+      },
+      "middle": {
+        "x": 0,
+        "y": 391.328125,
+        "w": 390,
+        "h": 259.671875,
+        "bottom": 651
+      },
+      "compact": false,
+      "scroll": {
+        "height": 591,
+        "content": 591,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    },
+    {
+      "name": "360x640-01-entry",
+      "self": {
+        "x": 24,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "friend": {
+        "x": 211,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 472,
+        "w": 360,
+        "h": 168,
+        "bottom": 640
+      },
+      "middle": {
+        "x": 0,
+        "y": 378,
+        "w": 360,
+        "h": 94,
+        "bottom": 472
+      },
+      "compact": false,
+      "scroll": {
+        "height": 412,
+        "content": 412,
+        "top": 0
+      },
+      "headingHidden": false,
+      "codeFits": true
+    },
+    {
+      "name": "360x640-02-invite",
+      "self": {
+        "x": 24,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "friend": {
+        "x": 211,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "qr": {
+        "x": 218,
+        "y": 386,
+        "w": 118,
+        "h": 118,
+        "bottom": 504
+      },
+      "dock": {
+        "x": 0,
+        "y": 528,
+        "w": 360,
+        "h": 112,
+        "bottom": 640
+      },
+      "middle": {
+        "x": 0,
+        "y": 378,
+        "w": 360,
+        "h": 150,
+        "bottom": 528
+      },
+      "compact": true,
+      "scroll": {
+        "height": 468,
+        "content": 468,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    },
+    {
+      "name": "360x640-03-connected",
+      "self": {
+        "x": 24,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "friend": {
+        "x": 211,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "qr": {
+        "x": 218,
+        "y": 386,
+        "w": 118,
+        "h": 118,
+        "bottom": 504
+      },
+      "dock": {
+        "x": 0,
+        "y": 528,
+        "w": 360,
+        "h": 112,
+        "bottom": 640
+      },
+      "middle": {
+        "x": 0,
+        "y": 378,
+        "w": 360,
+        "h": 150,
+        "bottom": 528
+      },
+      "compact": true,
+      "scroll": {
+        "height": 468,
+        "content": 468,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    },
+    {
+      "name": "360x640-04-both-ready",
+      "self": {
+        "x": 24,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "friend": {
+        "x": 211,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 528,
+        "w": 360,
+        "h": 112,
+        "bottom": 640
+      },
+      "middle": {
+        "x": 0,
+        "y": 378,
+        "w": 360,
+        "h": 150,
+        "bottom": 528
+      },
+      "compact": false,
+      "scroll": {
+        "height": 468,
+        "content": 468,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    },
+    {
+      "name": "360x640-05-guest",
+      "self": {
+        "x": 24,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "friend": {
+        "x": 211,
+        "y": 154,
+        "w": 125,
+        "h": 212,
+        "bottom": 366
+      },
+      "qr": {
+        "x": 224,
+        "y": 386,
+        "w": 112,
+        "h": 112,
+        "bottom": 498
+      },
+      "dock": {
+        "x": 0,
+        "y": 528,
+        "w": 360,
+        "h": 112,
+        "bottom": 640
+      },
+      "middle": {
+        "x": 0,
+        "y": 378,
+        "w": 360,
+        "h": 150,
+        "bottom": 528
+      },
+      "compact": true,
+      "scroll": {
+        "height": 468,
+        "content": 468,
+        "top": 0
+      },
+      "headingHidden": true,
+      "codeFits": true
+    }
+  ]
+}

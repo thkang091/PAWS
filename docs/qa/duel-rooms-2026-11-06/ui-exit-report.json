@@ -1,0 +1,229 @@
+{
+  "reset": {
+    "host": {
+      "url": "http://localhost:8082/game/duel",
+      "text": "Your room\nInvite a friend. Play together.\nQA Dog 1\nYour dog\nNot ready\nQA Dog 5\nYour friend\nNot ready\nGame code\n4THD62\nI’m ready",
+      "controls": [
+        {
+          "label": "Back",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "About this preview",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Share game code",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Copy game code",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "I’m ready",
+          "text": "I’m ready",
+          "disabled": null
+        }
+      ]
+    },
+    "guest": {
+      "url": "http://localhost:8082/game/duel",
+      "text": "Your room\nInvite a friend. Play together.\nQA Dog 5\nYour dog\nNot ready\nQA Dog 1\nYour friend\nNot ready\nGame code\n4THD62\nI’m ready",
+      "controls": [
+        {
+          "label": "Back",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "About this preview",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Share game code",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Copy game code",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "I’m ready",
+          "text": "I’m ready",
+          "disabled": null
+        }
+      ]
+    }
+  },
+  "guestLeft": {
+    "host": {
+      "url": "http://localhost:8082/game/duel",
+      "text": "Your room\nInvite a friend. Play together.\nQA Dog 1\nYour dog\nNot ready\nYour friend\nWaiting for a friend\nGame code\n4THD62\nI’m ready",
+      "controls": [
+        {
+          "label": "Back",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "About this preview",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Show game code",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Share game code",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Copy game code",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "I’m ready",
+          "text": "I’m ready",
+          "disabled": "true"
+        }
+      ]
+    },
+    "guest": {
+      "url": "http://localhost:8082/game/duel",
+      "text": "Play together\nSide by side. Or find a match.\nQA Dog 5\nYour dog\nYour friend\nEmpty spot\nSame place\nRemote\nCreate game\nJoin game",
+      "controls": [
+        {
+          "label": "Back",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "About this preview",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Create game",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Same place",
+          "text": "Same place",
+          "disabled": null
+        },
+        {
+          "label": "Remote",
+          "text": "Remote",
+          "disabled": null
+        },
+        {
+          "label": "Create game",
+          "text": "Create game",
+          "disabled": null
+        },
+        {
+          "label": "Join game",
+          "text": "Join game",
+          "disabled": null
+        }
+      ]
+    }
+  },
+  "closed": {
+    "host": {
+      "url": "http://localhost:8082/game/duel",
+      "text": "Play together\nSide by side. Or find a match.\nQA Dog 1\nYour dog\nYour friend\nEmpty spot\nSame place\nRemote\nCreate game\nJoin game",
+      "controls": [
+        {
+          "label": "Back",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "About this preview",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Create game",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Same place",
+          "text": "Same place",
+          "disabled": null
+        },
+        {
+          "label": "Remote",
+          "text": "Remote",
+          "disabled": null
+        },
+        {
+          "label": "Create game",
+          "text": "Create game",
+          "disabled": null
+        },
+        {
+          "label": "Join game",
+          "text": "Join game",
+          "disabled": null
+        }
+      ]
+    },
+    "guest": {
+      "url": "http://localhost:8082/game/duel",
+      "text": "Play together\nSide by side. Or find a match.\nQA Dog 5\nYour dog\nYour friend\nEmpty spot\nSame place\nRemote\nThe host left this room. Create or join another game.\nCreate game\nJoin game",
+      "controls": [
+        {
+          "label": "Back",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "About this preview",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Create game",
+          "text": "",
+          "disabled": null
+        },
+        {
+          "label": "Same place",
+          "text": "Same place",
+          "disabled": null
+        },
+        {
+          "label": "Remote",
+          "text": "Remote",
+          "disabled": null
+        },
+        {
+          "label": "Create game",
+          "text": "Create game",
+          "disabled": null
+        },
+        {
+          "label": "Join game",
+          "text": "Join game",
+          "disabled": null
+        }
+      ]
+    }
+  }
+}

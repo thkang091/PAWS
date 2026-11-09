@@ -1,0 +1,4294 @@
+{
+  "entry": {
+    "heading": "Play together\nSide by side. Or find a match.",
+    "participants": {
+      "x": 0,
+      "y": 60,
+      "w": 390,
+      "h": 345.90625
+    },
+    "qr": null,
+    "dock": {
+      "x": 0,
+      "y": 600,
+      "w": 390,
+      "h": 244
+    },
+    "compact": false,
+    "scroll": {
+      "client": 540,
+      "content": 540,
+      "top": 0
+    }
+  },
+  "code": "4THD62",
+  "created": {
+    "heading": "Your room\nInvite a friend. Play together.",
+    "participants": {
+      "x": 0,
+      "y": 60,
+      "w": 390,
+      "h": 345.90625
+    },
+    "qr": {
+      "x": 24,
+      "y": 497.90625,
+      "w": 342,
+      "h": 176
+    },
+    "dock": {
+      "x": 0,
+      "y": 732,
+      "w": 390,
+      "h": 112
+    },
+    "compact": false,
+    "scroll": {
+      "client": 672,
+      "content": 672,
+      "top": 0
+    }
+  },
+  "connected": {
+    "heading": "Your room\nInvite a friend. Play together.",
+    "participants": {
+      "x": 0,
+      "y": 60,
+      "w": 390,
+      "h": 345.90625
+    },
+    "qr": {
+      "x": 24,
+      "y": 497.90625,
+      "w": 342,
+      "h": 176
+    },
+    "dock": {
+      "x": 0,
+      "y": 732,
+      "w": 390,
+      "h": 112
+    },
+    "compact": false,
+    "scroll": {
+      "client": 672,
+      "content": 672,
+      "top": 0
+    }
+  },
+  "frames": [
+    {
+      "at": 64725,
+      "heading": "Play together\nSide by side. Or find a match.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 600,
+        "w": 390,
+        "h": 244
+      },
+      "compact": false,
+      "scroll": {
+        "client": 540,
+        "content": 540,
+        "top": 0
+      }
+    },
+    {
+      "at": 64726.5,
+      "heading": "Play together\nSide by side. Or find a match.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 600,
+        "w": 390,
+        "h": 244
+      },
+      "compact": false,
+      "scroll": {
+        "client": 540,
+        "content": 540,
+        "top": 0
+      }
+    },
+    {
+      "at": 64743.200000047684,
+      "heading": "Play together\nSide by side. Or find a match.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 600,
+        "w": 390,
+        "h": 244
+      },
+      "compact": false,
+      "scroll": {
+        "client": 540,
+        "content": 540,
+        "top": 0
+      }
+    },
+    {
+      "at": 64775.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64783.300000190735,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64792.800000190735,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64810.200000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64830,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64842,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64859.800000190735,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64875.300000190735,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64892.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64908.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64925.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64942.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64959.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64975.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 64992.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65010.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65025.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65042,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65058.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65075.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65091.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65109.200000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65126.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65142.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65159.300000190735,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65176.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65191.800000190735,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65208.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65225.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65242.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65260.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65275.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65292.800000190735,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65310,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65326.200000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65342.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65359.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65375,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65392.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65408.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65425.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65441.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65458.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65475.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65493.700000047684,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65509.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65525.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65542,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65559.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65575.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65592,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65608.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65625.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65642.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65659.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65675.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65692.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65709.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65726.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65742.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65759,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65775,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65792.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65809.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65825.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65842.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65858.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65876.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65892.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65909.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65925.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65942.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65959.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65974.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 65992.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66009.30000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66025.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66042.70000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66058.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66075.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66092,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66108.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66125.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66143.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66159.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66175.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66193.70000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66209.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66226.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66242.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66259.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66275.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66291.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66309.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66326,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66341.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66358.70000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66376,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66392.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66408.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66425.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66442.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66459,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66475.30000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66492.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66508.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66526.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66541.90000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66558.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66575,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66592.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66610.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66626,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66643.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66658.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66675.30000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66692.70000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66709,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66725.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66742.30000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66759,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66776.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66793.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66808.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66826.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66842,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66858.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66876.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66892,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66908.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66925.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66941.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66959.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66976.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 66992.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67008.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67026.70000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67043.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67058.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67075.40000009537,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67092.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67108.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67125.60000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67141.70000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67159.10000014305,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67175.5,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67192.20000004768,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    },
+    {
+      "at": 67208.80000019073,
+      "heading": "Your room\nInvite a friend. Play together.",
+      "participants": {
+        "x": 0,
+        "y": 60,
+        "w": 390,
+        "h": 345.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 497.90625,
+        "w": 342,
+        "h": 176
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112
+      },
+      "compact": false,
+      "scroll": {
+        "client": 672,
+        "content": 672,
+        "top": 0
+      }
+    }
+  ]
+}

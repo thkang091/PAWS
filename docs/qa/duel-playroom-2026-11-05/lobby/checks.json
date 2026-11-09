@@ -1,0 +1,60 @@
+{
+  "checks": [
+    "Create opens inline lobby, not invite dialog",
+    "QR placeholder explicitly inactive",
+    "Creating preserves participant and action-dock geometry",
+    "Copy copies current generated game code",
+    "Copy feedback does not move participants or action dock",
+    "Middle scroll keeps both participants and action dock pinned",
+    "Game row visible but disabled before friend arrives",
+    "Arrival collapses QR without selecting a game",
+    "Both connected participants remain not ready",
+    "Connecting preserves positions",
+    "Game choice opens inline",
+    "Manual QR expansion survives friend ready event",
+    "Ready change preserves participant and action positions",
+    "Both-ready host can explicitly start",
+    "Reconnect blocks start",
+    "Retry never claims real recovery",
+    "Reconnect clears readiness",
+    "Reselecting game clears both ready states",
+    "Start retains existing game rules and camera route",
+    "Return resets ready and start latch",
+    "Friend departure reopens invite and clears game",
+    "Stay in game preserves code",
+    "Join opens inline, not a dialog",
+    "Inline join preserves participants and action dock",
+    "Join error stays near code input",
+    "Back cancels inline join",
+    "Reopening join clears stale input",
+    "Valid preview code enters shared guest lobby",
+    "Guest cannot choose game",
+    "My ready does not ready the peer",
+    "Guest waits for host rather than starting",
+    "360px lobby has no horizontal overflow",
+    "Small-screen join action remains reachable",
+    "Small-screen code validation remains usable",
+    "Remote still bypasses code lobby",
+    "Six Game main source files unchanged"
+  ],
+  "geometry": {
+    "self": {
+      "x": 24,
+      "y": 119.90625,
+      "width": 140,
+      "height": 246
+    },
+    "friend": {
+      "x": 226,
+      "y": 119.90625,
+      "width": 140,
+      "height": 246
+    },
+    "dock": {
+      "x": 0,
+      "y": 600,
+      "width": 390,
+      "height": 244
+    }
+  }
+}

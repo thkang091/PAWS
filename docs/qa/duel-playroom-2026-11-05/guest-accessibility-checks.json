@@ -1,0 +1,15 @@
+[
+  "Short code shows inline format error",
+  "Unknown code fails without creating guest room",
+  "Code normalizes lowercase input",
+  "Guest join does not synthesize a host",
+  "Guest waits for host selection",
+  "Guest cannot choose game",
+  "Guest has no Change action",
+  "Guest readiness changes only guest",
+  "Both-ready guest waits without Start",
+  "Long dog names retain full accessible labels",
+  "Long names do not cause page overflow",
+  "200% browser text stress keeps text within 360px viewport",
+  "Ready remains reachable after text enlargement and scrolling"
+]

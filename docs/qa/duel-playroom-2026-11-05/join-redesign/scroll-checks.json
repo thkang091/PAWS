@@ -1,0 +1,6 @@
+{
+  "checks": [
+    "Join entry resets inherited scroll position",
+    "Invalid submission reveals code error at top"
+  ]
+}

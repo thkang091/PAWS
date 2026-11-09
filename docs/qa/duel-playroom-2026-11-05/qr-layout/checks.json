@@ -1,0 +1,56 @@
+{
+  "checks": [
+    "Entire room QR visible above bottom Ready",
+    "Ready moved to previous development-tools position",
+    "Creating preserves participant geometry",
+    "Ready disabled before friend and game",
+    "Old waiting and leave action block removed",
+    "Development tools moved to header",
+    "Copy uses actual generated code",
+    "Copy feedback preserves QR position",
+    "QR fully visible at 360x800",
+    "Friend arrival collapses QR and reveals game selection",
+    "Ready enabled after game choice",
+    "My Ready does not ready friend",
+    "Ready state keeps participant geometry",
+    "Bottom Ready can be cancelled",
+    "Host can start only when both ready",
+    "Start uses same bottom button position",
+    "Participant Ready chip cancels readiness before start",
+    "Reconnect blocks start",
+    "Retry remains honest",
+    "Back opens leave confirmation and stay preserves room",
+    "Departure restores large invite panel",
+    "Small-screen QR reachable above Ready by scrolling",
+    "No horizontal overflow at 320px",
+    "Join input still inline",
+    "Guest remains ready and waits for host",
+    "Guest can cancel ready",
+    "Six Game main source files unchanged"
+  ],
+  "measurements": {
+    "waiting390": {
+      "qr": {
+        "x": 24,
+        "y": 507.953125,
+        "width": 342,
+        "height": 208,
+        "bottom": 715.953125
+      },
+      "dock": {
+        "x": 0,
+        "y": 752,
+        "width": 390,
+        "height": 92,
+        "bottom": 844
+      },
+      "ready": {
+        "x": 24,
+        "y": 764,
+        "width": 342,
+        "height": 56,
+        "bottom": 820
+      }
+    }
+  }
+}

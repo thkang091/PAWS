@@ -1,1 +1,1 @@
-export { MultiplayerHomeScreen as default } from "@/features/game/flow/MultiplayerScreens";
+export { DuelPlayroom as default } from "@/features/game/flow/DuelPlayroom";

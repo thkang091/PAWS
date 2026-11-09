@@ -1,0 +1,36 @@
+{
+  "projectRef": "ytitmpodghiehzlmrhte",
+  "runId": "f998eaea-b943-4281-92f0-453eb1c827f2",
+  "startedAt": "2026-11-07T03:02:31.961Z",
+  "actualAppApi": true,
+  "actualHostedAuthAndSql": true,
+  "checks": [
+    "host ordinary anonymous auth",
+    "host dog created through app onboarding RPC",
+    "guest ordinary anonymous auth",
+    "guest dog created through app onboarding RPC",
+    "outsider ordinary anonymous auth",
+    "outsider dog created through app onboarding RPC",
+    "Create produces server-owned host seat",
+    "Server generates six-character invitation",
+    "Create retry is idempotent",
+    "host authenticated Realtime subscription",
+    "Reject DUEL_DOG_NOT_FOUND",
+    "Reject DUEL_ROOM_NOT_FOUND",
+    "RLS hides known room from outsider",
+    "Direct authenticated room write denied",
+    "Join with lowercase code binds guest identity",
+    "QA auth session signed out",
+    "QA auth session signed out",
+    "QA auth session signed out"
+  ],
+  "realtimeEvents": [],
+  "passed": false,
+  "appApiSha256": "0146bbffebbaa13b75589835f976f414b77defcf15b06753f95b30320e7c5e8a",
+  "failure": {
+    "name": "Error",
+    "message": "Timed out: Host receives real Realtime guest-join UPDATE"
+  },
+  "finishedAt": "2026-11-07T03:02:51.102Z",
+  "passedAssertions": 15
+}

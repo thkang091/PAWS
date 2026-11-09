@@ -1,0 +1,356 @@
+[
+  {
+    "name": "Empty invite has no game chooser",
+    "pass": true
+  },
+  {
+    "name": "Ready waits for a friend",
+    "pass": true
+  },
+  {
+    "name": "Connected lobby has no Choose a game control",
+    "pass": true
+  },
+  {
+    "name": "Ready enabled before a game is selected",
+    "pass": true
+  },
+  {
+    "name": "390 lobby fits without scroll",
+    "pass": true,
+    "details": {
+      "self": {
+        "x": 24,
+        "y": 119.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 331.90625
+      },
+      "friend": {
+        "x": 226,
+        "y": 119.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 331.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 435.90625,
+        "w": 342,
+        "h": 176,
+        "bottom": 611.90625
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112,
+        "bottom": 844
+      },
+      "scroll": {
+        "client": 672,
+        "full": 672,
+        "top": 0
+      },
+      "height": 844
+    }
+  },
+  {
+    "name": "Ready dock raised 20px, preserving control height",
+    "pass": true,
+    "details": {
+      "self": {
+        "x": 24,
+        "y": 119.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 331.90625
+      },
+      "friend": {
+        "x": 226,
+        "y": 119.90625,
+        "w": 140,
+        "h": 212,
+        "bottom": 331.90625
+      },
+      "qr": {
+        "x": 24,
+        "y": 435.90625,
+        "w": 342,
+        "h": 176,
+        "bottom": 611.90625
+      },
+      "dock": {
+        "x": 0,
+        "y": 732,
+        "w": 390,
+        "h": 112,
+        "bottom": 844
+      },
+      "scroll": {
+        "client": 672,
+        "full": 672,
+        "top": 0
+      },
+      "height": 844
+    }
+  },
+  {
+    "name": "Self ready alone stays in invite",
+    "pass": true
+  },
+  {
+    "name": "Second Ready automatically shows game selection",
+    "pass": true
+  },
+  {
+    "name": "Unselected game cannot start",
+    "pass": true
+  },
+  {
+    "name": "Participant positions unchanged",
+    "pass": true,
+    "details": {
+      "connected": {
+        "self": {
+          "x": 24,
+          "y": 119.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 331.90625
+        },
+        "friend": {
+          "x": 226,
+          "y": 119.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 331.90625
+        },
+        "qr": {
+          "x": 24,
+          "y": 435.90625,
+          "w": 342,
+          "h": 176,
+          "bottom": 611.90625
+        },
+        "dock": {
+          "x": 0,
+          "y": 732,
+          "w": 390,
+          "h": 112,
+          "bottom": 844
+        },
+        "scroll": {
+          "client": 672,
+          "full": 672,
+          "top": 0
+        },
+        "height": 844
+      },
+      "choosing": {
+        "self": {
+          "x": 24,
+          "y": 119.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 331.90625
+        },
+        "friend": {
+          "x": 226,
+          "y": 119.90625,
+          "w": 140,
+          "h": 212,
+          "bottom": 331.90625
+        },
+        "qr": null,
+        "dock": {
+          "x": 0,
+          "y": 732,
+          "w": 390,
+          "h": 112,
+          "bottom": 844
+        },
+        "scroll": {
+          "client": 672,
+          "full": 672,
+          "top": 0
+        },
+        "height": 844
+      }
+    }
+  },
+  {
+    "name": "Selection keeps both participants ready",
+    "pass": true
+  },
+  {
+    "name": "Cancel Ready returns to invite",
+    "pass": true
+  },
+  {
+    "name": "Re-entering selection clears old choice",
+    "pass": true
+  },
+  {
+    "name": "Connection loss returns to invite and clears readiness",
+    "pass": true
+  },
+  {
+    "name": "Recovered room waits for fresh Ready",
+    "pass": true
+  },
+  {
+    "name": "Friend ready first still waits",
+    "pass": true
+  },
+  {
+    "name": "Self ready second also enters selection",
+    "pass": true
+  },
+  {
+    "name": "Selection screen retains Leave confirmation",
+    "pass": true
+  },
+  {
+    "name": "Stay preserves selection stage",
+    "pass": true
+  },
+  {
+    "name": "Selected ready host starts existing play route",
+    "pass": true
+  },
+  {
+    "name": "360 lobby fits without scroll",
+    "pass": true,
+    "details": {
+      "self": {
+        "x": 24,
+        "y": 92,
+        "w": 125,
+        "h": 212,
+        "bottom": 304
+      },
+      "friend": {
+        "x": 211,
+        "y": 92,
+        "w": 125,
+        "h": 212,
+        "bottom": 304
+      },
+      "qr": {
+        "x": 24,
+        "y": 408,
+        "w": 312,
+        "h": 112,
+        "bottom": 520
+      },
+      "dock": {
+        "x": 0,
+        "y": 528,
+        "w": 360,
+        "h": 112,
+        "bottom": 640
+      },
+      "scroll": {
+        "client": 468,
+        "full": 468,
+        "top": 0
+      },
+      "height": 640
+    }
+  },
+  {
+    "name": "360 QR remains above the raised action dock",
+    "pass": true,
+    "details": {
+      "self": {
+        "x": 24,
+        "y": 92,
+        "w": 125,
+        "h": 212,
+        "bottom": 304
+      },
+      "friend": {
+        "x": 211,
+        "y": 92,
+        "w": 125,
+        "h": 212,
+        "bottom": 304
+      },
+      "qr": {
+        "x": 24,
+        "y": 408,
+        "w": 312,
+        "h": 112,
+        "bottom": 520
+      },
+      "dock": {
+        "x": 0,
+        "y": 528,
+        "w": 360,
+        "h": 112,
+        "bottom": 640
+      },
+      "scroll": {
+        "client": 468,
+        "full": 468,
+        "top": 0
+      },
+      "height": 640
+    }
+  },
+  {
+    "name": "360 selection fits without scroll",
+    "pass": true,
+    "details": {
+      "self": {
+        "x": 24,
+        "y": 92,
+        "w": 125,
+        "h": 212,
+        "bottom": 304
+      },
+      "friend": {
+        "x": 211,
+        "y": 92,
+        "w": 125,
+        "h": 212,
+        "bottom": 304
+      },
+      "qr": null,
+      "dock": {
+        "x": 0,
+        "y": 528,
+        "w": 360,
+        "h": 112,
+        "bottom": 640
+      },
+      "scroll": {
+        "client": 468,
+        "full": 468,
+        "top": 0
+      },
+      "height": 640
+    }
+  },
+  {
+    "name": "Guest readies before host selection",
+    "pass": true
+  },
+  {
+    "name": "Guest reaches selection after both Ready",
+    "pass": true
+  },
+  {
+    "name": "Guest cannot choose or start",
+    "pass": true
+  },
+  {
+    "name": "Host selection event keeps guest in selection stage",
+    "pass": true
+  },
+  {
+    "name": "Guest can cancel Ready and return to invitation",
+    "pass": true
+  }
+]

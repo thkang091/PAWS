@@ -1,0 +1,23 @@
+[
+  "Entry has no game/readiness/room",
+  "Remote is selectable",
+  "Waiting room cannot select game",
+  "Reopening invite preserves room code",
+  "Friend connect does not auto-select game",
+  "Both connected players initially not ready",
+  "Self spot identical across entry and connected state",
+  "Friend ready leaves self not ready",
+  "Both ready host exposes Start",
+  "My ready does not ready friend or start",
+  "Reconnect retains friend and blocks start",
+  "Retry never fakes a network connection",
+  "Restored connection invalidates both ready states",
+  "Game reselection invalidates both ready states",
+  "360px room has no page horizontal overflow",
+  "Start retains existing game details and preparation route",
+  "Returning from game clears ready for another round",
+  "Friend departure clears game/readiness",
+  "Stay preserves room",
+  "Leave clears room",
+  "360px entry has no page horizontal overflow"
+]

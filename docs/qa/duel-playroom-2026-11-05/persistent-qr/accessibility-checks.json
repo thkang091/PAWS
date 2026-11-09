@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "Closing game picker preserves persistent QR",
+    "Necessary scrolling remains enabled on short screens",
+    "Real scroll input reaches overflow content",
+    "Large text enables overflow scrolling instead of clipping"
+  ],
+  "note": "Browser text enlarged 1.8x; does not replace native Dynamic Type testing."
+}

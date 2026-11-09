@@ -1,0 +1,47 @@
+{
+  "executedAt": "2026-11-06T22:52:34.515Z",
+  "decoder": "jsqr@1.4.0",
+  "screenshot": "docs\\qa\\duel-rooms-2026-11-06\\02-created.png",
+  "screenshotSha256": "cfd89b5517d731bffe06669263b602323d8d4c2449b7ba5162a84064c49de7a1",
+  "dimensions": {
+    "width": 390,
+    "height": 844
+  },
+  "decodedText": "4THD62",
+  "expectedText": "4THD62",
+  "corners": {
+    "topRightCorner": {
+      "x": 258.25,
+      "y": 521.7500000000001
+    },
+    "topLeftCorner": {
+      "x": 130.5689165426755,
+      "y": 521.5689165426755
+    },
+    "bottomRightCorner": {
+      "x": 257.3597552866072,
+      "y": 648.3597552866073
+    },
+    "bottomLeftCorner": {
+      "x": 130.75,
+      "y": 649.25
+    },
+    "topRightFinderPattern": {
+      "x": 237,
+      "y": 543
+    },
+    "topLeftFinderPattern": {
+      "x": 152,
+      "y": 543
+    },
+    "bottomLeftFinderPattern": {
+      "x": 152,
+      "y": 628
+    },
+    "bottomRightAlignmentPattern": {
+      "x": 218.57142857142856,
+      "y": 609.5714285714286
+    }
+  },
+  "passed": true
+}

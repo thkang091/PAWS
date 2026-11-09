@@ -1,0 +1,18 @@
+{
+  "executedAt": "2026-11-06T22:47:48.342Z",
+  "endpoint": "http://127.0.0.1:18945",
+  "actualAppApi": true,
+  "actualSqlMigration": true,
+  "realtime": "Authenticated Phoenix join/heartbeat acknowledgement only; room changes are read by actual SQL polling.",
+  "appApiSha256": "0146bbffebbaa13b75589835f976f414b77defcf15b06753f95b30320e7c5e8a",
+  "health": {
+    "qaOnly": true,
+    "engine": "PGlite PostgreSQL 18.6",
+    "migrationHash": "bd955cdcfe15035e2893a74d8349f17c24d0a933c6a223ed14689c19d5bfb7f8",
+    "requestCount": 51,
+    "duelRpcCount": 20,
+    "users": 5
+  },
+  "passedAssertions": 28,
+  "passed": true
+}

@@ -1,0 +1,45 @@
+{
+  "host": {
+    "url": "http://localhost:8082/game/play/paws-says?mode=duel&location=together",
+    "text": "Duel\n5 commands\nPAWS Says\nFollow the same cues. Most completed commands wins.\nMost completed\n· Same place\nHow to play\n1\nBoth players get the same command sequence.\n2\nTry each command before the next one appears.\n3\nKeep the camera rolling. AI counts completed commands after the round.\nBring along\nTwo pups, two phones, and a little room to play.\nSet up camera",
+    "controls": [
+      {
+        "label": "Back",
+        "text": "",
+        "disabled": null
+      },
+      {
+        "label": "About this preview",
+        "text": "",
+        "disabled": null
+      },
+      {
+        "label": "Set up camera",
+        "text": "Set up camera",
+        "disabled": null
+      }
+    ]
+  },
+  "guest": {
+    "url": "http://localhost:8082/game/play/paws-says?mode=duel&location=together",
+    "text": "Duel\n5 commands\nPAWS Says\nFollow the same cues. Most completed commands wins.\nMost completed\n· Same place\nHow to play\n1\nBoth players get the same command sequence.\n2\nTry each command before the next one appears.\n3\nKeep the camera rolling. AI counts completed commands after the round.\nBring along\nTwo pups, two phones, and a little room to play.\nSet up camera",
+    "controls": [
+      {
+        "label": "Back",
+        "text": "",
+        "disabled": null
+      },
+      {
+        "label": "About this preview",
+        "text": "",
+        "disabled": null
+      },
+      {
+        "label": "Set up camera",
+        "text": "Set up camera",
+        "disabled": null
+      }
+    ]
+  },
+  "bothStarted": true
+}

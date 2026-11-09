@@ -1,0 +1,223 @@
+{
+  "projectRef": "ytitmpodghiehzlmrhte",
+  "runId": "80b34e35-a1d9-4927-94a5-a4d2b3c4cf29",
+  "startedAt": "2026-11-07T03:04:51.488Z",
+  "actualAppApi": true,
+  "actualHostedAuthAndSql": true,
+  "checks": [
+    "host ordinary anonymous auth",
+    "host dog created through app onboarding RPC",
+    "guest ordinary anonymous auth",
+    "guest dog created through app onboarding RPC",
+    "outsider ordinary anonymous auth",
+    "outsider dog created through app onboarding RPC",
+    "Create produces server-owned host seat",
+    "Server generates six-character invitation",
+    "Create retry is idempotent",
+    "host authenticated Realtime subscription",
+    "Reject DUEL_DOG_NOT_FOUND",
+    "Reject DUEL_ROOM_NOT_FOUND",
+    "RLS hides known room from outsider",
+    "Direct authenticated room write denied",
+    "Join with lowercase code binds guest identity",
+    "Host receives real Realtime guest-join UPDATE",
+    "guest authenticated Realtime subscription",
+    "Repeated Join retains two seats",
+    "Reject DUEL_ROOM_FULL",
+    "One Ready stays waiting",
+    "Guest receives real Realtime host-Ready UPDATE",
+    "Both Ready opens game selection",
+    "Host receives both-Ready selecting UPDATE",
+    "Reject DUEL_HOST_REQUIRED",
+    "Reject DUEL_HOST_REQUIRED",
+    "Reject DUEL_GAME_REQUIRED",
+    "Host selects valid game",
+    "Guest snapshot sees selection",
+    "Host starts room",
+    "Guest receives real Realtime start UPDATE",
+    "Guest snapshot sees started room",
+    "Repeated Start is idempotent",
+    "Return/reset clears shared round",
+    "Guest departure frees seat",
+    "Reject DUEL_ROOM_NOT_FOUND",
+    "Host departure closes room for guest",
+    "Guest receives real Realtime host-closure UPDATE",
+    "QA auth session signed out",
+    "QA auth session signed out",
+    "QA auth session signed out"
+  ],
+  "realtimeEvents": [
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 3,
+      "phase": "waiting",
+      "receivedAt": "2026-11-07T03:04:54.683Z"
+    },
+    {
+      "role": "guest",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 4,
+      "phase": "waiting",
+      "receivedAt": "2026-11-07T03:04:55.223Z"
+    },
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 4,
+      "phase": "waiting",
+      "receivedAt": "2026-11-07T03:04:55.224Z"
+    },
+    {
+      "role": "guest",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 5,
+      "phase": "waiting",
+      "receivedAt": "2026-11-07T03:04:55.765Z"
+    },
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 5,
+      "phase": "waiting",
+      "receivedAt": "2026-11-07T03:04:55.767Z"
+    },
+    {
+      "role": "guest",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 6,
+      "phase": "selecting",
+      "receivedAt": "2026-11-07T03:04:56.306Z"
+    },
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 6,
+      "phase": "selecting",
+      "receivedAt": "2026-11-07T03:04:56.307Z"
+    },
+    {
+      "role": "guest",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 7,
+      "phase": "selecting",
+      "receivedAt": "2026-11-07T03:04:56.850Z"
+    },
+    {
+      "role": "guest",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 8,
+      "phase": "playing",
+      "receivedAt": "2026-11-07T03:04:56.850Z"
+    },
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 8,
+      "phase": "playing",
+      "receivedAt": "2026-11-07T03:04:56.852Z"
+    },
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 7,
+      "phase": "selecting",
+      "receivedAt": "2026-11-07T03:04:56.852Z"
+    },
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 9,
+      "phase": "waiting",
+      "receivedAt": "2026-11-07T03:04:57.399Z"
+    },
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 10,
+      "phase": "waiting",
+      "receivedAt": "2026-11-07T03:04:57.399Z"
+    },
+    {
+      "role": "guest",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 11,
+      "phase": "waiting",
+      "receivedAt": "2026-11-07T03:04:57.942Z"
+    },
+    {
+      "role": "guest",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 12,
+      "phase": "closed",
+      "receivedAt": "2026-11-07T03:04:57.943Z"
+    },
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 11,
+      "phase": "waiting",
+      "receivedAt": "2026-11-07T03:04:57.943Z"
+    },
+    {
+      "role": "host",
+      "event": "UPDATE",
+      "roomId": "ef73b1a0-e68a-430d-9bdb-3d88df4cf7ab",
+      "revision": 12,
+      "phase": "closed",
+      "receivedAt": "2026-11-07T03:04:57.943Z"
+    }
+  ],
+  "realtimeSystemEvents": [
+    {
+      "role": "host",
+      "extension": "postgres_changes",
+      "status": "ok",
+      "message": "Subscribed to PostgreSQL"
+    },
+    {
+      "role": "guest",
+      "extension": "postgres_changes",
+      "status": "ok",
+      "message": "Subscribed to PostgreSQL"
+    }
+  ],
+  "realtimeStatuses": [
+    {
+      "role": "host",
+      "status": "SUBSCRIBED"
+    },
+    {
+      "role": "guest",
+      "status": "SUBSCRIBED"
+    },
+    {
+      "role": "host",
+      "status": "CLOSED"
+    },
+    {
+      "role": "guest",
+      "status": "CLOSED"
+    }
+  ],
+  "passed": true,
+  "appApiSha256": "0146bbffebbaa13b75589835f976f414b77defcf15b06753f95b30320e7c5e8a",
+  "finishedAt": "2026-11-07T03:04:58.889Z",
+  "passedAssertions": 37
+}

@@ -1,0 +1,8 @@
+{
+  "app/(tabs)/game.tsx": "0feaf466d0747abd91d2804bcb18afb5cee8d55b0c5ca2c0be6670a5cf63118a",
+  "app/(tabs)/_layout.tsx": "5a825e9ecc7ef5758053f61eac92800ee36623287bf8fa09e6339a540579518c",
+  "src/features/game/components/ModeIllustration.tsx": "bbc7b53564eedcb49f48190eb608072cb4ff7fd8031d5e5c4da73f741be53b10",
+  "src/features/game/components/modePaths.ts": "f49e4840e1ebefb879163836eec313ef8581922a174c8b8853ac3287e32b0b90",
+  "src/features/home/components/navigation/PawsTabBar.tsx": "648d731c9a26f59ae86cb27263b98782d02916fa344d1605cbf34f3ead7c7109",
+  "src/constants/design.ts": "d4a494c4ccb4a775c7f43ab212176754504405969a3f164e71e1fd250085e443"
+}

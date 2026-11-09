@@ -1,0 +1,284 @@
+{
+  "checks": [
+    "Primary action moves into lower screen area",
+    "Primary action begins in lower 70–80% of a 390×844 screen",
+    "Both button sizes preserved",
+    "12px inter-button gap preserved",
+    "Location-to-action spacing preserved",
+    "Participant geometry unchanged",
+    "Find a match shares primary action position",
+    "360×800: button heights unchanged",
+    "360×800: both actions visible without scrolling",
+    "360×800: no horizontal overflow",
+    "360×640: button heights unchanged",
+    "360×640: both actions visible without scrolling",
+    "360×640: no horizontal overflow",
+    "320×568: button heights unchanged",
+    "320×568: both actions reachable together by scrolling",
+    "320×568: no horizontal overflow",
+    "Lower Join game button still opens join dialog",
+    "Six Game main source files unchanged"
+  ],
+  "before": {
+    "create": {
+      "x": 24,
+      "y": 495.90625,
+      "width": 342,
+      "height": 56,
+      "top": 495.90625,
+      "right": 366,
+      "bottom": 551.90625,
+      "left": 24
+    },
+    "join": {
+      "x": 24,
+      "y": 563.90625,
+      "width": 342,
+      "height": 56,
+      "top": 563.90625,
+      "right": 366,
+      "bottom": 619.90625,
+      "left": 24
+    },
+    "location": {
+      "x": 24,
+      "y": 401.90625,
+      "width": 342,
+      "height": 50,
+      "top": 401.90625,
+      "right": 366,
+      "bottom": 451.90625,
+      "left": 24
+    },
+    "self": {
+      "x": 24,
+      "y": 119.90625,
+      "width": 140,
+      "height": 246,
+      "top": 119.90625,
+      "right": 164,
+      "bottom": 365.90625,
+      "left": 24
+    }
+  },
+  "after": {
+    "create": {
+      "x": 24,
+      "y": 620,
+      "width": 342,
+      "height": 56,
+      "top": 620,
+      "right": 366,
+      "bottom": 676,
+      "left": 24
+    },
+    "join": {
+      "x": 24,
+      "y": 688,
+      "width": 342,
+      "height": 56,
+      "top": 688,
+      "right": 366,
+      "bottom": 744,
+      "left": 24
+    },
+    "location": {
+      "x": 24,
+      "y": 526,
+      "width": 342,
+      "height": 50,
+      "top": 526,
+      "right": 366,
+      "bottom": 576,
+      "left": 24
+    },
+    "self": {
+      "x": 24,
+      "y": 119.90625,
+      "width": 140,
+      "height": 246,
+      "top": 119.90625,
+      "right": 164,
+      "bottom": 365.90625,
+      "left": 24
+    }
+  },
+  "screens": [
+    {
+      "width": 390,
+      "height": 844,
+      "create": {
+        "x": 24,
+        "y": 620,
+        "width": 342,
+        "height": 56,
+        "top": 620,
+        "right": 366,
+        "bottom": 676,
+        "left": 24
+      },
+      "join": {
+        "x": 24,
+        "y": 688,
+        "width": 342,
+        "height": 56,
+        "top": 688,
+        "right": 366,
+        "bottom": 744,
+        "left": 24
+      },
+      "location": {
+        "x": 24,
+        "y": 526,
+        "width": 342,
+        "height": 50,
+        "top": 526,
+        "right": 366,
+        "bottom": 576,
+        "left": 24
+      },
+      "self": {
+        "x": 24,
+        "y": 119.90625,
+        "width": 140,
+        "height": 246,
+        "top": 119.90625,
+        "right": 164,
+        "bottom": 365.90625,
+        "left": 24
+      }
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "create": {
+        "x": 24,
+        "y": 576,
+        "width": 312,
+        "height": 56,
+        "top": 576,
+        "right": 336,
+        "bottom": 632,
+        "left": 24
+      },
+      "join": {
+        "x": 24,
+        "y": 644,
+        "width": 312,
+        "height": 56,
+        "top": 644,
+        "right": 336,
+        "bottom": 700,
+        "left": 24
+      },
+      "location": {
+        "x": 24,
+        "y": 482,
+        "width": 312,
+        "height": 50,
+        "top": 482,
+        "right": 336,
+        "bottom": 532,
+        "left": 24
+      },
+      "self": {
+        "x": 24,
+        "y": 112,
+        "width": 125,
+        "height": 246,
+        "top": 112,
+        "right": 149,
+        "bottom": 358,
+        "left": 24
+      }
+    },
+    {
+      "width": 360,
+      "height": 640,
+      "create": {
+        "x": 24,
+        "y": 476,
+        "width": 312,
+        "height": 56,
+        "top": 476,
+        "right": 336,
+        "bottom": 532,
+        "left": 24
+      },
+      "join": {
+        "x": 24,
+        "y": 544,
+        "width": 312,
+        "height": 56,
+        "top": 544,
+        "right": 336,
+        "bottom": 600,
+        "left": 24
+      },
+      "location": {
+        "x": 24,
+        "y": 382,
+        "width": 312,
+        "height": 50,
+        "top": 382,
+        "right": 336,
+        "bottom": 432,
+        "left": 24
+      },
+      "self": {
+        "x": 24,
+        "y": 100,
+        "width": 125,
+        "height": 246,
+        "top": 100,
+        "right": 149,
+        "bottom": 346,
+        "left": 24
+      }
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "create": {
+        "x": 24,
+        "y": 476,
+        "width": 272,
+        "height": 56,
+        "top": 476,
+        "right": 296,
+        "bottom": 532,
+        "left": 24
+      },
+      "join": {
+        "x": 24,
+        "y": 544,
+        "width": 272,
+        "height": 56,
+        "top": 544,
+        "right": 296,
+        "bottom": 600,
+        "left": 24
+      },
+      "location": {
+        "x": 24,
+        "y": 382,
+        "width": 272,
+        "height": 50,
+        "top": 382,
+        "right": 296,
+        "bottom": 432,
+        "left": 24
+      },
+      "self": {
+        "x": 24,
+        "y": 100,
+        "width": 105,
+        "height": 246,
+        "top": 100,
+        "right": 129,
+        "bottom": 346,
+        "left": 24
+      }
+    }
+  ]
+}

@@ -1,0 +1,488 @@
+{
+  "checks": [
+    "Empty Duel exits without a leave prompt",
+    "Empty swipe-equivalent POP preserves original main route",
+    "Leave sheet moves upward from below",
+    "Backdrop fades separately",
+    "Leave sheet slides downward on cancellation",
+    "Closing animation retains title and buttons",
+    "Stay keeps room code",
+    "Stay leaves navigation state unchanged",
+    "Parent POP is intercepted before removing occupied Duel",
+    "Swipe-equivalent action leaves occupied route mounted",
+    "Closing confirmation cancels pending exit",
+    "Modal back/Escape cancels pending exit",
+    "Cancelled gesture cannot leak into a later button-only leave",
+    "Cancelled swipe preserves selected game and both Ready states",
+    "Start push is not blocked by removal guard",
+    "Back from game keeps the same lobby",
+    "Confirmed swipe resumes original POP once without duplicate main",
+    "Confirmed navigation does not reopen confirmation",
+    "Re-entry has no stale room or readiness",
+    "Hidden lobby does not intercept child-screen stack exit"
+  ],
+  "entering": [
+    {
+      "t": 34,
+      "y": 558,
+      "dy": 16,
+      "opacity": 0,
+      "scrim": 0,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 35,
+      "y": 558,
+      "dy": 16,
+      "opacity": 0,
+      "scrim": 0,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 54.700000047683716,
+      "y": 844,
+      "dy": 302,
+      "opacity": 0,
+      "scrim": 0,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 69.80000019073486,
+      "y": 807.1791381835938,
+      "dy": 265.179,
+      "opacity": 0.121923,
+      "scrim": 0.121923,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 85.5,
+      "y": 754.6702270507812,
+      "dy": 212.67,
+      "opacity": 0.295794,
+      "scrim": 0.295794,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 101.10000014305115,
+      "y": 686.3432006835938,
+      "dy": 144.343,
+      "opacity": 0.522042,
+      "scrim": 0.522042,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 118,
+      "y": 622.9950561523438,
+      "dy": 80.9951,
+      "opacity": 0.731804,
+      "scrim": 0.731804,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 134.20000004768372,
+      "y": 590.674560546875,
+      "dy": 48.6745,
+      "opacity": 0.838826,
+      "scrim": 0.838826,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 150.80000019073486,
+      "y": 574.58056640625,
+      "dy": 32.5806,
+      "opacity": 0.892117,
+      "scrim": 0.892117,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 166.90000009536743,
+      "y": 563.98779296875,
+      "dy": 21.9878,
+      "opacity": 0.927193,
+      "scrim": 0.927193,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 190.30000019073486,
+      "y": 557.3009033203125,
+      "dy": 15.3009,
+      "opacity": 0.949335,
+      "scrim": 0.949335,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 206.30000019073486,
+      "y": 550.9251708984375,
+      "dy": 8.92515,
+      "opacity": 0.970447,
+      "scrim": 0.970447,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 222.10000014305115,
+      "y": 547.9412231445312,
+      "dy": 5.94123,
+      "opacity": 0.980327,
+      "scrim": 0.980327,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 238.5,
+      "y": 545.77587890625,
+      "dy": 3.77586,
+      "opacity": 0.987497,
+      "scrim": 0.987497,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 254.60000014305115,
+      "y": 544.2293090820312,
+      "dy": 2.22933,
+      "opacity": 0.992618,
+      "scrim": 0.992618,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 270.90000009536743,
+      "y": 543.1644897460938,
+      "dy": 1.16447,
+      "opacity": 0.996144,
+      "scrim": 0.996144,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 286.80000019073486,
+      "y": 542.45166015625,
+      "dy": 0.451643,
+      "opacity": 0.998505,
+      "scrim": 0.998505,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 302.5,
+      "y": 542.0992431640625,
+      "dy": 0.0992236,
+      "opacity": 0.999671,
+      "scrim": 0.999671,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 319,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 335.80000019073486,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 351.7000000476837,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 368.5,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 385.10000014305115,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 402,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 418,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 435,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 451.10000014305115,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 467.60000014305115,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 484.7000000476837,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 500.80000019073486,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 516.9000000953674,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 533.8000001907349,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 558.4000000953674,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 567.1000001430511,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 592.5,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 600.4000000953674,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 617.8000001907349,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 634,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 650.9000000953674,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    }
+  ],
+  "exiting": [
+    {
+      "t": 28.09999990463257,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 29.09999990463257,
+      "y": 542,
+      "dy": 0,
+      "opacity": 1,
+      "scrim": 1,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 45.200000047683716,
+      "y": 564.283447265625,
+      "dy": 22.2834,
+      "opacity": 0.926214,
+      "scrim": 0.926214,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 61.5,
+      "y": 657.3372192382812,
+      "dy": 115.337,
+      "opacity": 0.618089,
+      "scrim": 0.618089,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 78.29999995231628,
+      "y": 766.0125122070312,
+      "dy": 224.013,
+      "opacity": 0.258237,
+      "scrim": 0.258237,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 94.40000009536743,
+      "y": 807.9083251953125,
+      "dy": 265.908,
+      "opacity": 0.119509,
+      "scrim": 0.119509,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 110.5,
+      "y": 824.25537109375,
+      "dy": 282.255,
+      "opacity": 0.0653795,
+      "scrim": 0.0653795,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 126.90000009536743,
+      "y": 833.1224365234375,
+      "dy": 291.122,
+      "opacity": 0.0360184,
+      "scrim": 0.0360184,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 144,
+      "y": 838.57568359375,
+      "dy": 296.576,
+      "opacity": 0.0179612,
+      "scrim": 0.0179612,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 160.5,
+      "y": 841.6893310546875,
+      "dy": 299.689,
+      "opacity": 0.00765129,
+      "scrim": 0.00765129,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 177.20000004768372,
+      "y": 843.2608032226562,
+      "dy": 301.261,
+      "opacity": 0.00244764,
+      "scrim": 0.00244764,
+      "hasTitle": true,
+      "hasStay": true
+    },
+    {
+      "t": 194.20000004768372,
+      "y": 843.9437255859375,
+      "dy": 301.944,
+      "opacity": 0.000186344,
+      "scrim": 0.000186344,
+      "hasTitle": true,
+      "hasStay": true
+    }
+  ],
+  "note": "Native-equivalent POP dispatched through installed navigation ref; no navigation state injected. Physical iOS edge swipe still requires device verification."
+}

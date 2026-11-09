@@ -1,0 +1,27 @@
+{
+  "shortViewport": [
+    {
+      "label": "Close dialog",
+      "top": 64,
+      "bottom": 108
+    },
+    {
+      "label": "Room code",
+      "top": 252,
+      "bottom": 308
+    },
+    {
+      "label": "Join with code",
+      "top": 324,
+      "bottom": 380
+    }
+  ],
+  "unchangedMainFiles": [
+    "app/(tabs)/game.tsx",
+    "app/(tabs)/_layout.tsx",
+    "src/features/game/components/ModeIllustration.tsx",
+    "src/features/game/components/modePaths.ts",
+    "src/features/home/components/navigation/PawsTabBar.tsx",
+    "src/constants/design.ts"
+  ]
+}

@@ -18,10 +18,13 @@ const ART = {
 };
 const GAME_STAGES = ["Camera setup", "Play round", "Video review", "Result"];
 
-export function GameScreen({ label, children, footer, onBack, backLabel = "Back", centered = false, dark = false, progress }: {
+export function GameScreen({ label, children, footer, onBack, backLabel = "Back", centered = false, dark = false, progress, scrollable = true, headerAction, liveRooms = false }: {
   label?: string; children: ReactNode; footer?: ReactNode; onBack?: () => void;
   backLabel?: string; centered?: boolean; dark?: boolean;
   progress?: { current: number; total: number };
+  scrollable?: boolean;
+  headerAction?: ReactNode;
+  liveRooms?: boolean;
 }) {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
@@ -34,6 +37,7 @@ export function GameScreen({ label, children, footer, onBack, backLabel = "Back"
         {backLabel === "Close" ? <XIcon size={24} color={dark ? "white" : text.primary} /> : <CaretLeftIcon size={iconSize.nav} weight="bold" color={dark ? "white" : text.primary} />}
       </PressScale>
       {label ? <Text style={[ui.headerLabel, dark && ui.onDark]} numberOfLines={1}>{label}</Text> : <View style={ui.flex} />}
+      {headerAction}
       <PressScale accessibilityRole="button" accessibilityLabel="About this preview" onPress={() => setAbout(true)} style={ui.previewButton}>
         <InfoIcon size={21} color={dark ? "white" : text.secondary} />
       </PressScale>
@@ -42,16 +46,18 @@ export function GameScreen({ label, children, footer, onBack, backLabel = "Back"
       accessibilityValue={{ min: 0, max: progress.total, now: progress.current, text: `Step ${progress.current} of ${progress.total}${progress.total === GAME_STAGES.length ? ": " + GAME_STAGES[progress.current - 1] : ""}` }}>
       {Array.from({ length: progress.total }, (_, index) => <View key={index} style={[ui.segment, index < progress.current && ui.segmentFilled]} />)}
     </View> : null}
-    <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled"
+    {scrollable ? <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled"
       contentContainerStyle={[ui.content, centered && ui.centered, !footer && { paddingBottom: insets.bottom + space.section }]}>
       <View style={ui.stack}>{children}</View>
-    </ScrollView>
+    </ScrollView> : <View style={{ flex: 1, minHeight: 0 }}>{children}</View>}
     {footer ? <View style={[ui.footer, dark && ui.darkFooter, { paddingBottom: insets.bottom + space.lg }]}>{footer}</View> : null}
     <Modal visible={about} transparent animationType={reduceMotion ? "none" : "fade"} onRequestClose={() => setAbout(false)}>
       <View style={ui.scrim}><View style={ui.dialog} accessibilityViewIsModal>
         <InfoIcon size={24} color={text.primary} />
         <Text accessibilityRole="header" style={ui.sectionTitle}>Screen preview</Text>
-        <Text style={ui.body}>Solo videos stay on your phone. AI review and room connections are not connected yet. Demo results are not saved and no coins are spent.</Text>
+        <Text style={ui.body}>{liveRooms
+          ? "Same place uses a shared room code and each player’s Ready status. Remote matchmaking and AI review are not connected yet. No coins are spent."
+          : "Solo videos stay on your phone. AI review and room connections are not connected yet. Demo results are not saved and no coins are spent."}</Text>
         <GameButton label="Got it" onPress={() => setAbout(false)} />
       </View></View>
     </Modal>

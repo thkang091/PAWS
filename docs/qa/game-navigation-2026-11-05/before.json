@@ -1,0 +1,443 @@
+{
+  "checks": [],
+  "samples": [
+    {
+      "mode": "Challenge",
+      "iteration": 1,
+      "before": {
+        "key": "stack-KLX_NTByYQnR3YpgwIrH_",
+        "index": 0,
+        "routes": [
+          {
+            "key": "(tabs)-DHzL_X83FZ4N4q9MlVemP",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-uVTRfjczOoWtN6aMZt7CA",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-Ig2Bv0e7TUt-XWGTV4-Nj",
+                  "name": "train"
+                },
+                {
+                  "key": "care-Hb2gie_qVnDjzfwaf-Gkt",
+                  "name": "care"
+                },
+                {
+                  "key": "game-P-Ob0xPzAXscxegM2fBs8",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-aoNXZSUWvZSzzdCg6J6Ot",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-TAN4DnSaf4PT4fds8OqhJ",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "entered": {
+        "key": "stack-KLX_NTByYQnR3YpgwIrH_",
+        "index": 1,
+        "routes": [
+          {
+            "key": "(tabs)-DHzL_X83FZ4N4q9MlVemP",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-uVTRfjczOoWtN6aMZt7CA",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-Ig2Bv0e7TUt-XWGTV4-Nj",
+                  "name": "train"
+                },
+                {
+                  "key": "care-Hb2gie_qVnDjzfwaf-Gkt",
+                  "name": "care"
+                },
+                {
+                  "key": "game-P-Ob0xPzAXscxegM2fBs8",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-aoNXZSUWvZSzzdCg6J6Ot",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-TAN4DnSaf4PT4fds8OqhJ",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          },
+          {
+            "key": "game-mWiH6sQbycUFrK-jjHaL1",
+            "name": "game",
+            "state": {
+              "key": "stack-9CuGKLfF7qAtXHvKk1mkr",
+              "index": 0,
+              "routes": [
+                {
+                  "key": "challenge-PrMSDtGMkavj2yLpdMuiW",
+                  "name": "challenge"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "returned": {
+        "key": "stack-KLX_NTByYQnR3YpgwIrH_",
+        "index": 1,
+        "routes": [
+          {
+            "key": "(tabs)-DHzL_X83FZ4N4q9MlVemP",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-uVTRfjczOoWtN6aMZt7CA",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-Ig2Bv0e7TUt-XWGTV4-Nj",
+                  "name": "train"
+                },
+                {
+                  "key": "care-Hb2gie_qVnDjzfwaf-Gkt",
+                  "name": "care"
+                },
+                {
+                  "key": "game-P-Ob0xPzAXscxegM2fBs8",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-aoNXZSUWvZSzzdCg6J6Ot",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-TAN4DnSaf4PT4fds8OqhJ",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          },
+          {
+            "key": "(tabs)-rqqaI8oUt6JFsg2Nmukj2",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-9qumOnEYCLdrt_ZfOtoHv",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-zCPMcQCaDmTIBW9qVst6E",
+                  "name": "train"
+                },
+                {
+                  "key": "care-BMe-fOmVFS1HjJOeGsxCQ",
+                  "name": "care"
+                },
+                {
+                  "key": "game-C5FGDIFmwL8RSEEKQeFUX",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-Rd8Eja4-Cd2hwlVqBMYWj",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-i_w_sfwJLHr8laAqTkdJu",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "mode": "Duel",
+      "iteration": 1,
+      "before": {
+        "key": "stack-nSSuIhvjfumEkhsSNbzG3",
+        "index": 0,
+        "routes": [
+          {
+            "key": "(tabs)-c_5O5-zUg9LBQpYB020vw",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-ohaa97GmO5RvmfbEa1PHw",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-OWKsEGxEbULFZhqxk5TcJ",
+                  "name": "train"
+                },
+                {
+                  "key": "care-0452F_bhLJa4T4taacJpB",
+                  "name": "care"
+                },
+                {
+                  "key": "game-9_sI5KoZznYfcS3hJ9gei",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-oJzrF5HQgYkpJzzynigFU",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-AKs8u4iV22rEwvuw8QMSR",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "entered": {
+        "key": "stack-nSSuIhvjfumEkhsSNbzG3",
+        "index": 1,
+        "routes": [
+          {
+            "key": "(tabs)-c_5O5-zUg9LBQpYB020vw",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-ohaa97GmO5RvmfbEa1PHw",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-OWKsEGxEbULFZhqxk5TcJ",
+                  "name": "train"
+                },
+                {
+                  "key": "care-0452F_bhLJa4T4taacJpB",
+                  "name": "care"
+                },
+                {
+                  "key": "game-9_sI5KoZznYfcS3hJ9gei",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-oJzrF5HQgYkpJzzynigFU",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-AKs8u4iV22rEwvuw8QMSR",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          },
+          {
+            "key": "game-C0wLCb32kivDVP6chh37I",
+            "name": "game",
+            "state": {
+              "key": "stack-FBAFC3Y4RTOEJbfDihwdL",
+              "index": 0,
+              "routes": [
+                {
+                  "key": "duel-d6eWBwug93_RWA0IL7O0T",
+                  "name": "duel"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "returned": {
+        "key": "stack-nSSuIhvjfumEkhsSNbzG3",
+        "index": 1,
+        "routes": [
+          {
+            "key": "(tabs)-c_5O5-zUg9LBQpYB020vw",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-ohaa97GmO5RvmfbEa1PHw",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-OWKsEGxEbULFZhqxk5TcJ",
+                  "name": "train"
+                },
+                {
+                  "key": "care-0452F_bhLJa4T4taacJpB",
+                  "name": "care"
+                },
+                {
+                  "key": "game-9_sI5KoZznYfcS3hJ9gei",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-oJzrF5HQgYkpJzzynigFU",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-AKs8u4iV22rEwvuw8QMSR",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          },
+          {
+            "key": "(tabs)-kvD0_3UOp5hMEYertwhF0",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-mgxXaajsp6YQRC2u6bAqD",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-ggsfVg6ANrLNWn_Z533QP",
+                  "name": "train"
+                },
+                {
+                  "key": "care-tlSgIA0JL_75GbmpJhK0p",
+                  "name": "care"
+                },
+                {
+                  "key": "game-iScq6QABq2bjyhnxIYVVx",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-OwZXi78py5Xtd5EApMFE-",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-95jI6SezfvBAyVfFZTNzY",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "mode": "Lucky",
+      "iteration": 1,
+      "before": {
+        "key": "stack-0cKJpMAMZrLRBvbXhBonQ",
+        "index": 0,
+        "routes": [
+          {
+            "key": "(tabs)-33SqfZFeOFtGb2rXYC70e",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-AUIUz6rB8WK11vlSoQFe5",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-A86X_xlpqxkg-0OiwT1FS",
+                  "name": "train"
+                },
+                {
+                  "key": "care-mZys3GXaOYYR6W_2g1yG_",
+                  "name": "care"
+                },
+                {
+                  "key": "game-ySK3IwZU9xzDoRIwZpL8a",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-VIl7eAYfDaeCo8UvxorVK",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-216mRHXuToAykSb3T4FbY",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "entered": {
+        "key": "stack-0cKJpMAMZrLRBvbXhBonQ",
+        "index": 1,
+        "routes": [
+          {
+            "key": "(tabs)-33SqfZFeOFtGb2rXYC70e",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-AUIUz6rB8WK11vlSoQFe5",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-A86X_xlpqxkg-0OiwT1FS",
+                  "name": "train"
+                },
+                {
+                  "key": "care-mZys3GXaOYYR6W_2g1yG_",
+                  "name": "care"
+                },
+                {
+                  "key": "game-ySK3IwZU9xzDoRIwZpL8a",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-VIl7eAYfDaeCo8UvxorVK",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-216mRHXuToAykSb3T4FbY",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          },
+          {
+            "key": "game-3anr3MszpysdSQ5OS5uOk",
+            "name": "game",
+            "state": {
+              "key": "stack-bBBdavuFy0gYcQWN4dvny",
+              "index": 0,
+              "routes": [
+                {
+                  "key": "shop-ltSMr127whfw4xQ3pL3jy",
+                  "name": "shop"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "returned": {
+        "key": "stack-0cKJpMAMZrLRBvbXhBonQ",
+        "index": 0,
+        "routes": [
+          {
+            "key": "(tabs)-33SqfZFeOFtGb2rXYC70e",
+            "name": "(tabs)",
+            "state": {
+              "key": "tab-AUIUz6rB8WK11vlSoQFe5",
+              "index": 2,
+              "routes": [
+                {
+                  "key": "train-A86X_xlpqxkg-0OiwT1FS",
+                  "name": "train"
+                },
+                {
+                  "key": "care-mZys3GXaOYYR6W_2g1yG_",
+                  "name": "care"
+                },
+                {
+                  "key": "game-ySK3IwZU9xzDoRIwZpL8a",
+                  "name": "game"
+                },
+                {
+                  "key": "profile-VIl7eAYfDaeCo8UvxorVK",
+                  "name": "profile"
+                },
+                {
+                  "key": "dog-moment-216mRHXuToAykSb3T4FbY",
+                  "name": "dog-moment"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

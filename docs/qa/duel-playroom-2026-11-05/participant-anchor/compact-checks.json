@@ -1,0 +1,94 @@
+[
+  {
+    "name": "360x700",
+    "pass": true,
+    "geometry": {
+      "qr": {
+        "x": 224,
+        "y": 388,
+        "w": 112,
+        "h": 112
+      },
+      "compact": true,
+      "code": {
+        "width": 188,
+        "full": 188,
+        "height": 31
+      },
+      "scroll": {
+        "height": 528,
+        "full": 528
+      }
+    }
+  },
+  {
+    "name": "360x704",
+    "pass": true,
+    "geometry": {
+      "qr": {
+        "x": 224,
+        "y": 388.71875,
+        "w": 112,
+        "h": 112
+      },
+      "compact": true,
+      "code": {
+        "width": 188,
+        "full": 188,
+        "height": 31
+      },
+      "scroll": {
+        "height": 532,
+        "full": 532
+      }
+    }
+  },
+  {
+    "name": "360x640",
+    "pass": true,
+    "geometry": {
+      "qr": {
+        "x": 224,
+        "y": 386,
+        "w": 112,
+        "h": 112
+      },
+      "compact": true,
+      "code": {
+        "width": 188,
+        "full": 188,
+        "height": 31
+      },
+      "scroll": {
+        "height": 468,
+        "full": 468
+      }
+    }
+  },
+  {
+    "name": "360x700",
+    "pass": true,
+    "geometry": {
+      "qr": {
+        "x": 224,
+        "y": 388,
+        "w": 112,
+        "h": 112
+      },
+      "compact": true,
+      "code": {
+        "width": 188,
+        "full": 188,
+        "height": 31
+      },
+      "scroll": {
+        "height": 528,
+        "full": 528
+      }
+    }
+  },
+  {
+    "name": "320px uses full-width code",
+    "pass": true
+  }
+]

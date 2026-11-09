@@ -1,0 +1,7 @@
+{
+  "checks": [
+    "Participant section scrolls when usable height is below 800",
+    "QR is completely reachable with shorter usable height",
+    "Game main does not receive Duel development header action"
+  ]
+}

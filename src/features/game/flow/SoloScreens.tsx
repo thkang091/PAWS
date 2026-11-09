@@ -15,7 +15,7 @@ export function useGameFlowParams() {
 }
 
 export function SoloGamesScreen() {
-  return <GameScreen onBack={() => router.replace("/(tabs)/game")}>
+  return <GameScreen onBack={() => router.dismissTo("/(tabs)/game")}>
     <GameHeading title="Pick a game" description="Play solo. Try for your own best." />
     <View style={styles.collection}>{SOLO_GAMES.map(game => <GameCard key={game.id} game={game}
       onPress={() => router.push({ pathname: "/game/play/[gameId]", params: { gameId: game.id, mode: "solo" } })} />)}</View>

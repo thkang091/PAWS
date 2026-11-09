@@ -1,0 +1,161 @@
+{
+  "checks": [
+    "390x844 entry has no scrolling",
+    "Remote entry has no scrolling",
+    "390x844 waiting room has no scrolling",
+    "Participant position preserved on create",
+    "Removed explanatory copy stays off screen",
+    "QR has no collapse toggle",
+    "QR sits between participants and Ready",
+    "Copy writes dynamic room code",
+    "Copy feedback does not shift QR",
+    "Unsupported browser sharing falls back to copying code",
+    "Share API receives current code without fabricated invite URL",
+    "Cancelled share has no error",
+    "Share error gives copy fallback",
+    "Share error does not add scrolling",
+    "Friend arrival leaves QR visible",
+    "Connected lobby has no scrolling",
+    "Game picker opens separately",
+    "Selected game and persistent QR fit together",
+    "Both-ready lobby has no scrolling",
+    "Both-ready host retains Start",
+    "Ready cancellation still works",
+    "360x800 connected lobby has no scrolling",
+    "390x763 connected lobby has no scrolling",
+    "Small-height Ready remains reachable",
+    "Small-height QR remains reachable",
+    "Join input has no unnecessary scrolling",
+    "Guest ready with persistent QR has no scrolling",
+    "Guest cannot start",
+    "360x800 entry has no scrolling",
+    "360x800 waiting room has no scrolling",
+    "390x763 entry has no scrolling",
+    "390x763 waiting room has no scrolling",
+    "360x640 entry has no scrolling",
+    "360x640 waiting room has no scrolling",
+    "Six Game main source files unchanged"
+  ],
+  "sizes": [
+    {
+      "label": "390x844 entry has no scrolling",
+      "client": 540,
+      "content": 540,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "Remote entry has no scrolling",
+      "client": 540,
+      "content": 540,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "390x844 waiting room has no scrolling",
+      "client": 692,
+      "content": 692,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "Share error does not add scrolling",
+      "client": 692,
+      "content": 692,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "Connected lobby has no scrolling",
+      "client": 692,
+      "content": 692,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "Selected game and persistent QR fit together",
+      "client": 692,
+      "content": 692,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "Both-ready lobby has no scrolling",
+      "client": 692,
+      "content": 692,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "360x800 connected lobby has no scrolling",
+      "client": 648,
+      "content": 648,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "390x763 connected lobby has no scrolling",
+      "client": 611,
+      "content": 611,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "Join input has no unnecessary scrolling",
+      "client": 540,
+      "content": 540,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "Guest ready with persistent QR has no scrolling",
+      "client": 692,
+      "content": 692,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "360x800 entry has no scrolling",
+      "client": 496,
+      "content": 496,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "360x800 waiting room has no scrolling",
+      "client": 648,
+      "content": 648,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "390x763 entry has no scrolling",
+      "client": 459,
+      "content": 459,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "390x763 waiting room has no scrolling",
+      "client": 611,
+      "content": 611,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "360x640 entry has no scrolling",
+      "client": 412,
+      "content": 412,
+      "overflow": "hidden",
+      "top": 0
+    },
+    {
+      "label": "360x640 waiting room has no scrolling",
+      "client": 488,
+      "content": 488,
+      "overflow": "hidden",
+      "top": 0
+    }
+  ],
+  "shareNote": "Web Share API success/cancel/error boundaries simulated; fallback clipboard real; no external message sent."
+}

@@ -1,0 +1,40 @@
+{
+  "compact": {
+    "compact": false,
+    "client": 548,
+    "content": 548
+  },
+  "restored": true,
+  "invalidCodeRejected": true,
+  "recovered": {
+    "url": "http://localhost:8082/game/duel",
+    "text": "Your room\nInvite a friend. Play together.\nQA Dog 1\nYour dog\nNot ready\nQA Dog 5\nYour friend\nNot ready\nGame code\nCCFT6J\nI’m ready",
+    "controls": [
+      {
+        "label": "Back",
+        "text": "",
+        "disabled": null
+      },
+      {
+        "label": "About this preview",
+        "text": "",
+        "disabled": null
+      },
+      {
+        "label": "Share game code",
+        "text": "",
+        "disabled": null
+      },
+      {
+        "label": "Copy game code",
+        "text": "",
+        "disabled": null
+      },
+      {
+        "label": "I’m ready",
+        "text": "I’m ready",
+        "disabled": null
+      }
+    ]
+  }
+}

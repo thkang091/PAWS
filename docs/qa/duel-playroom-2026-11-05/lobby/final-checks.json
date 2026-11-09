@@ -1,0 +1,7 @@
+{
+  "checks": [
+    "Repeated copy renews feedback timer",
+    "Copy feedback clears after latest success",
+    "Game main renders existing mode cards"
+  ]
+}

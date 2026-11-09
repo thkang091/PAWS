@@ -1,0 +1,20 @@
+[
+  "Top Duel title removed",
+  "Same place uses Create game and Join game",
+  "Connecting hint removed",
+  "Remote presents matchmaking opponent and Find a match",
+  "Remote has no private-room actions",
+  "Participant position remains stable when switching location",
+  "Missing matchmaking service never fakes search, connection or readiness",
+  "Switching location clears matchmaking notice",
+  "Create game retains existing code dialog",
+  "Reopening game code preserves room",
+  "Same place selection and independent readiness retained",
+  "Join dialog uses game terminology",
+  "Same place preview join still opens guest waiting state",
+  "Legacy remote create route cannot create/join a private room",
+  "Legacy remote join route cannot create/join a private room",
+  "Remote fits 360px",
+  "Same place fits 360px",
+  "Six Game main files retain original SHA256"
+]

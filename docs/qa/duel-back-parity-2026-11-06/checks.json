@@ -1,0 +1,198 @@
+{
+  "passed": true,
+  "checks": [
+    "Join header Back returns to the same Duel entry route",
+    "Join GO_BACK returns to the same Duel entry route",
+    "Join parent POP returns to the same Duel entry route",
+    "Stay keeps the host room",
+    "Host leave prompt cancellation preserves navigation",
+    "Host header Back + Leave returns to Duel entry",
+    "Host GO_BACK shows confirmation without popping",
+    "Swipe confirmation Stay keeps the same room",
+    "Host parent POP + Leave matches header destination",
+    "Guest header Back + Leave returns to Duel entry",
+    "Guest header leave preserves the host room",
+    "Guest GO_BACK + Leave matches header destination",
+    "Guest swipe leave preserves the host room",
+    "Failed leave retains the room and confirmation",
+    "Failed leave never replays the blocked navigation action",
+    "Retrying failed leave still returns to Duel entry",
+    "Next header Back restores original Game main without duplicate routes",
+    "Next GO_BACK restores original Game main without duplicate routes"
+  ],
+  "states": {
+    "hostMain": {
+      "key": "stack-4_9cou2nAWNdorQJKFkPe",
+      "index": 0,
+      "routes": [
+        {
+          "key": "(tabs)-AXKiOApLz50UpLobfnD76",
+          "name": "(tabs)",
+          "state": {
+            "key": "tab-E_ip7VJe0cuDv8xh10f_u",
+            "index": 2,
+            "routes": [
+              {
+                "key": "train-cDZB9zQjOpgW4I9lGt3F4",
+                "name": "train"
+              },
+              {
+                "key": "care-cem1wWBRPKzbDasYF_GdI",
+                "name": "care"
+              },
+              {
+                "key": "game-m_4-z_z8nSK1eyAXe8glm",
+                "name": "game"
+              },
+              {
+                "key": "profile-8ePG-vgNTERBHsVLt4zpt",
+                "name": "profile"
+              },
+              {
+                "key": "dog-moment-ypMecUovPMf9sIEnB1lIe",
+                "name": "dog-moment"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "guestMain": {
+      "key": "stack-28g15fWI0JtDmXZKUbGJ-",
+      "index": 0,
+      "routes": [
+        {
+          "key": "(tabs)-RXhWGsJhiitUfrZVJhzBD",
+          "name": "(tabs)",
+          "state": {
+            "key": "tab-WYPnanhpoWo8qIGI7Y_-Q",
+            "index": 2,
+            "routes": [
+              {
+                "key": "train-uaSE9YQAsj70el5a90byI",
+                "name": "train"
+              },
+              {
+                "key": "care-4mk5bYkf_x2J_HMtCgKSG",
+                "name": "care"
+              },
+              {
+                "key": "game-za9CVjRbDzDKq5bSFu-By",
+                "name": "game"
+              },
+              {
+                "key": "profile-OKHtWc0CN8nZY6sSXEBY4",
+                "name": "profile"
+              },
+              {
+                "key": "dog-moment-FYkF-ZkZcexxTb8iyu0FQ",
+                "name": "dog-moment"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "hostEntry": {
+      "key": "stack-4_9cou2nAWNdorQJKFkPe",
+      "index": 1,
+      "routes": [
+        {
+          "key": "(tabs)-AXKiOApLz50UpLobfnD76",
+          "name": "(tabs)",
+          "state": {
+            "key": "tab-E_ip7VJe0cuDv8xh10f_u",
+            "index": 2,
+            "routes": [
+              {
+                "key": "train-cDZB9zQjOpgW4I9lGt3F4",
+                "name": "train"
+              },
+              {
+                "key": "care-cem1wWBRPKzbDasYF_GdI",
+                "name": "care"
+              },
+              {
+                "key": "game-m_4-z_z8nSK1eyAXe8glm",
+                "name": "game"
+              },
+              {
+                "key": "profile-8ePG-vgNTERBHsVLt4zpt",
+                "name": "profile"
+              },
+              {
+                "key": "dog-moment-ypMecUovPMf9sIEnB1lIe",
+                "name": "dog-moment"
+              }
+            ]
+          }
+        },
+        {
+          "key": "game-dZQU89vop9inz5bUAZBtK",
+          "name": "game",
+          "state": {
+            "key": "stack-tzgLV8XDaUF0s1vmMb9dt",
+            "index": 0,
+            "routes": [
+              {
+                "key": "duel-rK0fXRYMs5yb1WyrVuTUH",
+                "name": "duel"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "guestEntry": {
+      "key": "stack-28g15fWI0JtDmXZKUbGJ-",
+      "index": 1,
+      "routes": [
+        {
+          "key": "(tabs)-RXhWGsJhiitUfrZVJhzBD",
+          "name": "(tabs)",
+          "state": {
+            "key": "tab-WYPnanhpoWo8qIGI7Y_-Q",
+            "index": 2,
+            "routes": [
+              {
+                "key": "train-uaSE9YQAsj70el5a90byI",
+                "name": "train"
+              },
+              {
+                "key": "care-4mk5bYkf_x2J_HMtCgKSG",
+                "name": "care"
+              },
+              {
+                "key": "game-za9CVjRbDzDKq5bSFu-By",
+                "name": "game"
+              },
+              {
+                "key": "profile-OKHtWc0CN8nZY6sSXEBY4",
+                "name": "profile"
+              },
+              {
+                "key": "dog-moment-FYkF-ZkZcexxTb8iyu0FQ",
+                "name": "dog-moment"
+              }
+            ]
+          }
+        },
+        {
+          "key": "game-jhej-ObutWkDN4mzteqF9",
+          "name": "game",
+          "state": {
+            "key": "stack-ZaohLRX7ed6SFYWNsZQ6C",
+            "index": 0,
+            "routes": [
+              {
+                "key": "duel-02IZyOadvfoykmRAIDrTp",
+                "name": "duel"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "note": "Actual app UI plus installed navigation ref GO_BACK and parent POP; no React state or navigation result injection. Physical iOS edge-swipe animation still requires device verification."
+}

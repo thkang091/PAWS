@@ -1,0 +1,14 @@
+{
+  "projectRef": "ytitmpodghiehzlmrhte",
+  "qaUsersRemoved": 6,
+  "allQaSessionsSignedOutBeforeRemoval": true,
+  "deletionRestrictedToRecordedUserIdsAndQaRunMarkers": true,
+  "remainingTestData": {
+    "qa_auth_users": 0,
+    "qa_profiles": 0,
+    "qa_dogs": 0,
+    "qa_rooms": 0,
+    "qa_players": 0,
+    "qa_create_requests": 0
+  }
+}

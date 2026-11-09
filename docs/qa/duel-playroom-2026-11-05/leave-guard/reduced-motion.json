@@ -1,0 +1,96 @@
+{
+  "checks": [
+    "Reduced Motion shows confirmation without translation",
+    "Reduced Motion closes confirmation without an exit animation"
+  ],
+  "frames": [
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    },
+    {
+      "dy": 0,
+      "opacity": 1
+    }
+  ]
+}

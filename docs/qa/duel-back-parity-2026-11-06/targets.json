@@ -1,0 +1,10 @@
+{
+  "host": {
+    "targetId": "A9218F2E8BD94A7609092C64562A0B92",
+    "browserContextId": "3BA977FD7B2D614D9A3987EE4DADCE58"
+  },
+  "guest": {
+    "targetId": "DA69EE3C34930667B14EB2822F5FE750",
+    "browserContextId": "8E4699698521B19E0C7A406DE00B661B"
+  }
+}

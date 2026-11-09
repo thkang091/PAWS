@@ -1,0 +1,79 @@
+[
+  {
+    "name": "01-challenge-reference-390",
+    "headings": [
+      {
+        "text": "Pick a game",
+        "x": 24,
+        "y": 76,
+        "fontSize": "28px",
+        "lineHeight": "31px"
+      }
+    ],
+    "scroll": null
+  },
+  {
+    "name": "02-same-place-390",
+    "headings": [
+      {
+        "text": "Play together",
+        "x": 24,
+        "y": 76,
+        "fontSize": "28px",
+        "lineHeight": "31px"
+      }
+    ],
+    "scroll": {
+      "height": 540,
+      "content": 540
+    }
+  },
+  {
+    "name": "03-remote-390",
+    "headings": [
+      {
+        "text": "Play together",
+        "x": 24,
+        "y": 76,
+        "fontSize": "28px",
+        "lineHeight": "31px"
+      }
+    ],
+    "scroll": {
+      "height": 540,
+      "content": 540
+    }
+  },
+  {
+    "name": "04-remote-360",
+    "headings": [
+      {
+        "text": "Play together",
+        "x": 24,
+        "y": 76,
+        "fontSize": "28px",
+        "lineHeight": "31px"
+      }
+    ],
+    "scroll": {
+      "height": 412,
+      "content": 412
+    }
+  },
+  {
+    "name": "05-same-place-360",
+    "headings": [
+      {
+        "text": "Play together",
+        "x": 24,
+        "y": 76,
+        "fontSize": "28px",
+        "lineHeight": "31px"
+      }
+    ],
+    "scroll": {
+      "height": 412,
+      "content": 412
+    }
+  }
+]
