@@ -1,6 +1,8 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { GEMINI_MODELS, geminiEndpoint } from "../_shared/gemini.ts";
+
 /**
  * Gemini, server side. The app sends the request body it would have sent to Google; this function checks who is
  * asking, adds the key from the GEMINI_API_KEY secret and forwards it. The key never ships in the app.
@@ -11,7 +13,8 @@ const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 
-const MODELS = new Set(["gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-flash-lite"]);
+// The app may only use the text models; the image model is for organizers, through the `media` function.
+const MODELS = new Set([...GEMINI_MODELS].filter((m) => m !== "gemini-2.5-flash-image"));
 const MAX_BODY_BYTES = 12_000_000;
 const TIMEOUT_MS = 45_000;
 const PER_MINUTE = 30;
@@ -66,7 +69,7 @@ Deno.serve(async (req: Request) => {
   const abort = new AbortController();
   const timer = setTimeout(() => abort.abort(), TIMEOUT_MS);
   try {
-    const upstream = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+    const upstream = await fetch(geminiEndpoint(model), {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_API_KEY },
       body: JSON.stringify(payload.body),

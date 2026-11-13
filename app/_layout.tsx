@@ -33,6 +33,40 @@ const RootNavigator = () => {
       <Stack.Screen name="game/shop" options={{ headerShown: false }} />
       <Stack.Screen name="game/store" options={{ headerShown: false }} />
       <Stack.Screen name="game/challenge" options={{ headerShown: false }} />
+      <Stack.Screen name="game/arena" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/index" options={{ headerShown: false }} />
+      <Stack.Screen name="game/number-trail/index" options={{ headerShown: false }} />
+      <Stack.Screen name="game/number-trail/create" options={{ headerShown: false }} />
+      <Stack.Screen name="game/number-trail/practice" options={{ headerShown: false }} />
+      <Stack.Screen name="game/number-trail/near" options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen name="game/number-trail/online" options={{ headerShown: false }} />
+      <Stack.Screen name="game/number-trail/room/[id]" options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen name="game/tournament/largest-country" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/walk" options={{ headerShown: false, presentation: "fullScreenModal", gestureEnabled: false }} />
+      <Stack.Screen name="game/tournament/result" options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen name="game/tournament/leaderboard" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/photo-pose" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/pose" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/pose-submit" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/pose-vote" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/pose-results" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/pose-studio" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/pose-concept" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/pose-moderation" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/reels" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/reels-record" options={{ headerShown: false, presentation: "fullScreenModal", gestureEnabled: false }} />
+      <Stack.Screen name="game/tournament/reels-vote" options={{ headerShown: false }} />
+      <Stack.Screen name="game/tournament/reels-results" options={{ headerShown: false }} />
+      <Stack.Screen name="game/room/create" options={{ headerShown: false }} />
+      <Stack.Screen name="game/room/join" options={{ headerShown: false }} />
+      <Stack.Screen name="game/room/[id]" options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen name="game/room/mafia-setup" options={{ headerShown: false }} />
+      <Stack.Screen name="game/battle/[game]" options={{ headerShown: false }} />
+      <Stack.Screen name="game/battle/regions/index" options={{ headerShown: false }} />
+      <Stack.Screen name="game/battle/regions/new" options={{ headerShown: false }} />
+      <Stack.Screen name="game/battle/regions/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="game/duel" options={{ headerShown: false }} />
+      <Stack.Screen name="game/play" options={{ headerShown: false, presentation: "fullScreenModal", gestureEnabled: false }} />
       <Stack.Screen name="game/[gameId]" options={{ title: "Challenge" }} />
       <Stack.Screen name="train/lesson-preview" options={{ headerShown: false }} />
       <Stack.Screen name="train/media-preview" options={{ headerShown: false }} />

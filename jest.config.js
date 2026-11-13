@@ -9,6 +9,8 @@ module.exports = {
           strict: false,
           esModuleInterop: true,
         },
+        // Edge function modules import each other with ".ts" extensions, as Deno requires.
+        diagnostics: { ignoreCodes: [5097] },
       },
     ],
   },

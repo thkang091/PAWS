@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "@turf/area": "npm:@turf/area@7.4.0",
+    "@turf/kinks": "npm:@turf/kinks@7.4.0",
+    "@turf/helpers": "npm:@turf/helpers@7.4.0"
+  }
+}

@@ -9,6 +9,7 @@
     },
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "allowImportingTsExtensions": true,
     "types": ["jest"]
   },
   "include": ["app", "src", "*.ts", "*.tsx"]

@@ -1,3 +1,4 @@
+-- requires-seed-data: reads an existing dog, so it only runs against a database that has one.
 -- Run as a database administrator; every test change is rolled back.
 begin;
 do $$

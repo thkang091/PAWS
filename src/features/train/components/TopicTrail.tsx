@@ -18,6 +18,7 @@ import type { ComponentType } from "react";
 import { Reveal } from "@/features/onboarding/components/Reveal";
 import { TrainCompanion } from "@/features/train/components/TrainCompanion";
 import { CHEST_HEIGHT, CHEST_WIDTH, TrailChest } from "@/features/train/components/TrailChest";
+import { trailLayout } from "@/features/train/components/trailLayout";
 import type { CompanionPoseKey } from "@/features/train/components/companionPaths";
 import type { NodeState } from "@/features/train/components/ChapterNode";
 import { accent, bg, border, motion, space, text, type } from "@/constants/design";
@@ -44,24 +45,6 @@ const TONE: Record<NodeState, { face: string; lip: string; glyph: string }> = {
   locked: { face: bg.surface, lip: border.default, glyph: text.disabled },
 };
 
-type TrailItem = { kind: "step"; index: number } | { kind: "chest"; after: number };
-
-/**
- * The path as stops: the lessons, with a chest halfway and one at the end. The path swings on a sine around the
- * middle chest so the lessons either side of it sit on opposite sides, and the chests stay on the centre line.
- */
-const layout = (count: number) => {
-  const mid = count >= 3 ? Math.ceil(count / 2) : 0;
-  const items: TrailItem[] = [];
-  for (let i = 0; i < count; i++) {
-    if (mid && i === mid) items.push({ kind: "chest", after: mid });
-    items.push({ kind: "step", index: i });
-  }
-  if (count > 0) items.push({ kind: "chest", after: count });
-  const pivot = mid ? items.findIndex((it) => it.kind === "chest") : 0;
-  return { items, sway: (j: number) => (items[j].kind === "chest" ? 0 : Math.sin(((j - pivot) * Math.PI) / 4) * 0.9) };
-};
-
 /**
  * The topic as a winding path of raised steps with reward chests on the centre line. Done steps are cream with an
  * amber tick, the next step is yellow with a ring for the topic's progress and a "Start" tag, later steps are white.
@@ -84,7 +67,7 @@ export const TopicTrail = ({
 }) => {
   const amplitude = Math.min(96, width * 0.24);
   const centre = width / 2;
-  const { items, sway } = layout(steps.length);
+  const { items, sway } = trailLayout(steps.length);
   const points = items.map((_, j) => ({ x: centre + sway(j) * amplitude, y: TOP + j * SLOT }));
   const height = TOP + Math.max(0, items.length - 1) * SLOT + NODE + space.xxl;
   const fraction = steps.length ? doneCount / steps.length : 0;
@@ -96,7 +79,7 @@ export const TopicTrail = ({
 
   return (
     <View key={topicKey} style={[styles.trail, { width, height }]}>
-      {pose && steps.length > 2 ? (
+      {pose && steps.length > 2 && points[dogAt] ? (
         <View pointerEvents="none" style={[styles.dog, { top: points[dogAt].y - dogWidth / 2 + SLOT / 2 }, dogSide]}>
           <TrainCompanion pose={pose} width={dogWidth} />
         </View>

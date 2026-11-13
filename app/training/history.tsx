@@ -36,6 +36,10 @@ const REASON: Record<string, string> = {
   avatar_item_purchase: "Outfit",
   pet_reward_redemption: "Gift card",
   pet_reward_refund: "Gift card refund",
+  arena_personal_best: "Personal best",
+  arena_duel_won: "Duel won",
+  arena_duel_played: "Duel played",
+  arena_weekly_prize: "Weekly prize",
 };
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
