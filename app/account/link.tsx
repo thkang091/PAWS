@@ -3,7 +3,6 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import Animated, { useReducedMotion } from "react-native-reanimated";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
-import * as WebBrowser from "expo-web-browser";
 import { AppleLogoIcon, CaretRightIcon, CheckIcon, EnvelopeSimpleIcon, GoogleLogoIcon, ShieldCheckIcon } from "phosphor-react-native";
 
 import { DetailShell } from "@/features/care/components/DetailShell";
@@ -12,11 +11,13 @@ import { PressScale } from "@/components/ui/PressScale";
 import { useAccountStatus, useConfirmEmailLink, useFinishLink, useStartEmailLink, useStartProviderLink } from "@/hooks/useAccountStatus";
 import { AUTH_CALLBACK } from "@/services/accountService";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
+import { loadWebBrowser, MissingNativeFeatureError } from "@/lib/nativeFeatures";
 import { accent, bg, border, icon as iconSize, layout, motion, radius, space, text, type } from "@/constants/design";
 
 /** Turn auth errors into something a person can act on. */
 const plain = (error: unknown, provider?: string) => {
   const message = error instanceof Error ? error.message : String(error ?? "");
+  if (error instanceof MissingNativeFeatureError) return message;
   if (/provider is not enabled|unsupported provider|manual linking/i.test(message)) return `${provider ?? "This sign-in"} is not turned on yet. Use email for now.`;
   if (/already (been )?registered|already exists|identity_already_exists|email_exists/i.test(message)) return "That email already belongs to another PAWS account.";
   if (/token has expired|invalid/i.test(message)) return "That code did not work. Check it, or send a new one.";
@@ -55,19 +56,30 @@ export default function AccountScreen() {
     const label = which === "apple" ? "Apple sign-in" : "Google sign-in";
     setError(null);
     void Haptics.selectionAsync();
+    let WebBrowser: ReturnType<typeof loadWebBrowser>;
+    try {
+      WebBrowser = loadWebBrowser(label);
+    } catch (e) {
+      setError(plain(e, label));
+      return;
+    }
     provider.mutate(which, {
       // Apple or Google opens inside PAWS and hands the one-time code straight back.
       onSuccess: async (url) => {
-        const result = await WebBrowser.openAuthSessionAsync(url, AUTH_CALLBACK);
-        if (result.type !== "success") return;
-        const code = new URL(result.url).searchParams.get("code");
-        finish.mutate(code, {
-          onSuccess: () => {
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            void account.refetch();
-          },
-          onError: (e) => setError(plain(e, label)),
-        });
+        try {
+          const result = await WebBrowser.openAuthSessionAsync(url, AUTH_CALLBACK);
+          if (result.type !== "success") return;
+          const code = new URL(result.url).searchParams.get("code");
+          finish.mutate(code, {
+            onSuccess: () => {
+              void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              void account.refetch();
+            },
+            onError: (e) => setError(plain(e, label)),
+          });
+        } catch (e) {
+          setError(plain(e, label));
+        }
       },
       onError: (e) => setError(plain(e, label)),
     });

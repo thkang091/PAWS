@@ -74,13 +74,14 @@ export const TopicTrail = ({
 
   // The topic's dog sits in the open space across from the lessons before the first chest.
   const dogAt = Math.max(0, items.findIndex((it) => it.kind === "chest") - 2);
-  const dogSide = sway(dogAt) <= 0 ? { right: 0 } : { left: 0 };
+  const dogPoint = pose && steps.length > 2 ? points[dogAt] : undefined;
+  const dogSide = dogPoint && dogPoint.x > centre ? { left: 0 } : { right: 0 };
   const dogWidth = Math.min(120, width * 0.3);
 
   return (
     <View key={topicKey} style={[styles.trail, { width, height }]}>
-      {pose && steps.length > 2 && points[dogAt] ? (
-        <View pointerEvents="none" style={[styles.dog, { top: points[dogAt].y - dogWidth / 2 + SLOT / 2 }, dogSide]}>
+      {pose && dogPoint ? (
+        <View pointerEvents="none" style={[styles.dog, { top: dogPoint.y - dogWidth / 2 + SLOT / 2 }, dogSide]}>
           <TrainCompanion pose={pose} width={dogWidth} />
         </View>
       ) : null}

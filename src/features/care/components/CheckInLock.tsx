@@ -94,8 +94,8 @@ const useRequested = () =>
     () => requested,
   );
 
-/** Screens the lock never covers: getting started, and a walk in progress. */
-const FREE_PATHS = ["/welcome", "/intro", "/onboarding", "/personalizing", "/plan-selection", "/tutorial", "/care/walk"];
+/** Defer automatic check-ins during onboarding, walks, and Game preparation or play. */
+const FREE_PATHS = ["/welcome", "/intro", "/onboarding", "/personalizing", "/plan-selection", "/tutorial", "/care/walk", "/game/prepare", "/game/session"];
 
 const useMinuteNow = () => {
   const [now, setNow] = useState(() => new Date());

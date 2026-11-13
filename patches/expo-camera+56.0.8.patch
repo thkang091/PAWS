@@ -1,0 +1,440 @@
+diff --git a/node_modules/expo-camera/ios/CameraViewModule.swift b/node_modules/expo-camera/ios/CameraViewModule.swift
+index 03c82a4..33954d0 100644
+--- a/node_modules/expo-camera/ios/CameraViewModule.swift
++++ b/node_modules/expo-camera/ios/CameraViewModule.swift
+@@ -4,7 +4,7 @@ import AVFoundation
+ import ExpoModulesCore
+ import VisionKit
+ 
+-let cameraEvents = ["onCameraReady", "onMountError", "onPictureSaved", "onBarcodeScanned", "onResponsiveOrientationChanged", "onAvailableLensesChanged"]
++let cameraEvents = ["onCameraReady", "onMountError", "onPictureSaved", "onBarcodeScanned", "onResponsiveOrientationChanged", "onAvailableLensesChanged", "onPawsTrackingUpdate"]
+ 
+ struct ScannerContext {
+   var controller: Any?
+@@ -38,6 +38,8 @@ public final class CameraViewModule: Module, ScannerResultHandler {
+       if #available(iOS 18.0, *) { true } else { false }
+     }
+ 
++    Property("pawsTrackingVersion") { 1 }
++
+     AsyncFunction("scanFromURLAsync") { (url: URL, _: [BarcodeType], promise: Promise) in
+       guard let imageLoader = appContext?.imageLoader else {
+         throw ImageLoaderNotFound()
+@@ -73,6 +75,14 @@ public final class CameraViewModule: Module, ScannerResultHandler {
+     View(CameraView.self) {
+       Events(cameraEvents)
+ 
++      Prop("pawsTrackingEnabled") { (view, enabled: Bool?) in
++        view.pawsTrackingEnabled = enabled ?? false
++      }
++
++      Prop("pawsTrackingResetToken") { (view, token: Int?) in
++        view.pawsTrackingResetToken = token ?? 0
++      }
++
+       Prop("facing") { (view, type: CameraType?) in
+         if let type, view.presetCamera != type.toPosition() {
+           view.presetCamera = type.toPosition()
+diff --git a/node_modules/expo-camera/ios/Current/CameraSessionManager.swift b/node_modules/expo-camera/ios/Current/CameraSessionManager.swift
+index eb8305b..3b195a3 100644
+--- a/node_modules/expo-camera/ios/Current/CameraSessionManager.swift
++++ b/node_modules/expo-camera/ios/Current/CameraSessionManager.swift
+@@ -22,6 +22,7 @@ protocol CameraSessionManagerDelegate: AnyObject {
+ 
+   func emitAvailableLenses()
+   func changePreviewOrientation()
++  func refreshPawsTracking()
+ }
+ 
+ class CameraSessionManager: NSObject, DeviceDiscoveryDelegate {
+@@ -396,6 +397,7 @@ class CameraSessionManager: NSObject, DeviceDiscoveryDelegate {
+     delegate.barcodeScanner?.maybeStartBarcodeScanning()
+     updateCameraIsActive()
+     DispatchQueue.main.async { [weak delegate] in
++      delegate?.refreshPawsTracking()
+       delegate?.onCameraReady()
+     }
+     enableTorch()
+diff --git a/node_modules/expo-camera/ios/Current/CameraView.swift b/node_modules/expo-camera/ios/Current/CameraView.swift
+index 17470a9..e9aea84 100644
+--- a/node_modules/expo-camera/ios/Current/CameraView.swift
++++ b/node_modules/expo-camera/ios/Current/CameraView.swift
+@@ -17,6 +17,8 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+   internal var permissionsManager: EXPermissionsInterface?
+ 
+   internal var barcodeScanner: BarcodeScanner?
++  private var pawsTracker: PawsObjectTracker?
++  private var pawsRecordingRequested = false
+   internal lazy var previewLayer = AVCaptureVideoPreviewLayer(session: self.session)
+ 
+   internal var physicalOrientation: UIDeviceOrientation = .unknown
+@@ -52,11 +54,28 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+         guard let self else {
+           return
+         }
++        if isScanningBarcodes { pawsTracker?.setEnabled(false) }
+         barcodeScanner?.setIsEnabled(isScanningBarcodes)
++        refreshPawsTracking()
+       }
+     }
+   }
+ 
++  var pawsTrackingEnabled = false {
++    didSet {
++      guard pawsTrackingEnabled != oldValue else { return }
++      if pawsTrackingEnabled { pawsRecordingRequested = false }
++      refreshPawsTracking()
++    }
++  }
++
++  var pawsTrackingResetToken = 0 {
++    didSet {
++      guard pawsTrackingResetToken != oldValue else { return }
++      sessionQueue.async { [weak self] in self?.pawsTracker?.reset() }
++    }
++  }
++
+   internal var videoBitrate: Int?
+   var videoStabilizationMode: VideoStabilizationMode = .auto
+ 
+@@ -64,6 +83,8 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+     didSet {
+       sessionQueue.async {
+         self.sessionManager.updateDevice()
++        self.pawsTracker?.reset()
++        self.refreshPawsTracking()
+       }
+     }
+   }
+@@ -112,6 +133,7 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+     didSet {
+       sessionQueue.async {
+         self.sessionManager.updateCameraIsActive()
++        self.refreshPawsTracking()
+       }
+     }
+   }
+@@ -120,6 +142,8 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+     didSet {
+       sessionQueue.async {
+         self.sessionManager.updateDevice()
++        self.pawsTracker?.reset()
++        self.refreshPawsTracking()
+       }
+     }
+   }
+@@ -143,6 +167,7 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+   let onBarcodeScanned = EventDispatcher()
+   let onResponsiveOrientationChanged = EventDispatcher()
+   let onAvailableLensesChanged = EventDispatcher()
++  let onPawsTrackingUpdate = EventDispatcher()
+ 
+   internal var deviceOrientation: UIInterfaceOrientation {
+     UIApplication.shared.connectedScenes.compactMap {
+@@ -162,6 +187,9 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+ 
+     setupPreview()
+     barcodeScanner = createBarcodeScanner()
++    pawsTracker = PawsObjectTracker(session: session) { [weak self] event in
++      self?.onPawsTrackingUpdate(event)
++    }
+     UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+     NotificationCenter.default.addObserver(
+       self,
+@@ -190,6 +218,7 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+           sessionManager.enableTorch()
+         }
+       }
++      refreshPawsTracking()
+     }
+   }
+ 
+@@ -200,6 +229,7 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+       }
+       if session.isRunning && !isSessionPaused {
+         isSessionPaused = true
++        pawsTracker?.setEnabled(false)
+         session.stopRunning()
+       }
+     }
+@@ -273,6 +303,15 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+   }
+ 
+   func record(options: CameraRecordingOptions, promise: Promise) async {
++    // Remove analysis before native recording starts, even if the React prop
++    // update disabling setup tracking is still in flight.
++    await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
++      sessionQueue.async {
++        self.pawsRecordingRequested = true
++        self.pawsTracker?.setEnabled(false)
++        continuation.resume()
++      }
++    }
+     guard let videoFileOutput = sessionManager.currentVideoFileOutput else {
+       promise.reject(CameraOutputNotReadyException())
+       return
+@@ -303,6 +342,7 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+   public override func removeFromSuperview() {
+     super.removeFromSuperview()
+     sessionQueue.async { [weak self] in
++      self?.pawsTracker?.setEnabled(false)
+       self?.sessionManager.stopSession()
+     }
+     motionManager.stopAccelerometerUpdates()
+@@ -335,6 +375,23 @@ public class CameraView: ExpoView, EXAppLifecycleListener, EXCameraInterface, Ca
+         physicalOrientation = ExpoCameraUtils.physicalOrientation(for: deviceOrientation)
+         previewLayer.connection?.videoOrientation = videoOrientation
+       }
++      refreshPawsTracking()
++    }
++  }
++
++  func refreshPawsTracking() {
++    // Read UIKit/preview state on main, then configure the existing capture
++    // session on its own queue. Mirror the preview, not the saved-video setting.
++    DispatchQueue.main.async { [weak self] in
++      guard let self else { return }
++      let orientation = self.previewLayer.connection?.videoOrientation ?? .portrait
++      let mirrored = self.previewLayer.connection?.isVideoMirrored ?? (self.presetCamera == .front)
++      self.sessionQueue.async { [weak self] in
++        guard let self else { return }
++        let enabled = self.pawsTrackingEnabled && self.active && !self.isSessionPaused &&
++          !self.isScanningBarcodes && !self.pawsRecordingRequested
++        self.pawsTracker?.setEnabled(enabled, orientation: orientation, mirrored: mirrored)
++      }
+     }
+   }
+ 
+diff --git a/node_modules/expo-camera/ios/Current/PawsObjectTracker.swift b/node_modules/expo-camera/ios/Current/PawsObjectTracker.swift
+new file mode 100644
+index 0000000..84f33a4
+--- /dev/null
++++ b/node_modules/expo-camera/ios/Current/PawsObjectTracker.swift
+@@ -0,0 +1,227 @@
++import AVFoundation
++import Vision
++
++/// PAWS setup-only framing aid. It never decides whether recording is allowed.
++/// All capture-session changes run on the camera's sessionQueue; Vision work is
++/// serial and off the main thread. Only boxes, never images, cross into JS.
++final class PawsObjectTracker: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
++  private let session: AVCaptureSession
++  private let analysisQueue = DispatchQueue(label: "app.paws.camera.tracking", qos: .userInitiated)
++  private let onUpdate: ([String: Any]) -> Void
++  private let stateLock = NSLock()
++  private var enabled = false
++  private var generation = 0
++  private var output: AVCaptureVideoDataOutput?
++  private var outputOrientation: AVCaptureVideoOrientation = .portrait
++  private var outputMirrored = false
++
++  // These fields are confined to analysisQueue.
++  private var analysisGeneration = -1
++  private var sequence = VNSequenceRequestHandler()
++  private var trackingRequest: VNTrackObjectRequest?
++  private var lastBox: CGRect?
++  private var lastFrameTime = 0.0
++  private var lastDetectionTime = 0.0
++  private var missingDogChecks = 0
++  private var hasTracked = false
++
++  init(session: AVCaptureSession, onUpdate: @escaping ([String: Any]) -> Void) {
++    self.session = session
++    self.onUpdate = onUpdate
++    super.init()
++  }
++
++  /// Call only on the camera's sessionQueue.
++  func setEnabled(_ value: Bool, orientation: AVCaptureVideoOrientation = .portrait, mirrored: Bool = false) {
++    if value == enabled && (!value || (output != nil && orientation == outputOrientation && mirrored == outputMirrored)) {
++      return
++    }
++    stateLock.lock()
++    enabled = value
++    generation += 1
++    let token = generation
++    stateLock.unlock()
++    removeOutput()
++    guard value else { return }
++
++    let dataOutput = AVCaptureVideoDataOutput()
++    dataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
++    dataOutput.alwaysDiscardsLateVideoFrames = true
++    dataOutput.setSampleBufferDelegate(self, queue: analysisQueue)
++    session.beginConfiguration()
++    guard session.canAddOutput(dataOutput) else {
++      session.commitConfiguration()
++      emit(state: "unavailable", token: token)
++      return
++    }
++    session.addOutput(dataOutput)
++    output = dataOutput
++    outputOrientation = orientation
++    outputMirrored = mirrored
++    if let connection = dataOutput.connection(with: .video), connection.isVideoOrientationSupported,
++       !mirrored || connection.isVideoMirroringSupported {
++      // AVCaptureVideoDataOutput rotates its pixel buffers to this orientation.
++      // Vision therefore receives upright pixels and uses .up below.
++      connection.videoOrientation = orientation
++      if connection.isVideoMirroringSupported {
++        connection.automaticallyAdjustsVideoMirroring = false
++        connection.isVideoMirrored = mirrored
++      }
++      session.commitConfiguration()
++      emit(state: "searching", token: token)
++    } else {
++      session.commitConfiguration()
++      removeOutput()
++      emit(state: "unavailable", token: token)
++    }
++  }
++
++  /// Call only on the camera's sessionQueue. Keep the same camera/recording setup.
++  func reset() {
++    stateLock.lock()
++    generation += 1
++    let token = generation
++    let isEnabled = enabled
++    stateLock.unlock()
++    if isEnabled { emit(state: "searching", token: token) }
++  }
++
++  private func removeOutput() {
++    guard let output else { return }
++    output.setSampleBufferDelegate(nil, queue: nil)
++    session.beginConfiguration()
++    if session.outputs.contains(output) { session.removeOutput(output) }
++    session.commitConfiguration()
++    self.output = nil
++  }
++
++  private func currentToken() -> Int? {
++    stateLock.lock()
++    defer { stateLock.unlock() }
++    return enabled ? generation : nil
++  }
++
++  private func resetAnalysis(for token: Int) {
++    analysisGeneration = token
++    sequence = VNSequenceRequestHandler()
++    trackingRequest = nil
++    lastBox = nil
++    lastFrameTime = 0
++    lastDetectionTime = 0
++    missingDogChecks = 0
++    hasTracked = false
++  }
++
++  func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
++    guard let token = currentToken(), let image = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
++    if analysisGeneration != token { resetAnalysis(for: token) }
++    let time = ProcessInfo.processInfo.systemUptime
++    let interval = trackingRequest == nil ? 0.4 : 0.125
++    guard time - lastFrameTime >= interval else { return }
++    lastFrameTime = time
++    let width = CVPixelBufferGetWidth(image)
++    let height = CVPixelBufferGetHeight(image)
++
++    do {
++      if let request = trackingRequest {
++        try sequence.perform([request], on: image, orientation: .up)
++        guard let observation = request.results?.first as? VNDetectedObjectObservation,
++              observation.confidence >= 0.25,
++              isPlausible(observation.boundingBox, comparedWith: lastBox) else {
++          loseTracking(token: token, width: width, height: height)
++          return
++        }
++
++        // Occasional dog recognition checks drift, without replacing the chosen
++        // object with another dog. A missed check alone never interrupts tracking.
++        if time - lastDetectionTime >= 2 {
++          lastDetectionTime = time
++          let dogs = try detectDogs(in: image)
++          let overlaps = dogs.contains { intersectionRatio($0.boundingBox, observation.boundingBox) > 0.1 }
++          missingDogChecks = overlaps ? 0 : missingDogChecks + 1
++          if missingDogChecks >= 2 {
++            loseTracking(token: token, width: width, height: height)
++            return
++          }
++        }
++
++        request.inputObservation = observation
++        lastBox = observation.boundingBox
++        emit(state: "tracking", box: observation.boundingBox, confidence: observation.confidence, width: width, height: height, token: token)
++      } else {
++        lastDetectionTime = time
++        let candidates = try detectDogs(in: image).filter {
++          // A generous middle region invites initial centering, without a gate.
++          (0.2...0.8).contains($0.boundingBox.midX) && (0.15...0.85).contains($0.boundingBox.midY)
++        }
++        guard let dog = candidates.min(by: { centerDistance($0.boundingBox) < centerDistance($1.boundingBox) }) else {
++          emit(state: hasTracked ? "lost" : "searching", width: width, height: height, token: token)
++          return
++        }
++        let request = VNTrackObjectRequest(detectedObjectObservation: dog)
++        request.trackingLevel = .accurate
++        sequence = VNSequenceRequestHandler()
++        trackingRequest = request
++        lastBox = dog.boundingBox
++        hasTracked = true
++        missingDogChecks = 0
++        emit(state: "tracking", box: dog.boundingBox, confidence: dog.confidence, width: width, height: height, token: token)
++      }
++    } catch {
++      trackingRequest = nil
++      lastBox = nil
++      emit(state: "unavailable", width: width, height: height, token: token)
++    }
++  }
++
++  private func detectDogs(in image: CVPixelBuffer) throws -> [VNRecognizedObjectObservation] {
++    let request = VNRecognizeAnimalsRequest()
++    try VNImageRequestHandler(cvPixelBuffer: image, orientation: .up).perform([request])
++    return (request.results ?? []).filter { observation in
++      observation.labels.contains { $0.identifier.lowercased() == "dog" && $0.confidence >= 0.3 }
++    }
++  }
++
++  private func loseTracking(token: Int, width: Int, height: Int) {
++    trackingRequest = nil
++    lastBox = nil
++    missingDogChecks = 0
++    emit(state: "lost", width: width, height: height, token: token)
++  }
++
++  private func centerDistance(_ box: CGRect) -> CGFloat {
++    let x = box.midX - 0.5
++    let y = box.midY - 0.5
++    return x * x + y * y
++  }
++
++  private func intersectionRatio(_ first: CGRect, _ second: CGRect) -> CGFloat {
++    let intersection = first.intersection(second)
++    guard !intersection.isNull else { return 0 }
++    let area = intersection.width * intersection.height
++    let union = first.width * first.height + second.width * second.height - area
++    return union > 0 ? area / union : 0
++  }
++
++  private func isPlausible(_ box: CGRect, comparedWith previous: CGRect?) -> Bool {
++    guard box.minX.isFinite, box.minY.isFinite, box.width.isFinite, box.height.isFinite,
++          box.width > 0.015, box.height > 0.015,
++          box.intersects(CGRect(x: 0, y: 0, width: 1, height: 1)) else { return false }
++    guard let previous else { return true }
++    let areaRatio = box.width * box.height / max(0.0001, previous.width * previous.height)
++    return areaRatio > 0.2 && areaRatio < 4 &&
++      abs(box.midX - previous.midX) < 0.45 && abs(box.midY - previous.midY) < 0.45
++  }
++
++  private func emit(state: String, box: CGRect? = nil, confidence: Float = 0, width: Int = 0, height: Int = 0, token: Int) {
++    var body: [String: Any] = ["state": state, "confidence": confidence, "frameWidth": width, "frameHeight": height]
++    if let box {
++      // Vision is bottom-left; JS uses top-left in the upright/mirrored image.
++      body["box"] = ["x": box.minX, "y": 1 - box.maxY, "width": box.width, "height": box.height]
++    }
++    DispatchQueue.main.async { [weak self] in
++      guard let self, self.currentToken() == token else { return }
++      self.onUpdate(body)
++    }
++  }
++}

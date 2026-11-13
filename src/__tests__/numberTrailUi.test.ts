@@ -74,9 +74,9 @@ describe("Follow the Shape is replaced by Number Trail", () => {
     for (const f of ["follow-shape", "shapes", "shape-setup", "shape-routes", "shape-walk", "shape-result"]) {
       expect(fs.existsSync(path.join(root, `app/game/tournament/${f}.tsx`))).toBe(false);
     }
-    const layout: string = fs.readFileSync(path.join(root, "app/_layout.tsx"), "utf8");
+    const layout: string = fs.readFileSync(path.join(root, "app/game/_layout.tsx"), "utf8");
     expect(layout).not.toMatch(/shape-|follow-shape|tournament\/shapes/);
-    expect(layout).toMatch(/game\/number-trail\/room\/\[id\]/);
+    expect(layout).toMatch(/number-trail\/room\/\[id\]/);
     for (const f of ["osm.ts", "routes.ts", "routeScore.ts"]) expect(fs.existsSync(path.join(root, `supabase/functions/tournament/${f}`))).toBe(true);
   });
   it("no user-facing screen mentions Follow the Shape or its shapes", () => {

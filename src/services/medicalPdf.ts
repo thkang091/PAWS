@@ -1,6 +1,5 @@
 import { File, Paths } from "expo-file-system";
-import * as Print from "expo-print";
-import * as Sharing from "expo-sharing";
+import { loadMedicalPdfModules } from "@/lib/nativeFeatures";
 
 /**
  * The medical record as a clinic-ready PDF: patient details, an allergy alert first, then conditions, medications,
@@ -134,6 +133,7 @@ export const medicalRecordHtml = (d: MedicalPdf) => {
 
 /** Make the PDF and open the share sheet (save to Files, AirDrop, email, print). */
 export const shareMedicalPdf = async (data: MedicalPdf) => {
+  const { Print, Sharing } = loadMedicalPdfModules();
   const made = await Print.printToFileAsync({ html: medicalRecordHtml(data), width: 612, height: 792, margins: { top: 40, bottom: 44, left: 40, right: 40 } });
   // A readable file name for Files, email and AirDrop, instead of a random id.
   let uri = made.uri;

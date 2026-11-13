@@ -11,6 +11,7 @@ import { useHealthRecord } from "@/features/care/state/healthRecord";
 import { FACT_LABEL, factText, useMedicalFacts, type FactKey } from "@/features/profile/state/medicalFacts";
 import { useProfileDraft } from "@/features/profile/state/profileDraft";
 import { shareMedicalPdf, type MedicalPdf } from "@/services/medicalPdf";
+import { MissingNativeFeatureError } from "@/lib/nativeFeatures";
 import { useMedications, useVaccinations } from "@/hooks/useCareHealth";
 import { useCurrentDog } from "@/hooks/useCurrentDog";
 import { useWeightLogs } from "@/hooks/useWeightLogs";
@@ -104,8 +105,8 @@ export const useVetRecord = () => {
     setExporting(true);
     try {
       await shareMedicalPdf(build());
-    } catch {
-      Alert.alert("Could not make the PDF", "Try again in a moment.");
+    } catch (error) {
+      Alert.alert("Could not make the PDF", error instanceof MissingNativeFeatureError ? error.message : "Try again in a moment.");
     } finally {
       setExporting(false);
     }
